@@ -3,7 +3,7 @@
   "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
   "rules_commit": "23a567c6a9962f18ef261cc376f3492f66db1b5c",
   "title": "Daytime Dehazing Local Restoration Need Qualification v1",
-  "rationale": "Use only program-local development-screening scenes to decide whether bidirectional local restoration need is a repeatable and useful dehazing-domain phenomenon rather than metric noise or global image difficulty. The fixed official ConvIR-B output is perturbed only as a privileged offline diagnostic: within 4-by-4 spatial cells, a five-level residual-strength grid is selected and evaluated by opposite checkerboard pixel halves, repeated over two outcome-blind haze observations, and compared with the optimistic best single global strength for the same scene. A circularly shifted-target selection control tests measurement artifact, while direction stability, within-scene weaken/strengthen coexistence, keep regions, and near-clear damage mitigation test the stated failure mode. The route trains no network, does not test observability, proposes no post-processing method, and cannot access confirmation, NH-Haze, or sealed-final images. PASS authorizes only authoring an S2 mechanism-discovery contract.",
+  "rationale": "Use only program-local development-screening scenes to decide whether a fixed dehazing baseline has a repeatable and practically useful spatial residual-strength calibration problem rather than a measurement, aggregation, context, or global-difficulty artifact. The privileged diagnostic uses five local residual strengths with two-way 8-by-8 macroblock cross-fitting inside 4-by-4 cell cores and compares pooled evaluation-pixel SSE with a stronger 1001-point scene-global scalar grid. Two outcome-blind haze observations test exact direction-and-strength repeatability and cross-observation action-map transfer. A spatially permuted action-map control, shifted-target selection null, explicit unresolved label, near-clear exposure/damage/conditional-mitigation decomposition, negative-tail control, S0 canonical clear identity, frozen input roster, and compact endpoint/saturation/edge/clipping diagnostics constrain alternative explanations. The route trains no network, tests no observable signal, proposes no post-processing method, and cannot access confirmation, NH-Haze, or sealed-final images. PASS authorizes only authoring an S2 mechanism-discovery contract; a valid FAIL rejects this first operationalization without spending the predeclared second S1 attempt automatically.",
   "first_operation": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
   "operations": {
@@ -61,7 +61,7 @@
         "reopen_evidence": []
       },
       "scientific_contract": {
-        "question": "Across development-only Haze4K, RESIDE ITS, and RESIDE OTS scenes, does the fixed ConvIR-B baseline exhibit repeatable spatially heterogeneous need for weaker, unchanged, and stronger local restoration whose cross-fitted privileged utility is materially greater than the best scene-global restoration strength, survives a null measurement control, and includes mitigation of damage in nearly clear regions?",
+        "question": "Across development-only Haze4K, RESIDE ITS, and RESIDE OTS scenes, does the fixed ConvIR-B baseline exhibit same-scene, cross-observation repeatable spatial need for weaker, positively supported unchanged, and stronger residual restoration, with material privileged utility over one scene-global strength on a frozen dense scalar grid, spatial specificity beyond a permuted action map, and an interpretable near-clear fidelity outcome?",
         "population": {
           "evidence_role": "development_screening",
           "grouping_unit": "original_clear_scene",
@@ -86,18 +86,19 @@
         },
         "intervention": {
           "primary_variable": "privileged cross-fitted local scaling of the fixed official ConvIR-B restoration residual",
-          "reference": "the optimistic best single alpha applied across every scored cell in the same scene, with keep alpha 1.0 and a circularly shifted-target selection null control",
-          "matched_budget": "150 original-clear development scenes per dataset, exactly two outcome-blind haze observations per scene, 16 nested spatial cells per observation, and five fixed residual strengths per cell",
+          "reference": "the optimistic best single alpha on a frozen 1001-point [0.5, 1.5] scene-global grid, selected by the same cross-fit split and evaluated on exactly the same pixels; keep alpha is 1.0",
+          "matched_budget": "150 original-clear development scenes per dataset, exactly two outcome-blind haze observations per scene, 16 nested spatial cells per observation, five fixed local strengths, and one dense scene-global scalar comparator",
           "fixed_factors": [
             "the official ConvIR-B base architecture and official Haze4K checkpoint remain frozen and strictly loaded",
             "the diagnostic candidate is clip(hazy plus alpha times official-output-minus-hazy, 0, 1)",
-            "the alpha grid is exactly 0.5, 0.75, 1.0, 1.25, and 1.5; values below one weaken, one keeps, and values above one strengthen restoration",
-            "every image uses one outcome-blind deterministic crop of at most 512 by 512 pixels and at least 256 by 256 pixels shared by its two nested haze observations",
-            "four-by-four equal-area cells use a central 75 percent plateau for scoring so taper boundaries are excluded",
-            "opposite checkerboard pixel halves select and evaluate alpha in both directions; alpha ties within 0.005 dB prefer keep and then the smaller alpha",
-            "a non-keep direction is repeatable only when both half-selections have the same direction and both opposite-half gains are at least 0.05 dB",
-            "the primary scene value averages the two nested observations and is clipped to minus 0.25 through plus 0.25 dB before inference",
-            "Haze4K uses all 150 development scenes; ITS and OTS use the first 150 eligible development scenes under a fixed SHA-256 order; every scene uses the first two paired haze observations under a separate fixed SHA-256 order",
+            "the local alpha grid is exactly 0.5, 0.75, 1.0, 1.25, and 1.5; the stronger global comparator uses 1001 values from 0.5 through 1.5 at step 0.001",
+            "every image uses one outcome-blind deterministic scored crop of at most 512 by 512 pixels and at least 256 by 256 pixels shared by its two nested haze observations; model inference includes up to 64 real image pixels of halo on every available side",
+            "four-by-four equal-area cells score the central 75 percent of each side, exactly 56.25 percent of cell area, without claiming or applying a taper",
+            "opposite 8-by-8 macroblock-checkerboard halves select and evaluate alpha in both directions; local ties within 0.005 dB prefer keep and then smaller alpha, while the dense global tie tolerance is 0.0001 dB",
+            "a non-keep cell is supported only when both halves select the same exact alpha and both opposite-half gains are at least 0.05 dB; keep_supported requires both halves to select 1.0 and every non-keep alternative to improve by no more than 0.02 dB on both halves; all other cells are unresolved",
+            "local and global evaluation-half SSE are pooled over identical scored pixels before one PSNR-ratio conversion; the two nested observation values are averaged and only the primary, transfer, and spatial-specificity scene values are clipped to minus 0.25 through plus 0.25 dB",
+            "Haze4K uses its fixed 150 development scenes; ITS and OTS use the first 150 ledger-authorized scenes under a fixed SHA-256 order without eligibility backfill; every scene uses the first two distinct paired haze payloads under a separate fixed SHA-256 filename order",
+            "decoded clear RGB dimensions and pixels must match each S0 canonical_digest; the exact selected scene roster, haze filename roster, and selected clear and haze payload hashes are frozen before inference and rechecked around every scene",
             "the original clear scene is the only independent unit; haze observations, cells, pixels, actions, and resamples are nested",
             "GT selects only this offline diagnostic oracle and is prohibited as an inference-time signal or proposed module input",
             "confirmation, sealed-final, NH-Haze, canary, and locked-test images remain absent and unread"
@@ -105,9 +106,9 @@
         },
         "primary_estimand": {
           "id": "crossfit_local_over_global_utility",
-          "metric_id": "equal_dataset_mean_scene_local_minus_best_global_psnr_db",
+          "metric_id": "equal_dataset_mean_scene_pooled_sse_local_minus_dense_global_psnr_db",
           "direction": "higher",
-          "aggregation": "equal-weight mean of the three dataset-specific means of scene-level two-observation cross-fitted local-oracle PSNR gain minus the cross-fitted best single scene-global alpha, after clipping each scene difference to [-0.25, 0.25] dB",
+          "aggregation": "equal-weight mean of the three dataset-specific means of scene-level two-observation local-versus-global PSNR ratios; within each observation, local-selected and dense-global-selected SSE are pooled over identical opposite-half pixels before one logarithm, then the observation values are averaged and clipped to [-0.25, 0.25] dB",
           "unit": "original_clear_scene",
           "strata": [
             "HAZE4K_TRAIN_DEVELOPMENT",
@@ -117,14 +118,17 @@
         },
         "controls": [
           "typed S0 PASS, role-summary, and cloud-only scene-role ledger identities must match their frozen SHA-256 values",
-          "only retained development_screening members from the S0 ledger may reach inference or GT utility measurement",
+          "only the predeclared first 150 retained development_screening scene IDs per stratum may reach inference; missing, replaced, or duplicate observations never trigger backfill",
+          "every selected decoded clear image must match its S0 canonical RGB digest, and one pre-inference roster digest binds all selected filenames and clear and haze file SHA-256 values",
           "strict official architecture, source, layer, checkpoint, runtime-environment, and entrypoint identities",
-          "the best single alpha selected with identical checkerboard cross-fitting is an optimistic global-difficulty control",
+          "the dense best single alpha selected with identical macroblock cross-fitting is an optimistic global-difficulty control and has strictly more scalar choices than the local oracle",
           "alpha selection against the clear target circularly shifted by half the image in both axes is the fixed measurement-null control and is evaluated against the correct target",
-          "two deterministic haze observations per original clear scene test direction repeatability without increasing independent sample size",
-          "weaken, keep, and strengthen labels require frozen materiality and agreement rules rather than post-hoc thresholds",
-          "near-clear cells require hazy-input PSNR at least 30 dB in both observations; baseline damage is at least 0.10 dB and mitigation requires repeatable weakening",
-          "all bootstrap and Wilson uncertainty remains grouped at the original-clear-scene level",
+          "a deterministic five-cell cyclic permutation of the selected local action map must lose at least 0.05 dB, testing whether utility is spatially located rather than caused only by the action histogram",
+          "two deterministic haze observations per original clear scene test direction and exact-alpha repeatability without increasing independent sample size; each observation-derived supported map is also transferred to the other observation and compared with that target observation's in-sample dense global oracle",
+          "weaken, keep_supported, strengthen, and unresolved labels use frozen positive evidence rules; unresolved never contributes to stability or keep prevalence",
+          "near-clear exposure, repeatable baseline damage, and damage-conditional mitigation are separate scene estimands; absence of material damage is safe_no_material_damage rather than unsafe",
+          "endpoint-alpha frequency, unresolved-cell frequency, exact-alpha agreement, selected-candidate saturation, primary clipping, and edge-versus-interior effects are archived as compact diagnostics",
+          "all bootstrap and Wilson uncertainty remains grouped at the original-clear-scene level and reports overall equal-dataset and dataset-specific support",
           "no network training, signal prediction, threshold search, mechanism selection, output image save, or per-cell GitHub evidence"
         ],
         "uncertainty": {
@@ -132,7 +136,7 @@
           "method_id": "stratified_scene_bootstrap_and_simultaneous_wilson",
           "confidence_level": 0.95,
           "independent_unit": "original_clear_scene",
-          "comparison_family": "overall_plus_three_dataset_primary_means"
+          "comparison_family": "scene_grouped_s1_gate_families"
         },
         "gates": [
           {
@@ -143,7 +147,7 @@
             "direction": "equal",
             "threshold": true,
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "validity_veto",
             "outcomes": [
               "pass",
@@ -156,11 +160,11 @@
             "id": "development_scene_coverage",
             "type": "coverage",
             "estimand_id": "crossfit_local_over_global_utility",
-            "reference": "exactly 150 retained development scenes per dataset, two valid paired haze observations per scene, 16 scored cells per observation, zero protected image access, and 451 completed scene-plus-aggregate units",
+            "reference": "exactly the frozen 150-scene roster per dataset, two distinct valid haze payloads per scene, S0-matching clear canonical identities, a frozen selected-input roster digest, 16 scored cells per observation, zero protected image access, and 451 completed scene-plus-aggregate units including typed invalid units after a pre-inference veto",
             "direction": "equal",
             "threshold": true,
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "validity_veto",
             "outcomes": [
               "pass",
@@ -173,11 +177,11 @@
             "id": "measurement_null_control",
             "type": "integrity",
             "estimand_id": "crossfit_local_over_global_utility",
-            "reference": "the shifted-target selection null has simultaneous overall UCB below 0.05 dB and every dataset UCB below 0.10 dB when evaluated against the correct target",
+            "reference": "the un-clipped shifted-target selection null has simultaneous overall UCB below 0.05 dB and every dataset UCB below 0.10 dB when evaluated against the correct target",
             "direction": "max",
             "threshold": "overall_ucb_lt_0.05_and_each_dataset_ucb_lt_0.10",
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "validity_veto",
             "outcomes": [
               "pass",
@@ -190,11 +194,11 @@
             "id": "local_utility_over_global",
             "type": "materiality",
             "estimand_id": "crossfit_local_over_global_utility",
-            "reference": "overall simultaneous LCB exceeds the 0.05 dB minimum meaningful effect, at least two dataset LCBs exceed zero, no dataset UCB is below zero, and the Wilson LCB for scenes with at least 0.05 dB gain exceeds 0.20",
+            "reference": "favorable requires overall primary LCB above 0.10 dB, at least two dataset LCBs above zero and no dataset UCB below zero; aligned-versus-permuted spatial-specificity LCB above 0.05 dB with the same dataset support; equal-dataset material-scene prevalence LCB above 0.20 with at least two dataset LCBs above 0.10 and no dataset UCB below 0.05; and negative-tail prevalence overall UCB below 0.10 and every dataset UCB below 0.15. Any corresponding UCB impossibility is unfavorable; intervals crossing a boundary are indeterminate.",
             "direction": "min",
-            "threshold": "overall_lcb_gt_0.05_and_two_dataset_lcb_gt_0_and_no_dataset_ucb_lt_0_and_material_scene_lcb_gt_0.20",
+            "threshold": "primary_and_spatial_specificity_and_material_prevalence_and_negative_tail_composite",
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "decisive",
             "outcomes": [
               "favorable",
@@ -208,11 +212,11 @@
             "id": "bidirectional_repeatability",
             "type": "materiality",
             "estimand_id": "crossfit_local_over_global_utility",
-            "reference": "Wilson LCB exceeds 0.50 for scenes with at least 12 of 16 direction-stable cells, exceeds 0.20 for scenes with at least two repeatable weaken and two repeatable strengthen cells, and exceeds 0.20 for scenes with at least four repeatable keep cells",
+            "reference": "favorable requires cross-observation transferred local maps to beat each target's in-sample dense global oracle with overall LCB above zero and support in at least two datasets; direction-and-exact-strength stable-scene LCB above 0.50; bidirectional-scene LCB above 0.20; keep-supported-scene LCB above 0.20; and same-scene useful-bidirectional prevalence LCB above 0.15, each with predeclared two-dataset support and no-dataset-absence floors. Any corresponding UCB impossibility is unfavorable; intervals crossing a boundary are indeterminate.",
             "direction": "min",
-            "threshold": "stable_lcb_gt_0.50_and_bidirectional_lcb_gt_0.20_and_keep_lcb_gt_0.20",
+            "threshold": "transfer_and_direction_strength_and_bidirectional_and_keep_supported_and_joint_scene_composite",
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "decisive",
             "outcomes": [
               "favorable",
@@ -226,11 +230,11 @@
             "id": "near_clear_fidelity",
             "type": "safety",
             "estimand_id": "crossfit_local_over_global_utility",
-            "reference": "at least 42 scenes contain a near-clear cell in both observations and the simultaneous Wilson LCB exceeds 0.10 for eligible scenes with baseline damage mitigated by repeatable weakening",
-            "direction": "min",
-            "threshold": "eligible_scenes_ge_42_and_mitigation_lcb_gt_0.10",
+            "reference": "after at least 42 near-clear-exposed scenes in at least two datasets, safe means either pooled and sufficiently exposed dataset-specific baseline-damage UCB below 0.10, or pooled and dataset-supported baseline-damage LCB above 0.10 with at least 42 damaged scenes and damage-conditional mitigation LCB above 0.50; unsafe requires material damage plus a conditional mitigation UCB at or below 0.50 in the pooled or sufficiently exposed dataset-specific analysis; all threshold-crossing or underpowered cases are indeterminate",
+            "direction": "equal",
+            "threshold": "safe_no_material_damage_or_safe_damage_conditionally_mitigated",
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "decisive",
             "outcomes": [
               "safe",
@@ -244,11 +248,11 @@
             "id": "primary_precision",
             "type": "precision",
             "estimand_id": "crossfit_local_over_global_utility",
-            "reference": "maximum distance from each overall or dataset primary bootstrap estimate to either simultaneous 95 percent interval endpoint",
+            "reference": "maximum distance from each overall or dataset primary bootstrap estimate to either simultaneous 95 percent interval endpoint; clipping frequencies and raw negative tails remain separately visible",
             "direction": "max",
             "threshold": 0.055,
             "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty",
-            "comparison_family": "overall_plus_three_dataset_primary_means",
+            "comparison_family": "scene_grouped_s1_gate_families",
             "decision_role": "inconclusive_only",
             "outcomes": [
               "met",
@@ -258,7 +262,7 @@
             "neutral_outcome": "met"
           }
         ],
-        "competing_explanation": "An apparent local oracle gain can be produced by choosing many actions on the same pixels used for scoring, by global haze severity that only needs one image-wide strength correction, by unstable direction labels across haze observations, by a flexible metric artifact that also succeeds with an unrelated target, or by counting cells and haze variants as independent evidence.",
+        "competing_explanation": "An apparent local oracle gain can be produced by incompatible PSNR aggregation, same-pixel action selection, global haze severity needing only one scalar correction, unstable or unresolved directions mislabeled as keep, action histograms without correct spatial placement, crop-boundary context loss, endpoint clipping, an unrelated-target selection artifact, input-identity drift, or pseudoreplication of cells and haze observations.",
         "decision_table": {
           "terminal_actions": {
             "pass": {
@@ -276,8 +280,8 @@
                 "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
                 "authorizes": "NONE"
               },
-              "next_action_id": "stop_local_restoration_need_family",
-              "family_effect": "stop"
+              "next_action_id": "author_second_s1_operationalization_contract_if_budget_remains",
+              "family_effect": "record_only"
             },
             "inconclusive": {
               "terminal": {
@@ -519,18 +523,18 @@
           "confirmation, sealed-final, canary, locked-test, NH-Haze, or non-development image access",
           "network training, fitting, fine-tuning, observable-signal prediction, mechanism selection, or candidate promotion",
           "using GT or GT-derived labels as inference-time input",
-          "changing the alpha grid, crop rule, cell grid, checkerboard split, direction margin, effect margin, prevalence threshold, precision target, or null control after outcomes",
+          "changing either alpha grid, crop or halo rule, cell grid, macroblock split, four-state label rule, direction or keep margin, effect margin, prevalence threshold, precision target, transfer rule, spatial permutation, or null control after outcomes",
           "treating haze observations, cells, pixels, actions, or bootstrap draws as independent samples",
           "interpreting the privileged residual-scaling oracle as a deployable post-processing method",
           "saving or archiving images, arrays, checkpoints, feature maps, action maps, or per-cell tables to GitHub",
-          "claiming complete source-provenance disjointness, observable predictability, module effectiveness, deployment readiness, or protected-set generalization",
+          "claiming superiority to arbitrary global restoration operators outside the frozen residual-scaling interval and grid, complete source-provenance disjointness, observable predictability, module effectiveness, deployment readiness, or protected-set generalization",
           "starting S2 or training any adaptive module without a later typed S1 PASS and a separate route-ready contract"
         ]
       },
       "runtime": {
         "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v1.py",
-        "timeout_seconds": 7200,
-        "expected_wall_seconds": 5700,
+        "timeout_seconds": 10800,
+        "expected_wall_seconds": 9600,
         "total_units": 451,
         "evidence_role": "development_screening",
         "resume_policy": "none",
@@ -575,10 +579,10 @@
             "formal_iterations": 900,
             "max_peak_memory_mib": 12288,
             "probe_iterations": 8,
-            "max_seconds_per_iteration": 3.0,
+            "max_seconds_per_iteration": 5.0,
             "fixed_overhead_seconds": 300.0,
             "safety_factor": 2.0,
-            "formal_max_wall_seconds": 5700,
+            "formal_max_wall_seconds": 9600,
             "memory_scaling": "constant",
             "batch_shape_policy": "bounded",
             "termination_policy": "fixed_count",
@@ -605,7 +609,7 @@
           "id": "local_need_entrypoint",
           "kind": "file",
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v1.py",
-          "sha256": "d842089ceb037252d2ad3551ec58669c0fce996fced11bb47294165d80edff5a",
+          "sha256": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d",
           "access_role": "engineering_debug",
           "contract_access": true
         },
@@ -686,8 +690,8 @@
         "minimum_fixture": {
           "batch": 1,
           "channels": 3,
-          "height": 512,
-          "width": 512
+          "height": 640,
+          "width": 640
         },
         "bound_assets": [
           {
@@ -696,7 +700,7 @@
           },
           {
             "id": "local_need_entrypoint",
-            "identity": "d842089ceb037252d2ad3551ec58669c0fce996fced11bb47294165d80edff5a"
+            "identity": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d"
           },
           {
             "id": "runtime_environment",
@@ -720,13 +724,13 @@
           "PIL",
           "torch"
         ],
-        "production_path_statement": "The exact frozen official ConvIR-B inference, bounded deterministic crop, five-strength residual intervention, checkerboard cross-selection, global-alpha control, shifted-target null, and scene aggregation execute on bounded synthetic CUDA tensors without dataset access or scientific output.",
+        "production_path_statement": "The exact frozen official ConvIR-B inference with scored-crop halo, five-action local residual intervention, 8-by-8 macroblock cross-fitting, pooled-SSE aggregation, 1001-point dense global comparator, shifted-target and spatial-permutation controls, four-state classification, tri-state gates, and deterministic known-answer reference cases execute on bounded synthetic CUDA tensors without dataset access or scientific output.",
         "protected_data_prohibited": true,
         "scientific_output_prohibited": true,
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "d842089ceb037252d2ad3551ec58669c0fce996fced11bb47294165d80edff5a",
+          "code_path_sha256": "75e4b8ad16bb448745f002f9284acd086d086676484d9c08a09fb9aff427799d",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",
           "device_class": "cuda_sm89"
@@ -738,7 +742,7 @@
         "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
         "primary_estimand_id": "crossfit_local_over_global_utility",
         "independent_unit": "original_clear_scene",
-        "comparison_family": "overall_plus_three_dataset_primary_means",
+        "comparison_family": "scene_grouped_s1_gate_families",
         "method": "normal_mean",
         "confidence_level": 0.95,
         "critical_value": 2.58,

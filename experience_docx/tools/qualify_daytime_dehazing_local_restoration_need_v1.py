@@ -48,23 +48,39 @@ VARIANTS_PER_SCENE = 2
 GRID_SIDE = 4
 MAX_CROP_SIDE = 512
 MIN_CROP_SIDE = 256
+INFERENCE_HALO = 64
+CROSSFIT_BLOCK_SIDE = 8
 ALPHA_GRID = np.asarray([0.5, 0.75, 1.0, 1.25, 1.5], dtype=np.float64)
+DENSE_GLOBAL_ALPHA_GRID = np.linspace(0.5, 1.5, 1001, dtype=np.float64)
 KEEP_ALPHA = 1.0
 ALPHA_TIE_DB = 0.005
+GLOBAL_ALPHA_TIE_DB = 0.0001
 LOCAL_DIRECTION_MARGIN_DB = 0.05
-PRIMARY_MARGIN_DB = 0.05
+KEEP_EQUIVALENCE_DB = 0.02
+PRIMARY_MARGIN_DB = 0.10
+TRANSFER_MARGIN_DB = 0.0
+SPATIAL_SPECIFICITY_MARGIN_DB = 0.05
 PRIMARY_CLIP_DB = 0.25
 MATERIAL_SCENE_PREVALENCE = 0.20
+JOINT_SCENE_PREVALENCE = 0.15
 STABLE_CELL_COUNT = 12
+STRENGTH_STABLE_CELL_COUNT = 10
 BIDIRECTIONAL_CELL_COUNT = 2
 KEEP_CELL_COUNT = 4
 STABILITY_PREVALENCE = 0.50
 BIDIRECTIONAL_PREVALENCE = 0.20
 KEEP_PREVALENCE = 0.20
+NEGATIVE_TAIL_DB = -0.10
+NEGATIVE_TAIL_PREVALENCE = 0.10
 NEAR_CLEAR_PSNR_DB = 30.0
 NEAR_CLEAR_DAMAGE_DB = 0.10
-NEAR_CLEAR_MIN_SCENES = 42
-NEAR_CLEAR_MITIGATION_PREVALENCE = 0.10
+NEAR_CLEAR_MITIGATION_DB = 0.05
+NEAR_CLEAR_MIN_EXPOSED_SCENES = 42
+NEAR_CLEAR_MIN_EXPOSED_DATASETS = 2
+NEAR_CLEAR_MIN_DAMAGED_SCENES = 42
+NEAR_CLEAR_DAMAGE_PREVALENCE = 0.10
+NEAR_CLEAR_MITIGATION_PREVALENCE = 0.50
+NEAR_CLEAR_CELL_MITIGATION_FRACTION = 0.50
 NULL_UCB_MARGIN_DB = 0.05
 NULL_DATASET_UCB_MARGIN_DB = 0.10
 PRECISION_HALF_WIDTH_DB = 0.055
@@ -155,8 +171,8 @@ def deterministic_rank(values: Iterable[str], salt: str) -> list[str]:
     return sorted(values, key=lambda value: (sha256_text(f"{salt}|{value}"), value))
 
 
-def read_s0_ledger(path: Path) -> tuple[dict[str, set[str]], dict[str, Any]]:
-    roles: dict[str, set[str]] = defaultdict(set)
+def read_s0_ledger(path: Path) -> tuple[dict[str, dict[str, str]], dict[str, Any]]:
+    roles: dict[str, dict[str, str]] = defaultdict(dict)
     row_count = 0
     excluded_count = 0
     with path.open("r", encoding="utf-8") as stream:
@@ -171,7 +187,16 @@ def read_s0_ledger(path: Path) -> tuple[dict[str, set[str]], dict[str, Any]]:
                 excluded_count += 1
                 continue
             if row.get("role") == "development_screening":
-                roles[str(row.get("dataset"))].add(str(row.get("scene_id")))
+                dataset = str(row.get("dataset"))
+                scene = str(row.get("scene_id"))
+                canonical_digest = str(row.get("canonical_digest"))
+                if len(canonical_digest) != 64 or any(
+                    character not in "0123456789abcdef" for character in canonical_digest
+                ):
+                    raise RuntimeError("S0 ledger contains an invalid canonical RGB digest")
+                if scene in roles[dataset] and roles[dataset][scene] != canonical_digest:
+                    raise RuntimeError("S0 ledger maps one scene to multiple canonical digests")
+                roles[dataset][scene] = canonical_digest
     counts = {dataset: len(roles[dataset]) for dataset in DATASET_ORDER}
     return roles, {
         "row_count": row_count,
@@ -182,7 +207,7 @@ def read_s0_ledger(path: Path) -> tuple[dict[str, set[str]], dict[str, Any]]:
 
 
 def enumerate_haze4k(
-    root: Path, allowed_scenes: set[str],
+    root: Path, allowed_scenes: dict[str, str],
 ) -> dict[str, list[tuple[Path, Path]]]:
     input_dirs = [root / name for name in ("IN", "haze", "hazy") if (root / name).is_dir()]
     label_dirs = [root / name for name in ("GT", "gt") if (root / name).is_dir()]
@@ -220,7 +245,7 @@ def haze_prefix_map(directory: Path) -> dict[str, list[Path]]:
 
 
 def enumerate_its(
-    reside_root: Path, allowed_scenes: set[str],
+    reside_root: Path, allowed_scenes: dict[str, str],
 ) -> dict[str, list[tuple[Path, Path]]]:
     specifications = (
         ("ITS_TRAIN", reside_root / "official/ITS/train/ITS_clear", reside_root / "official/ITS/train/ITS_hazy"),
@@ -238,7 +263,7 @@ def enumerate_its(
 
 
 def enumerate_ots(
-    reside_root: Path, allowed_scenes: set[str],
+    reside_root: Path, allowed_scenes: dict[str, str],
 ) -> dict[str, list[tuple[Path, Path]]]:
     clear_dir = reside_root / "official/OTS_ALPHA/clear_images"
     hazy_dir = reside_root / "official/OTS_ALPHA/hazy_images"
@@ -253,17 +278,25 @@ def enumerate_ots(
 def select_scene_pairs(
     dataset: str,
     groups: dict[str, list[tuple[Path, Path]]],
+    allowed_scenes: dict[str, str],
 ) -> tuple[dict[str, list[tuple[Path, Path]]], dict[str, Any]]:
-    eligible = {
-        scene: items for scene, items in groups.items()
-        if len(items) >= VARIANTS_PER_SCENE
-    }
-    order = deterministic_rank(eligible, f"{SCENE_SELECTION_SALT}|{dataset}")
-    selected = order[:PLANNED_SCENES[dataset]]
+    planned = deterministic_rank(allowed_scenes, f"{SCENE_SELECTION_SALT}|{dataset}")[
+        :PLANNED_SCENES[dataset]
+    ]
     result = {}
-    for scene in selected:
+    canonical_match = {}
+    distinct_variant_payloads = {}
+    selected_roster = []
+    for scene in planned:
+        items = groups.get(scene, [])
+        if not items:
+            continue
+        clear_digests = {canonical_rgb_digest(image_array(pair[1])) for pair in items}
+        canonical_match[scene] = clear_digests == {allowed_scenes[scene]}
+        if len(items) < VARIANTS_PER_SCENE or not canonical_match[scene]:
+            continue
         variants = sorted(
-            eligible[scene],
+            items,
             key=lambda pair: (
                 sha256_text(
                     f"{VARIANT_SELECTION_SALT}|{dataset}|{scene}|{pair[0].name}"
@@ -271,15 +304,32 @@ def select_scene_pairs(
                 pair[0].name,
             ),
         )[:VARIANTS_PER_SCENE]
+        variant_hashes = [sha256_file(pair[0]) for pair in variants]
+        distinct_variant_payloads[scene] = len(set(variant_hashes)) == VARIANTS_PER_SCENE
+        if not distinct_variant_payloads[scene]:
+            continue
         result[scene] = variants
+        selected_roster.extend(
+            f"{dataset}|{scene}|{pair[0].name}|{variant_hash}|{pair[1].name}|{sha256_file(pair[1])}"
+            for pair, variant_hash in zip(variants, variant_hashes)
+        )
     return result, {
         "allowed_scene_count": len(groups),
-        "paired_scene_count": len(eligible),
+        "planned_scene_count": len(planned),
+        "planned_scene_digest": sha256_text("\n".join(planned)),
         "selected_scene_count": len(result),
         "two_variants_per_scene": all(
             len(items) == VARIANTS_PER_SCENE for items in result.values()
         ),
-        "selection_digest": sha256_text("\n".join(selected)),
+        "exact_planned_roster_retained": set(result) == set(planned),
+        "canonical_clear_identity_match": (
+            len(canonical_match) == len(planned) and all(canonical_match.values())
+        ),
+        "distinct_haze_payloads": (
+            len(distinct_variant_payloads) == len(planned)
+            and all(distinct_variant_payloads.values())
+        ),
+        "selected_input_roster_digest": sha256_text("\n".join(selected_roster)),
     }
 
 
@@ -322,9 +372,9 @@ def load_official_model(context):
     return torch, model
 
 
-def deterministic_crop(
+def deterministic_crop_box(
     hazy: np.ndarray, clear: np.ndarray, scene: str,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[int, int, int, int]:
     if hazy.shape != clear.shape or min(hazy.shape[:2]) < MIN_CROP_SIDE:
         raise RuntimeError(f"pair shape outside frozen crop contract for {scene[:24]}")
     height, width = hazy.shape[:2]
@@ -332,10 +382,7 @@ def deterministic_crop(
     seed = int(sha256_text(f"{CROP_SELECTION_SALT}|{scene}")[:16], 16)
     y0 = seed % (height - crop_h + 1)
     x0 = (seed // 65537) % (width - crop_w + 1)
-    return (
-        hazy[y0:y0 + crop_h, x0:x0 + crop_w].copy(),
-        clear[y0:y0 + crop_h, x0:x0 + crop_w].copy(),
-    )
+    return y0, y0 + crop_h, x0, x0 + crop_w
 
 
 def infer_official(torch, model, hazy: np.ndarray, device: str) -> np.ndarray:
@@ -356,6 +403,31 @@ def infer_official(torch, model, hazy: np.ndarray, device: str) -> np.ndarray:
     return prediction.squeeze(0).permute(1, 2, 0).detach().cpu().numpy().astype(np.float32)
 
 
+def infer_scored_crop(
+    torch, model, hazy: np.ndarray, clear: np.ndarray, scene: str, device: str,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, int]]:
+    y0, y1, x0, x1 = deterministic_crop_box(hazy, clear, scene)
+    height, width = hazy.shape[:2]
+    halo_y0, halo_y1 = max(0, y0 - INFERENCE_HALO), min(height, y1 + INFERENCE_HALO)
+    halo_x0, halo_x1 = max(0, x0 - INFERENCE_HALO), min(width, x1 + INFERENCE_HALO)
+    halo_prediction = infer_official(
+        torch, model, hazy[halo_y0:halo_y1, halo_x0:halo_x1], device,
+    )
+    local_y0, local_y1 = y0 - halo_y0, y1 - halo_y0
+    local_x0, local_x1 = x0 - halo_x0, x1 - halo_x0
+    return (
+        hazy[y0:y1, x0:x1].copy(),
+        clear[y0:y1, x0:x1].copy(),
+        halo_prediction[local_y0:local_y1, local_x0:local_x1].copy(),
+        {
+            "top": y0 - halo_y0,
+            "bottom": halo_y1 - y1,
+            "left": x0 - halo_x0,
+            "right": halo_x1 - x1,
+        },
+    )
+
+
 def psnr(value: np.ndarray, target: np.ndarray, mask: np.ndarray | None = None) -> float:
     error = (value.astype(np.float64) - target.astype(np.float64)) ** 2
     if mask is not None:
@@ -364,10 +436,13 @@ def psnr(value: np.ndarray, target: np.ndarray, mask: np.ndarray | None = None) 
     return -10.0 * math.log10(max(mse, EPSILON))
 
 
-def select_alpha(utilities: np.ndarray) -> int:
+def select_alpha(
+    utilities: np.ndarray, grid: np.ndarray = ALPHA_GRID,
+    tie_db: float = ALPHA_TIE_DB,
+) -> int:
     best = float(np.max(utilities))
-    eligible = np.flatnonzero(utilities >= best - ALPHA_TIE_DB)
-    return int(min(eligible, key=lambda index: (abs(ALPHA_GRID[index] - 1.0), ALPHA_GRID[index])))
+    eligible = np.flatnonzero(utilities >= best - tie_db)
+    return int(min(eligible, key=lambda index: (abs(grid[index] - 1.0), grid[index])))
 
 
 def direction(alpha: float) -> str:
@@ -395,6 +470,16 @@ def cell_slices(height: int, width: int) -> list[tuple[slice, slice]]:
     return cells
 
 
+def crossfit_masks(region: tuple[slice, slice]) -> tuple[np.ndarray, np.ndarray]:
+    y, x = region
+    yy, xx = np.indices((y.stop - y.start, x.stop - x.start))
+    parity = (yy // CROSSFIT_BLOCK_SIDE + xx // CROSSFIT_BLOCK_SIDE) % 2
+    masks = (parity == 0, parity == 1)
+    if min(np.count_nonzero(mask) for mask in masks) == 0:
+        raise RuntimeError("macroblock cross-fit produced an empty half")
+    return masks
+
+
 def candidate_errors(
     hazy: np.ndarray, prediction: np.ndarray, target: np.ndarray,
     region: tuple[slice, slice], mask: np.ndarray,
@@ -413,6 +498,62 @@ def candidate_errors(
     return sums, counts
 
 
+def dense_global_errors(
+    hazy: np.ndarray, prediction: np.ndarray, target: np.ndarray,
+    region: tuple[slice, slice], mask: np.ndarray,
+) -> tuple[np.ndarray, float]:
+    y, x = region
+    local_hazy = hazy[y, x][mask].astype(np.float64).reshape(-1)
+    residual = (prediction[y, x][mask] - hazy[y, x][mask]).astype(np.float64).reshape(-1)
+    local_target = target[y, x][mask].astype(np.float64).reshape(-1)
+    offset = local_hazy - local_target
+    coefficient_a = float(np.sum(residual * residual))
+    coefficient_b = float(np.sum(residual * offset))
+    coefficient_c = float(np.sum(offset * offset))
+
+    positive = residual > 0.0
+    negative = residual < 0.0
+    breakpoints = np.full_like(residual, np.inf)
+    bounds = np.zeros_like(residual)
+    breakpoints[positive] = (1.0 - local_hazy[positive]) / residual[positive]
+    bounds[positive] = 1.0
+    breakpoints[negative] = -local_hazy[negative] / residual[negative]
+    bounds[negative] = 0.0
+    active = (positive | negative) & (breakpoints > 1.0) & (breakpoints <= 1.5)
+
+    bins_a = np.zeros(len(DENSE_GLOBAL_ALPHA_GRID), dtype=np.float64)
+    bins_b = np.zeros(len(DENSE_GLOBAL_ALPHA_GRID), dtype=np.float64)
+    bins_c = np.zeros(len(DENSE_GLOBAL_ALPHA_GRID), dtype=np.float64)
+    if np.any(active):
+        active_breakpoints = breakpoints[active]
+        indices = np.ceil(
+            (active_breakpoints - DENSE_GLOBAL_ALPHA_GRID[0])
+            / (DENSE_GLOBAL_ALPHA_GRID[1] - DENSE_GLOBAL_ALPHA_GRID[0])
+            - 1.0e-10
+        ).astype(np.int64)
+        indices = np.clip(indices, 0, len(DENSE_GLOBAL_ALPHA_GRID) - 1)
+        active_residual = residual[active]
+        active_offset = offset[active]
+        saturated_error = (bounds[active] - local_target[active]) ** 2
+        bins_a += np.bincount(
+            indices, weights=-(active_residual ** 2), minlength=len(bins_a),
+        )
+        bins_b += np.bincount(
+            indices, weights=-(active_residual * active_offset), minlength=len(bins_b),
+        )
+        bins_c += np.bincount(
+            indices,
+            weights=saturated_error - active_offset ** 2,
+            minlength=len(bins_c),
+        )
+    cumulative_a = coefficient_a + np.cumsum(bins_a)
+    cumulative_b = coefficient_b + np.cumsum(bins_b)
+    cumulative_c = coefficient_c + np.cumsum(bins_c)
+    grid = DENSE_GLOBAL_ALPHA_GRID
+    sums = cumulative_a * grid * grid + 2.0 * cumulative_b * grid + cumulative_c
+    return np.maximum(sums, 0.0), float(local_hazy.size)
+
+
 def utility_from_errors(sums: np.ndarray, counts: np.ndarray) -> np.ndarray:
     keep_index = int(np.flatnonzero(ALPHA_GRID == KEEP_ALPHA)[0])
     keep_mse = sums[keep_index] / counts[keep_index]
@@ -421,169 +562,369 @@ def utility_from_errors(sums: np.ndarray, counts: np.ndarray) -> np.ndarray:
     )
 
 
+def utility_from_dense_errors(sums: np.ndarray, count: float) -> np.ndarray:
+    keep_index = int(np.flatnonzero(np.isclose(DENSE_GLOBAL_ALPHA_GRID, KEEP_ALPHA))[0])
+    keep_mse = sums[keep_index] / count
+    return 10.0 * np.log10(
+        max(keep_mse, EPSILON) / np.maximum(sums / count, EPSILON)
+    )
+
+
+def pooled_db_gain(reference_sse: float, candidate_sse: float) -> float:
+    return 10.0 * math.log10(
+        max(float(reference_sse), EPSILON) / max(float(candidate_sse), EPSILON)
+    )
+
+
+def candidate_saturation_fraction(
+    hazy: np.ndarray, prediction: np.ndarray,
+    region: tuple[slice, slice], alpha: float,
+) -> float:
+    y, x = region
+    raw = hazy[y, x].astype(np.float64) + float(alpha) * (
+        prediction[y, x].astype(np.float64) - hazy[y, x].astype(np.float64)
+    )
+    return float(np.mean((raw < 0.0) | (raw > 1.0)))
+
+
 def analyze_variant(
     hazy: np.ndarray, clear: np.ndarray, prediction: np.ndarray,
 ) -> dict[str, Any]:
     height, width = hazy.shape[:2]
     shifted = np.roll(clear, shift=(height // 2, width // 2), axis=(0, 1))
-    tile_records = []
-    true_sums = [np.zeros(len(ALPHA_GRID)), np.zeros(len(ALPHA_GRID))]
-    true_counts = [np.zeros(len(ALPHA_GRID)), np.zeros(len(ALPHA_GRID))]
-    null_sums = [np.zeros(len(ALPHA_GRID)), np.zeros(len(ALPHA_GRID))]
-    local_weighted_utility = 0.0
-    null_weighted_utility = 0.0
-    total_weight = 0.0
+    tile_records: list[dict[str, Any]] = []
+    cell_true_sums: list[list[np.ndarray]] = []
+    cell_dense_true_sums: list[list[np.ndarray]] = []
+    selected_true_by_cell: list[list[int]] = []
+    selected_null_by_cell: list[list[int]] = []
+    dense_true_sums = [np.zeros(len(DENSE_GLOBAL_ALPHA_GRID)), np.zeros(len(DENSE_GLOBAL_ALPHA_GRID))]
+    dense_true_counts = [0.0, 0.0]
+    dense_null_sums = [np.zeros(len(DENSE_GLOBAL_ALPHA_GRID)), np.zeros(len(DENSE_GLOBAL_ALPHA_GRID))]
+    scored_mask = np.zeros((height, width), dtype=bool)
     for cell_index, region in enumerate(cell_slices(height, width)):
         y, x = region
-        yy, xx = np.indices((y.stop - y.start, x.stop - x.start))
-        masks = ((yy + xx) % 2 == 0, (yy + xx) % 2 == 1)
+        scored_mask[y, x] = True
+        masks = crossfit_masks(region)
         true_utilities = []
         null_utilities = []
+        half_true_sums = []
+        half_dense_true_sums = []
         for half in range(2):
             sums, counts = candidate_errors(hazy, prediction, clear, region, masks[half])
             wrong_sums, _ = candidate_errors(hazy, prediction, shifted, region, masks[half])
-            true_sums[half] += sums
-            true_counts[half] += counts
-            null_sums[half] += wrong_sums
             true_utilities.append(utility_from_errors(sums, counts))
             null_utilities.append(utility_from_errors(wrong_sums, counts))
+            half_true_sums.append(sums)
+            dense_sums, dense_count = dense_global_errors(
+                hazy, prediction, clear, region, masks[half],
+            )
+            dense_wrong_sums, _ = dense_global_errors(
+                hazy, prediction, shifted, region, masks[half],
+            )
+            half_dense_true_sums.append(dense_sums)
+            dense_true_sums[half] += dense_sums
+            dense_true_counts[half] += dense_count
+            dense_null_sums[half] += dense_wrong_sums
         selected_true = [select_alpha(true_utilities[0]), select_alpha(true_utilities[1])]
         selected_null = [select_alpha(null_utilities[0]), select_alpha(null_utilities[1])]
-        cross_utility = 0.5 * (
+        selected_true_by_cell.append(selected_true)
+        selected_null_by_cell.append(selected_null)
+        cell_true_sums.append(half_true_sums)
+        cell_dense_true_sums.append(half_dense_true_sums)
+        cross_utility = float(0.5 * (
             true_utilities[1][selected_true[0]] + true_utilities[0][selected_true[1]]
-        )
-        null_cross_utility = 0.5 * (
-            true_utilities[1][selected_null[0]] + true_utilities[0][selected_null[1]]
-        )
+        ))
         selected_directions = [direction(float(ALPHA_GRID[index])) for index in selected_true]
         cross_halves = (
             float(true_utilities[1][selected_true[0]]),
             float(true_utilities[0][selected_true[1]]),
         )
-        label = "keep"
-        if selected_directions[0] == selected_directions[1] != "keep" \
+        label = "unresolved"
+        recommended_index = int(np.flatnonzero(ALPHA_GRID == KEEP_ALPHA)[0])
+        if selected_true[0] == selected_true[1] \
+                and selected_directions[0] == selected_directions[1] != "keep" \
                 and min(cross_halves) >= LOCAL_DIRECTION_MARGIN_DB:
             label = selected_directions[0]
+            recommended_index = selected_true[0]
+        elif selected_true[0] == selected_true[1] == recommended_index:
+            non_keep = np.flatnonzero(ALPHA_GRID != KEEP_ALPHA)
+            if max(
+                float(np.max(true_utilities[half][non_keep])) for half in range(2)
+            ) <= KEEP_EQUIVALENCE_DB:
+                label = "keep_supported"
         local_hazy, local_clear, local_prediction = hazy[y, x], clear[y, x], prediction[y, x]
         hazy_psnr = psnr(local_hazy, local_clear)
         prediction_psnr = psnr(local_prediction, local_clear)
-        weight = float(sum(np.count_nonzero(mask) for mask in masks))
-        local_weighted_utility += weight * float(cross_utility)
-        null_weighted_utility += weight * float(null_cross_utility)
-        total_weight += weight
+        full_sums = half_true_sums[0] + half_true_sums[1]
+        keep_index = int(np.flatnonzero(ALPHA_GRID == KEEP_ALPHA)[0])
+        mitigation_db = pooled_db_gain(full_sums[keep_index], full_sums[recommended_index])
+        row_index, column_index = divmod(cell_index, GRID_SIDE)
         tile_records.append({
             "cell": cell_index,
             "label": label,
             "selected_alpha_a": float(ALPHA_GRID[selected_true[0]]),
             "selected_alpha_b": float(ALPHA_GRID[selected_true[1]]),
-            "cross_utility_db": float(cross_utility),
+            "recommended_alpha": (
+                float(ALPHA_GRID[recommended_index]) if label != "unresolved" else None
+            ),
+            "recommended_index": recommended_index,
+            "cross_utility_db": cross_utility,
             "near_clear": hazy_psnr >= NEAR_CLEAR_PSNR_DB,
             "baseline_damage": prediction_psnr <= hazy_psnr - NEAR_CLEAR_DAMAGE_DB,
+            "mitigation_db": mitigation_db,
+            "selected_candidate_saturation_fraction": candidate_saturation_fraction(
+                hazy, prediction, region, float(ALPHA_GRID[recommended_index]),
+            ),
+            "edge_cell": row_index in {0, GRID_SIDE - 1} or column_index in {0, GRID_SIDE - 1},
         })
+
     global_selected = [
-        select_alpha(utility_from_errors(true_sums[half], true_counts[half]))
+        select_alpha(
+            utility_from_dense_errors(dense_true_sums[half], dense_true_counts[half]),
+            DENSE_GLOBAL_ALPHA_GRID,
+            GLOBAL_ALPHA_TIE_DB,
+        )
         for half in range(2)
     ]
-    global_utilities = [
-        utility_from_errors(true_sums[half], true_counts[half]) for half in range(2)
-    ]
-    global_cross = 0.5 * (
-        global_utilities[1][global_selected[0]]
-        + global_utilities[0][global_selected[1]]
-    )
-    null_selected = [
-        select_alpha(utility_from_errors(null_sums[half], true_counts[half]))
+    null_global_selected = [
+        select_alpha(
+            utility_from_dense_errors(dense_null_sums[half], dense_true_counts[half]),
+            DENSE_GLOBAL_ALPHA_GRID,
+            GLOBAL_ALPHA_TIE_DB,
+        )
         for half in range(2)
     ]
-    null_global_cross = 0.5 * (
-        global_utilities[1][null_selected[0]]
-        + global_utilities[0][null_selected[1]]
-    )
+
+    keep_index = int(np.flatnonzero(ALPHA_GRID == KEEP_ALPHA)[0])
+    local_sse = global_sse = keep_sse = 0.0
+    null_local_sse = null_global_sse = 0.0
+    permuted_local_sse = 0.0
+    edge_local_sse = edge_global_sse = 0.0
+    interior_local_sse = interior_global_sse = 0.0
+    permutation_offset = 5
+    for selection_half in range(2):
+        evaluation_half = 1 - selection_half
+        global_index = global_selected[selection_half]
+        null_global_index = null_global_selected[selection_half]
+        for cell_index, tile in enumerate(tile_records):
+            selected_index = selected_true_by_cell[cell_index][selection_half]
+            null_index = selected_null_by_cell[cell_index][selection_half]
+            permuted_index = selected_true_by_cell[
+                (cell_index + permutation_offset) % (GRID_SIDE * GRID_SIDE)
+            ][selection_half]
+            local_value = float(cell_true_sums[cell_index][evaluation_half][selected_index])
+            global_value = float(cell_dense_true_sums[cell_index][evaluation_half][global_index])
+            local_sse += local_value
+            global_sse += global_value
+            keep_sse += float(cell_true_sums[cell_index][evaluation_half][keep_index])
+            null_local_sse += float(cell_true_sums[cell_index][evaluation_half][null_index])
+            null_global_sse += float(
+                cell_dense_true_sums[cell_index][evaluation_half][null_global_index]
+            )
+            permuted_local_sse += float(
+                cell_true_sums[cell_index][evaluation_half][permuted_index]
+            )
+            if tile["edge_cell"]:
+                edge_local_sse += local_value
+                edge_global_sse += global_value
+            else:
+                interior_local_sse += local_value
+                interior_global_sse += global_value
+
     return {
         "tiles": tile_records,
-        "local_utility_db": local_weighted_utility / total_weight,
-        "global_utility_db": float(global_cross),
-        "local_minus_global_db": local_weighted_utility / total_weight - float(global_cross),
-        "null_local_minus_global_db": null_weighted_utility / total_weight - float(null_global_cross),
-        "baseline_psnr_db": psnr(prediction, clear),
-        "hazy_psnr_db": psnr(hazy, clear),
+        "cell_true_sums": cell_true_sums,
+        "dense_true_sums": dense_true_sums,
+        "dense_true_counts": dense_true_counts,
+        "local_utility_db": pooled_db_gain(keep_sse, local_sse),
+        "global_utility_db": pooled_db_gain(keep_sse, global_sse),
+        "local_minus_global_db": pooled_db_gain(global_sse, local_sse),
+        "null_local_minus_global_db": pooled_db_gain(null_global_sse, null_local_sse),
+        "aligned_minus_permuted_db": pooled_db_gain(permuted_local_sse, local_sse),
+        "edge_local_minus_global_db": pooled_db_gain(edge_global_sse, edge_local_sse),
+        "interior_local_minus_global_db": pooled_db_gain(
+            interior_global_sse, interior_local_sse,
+        ),
+        "global_selected_alpha_a": float(DENSE_GLOBAL_ALPHA_GRID[global_selected[0]]),
+        "global_selected_alpha_b": float(DENSE_GLOBAL_ALPHA_GRID[global_selected[1]]),
+        "global_oracle_sse": float(np.min(dense_true_sums[0] + dense_true_sums[1])),
+        "baseline_psnr_db": psnr(prediction, clear, scored_mask),
+        "hazy_psnr_db": psnr(hazy, clear, scored_mask),
     }
 
 
 def analyze_scene(
     torch, model, dataset: str, scene: str,
-    pairs: list[tuple[Path, Path]], device: str,
+    pairs: list[tuple[Path, Path]], expected_clear_digest: str,
+    expected_pair_identities: list[dict[str, str]], device: str,
 ) -> tuple[dict[str, Any], str]:
-    variants = []
+    variants: list[dict[str, Any]] = []
     input_parts = ["local-restoration-need-v1", dataset, scene]
     expected_shape = None
-    for hazy_path, clear_path in pairs:
-        hazy, clear = deterministic_crop(
-            image_array(hazy_path), image_array(clear_path), scene,
+    halo_records = []
+    for pair_index, (hazy_path, clear_path) in enumerate(pairs):
+        identity = expected_pair_identities[pair_index]
+        if hazy_path.name != identity["hazy_name"] \
+                or clear_path.name != identity["clear_name"] \
+                or sha256_file(hazy_path) != identity["hazy_sha256"] \
+                or sha256_file(clear_path) != identity["clear_sha256"]:
+            raise RuntimeError("selected input roster changed after preflight")
+        full_hazy, full_clear = image_array(hazy_path), image_array(clear_path)
+        if canonical_rgb_digest(full_clear) != expected_clear_digest:
+            raise RuntimeError("clear-scene canonical identity changed after S0")
+        hazy, clear, prediction, halo = infer_scored_crop(
+            torch, model, full_hazy, full_clear, scene, device,
         )
         if expected_shape is None:
             expected_shape = hazy.shape
         elif hazy.shape != expected_shape:
             raise RuntimeError(f"nested variant crop shapes differ for {scene[:24]}")
-        prediction = infer_official(torch, model, hazy, device)
         variants.append(analyze_variant(hazy, clear, prediction))
+        halo_records.append(halo)
+        if sha256_file(hazy_path) != identity["hazy_sha256"] \
+                or sha256_file(clear_path) != identity["clear_sha256"]:
+            raise RuntimeError("selected input payload changed during inference")
         input_parts.extend([
-            hazy_path.name, sha256_file(hazy_path), clear_path.name, sha256_file(clear_path),
+            identity["hazy_name"], identity["hazy_sha256"],
+            identity["clear_name"], identity["clear_sha256"], expected_clear_digest,
         ])
     if len(variants) != VARIANTS_PER_SCENE:
         raise RuntimeError("scene analysis did not use exactly two nested variants")
     labels = [[tile["label"] for tile in variant["tiles"]] for variant in variants]
-    repeat_counts = Counter(
-        labels[0][index] if labels[0][index] == labels[1][index] else "discordant"
+    repeated_labels = [
+        labels[0][index]
+        if labels[0][index] == labels[1][index] != "unresolved"
+        else "discordant"
         for index in range(GRID_SIDE * GRID_SIDE)
-    )
-    repeat_near = []
-    repeat_mitigated = []
+    ]
+    repeat_counts = Counter(repeated_labels)
+    exact_alpha_agreement = []
+    repeat_near: list[bool] = []
+    repeat_damaged: list[bool] = []
+    repeat_mitigated: list[bool] = []
     for index in range(GRID_SIDE * GRID_SIDE):
         left, right = variants[0]["tiles"][index], variants[1]["tiles"][index]
-        near = bool(left["near_clear"] and right["near_clear"])
-        repeat_near.append(near)
-        repeat_mitigated.append(bool(
-            near
-            and left["baseline_damage"] and right["baseline_damage"]
-            and left["label"] == right["label"] == "weaken"
+        exact_alpha_agreement.append(bool(
+            repeated_labels[index] != "discordant"
+            and left["recommended_alpha"] == right["recommended_alpha"]
         ))
-    primary = float(np.clip(
-        np.mean([item["local_minus_global_db"] for item in variants]),
-        -PRIMARY_CLIP_DB,
-        PRIMARY_CLIP_DB,
-    ))
-    null = float(np.clip(
-        np.mean([item["null_local_minus_global_db"] for item in variants]),
-        -PRIMARY_CLIP_DB,
-        PRIMARY_CLIP_DB,
-    ))
+        near = bool(left["near_clear"] and right["near_clear"])
+        damaged = bool(near and left["baseline_damage"] and right["baseline_damage"])
+        repeat_near.append(near)
+        repeat_damaged.append(damaged)
+        repeat_mitigated.append(bool(
+            damaged
+            and left["label"] == right["label"] == "weaken"
+            and min(left["mitigation_db"], right["mitigation_db"])
+            >= NEAR_CLEAR_MITIGATION_DB
+        ))
+    transfer_local_sse = 0.0
+    transfer_global_sse = 0.0
+    keep_index = int(np.flatnonzero(ALPHA_GRID == KEEP_ALPHA)[0])
+    for source_index, target_index in ((0, 1), (1, 0)):
+        source, target = variants[source_index], variants[target_index]
+        for cell_index, source_tile in enumerate(source["tiles"]):
+            selected_index = (
+                int(source_tile["recommended_index"])
+                if source_tile["label"] != "unresolved" else keep_index
+            )
+            transfer_local_sse += float(
+                target["cell_true_sums"][cell_index][0][selected_index]
+                + target["cell_true_sums"][cell_index][1][selected_index]
+            )
+        transfer_global_sse += float(target["global_oracle_sse"])
+    transfer_raw = pooled_db_gain(transfer_global_sse, transfer_local_sse)
+    primary_raw = float(np.mean([item["local_minus_global_db"] for item in variants]))
+    specificity_raw = float(np.mean([item["aligned_minus_permuted_db"] for item in variants]))
+    primary = float(np.clip(primary_raw, -PRIMARY_CLIP_DB, PRIMARY_CLIP_DB))
+    transfer = float(np.clip(transfer_raw, -PRIMARY_CLIP_DB, PRIMARY_CLIP_DB))
+    specificity = float(np.clip(specificity_raw, -PRIMARY_CLIP_DB, PRIMARY_CLIP_DB))
+    damaged_cell_count = sum(repeat_damaged)
+    mitigated_cell_count = sum(repeat_mitigated)
+    mitigation_fraction = (
+        mitigated_cell_count / damaged_cell_count if damaged_cell_count else 0.0
+    )
+    stable_cell_count = sum(value != "discordant" for value in repeated_labels)
+    exact_alpha_count = sum(exact_alpha_agreement)
+    bidirectional_scene = (
+        repeat_counts["weaken"] >= BIDIRECTIONAL_CELL_COUNT
+        and repeat_counts["strengthen"] >= BIDIRECTIONAL_CELL_COUNT
+    )
+    material_scene = primary >= PRIMARY_MARGIN_DB
+    transfer_scene = transfer >= TRANSFER_MARGIN_DB
     row = {
         "dataset": dataset,
         "scene_id_sha256": sha256_text(scene),
         "nested_variants": VARIANTS_PER_SCENE,
         "primary_local_minus_global_psnr_db": primary,
-        "null_local_minus_global_psnr_db": null,
+        "primary_raw_local_minus_global_psnr_db": primary_raw,
+        "primary_clipped_low": primary_raw < -PRIMARY_CLIP_DB,
+        "primary_clipped_high": primary_raw > PRIMARY_CLIP_DB,
+        "null_local_minus_global_psnr_db": float(np.mean([
+            item["null_local_minus_global_db"] for item in variants
+        ])),
+        "spatial_specificity_psnr_db": specificity,
+        "spatial_specificity_raw_psnr_db": specificity_raw,
+        "cross_observation_transfer_psnr_db": transfer,
+        "cross_observation_transfer_raw_psnr_db": transfer_raw,
         "local_minus_keep_psnr_db": float(np.mean([item["local_utility_db"] for item in variants])),
         "best_global_minus_keep_psnr_db": float(np.mean([item["global_utility_db"] for item in variants])),
         "baseline_psnr_db": float(np.mean([item["baseline_psnr_db"] for item in variants])),
         "hazy_psnr_db": float(np.mean([item["hazy_psnr_db"] for item in variants])),
-        "stable_cell_count": sum(value != "discordant" for value in (
-            labels[0][index] if labels[0][index] == labels[1][index] else "discordant"
-            for index in range(GRID_SIDE * GRID_SIDE)
-        )),
+        "edge_local_minus_global_psnr_db": float(np.mean([
+            item["edge_local_minus_global_db"] for item in variants
+        ])),
+        "interior_local_minus_global_psnr_db": float(np.mean([
+            item["interior_local_minus_global_db"] for item in variants
+        ])),
+        "stable_cell_count": stable_cell_count,
+        "exact_alpha_stable_cell_count": exact_alpha_count,
         "repeat_weaken_cells": repeat_counts["weaken"],
-        "repeat_keep_cells": repeat_counts["keep"],
+        "repeat_keep_supported_cells": repeat_counts["keep_supported"],
         "repeat_strengthen_cells": repeat_counts["strengthen"],
-        "direction_stable_scene": repeat_counts["discordant"] <= GRID_SIDE * GRID_SIDE - STABLE_CELL_COUNT,
-        "bidirectional_scene": (
-            repeat_counts["weaken"] >= BIDIRECTIONAL_CELL_COUNT
-            and repeat_counts["strengthen"] >= BIDIRECTIONAL_CELL_COUNT
+        "unresolved_cell_fraction": float(np.mean([
+            tile["label"] == "unresolved" for variant in variants for tile in variant["tiles"]
+        ])),
+        "exact_alpha_agreement_fraction": exact_alpha_count / (GRID_SIDE * GRID_SIDE),
+        "local_endpoint_selection_fraction": float(np.mean([
+            alpha in {float(ALPHA_GRID[0]), float(ALPHA_GRID[-1])}
+            for variant in variants for tile in variant["tiles"]
+            for alpha in (tile["selected_alpha_a"], tile["selected_alpha_b"])
+        ])),
+        "global_endpoint_selection_fraction": float(np.mean([
+            alpha in {float(DENSE_GLOBAL_ALPHA_GRID[0]), float(DENSE_GLOBAL_ALPHA_GRID[-1])}
+            for variant in variants
+            for alpha in (variant["global_selected_alpha_a"], variant["global_selected_alpha_b"])
+        ])),
+        "selected_candidate_saturation_fraction": float(np.mean([
+            tile["selected_candidate_saturation_fraction"]
+            for variant in variants for tile in variant["tiles"]
+        ])),
+        "minimum_real_halo_pixels": min(
+            value for halo in halo_records for value in halo.values()
         ),
-        "keep_scene": repeat_counts["keep"] >= KEEP_CELL_COUNT,
-        "material_utility_scene": primary >= PRIMARY_MARGIN_DB,
-        "near_clear_eligible_scene": any(repeat_near),
-        "near_clear_mitigated_scene": any(repeat_mitigated),
+        "direction_and_strength_stable_scene": (
+            stable_cell_count >= STABLE_CELL_COUNT
+            and exact_alpha_count >= STRENGTH_STABLE_CELL_COUNT
+        ),
+        "bidirectional_scene": bidirectional_scene,
+        "keep_supported_scene": repeat_counts["keep_supported"] >= KEEP_CELL_COUNT,
+        "material_utility_scene": material_scene,
+        "negative_tail_scene": primary_raw < NEGATIVE_TAIL_DB,
+        "joint_useful_bidirectional_scene": (
+            material_scene and transfer_scene and bidirectional_scene
+            and specificity >= SPATIAL_SPECIFICITY_MARGIN_DB
+        ),
+        "near_clear_exposed_scene": any(repeat_near),
+        "near_clear_damaged_scene": damaged_cell_count > 0,
+        "near_clear_mitigated_scene": (
+            damaged_cell_count > 0
+            and mitigation_fraction >= NEAR_CLEAR_CELL_MITIGATION_FRACTION
+        ),
+        "near_clear_exposed_cell_count": sum(repeat_near),
+        "near_clear_damaged_cell_count": damaged_cell_count,
+        "near_clear_mitigated_cell_count": mitigated_cell_count,
+        "near_clear_cell_mitigation_fraction": mitigation_fraction,
     }
     return row, sha256_text("|".join(input_parts))
 
@@ -662,6 +1003,102 @@ def wilson(successes: int, total: int) -> dict[str, Any]:
     }
 
 
+def prevalence_family(
+    rows_by_dataset: dict[str, list[dict[str, Any]]], key: str, seed: int,
+) -> dict[str, Any]:
+    return {
+        "overall_equal_dataset_weight": stratified_bootstrap(rows_by_dataset, key, seed),
+        "by_dataset": {
+            dataset: wilson(
+                sum(bool(row[key]) for row in rows_by_dataset[dataset]),
+                len(rows_by_dataset[dataset]),
+            )
+            for dataset in DATASET_ORDER
+        },
+    }
+
+
+def combine_states(states: Iterable[str]) -> str:
+    values = list(states)
+    if any(value == "unfavorable" for value in values):
+        return "unfavorable"
+    if values and all(value == "favorable" for value in values):
+        return "favorable"
+    return "indeterminate"
+
+
+def mean_cross_dataset_state(
+    family: dict[str, Any], overall_threshold: float,
+    dataset_support_threshold: float, no_harm_threshold: float,
+) -> str:
+    overall = family["overall"]
+    datasets = list(family["by_dataset"].values())
+    favorable = (
+        overall["lower"] > overall_threshold
+        and sum(item["lower"] > dataset_support_threshold for item in datasets) >= 2
+        and all(item["upper"] >= no_harm_threshold for item in datasets)
+    )
+    unfavorable = (
+        overall["upper"] <= overall_threshold
+        or sum(item["upper"] > dataset_support_threshold for item in datasets) < 2
+        or any(item["upper"] < no_harm_threshold for item in datasets)
+    )
+    return "favorable" if favorable else "unfavorable" if unfavorable else "indeterminate"
+
+
+def prevalence_cross_dataset_state(
+    family: dict[str, Any], overall_threshold: float,
+    dataset_support_threshold: float, no_support_floor: float,
+) -> str:
+    overall = family["overall_equal_dataset_weight"]
+    datasets = list(family["by_dataset"].values())
+    favorable = (
+        overall["lower"] > overall_threshold
+        and sum(item["lower"] > dataset_support_threshold for item in datasets) >= 2
+        and all(item["upper"] >= no_support_floor for item in datasets)
+    )
+    unfavorable = (
+        overall["upper"] <= overall_threshold
+        or sum(item["upper"] > dataset_support_threshold for item in datasets) < 2
+        or any(item["upper"] < no_support_floor for item in datasets)
+    )
+    return "favorable" if favorable else "unfavorable" if unfavorable else "indeterminate"
+
+
+def maximum_prevalence_state(
+    family: dict[str, Any], overall_threshold: float, dataset_threshold: float,
+) -> str:
+    overall = family["overall_equal_dataset_weight"]
+    datasets = list(family["by_dataset"].values())
+    if overall["upper"] < overall_threshold \
+            and all(item["upper"] < dataset_threshold for item in datasets):
+        return "favorable"
+    if overall["lower"] >= overall_threshold \
+            or any(item["lower"] >= dataset_threshold for item in datasets):
+        return "unfavorable"
+    return "indeterminate"
+
+
+def near_clear_state(
+    exposed_count: int,
+    damage_interval: dict[str, Any] | None,
+    damaged_count: int,
+    mitigation_interval: dict[str, Any] | None,
+) -> tuple[str, str]:
+    if exposed_count < NEAR_CLEAR_MIN_EXPOSED_SCENES or damage_interval is None:
+        return "indeterminate", "insufficient_near_clear_exposure"
+    if damage_interval["upper"] < NEAR_CLEAR_DAMAGE_PREVALENCE:
+        return "safe", "safe_no_material_damage"
+    if damage_interval["lower"] > NEAR_CLEAR_DAMAGE_PREVALENCE:
+        if damaged_count < NEAR_CLEAR_MIN_DAMAGED_SCENES or mitigation_interval is None:
+            return "indeterminate", "material_damage_but_insufficient_conditional_precision"
+        if mitigation_interval["lower"] > NEAR_CLEAR_MITIGATION_PREVALENCE:
+            return "safe", "safe_damage_conditionally_mitigated"
+        if mitigation_interval["upper"] <= NEAR_CLEAR_MITIGATION_PREVALENCE:
+            return "unsafe", "material_damage_not_conditionally_mitigated"
+    return "indeterminate", "damage_or_mitigation_interval_crosses_decision_threshold"
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     fields = sorted({key for row in rows for key in row})
     with path.open("x", encoding="utf-8", newline="") as stream:
@@ -687,6 +1124,189 @@ def evidence_identity(context, include_ledger: bool) -> dict[str, bool]:
         ledger = asset_path(context, "s0_scene_role_ledger", kind="file")
         checks["s0_scene_role_ledger_sha256"] = sha256_file(ledger) == S0_LEDGER_SHA256
     return checks
+
+
+def freeze_selected_input_roster(
+    selected_groups: dict[str, dict[str, list[tuple[Path, Path]]]],
+) -> tuple[dict[str, dict[str, list[dict[str, str]]]], str]:
+    identities: dict[str, dict[str, list[dict[str, str]]]] = defaultdict(dict)
+    records = []
+    for dataset in DATASET_ORDER:
+        for scene in sorted(selected_groups[dataset]):
+            scene_records = []
+            for hazy_path, clear_path in selected_groups[dataset][scene]:
+                record = {
+                    "hazy_name": hazy_path.name,
+                    "hazy_sha256": sha256_file(hazy_path),
+                    "clear_name": clear_path.name,
+                    "clear_sha256": sha256_file(clear_path),
+                }
+                scene_records.append(record)
+                records.append(
+                    "|".join((dataset, scene, *record.values()))
+                )
+            identities[dataset][scene] = scene_records
+    return identities, sha256_text("\n".join(records))
+
+
+def complete_invalid_units(context, reason: str) -> None:
+    reason_digest = sha256_text(reason)
+    completed = 0
+    for dataset in DATASET_ORDER:
+        for index in range(1, PLANNED_SCENES[dataset] + 1):
+            completed += 1
+            relative = f"units/invalid_{dataset.lower()}_{index:03d}.json"
+            atomic_json(output_file(context, relative), {
+                "schema_version": 1,
+                "status": "not_evaluated_due_to_pre_inference_validity_veto",
+                "dataset": dataset,
+                "planned_index": index,
+                "reason_sha256": reason_digest,
+            })
+            record_completed_unit(
+                context,
+                unit_id=f"scene_{completed:03d}_{dataset.lower()}",
+                input_sha256=sha256_text(f"{reason_digest}|{dataset}|{index}"),
+                output_relpath=relative,
+            )
+    relative = "units/invalid_aggregate_inference.json"
+    atomic_json(output_file(context, relative), {
+        "schema_version": 1,
+        "status": "not_evaluated_due_to_pre_inference_validity_veto",
+        "reason_sha256": reason_digest,
+    })
+    record_completed_unit(
+        context,
+        unit_id="aggregate_scene_grouped_inference",
+        input_sha256=reason_digest,
+        output_relpath=relative,
+    )
+    if len(load_completed_unit_ledger(context)) != TOTAL_UNITS:
+        raise RuntimeError("invalid terminal unit ledger is incomplete")
+
+
+def reference_cases() -> dict[str, bool]:
+    height = width = 256
+    hazy = np.full((height, width, 3), 0.25, dtype=np.float32)
+    prediction = np.full((height, width, 3), 0.65, dtype=np.float32)
+    residual = prediction - hazy
+
+    uniform_target = hazy + 1.25 * residual
+    uniform = analyze_variant(hazy, uniform_target, prediction)
+
+    heterogeneous_target = hazy + residual
+    desired = [0.5] * 6 + [1.0] * 4 + [1.5] * 6
+    for cell_index, region in enumerate(cell_slices(height, width)):
+        y, x = region
+        heterogeneous_target[y, x] = hazy[y, x] + desired[cell_index] * residual[y, x]
+    heterogeneous = analyze_variant(hazy, heterogeneous_target, prediction)
+
+    keep_target = prediction.copy()
+    keep = analyze_variant(hazy, keep_target, prediction)
+
+    unresolved_target = prediction.copy()
+    for region in cell_slices(height, width):
+        y, x = region
+        masks = crossfit_masks(region)
+        local = unresolved_target[y, x]
+        local[masks[0]] = hazy[y, x][masks[0]] + 0.5 * residual[y, x][masks[0]]
+        local[masks[1]] = hazy[y, x][masks[1]] + 1.5 * residual[y, x][masks[1]]
+    unresolved = analyze_variant(hazy, unresolved_target, prediction)
+
+    favorable_family = {
+        "overall": {"lower": 0.11, "upper": 0.20},
+        "by_dataset": {
+            dataset: {"lower": 0.01, "upper": 0.20} for dataset in DATASET_ORDER
+        },
+    }
+    unfavorable_family = {
+        "overall": {"lower": 0.01, "upper": 0.09},
+        "by_dataset": {
+            dataset: {"lower": -0.01, "upper": 0.09} for dataset in DATASET_ORDER
+        },
+    }
+    indeterminate_family = {
+        "overall": {"lower": 0.09, "upper": 0.11},
+        "by_dataset": {
+            dataset: {"lower": -0.01, "upper": 0.10} for dataset in DATASET_ORDER
+        },
+    }
+    same_action_reference_sse = np.asarray([0.01, 1.0], dtype=np.float64)
+    small_hazy = np.linspace(0.0, 1.0, 48, dtype=np.float32).reshape(4, 4, 3)
+    small_prediction = np.flip(small_hazy, axis=1).copy()
+    small_target = np.clip(0.2 + 0.6 * small_hazy, 0.0, 1.0)
+    small_mask = np.ones((4, 4), dtype=bool)
+    dense_reference, _ = dense_global_errors(
+        small_hazy, small_prediction, small_target,
+        (slice(0, 4), slice(0, 4)), small_mask,
+    )
+    brute_reference = np.asarray([
+        np.sum((
+            np.clip(
+                small_hazy.astype(np.float64)
+                + float(alpha) * (
+                    small_prediction.astype(np.float64) - small_hazy.astype(np.float64)
+                ),
+                0.0,
+                1.0,
+            )
+            - small_target.astype(np.float64)
+        ) ** 2)
+        for alpha in DENSE_GLOBAL_ALPHA_GRID
+    ])
+    return {
+        "pooled_same_action_zero": abs(
+            pooled_db_gain(float(np.sum(same_action_reference_sse)),
+                           float(np.sum(same_action_reference_sse)))
+        ) < 1.0e-12,
+        "dense_global_histogram_matches_direct_reference": bool(
+            np.max(np.abs(dense_reference - brute_reference)) < 1.0e-8
+        ),
+        "uniform_optimum_has_zero_local_advantage": abs(uniform["local_minus_global_db"]) < 1.0e-9,
+        "uniform_dense_global_recovers_known_alpha": all(
+            abs(uniform[key] - 1.25) < 1.0e-12
+            for key in ("global_selected_alpha_a", "global_selected_alpha_b")
+        ),
+        "heterogeneous_known_case_positive": heterogeneous["local_minus_global_db"] > 0.5,
+        "heterogeneous_spatial_placement_matters": heterogeneous[
+            "aligned_minus_permuted_db"
+        ] > 0.5,
+        "heterogeneous_known_directions": (
+            sum(tile["label"] == "weaken" for tile in heterogeneous["tiles"]) == 6
+            and sum(tile["label"] == "keep_supported" for tile in heterogeneous["tiles"]) == 4
+            and sum(tile["label"] == "strengthen" for tile in heterogeneous["tiles"]) == 6
+        ),
+        "keep_requires_positive_equivalence_support": all(
+            tile["label"] == "keep_supported" for tile in keep["tiles"]
+        ),
+        "conflicting_halves_are_unresolved": all(
+            tile["label"] == "unresolved" for tile in unresolved["tiles"]
+        ),
+        "favorable_gate_reference": mean_cross_dataset_state(
+            favorable_family, 0.10, 0.0, 0.0,
+        ) == "favorable",
+        "unfavorable_gate_reference": mean_cross_dataset_state(
+            unfavorable_family, 0.10, 0.0, 0.0,
+        ) == "unfavorable",
+        "indeterminate_gate_reference": mean_cross_dataset_state(
+            indeterminate_family, 0.10, 0.0, 0.0,
+        ) == "indeterminate",
+        "near_clear_no_damage_is_safe": near_clear_state(
+            42, {"lower": 0.0, "upper": 0.05}, 0, None,
+        ) == ("safe", "safe_no_material_damage"),
+        "near_clear_mitigated_damage_is_safe": near_clear_state(
+            80, {"lower": 0.20, "upper": 0.30}, 50,
+            {"lower": 0.60, "upper": 0.80},
+        ) == ("safe", "safe_damage_conditionally_mitigated"),
+        "near_clear_unmitigated_damage_is_unsafe": near_clear_state(
+            80, {"lower": 0.20, "upper": 0.30}, 50,
+            {"lower": 0.10, "upper": 0.40},
+        ) == ("unsafe", "material_damage_not_conditionally_mitigated"),
+        "near_clear_threshold_crossing_is_indeterminate": near_clear_state(
+            80, {"lower": 0.05, "upper": 0.20}, 20,
+            {"lower": 0.20, "upper": 0.70},
+        )[0] == "indeterminate",
+    }
 
 
 def terminal_summary(
@@ -773,17 +1393,25 @@ def contract(context_path: Path) -> None:
             == PROBE_ITERATIONS
         ),
     })
+    checks.update({
+        f"reference_{name}": passed for name, passed in reference_cases().items()
+    })
     torch, model = load_official_model(context)
     generator = np.random.default_rng(BOOTSTRAP_SEED)
     finite = True
     for index in range(PROBE_ITERATIONS):
-        hazy = generator.uniform(0.05, 0.95, size=(512, 512, 3)).astype(np.float32)
-        clear = np.clip(hazy + generator.normal(0.0, 0.03, size=hazy.shape), 0.0, 1.0).astype(np.float32)
-        prediction = infer_official(torch, model, hazy, context.device)
+        full_hazy = generator.uniform(0.05, 0.95, size=(640, 640, 3)).astype(np.float32)
+        full_clear = np.clip(
+            full_hazy + generator.normal(0.0, 0.03, size=full_hazy.shape), 0.0, 1.0,
+        ).astype(np.float32)
+        hazy, clear, prediction, _ = infer_scored_crop(
+            torch, model, full_hazy, full_clear, f"synthetic-reference-{index}", context.device,
+        )
         result = analyze_variant(hazy, clear, prediction)
         finite = finite and all(math.isfinite(float(result[key])) for key in (
             "local_utility_db", "global_utility_db", "local_minus_global_db",
-            "null_local_minus_global_db", "baseline_psnr_db", "hazy_psnr_db",
+            "null_local_minus_global_db", "aligned_minus_permuted_db",
+            "baseline_psnr_db", "hazy_psnr_db",
         ))
         write_contract_progress(
             context,
@@ -795,7 +1423,8 @@ def contract(context_path: Path) -> None:
     peak = float(torch.cuda.max_memory_allocated() / (1024 * 1024)) if context.device == "cuda" else 0.0
     checks.update({
         "strict_official_graph_loaded": sum(parameter.numel() for parameter in model.parameters()) == PARAMETER_COUNT,
-        "five_action_crossfit_path": len(result["tiles"]) == GRID_SIDE * GRID_SIDE,
+        "five_local_action_crossfit_path": len(result["tiles"]) == GRID_SIDE * GRID_SIDE,
+        "dense_global_comparator_path": len(result["dense_true_sums"][0]) == 1001,
         "finite_synthetic_measurement": finite,
         "probe_iteration_count": PROBE_ITERATIONS == context.engineering_contract["cost_contract"]["probe_iterations"],
     })
@@ -805,7 +1434,7 @@ def contract(context_path: Path) -> None:
         engineering={
             "mode": "gpu_synthetic_no_data",
             "device": context.device,
-            "fixture": {"batch": 1, "channels": 3, "height": 512, "width": 512},
+            "fixture": {"batch": 1, "channels": 3, "height": 640, "width": 640},
             "production_path_exercised": True,
             "protected_data_touched": False,
             "scientific_output_created": False,
@@ -829,40 +1458,83 @@ def run(context_path: Path) -> None:
     if load_completed_unit_ledger(context):
         raise RuntimeError("fresh S1 workload unexpectedly contains completed units")
     identity_checks = evidence_identity(context, include_ledger=True)
-    ledger_roles, ledger_summary = read_s0_ledger(
-        asset_path(context, "s0_scene_role_ledger", kind="file")
-    )
-    identity_checks["ledger_development_counts"] = ledger_summary["expected_counts_match"]
+    ledger_roles: dict[str, dict[str, str]] = defaultdict(dict)
+    ledger_summary: dict[str, Any] = {"status": "not_parsed"}
+    try:
+        ledger_roles, ledger_summary = read_s0_ledger(
+            asset_path(context, "s0_scene_role_ledger", kind="file")
+        )
+        identity_checks["ledger_schema_and_counts"] = ledger_summary["expected_counts_match"]
+    except Exception as error:
+        identity_checks["ledger_schema_and_counts"] = False
+        ledger_summary = {
+            "status": "invalid",
+            "error_type": type(error).__name__,
+            "error_sha256": sha256_text(str(error)),
+        }
     write_workload_progress(context, completed_units=0, stage="identity_and_development_scope")
 
-    haze4k_groups = enumerate_haze4k(
-        asset_path(context, "haze4k_train", kind="directory"),
-        ledger_roles["HAZE4K_TRAIN"],
-    )
-    reside_root = asset_path(context, "reside_root", kind="directory")
-    all_groups = {
-        "HAZE4K_TRAIN": haze4k_groups,
-        "ITS": enumerate_its(reside_root, ledger_roles["ITS"]),
-        "OTS": enumerate_ots(reside_root, ledger_roles["OTS"]),
+    selected_groups: dict[str, dict[str, list[tuple[Path, Path]]]] = {
+        dataset: {} for dataset in DATASET_ORDER
     }
-    selected_groups = {}
-    coverage = {}
-    for dataset in DATASET_ORDER:
-        selected_groups[dataset], coverage[dataset] = select_scene_pairs(
-            dataset, all_groups[dataset],
-        )
+    coverage: dict[str, Any] = {}
+    input_roster_identities: dict[str, dict[str, list[dict[str, str]]]] = defaultdict(dict)
+    selected_input_roster_digest = None
+    preflight_error = None
+    if all(identity_checks.values()):
+        try:
+            haze4k_groups = enumerate_haze4k(
+                asset_path(context, "haze4k_train", kind="directory"),
+                ledger_roles["HAZE4K_TRAIN"],
+            )
+            reside_root = asset_path(context, "reside_root", kind="directory")
+            all_groups = {
+                "HAZE4K_TRAIN": haze4k_groups,
+                "ITS": enumerate_its(reside_root, ledger_roles["ITS"]),
+                "OTS": enumerate_ots(reside_root, ledger_roles["OTS"]),
+            }
+            for dataset in DATASET_ORDER:
+                selected_groups[dataset], coverage[dataset] = select_scene_pairs(
+                    dataset, all_groups[dataset], ledger_roles[dataset],
+                )
+            input_roster_identities, selected_input_roster_digest = freeze_selected_input_roster(
+                selected_groups,
+            )
+        except Exception as error:
+            preflight_error = {
+                "error_type": type(error).__name__,
+                "error_sha256": sha256_text(str(error)),
+            }
+    else:
+        preflight_error = {"error_type": "IdentityVeto", "error_sha256": sha256_text("identity_veto")}
+
     coverage_checks = {
         "exact_planned_scene_counts": all(
-            coverage[dataset]["selected_scene_count"] == PLANNED_SCENES[dataset]
+            coverage.get(dataset, {}).get("selected_scene_count") == PLANNED_SCENES[dataset]
             for dataset in DATASET_ORDER
         ),
         "two_nested_variants_each": all(
-            coverage[dataset]["two_variants_per_scene"] for dataset in DATASET_ORDER
-        ),
-        "development_only_membership": all(
-            set(selected_groups[dataset]) <= ledger_roles[dataset]
+            coverage.get(dataset, {}).get("two_variants_per_scene") is True
             for dataset in DATASET_ORDER
         ),
+        "exact_planned_roster_without_backfill": all(
+            coverage.get(dataset, {}).get("exact_planned_roster_retained") is True
+            for dataset in DATASET_ORDER
+        ),
+        "s0_canonical_clear_identity": all(
+            coverage.get(dataset, {}).get("canonical_clear_identity_match") is True
+            for dataset in DATASET_ORDER
+        ),
+        "distinct_haze_observation_payloads": all(
+            coverage.get(dataset, {}).get("distinct_haze_payloads") is True
+            for dataset in DATASET_ORDER
+        ),
+        "development_only_membership": all(
+            set(selected_groups[dataset]) <= set(ledger_roles[dataset])
+            for dataset in DATASET_ORDER
+        ),
+        "selected_input_roster_frozen": selected_input_roster_digest is not None,
+        "preflight_completed_without_error": preflight_error is None,
         "confirmation_and_sealed_assets_absent": all(
             identifier not in context.assets
             for identifier in ("confirmation", "sealed_final", "nh_haze")
@@ -880,7 +1552,21 @@ def run(context_path: Path) -> None:
             "near_clear_fidelity": "invalid",
             "primary_precision": "invalid",
         }
-        write_workload_progress(context, completed_units=TOTAL_UNITS, stage="typed_identity_or_coverage_inconclusive")
+        complete_invalid_units(
+            context,
+            json.dumps(
+                {
+                    "identity_checks": identity_checks,
+                    "coverage_checks": coverage_checks,
+                    "preflight_error": preflight_error,
+                },
+                sort_keys=True,
+            ),
+        )
+        write_workload_progress(
+            context, completed_units=TOTAL_UNITS,
+            stage="typed_identity_or_coverage_inconclusive",
+        )
         terminal_summary(context, gate_outcomes, {
             "schema_version": 1,
             "route_id": ROUTE_ID,
@@ -891,6 +1577,8 @@ def run(context_path: Path) -> None:
             "ledger_summary": ledger_summary,
             "coverage": coverage,
             "coverage_checks": coverage_checks,
+            "preflight_error": preflight_error,
+            "selected_input_roster_digest": selected_input_roster_digest,
             "primary": None,
             "prevalence": None,
             "limitations": [
@@ -921,7 +1609,9 @@ def run(context_path: Path) -> None:
     for dataset in DATASET_ORDER:
         for index, scene in enumerate(sorted(selected_groups[dataset]), start=1):
             row, input_identity = analyze_scene(
-                torch, model, dataset, scene, selected_groups[dataset][scene], context.device,
+                torch, model, dataset, scene, selected_groups[dataset][scene],
+                ledger_roles[dataset][scene], input_roster_identities[dataset][scene],
+                context.device,
             )
             rows.append(row)
             rows_by_dataset[dataset].append(row)
@@ -945,78 +1635,172 @@ def run(context_path: Path) -> None:
                     context, completed_units=completed, stage="privileged_crossfit_scene_measurement",
                 )
 
-    primary_by_dataset = {
-        dataset: bootstrap_interval(
-            (row["primary_local_minus_global_psnr_db"] for row in rows_by_dataset[dataset]),
-            BOOTSTRAP_SEED + index,
-        )
-        for index, dataset in enumerate(DATASET_ORDER, start=1)
-    }
-    primary_overall = stratified_bootstrap(
-        rows_by_dataset, "primary_local_minus_global_psnr_db", BOOTSTRAP_SEED,
-    )
-    null_by_dataset = {
-        dataset: bootstrap_interval(
-            (row["null_local_minus_global_psnr_db"] for row in rows_by_dataset[dataset]),
-            BOOTSTRAP_SEED + 10 + index,
-        )
-        for index, dataset in enumerate(DATASET_ORDER, start=1)
-    }
-    null_overall = stratified_bootstrap(
-        rows_by_dataset, "null_local_minus_global_psnr_db", BOOTSTRAP_SEED + 10,
-    )
+    def mean_family(key: str, seed: int) -> dict[str, Any]:
+        return {
+            "overall": stratified_bootstrap(rows_by_dataset, key, seed),
+            "by_dataset": {
+                dataset: bootstrap_interval(
+                    (row[key] for row in rows_by_dataset[dataset]), seed + index,
+                )
+                for index, dataset in enumerate(DATASET_ORDER, start=1)
+            },
+        }
+
+    primary = mean_family("primary_local_minus_global_psnr_db", BOOTSTRAP_SEED)
+    null = mean_family("null_local_minus_global_psnr_db", BOOTSTRAP_SEED + 10)
+    specificity = mean_family("spatial_specificity_psnr_db", BOOTSTRAP_SEED + 20)
+    transfer = mean_family("cross_observation_transfer_psnr_db", BOOTSTRAP_SEED + 30)
     prevalence = {
-        "material_utility_scene": wilson(sum(row["material_utility_scene"] for row in rows), len(rows)),
-        "direction_stable_scene": wilson(sum(row["direction_stable_scene"] for row in rows), len(rows)),
-        "bidirectional_scene": wilson(sum(row["bidirectional_scene"] for row in rows), len(rows)),
-        "keep_scene": wilson(sum(row["keep_scene"] for row in rows), len(rows)),
+        "material_utility_scene": prevalence_family(
+            rows_by_dataset, "material_utility_scene", BOOTSTRAP_SEED + 40,
+        ),
+        "direction_and_strength_stable_scene": prevalence_family(
+            rows_by_dataset, "direction_and_strength_stable_scene", BOOTSTRAP_SEED + 50,
+        ),
+        "bidirectional_scene": prevalence_family(
+            rows_by_dataset, "bidirectional_scene", BOOTSTRAP_SEED + 60,
+        ),
+        "keep_supported_scene": prevalence_family(
+            rows_by_dataset, "keep_supported_scene", BOOTSTRAP_SEED + 70,
+        ),
+        "joint_useful_bidirectional_scene": prevalence_family(
+            rows_by_dataset, "joint_useful_bidirectional_scene", BOOTSTRAP_SEED + 80,
+        ),
+        "negative_tail_scene": prevalence_family(
+            rows_by_dataset, "negative_tail_scene", BOOTSTRAP_SEED + 90,
+        ),
     }
-    near_rows = [row for row in rows if row["near_clear_eligible_scene"]]
-    near_interval = (
-        wilson(sum(row["near_clear_mitigated_scene"] for row in near_rows), len(near_rows))
+    near_rows = [row for row in rows if row["near_clear_exposed_scene"]]
+    damaged_rows = [row for row in near_rows if row["near_clear_damaged_scene"]]
+    near_damage_interval = (
+        wilson(sum(row["near_clear_damaged_scene"] for row in near_rows), len(near_rows))
         if near_rows else None
     )
+    near_mitigation_interval = (
+        wilson(sum(row["near_clear_mitigated_scene"] for row in damaged_rows), len(damaged_rows))
+        if damaged_rows else None
+    )
+    near_outcome, near_basis = near_clear_state(
+        len(near_rows), near_damage_interval, len(damaged_rows), near_mitigation_interval,
+    )
+    near_by_dataset = {}
+    for dataset in DATASET_ORDER:
+        dataset_near = [
+            row for row in rows_by_dataset[dataset] if row["near_clear_exposed_scene"]
+        ]
+        dataset_damaged = [
+            row for row in dataset_near if row["near_clear_damaged_scene"]
+        ]
+        near_by_dataset[dataset] = {
+            "exposed_scenes": len(dataset_near),
+            "damage_interval": (
+                wilson(len(dataset_damaged), len(dataset_near)) if dataset_near else None
+            ),
+            "damaged_scenes": len(dataset_damaged),
+            "mitigation_interval": (
+                wilson(
+                    sum(row["near_clear_mitigated_scene"] for row in dataset_damaged),
+                    len(dataset_damaged),
+                ) if dataset_damaged else None
+            ),
+        }
+    near_dataset_decisions = {}
+    for dataset, details in near_by_dataset.items():
+        if details["exposed_scenes"] < NEAR_CLEAR_MIN_EXPOSED_SCENES:
+            near_dataset_decisions[dataset] = {
+                "outcome": "indeterminate",
+                "basis": "insufficient_dataset_near_clear_exposure",
+            }
+            continue
+        dataset_outcome, dataset_basis = near_clear_state(
+            details["exposed_scenes"],
+            details["damage_interval"],
+            details["damaged_scenes"],
+            details["mitigation_interval"],
+        )
+        near_dataset_decisions[dataset] = {
+            "outcome": dataset_outcome,
+            "basis": dataset_basis,
+        }
+    sufficiently_exposed_datasets = sum(
+        details["exposed_scenes"] >= NEAR_CLEAR_MIN_EXPOSED_SCENES
+        for details in near_by_dataset.values()
+    )
+    if any(item["outcome"] == "unsafe" for item in near_dataset_decisions.values()):
+        near_outcome, near_basis = "unsafe", "dataset_specific_material_damage_not_mitigated"
+    elif near_outcome == "safe" and (
+        sufficiently_exposed_datasets < NEAR_CLEAR_MIN_EXPOSED_DATASETS
+        or any(
+            item["outcome"] != "safe" for item in near_dataset_decisions.values()
+            if item["basis"] != "insufficient_dataset_near_clear_exposure"
+        )
+    ):
+        near_outcome, near_basis = "indeterminate", "insufficient_cross_dataset_near_clear_support"
     null_pass = (
-        null_overall["upper"] < NULL_UCB_MARGIN_DB
-        and all(item["upper"] < NULL_DATASET_UCB_MARGIN_DB for item in null_by_dataset.values())
+        null["overall"]["upper"] < NULL_UCB_MARGIN_DB
+        and all(
+            item["upper"] < NULL_DATASET_UCB_MARGIN_DB
+            for item in null["by_dataset"].values()
+        )
     )
-    utility_pass = (
-        primary_overall["lower"] > PRIMARY_MARGIN_DB
-        and sum(item["lower"] > 0.0 for item in primary_by_dataset.values()) >= 2
-        and all(item["upper"] >= 0.0 for item in primary_by_dataset.values())
-        and prevalence["material_utility_scene"]["lower"] > MATERIAL_SCENE_PREVALENCE
-    )
-    repeatability_pass = (
-        prevalence["direction_stable_scene"]["lower"] > STABILITY_PREVALENCE
-        and prevalence["bidirectional_scene"]["lower"] > BIDIRECTIONAL_PREVALENCE
-        and prevalence["keep_scene"]["lower"] > KEEP_PREVALENCE
-    )
-    near_coverage = len(near_rows) >= NEAR_CLEAR_MIN_SCENES
-    near_pass = bool(
-        near_coverage and near_interval is not None
-        and near_interval["lower"] > NEAR_CLEAR_MITIGATION_PREVALENCE
-    )
-    precision_intervals = [primary_overall, *primary_by_dataset.values()]
+    utility_state = combine_states((
+        mean_cross_dataset_state(primary, PRIMARY_MARGIN_DB, 0.0, 0.0),
+        mean_cross_dataset_state(
+            specificity, SPATIAL_SPECIFICITY_MARGIN_DB, 0.0, 0.0,
+        ),
+        prevalence_cross_dataset_state(
+            prevalence["material_utility_scene"], MATERIAL_SCENE_PREVALENCE, 0.10, 0.05,
+        ),
+        maximum_prevalence_state(
+            prevalence["negative_tail_scene"], NEGATIVE_TAIL_PREVALENCE, 0.15,
+        ),
+    ))
+    repeatability_state = combine_states((
+        mean_cross_dataset_state(transfer, TRANSFER_MARGIN_DB, 0.0, 0.0),
+        prevalence_cross_dataset_state(
+            prevalence["direction_and_strength_stable_scene"],
+            STABILITY_PREVALENCE, 0.35, 0.25,
+        ),
+        prevalence_cross_dataset_state(
+            prevalence["bidirectional_scene"], BIDIRECTIONAL_PREVALENCE, 0.10, 0.05,
+        ),
+        prevalence_cross_dataset_state(
+            prevalence["keep_supported_scene"], KEEP_PREVALENCE, 0.10, 0.05,
+        ),
+        prevalence_cross_dataset_state(
+            prevalence["joint_useful_bidirectional_scene"],
+            JOINT_SCENE_PREVALENCE, 0.05, 0.02,
+        ),
+    ))
+    precision_intervals = [primary["overall"], *primary["by_dataset"].values()]
     precision_met = all(item["max_half_width"] <= PRECISION_HALF_WIDTH_DB for item in precision_intervals)
     gate_outcomes = {
         "evidence_identity": "pass",
         "development_scene_coverage": "pass",
         "measurement_null_control": "pass" if null_pass else "fail",
-        "local_utility_over_global": "favorable" if utility_pass else "unfavorable",
-        "bidirectional_repeatability": "favorable" if repeatability_pass else "unfavorable",
-        "near_clear_fidelity": (
-            "safe" if near_pass else "unsafe"
-        ) if near_coverage else "indeterminate",
+        "local_utility_over_global": utility_state,
+        "bidirectional_repeatability": repeatability_state,
+        "near_clear_fidelity": near_outcome,
         "primary_precision": "met" if precision_met else "unmet",
     }
     aggregate_unit = output_file(context, "units/aggregate_inference.json")
     atomic_json(aggregate_unit, {
         "schema_version": 1,
-        "primary_overall": primary_overall,
-        "primary_by_dataset": primary_by_dataset,
-        "null_overall": null_overall,
+        "primary": primary,
+        "spatial_specificity": specificity,
+        "cross_observation_transfer": transfer,
+        "null": null,
         "prevalence": prevalence,
-        "near_clear": near_interval,
+        "near_clear": {
+            "exposed_scenes": len(near_rows),
+            "damage_interval": near_damage_interval,
+            "damaged_scenes": len(damaged_rows),
+            "mitigation_interval": near_mitigation_interval,
+            "decision_basis": near_basis,
+            "by_dataset": near_by_dataset,
+            "dataset_decisions": near_dataset_decisions,
+            "sufficiently_exposed_dataset_count": sufficiently_exposed_datasets,
+        },
         "gate_outcomes": gate_outcomes,
     })
     record_completed_unit(
@@ -1048,32 +1832,75 @@ def run(context_path: Path) -> None:
         "ledger_summary": ledger_summary,
         "coverage": coverage,
         "coverage_checks": coverage_checks,
+        "selected_input_roster_digest": selected_input_roster_digest,
         "intervention": {
             "formula": "clip(hazy + alpha * (official_output - hazy), 0, 1)",
-            "alpha_grid": ALPHA_GRID.tolist(),
-            "grid": "4x4 equal-area cells with central 75 percent scored cores",
-            "selection": "two-way checkerboard-pixel cross-selection and evaluation",
+            "local_alpha_grid": ALPHA_GRID.tolist(),
+            "global_alpha_grid": {
+                "minimum": float(DENSE_GLOBAL_ALPHA_GRID[0]),
+                "maximum": float(DENSE_GLOBAL_ALPHA_GRID[-1]),
+                "step": float(DENSE_GLOBAL_ALPHA_GRID[1] - DENSE_GLOBAL_ALPHA_GRID[0]),
+                "count": len(DENSE_GLOBAL_ALPHA_GRID),
+            },
+            "grid": "4x4 equal-area cells; central 75 percent of each side, 56.25 percent area, is scored without a taper",
+            "selection": "two-way 8x8 macroblock checkerboard cross-selection and opposite-half evaluation",
+            "inference_context": "the scored crop is inferred with up to 64 real image pixels of halo on each available side",
             "replication": "two outcome-blind haze observations nested within each clear scene",
             "privileged_gt_use": "offline diagnostic oracle only; not deployable inference and not a proposed post-processing method",
         },
         "primary": {
             "minimum_meaningful_effect_db": PRIMARY_MARGIN_DB,
             "clip_db": [-PRIMARY_CLIP_DB, PRIMARY_CLIP_DB],
-            "overall_equal_dataset_weight": primary_overall,
-            "by_dataset": primary_by_dataset,
+            "overall_equal_dataset_weight": primary["overall"],
+            "by_dataset": primary["by_dataset"],
             "precision_target_half_width_db": PRECISION_HALF_WIDTH_DB,
+            "clipping_diagnostics": {
+                "low_scene_count": sum(row["primary_clipped_low"] for row in rows),
+                "high_scene_count": sum(row["primary_clipped_high"] for row in rows),
+            },
         },
+        "spatial_specificity_control": specificity,
+        "cross_observation_transfer": transfer,
         "null_control": {
             "selection_target": "clear target circularly shifted by half image height and width",
-            "overall": null_overall,
-            "by_dataset": null_by_dataset,
+            "overall": null["overall"],
+            "by_dataset": null["by_dataset"],
         },
         "prevalence": prevalence,
         "near_clear_fidelity": {
-            "definition": "hazy-input core PSNR at least 30 dB in both nested observations",
-            "eligible_scenes": len(near_rows),
-            "minimum_eligible_scenes": NEAR_CLEAR_MIN_SCENES,
-            "mitigation_interval": near_interval,
+            "definition": "exposure, repeatable baseline damage, and damage-conditional mitigation are separate scene-grouped estimands",
+            "exposed_scenes": len(near_rows),
+            "minimum_exposed_scenes": NEAR_CLEAR_MIN_EXPOSED_SCENES,
+            "minimum_exposed_datasets": NEAR_CLEAR_MIN_EXPOSED_DATASETS,
+            "damage_interval": near_damage_interval,
+            "damaged_scenes": len(damaged_rows),
+            "minimum_damaged_scenes_for_conditional_decision": NEAR_CLEAR_MIN_DAMAGED_SCENES,
+            "mitigation_interval": near_mitigation_interval,
+            "decision_basis": near_basis,
+            "by_dataset": near_by_dataset,
+            "dataset_decisions": near_dataset_decisions,
+            "sufficiently_exposed_dataset_count": sufficiently_exposed_datasets,
+        },
+        "diagnostics": {
+            "mean_unresolved_cell_fraction": float(np.mean([
+                row["unresolved_cell_fraction"] for row in rows
+            ])),
+            "mean_exact_alpha_agreement_fraction": float(np.mean([
+                row["exact_alpha_agreement_fraction"] for row in rows
+            ])),
+            "mean_local_endpoint_selection_fraction": float(np.mean([
+                row["local_endpoint_selection_fraction"] for row in rows
+            ])),
+            "mean_global_endpoint_selection_fraction": float(np.mean([
+                row["global_endpoint_selection_fraction"] for row in rows
+            ])),
+            "mean_selected_candidate_saturation_fraction": float(np.mean([
+                row["selected_candidate_saturation_fraction"] for row in rows
+            ])),
+            "edge_minus_interior_local_advantage_db": float(np.mean([
+                row["edge_local_minus_global_psnr_db"]
+                - row["interior_local_minus_global_psnr_db"] for row in rows
+            ])),
         },
         "forbidden_activity_receipt": {
             "network_training_or_fitting_occurred": False,
@@ -1085,6 +1912,8 @@ def run(context_path: Path) -> None:
             "GT is used only by a privileged offline diagnostic oracle; S1 makes no inference-time observability claim.",
             "The residual-strength intervention qualifies the research problem and is not a deployable method or authorized post-processing solution.",
             "Each original clear scene contributes once; haze variants, cells, pixels, actions, and bootstrap draws remain nested.",
+            "The global claim is limited to one scene-global residual strength on the frozen 1001-point [0.5, 1.5] grid; it is not a claim over arbitrary restoration operators.",
+            "The first two haze filenames are selected deterministically and their names and payload hashes are frozen at run preflight because S0 did not archive a hazy-payload manifest.",
             "Exact RGB and archived known-overlap controls do not prove complete capture or source-provenance disjointness.",
             "A PASS authorizes only S2 mechanism-discovery contract authoring and never module training or protected-data access.",
         ],

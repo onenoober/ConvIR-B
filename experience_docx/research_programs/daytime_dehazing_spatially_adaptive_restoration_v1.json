@@ -179,7 +179,7 @@
       "adjacent_budget": 2,
       "attempts_used": 0,
       "state": "open",
-      "close_condition": "Close when the frozen utility and repeatability gates decide whether the target dehazing failure mode is a viable research problem.",
+      "close_condition": "Advance and close this qualification family on a typed PASS. A valid FAIL of adjacent sequence 1 records rejection of that frozen operationalization but preserves the already budgeted sequence-2 bidirectional-local-error operationalization; close without advancement only after sequence 2 also fails, or when the remaining attempt is explicitly abandoned by a later evidence-bound decision.",
       "reopen_evidence_types": [
         "new_failure_mode_evidence",
         "new_measurement_validity_evidence"
