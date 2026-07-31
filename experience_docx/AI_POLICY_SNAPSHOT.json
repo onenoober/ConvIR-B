@@ -73,8 +73,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "0f99b7992ab23e835110bde88af0a455e07d4d96a35de44457063465466119ab",
-  "rules_commit": "ef3e912b417f6a5d28add8e8fc081b2ea6ebf1b1",
+  "rules_bundle_sha256": "2d36c46e54796d3ac6849d8867e27751450b7e98c20a610e8691b92e622ce33b",
+  "rules_commit": "03382b8b662c636268b507414a616862d8416284",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "sources": {
@@ -95,8 +95,8 @@
       "sha256": "c8463531022274e4c2baadcaaedb91136706bec7466941f65c2495b25a35b380"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 15495,
-      "sha256": "72181031d5ad3989a0876c2b246588ea2f2dadb8051acd5eebe812e14c05c872"
+      "bytes": 15951,
+      "sha256": "ea2932576775620479e6949650a97e0fd76c17f82a2ae8b27b1f6bcf35a5f327"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 7529,
@@ -107,12 +107,12 @@
       "sha256": "d67578552d34cbd78fe4ac187e652598078cef30f85771365e8cbb6777029385"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 14052,
-      "sha256": "c0b6e0fa44d189aa3a26d6754be3b640e09013fec373cd1d7794164d9894fc07"
+      "bytes": 14377,
+      "sha256": "c6d9bc73d98de548e11c7686629f7f613e38c5534b8a7a85eaf9b79cdfcb13d3"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 13150,
-      "sha256": "7d405e4c296ea6c38feafae0be8cd1695aa1048aea2bf88070a4b47841f0905b"
+      "bytes": 13613,
+      "sha256": "bdf6d22cbf251e4401e171cf849af0b608f19d96b41f49b4e713a2e05b685a57"
     }
   },
   "workflow": [
