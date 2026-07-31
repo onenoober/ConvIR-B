@@ -1,0 +1,40 @@
+{
+  "contract_mode": "gpu_synthetic_no_data",
+  "engineering_evidence": {
+    "cost": {
+      "observed_iterations": 8,
+      "observed_peak_memory_mib": 1051.96826171875,
+      "observed_wall_seconds": 4.1190891694277525
+    },
+    "device": "cuda",
+    "fixture": {
+      "batch": 1,
+      "channels": 3,
+      "height": 992,
+      "width": 640
+    },
+    "mode": "gpu_synthetic_no_data",
+    "production_path_exercised": true,
+    "protected_data_touched": false,
+    "scientific_output_created": false,
+    "scientific_training_occurred": false
+  },
+  "identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "a71906866d1bf9a21c49057c62ea71e7b5192ba2cf3bfe3dddf6049d49d2b376",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "b2d637baa168df3d606940497935a2ed879dc9e900b75126519aa0983bac52b5",
+    "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "identity_sha256": "c81dc49c24a2d67ea843267dec677a4f1e337423ec133ea4672fde06bb7c1ee1",
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "protected_data_touched": false,
+  "qualification_id": "cap_c81dc49c24a2d67ea843267d",
+  "route_commit": "1f8536794ecc98d7c5be0da2189f96b11989bcdd",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v2",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v2-r1",
+  "schema_version": 1,
+  "scientific_authorization": "NONE",
+  "status": "PASSED_ENGINEERING"
+}

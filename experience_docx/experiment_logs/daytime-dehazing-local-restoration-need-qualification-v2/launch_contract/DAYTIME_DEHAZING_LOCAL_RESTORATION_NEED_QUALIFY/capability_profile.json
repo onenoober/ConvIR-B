@@ -1,0 +1,54 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor_checkout",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "local_need_entrypoint",
+      "identity": "a71906866d1bf9a21c49057c62ea71e7b5192ba2cf3bfe3dddf6049d49d2b376"
+    },
+    {
+      "id": "runtime_environment",
+      "identity": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    }
+  ],
+  "compatibility_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 1,
+    "channels": 3,
+    "height": 992,
+    "width": 640
+  },
+  "production_path_statement": "The exact frozen official ConvIR-B complete-image inference path pads a 992-by-640 device-aware synthetic input to multiples of 32 before extracting the square scoring crop, then executes the five-action local residual intervention, 8-by-8 macroblock cross-fitting, pooled-SSE aggregation, 1001-point dense global comparator, shifted-target and spatial-permutation controls, four-state classification, tri-state gates, and deterministic known-answer reference cases on CUDA without dataset access or scientific output. The route-manifest-bound pairing-v2 ledger identity fixes the production input roster but remains inaccessible to the synthetic qualification phase.",
+  "profile_id": "daytime_dehazing_local_restoration_need_gpu_v2",
+  "protected_data_prohibited": true,
+  "reuse_identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "a71906866d1bf9a21c49057c62ea71e7b5192ba2cf3bfe3dddf6049d49d2b376",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "b2d637baa168df3d606940497935a2ed879dc9e900b75126519aa0983bac52b5",
+    "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "schema_version": 2,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

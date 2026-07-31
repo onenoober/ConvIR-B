@@ -1,0 +1,40 @@
+{
+  "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+  "competing_explanation": "The positive equal-dataset-weight local-over-global estimate may reflect an invalid shifted-target null response, clipping at the frozen effect bounds, and dataset-specific edge/interior behavior rather than a repeatable transferable local restoration need. The Haze4K negative tail and the negative cross-observation transfer estimate are inconsistent with a stable general local-action advantage.",
+  "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+  "gate_fact_ids": [
+    "evidence_identity",
+    "development_scene_coverage",
+    "measurement_null_control",
+    "local_utility_over_global",
+    "bidirectional_repeatability",
+    "near_clear_fidelity",
+    "primary_precision"
+  ],
+  "gate_reasons": [
+    "Evidence identity and development-scene coverage passed for 450 independent scenes and 900 nested haze observations, and all 451 workload units completed with exact ledger coverage.",
+    "Primary precision met the frozen 0.055 dB half-width target, and the equal-dataset-weight local-over-global estimate was 0.1299 dB with a simultaneous 95% interval of [0.1120, 0.1476] dB.",
+    "Measurement null control failed because the ITS shifted-target null upper confidence bound was 0.2406 dB, above the frozen 0.10 dB limit. This validity veto forces the terminal to INCONCLUSIVE regardless of the other scientific gate outcomes.",
+    "Local utility over global was unfavorable: the Haze4K negative-tail prevalence was 67/150 (44.7%), and the overall equal-dataset-weight negative-tail prevalence was 16.9%.",
+    "Bidirectional repeatability was unfavorable: the overall cross-observation transfer estimate was -0.0363 dB with a simultaneous 95% interval of [-0.0603, -0.0127] dB, with a stronger negative result on Haze4K.",
+    "Near-clear fidelity was indeterminate because the frozen per-dataset exposure requirement was met only for OTS and not for Haze4K or ITS."
+  ],
+  "limitations": [
+    "The failed null-control validity gate prevents the positive primary estimate from supporting a scientific PASS and prevents the unfavorable utility and repeatability gates from being interpreted as a decisive scientific FAIL.",
+    "The experiment is a privileged-oracle development screen; it does not establish that an observable adaptive mechanism can learn or reproduce the selected local actions.",
+    "The primary contrast was clipped to [-0.25, 0.25] dB for 278 high-end and 55 low-end scenes, so clipping and the large edge-minus-interior contrast require measurement-validity review.",
+    "Confirmation, sealed-final, canary, and locked-test data were not touched, no network training occurred, and S2 mechanism discovery remains unauthorized."
+  ],
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "primary_fact_ids": [
+    "measurement_null_control",
+    "local_utility_over_global",
+    "bidirectional_repeatability",
+    "primary_precision"
+  ],
+  "primary_result": "S1 is inconclusive. The equal-dataset-weight local-over-global estimate was positive at 0.1299 dB, but the measurement null control failed, local utility and bidirectional repeatability were unfavorable, and near-clear fidelity was indeterminate. The terminal authorizes only S1 measurement-validity or precision review and does not authorize S2, training, or scientific promotion.",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v2",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v2-r1",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE"
+}
