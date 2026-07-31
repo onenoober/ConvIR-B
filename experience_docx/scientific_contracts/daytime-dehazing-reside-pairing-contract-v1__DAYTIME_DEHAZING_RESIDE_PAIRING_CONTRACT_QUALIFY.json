@@ -1,0 +1,484 @@
+{
+  "competing_explanation": "A nominal 150-scene roster can still be unusable if the haze directory is nested below the assumed path, filename parsing maps haze files to the wrong clear target, clear RGB identity drifts, two source files contain the same payload, filename tokens are mistaken for independent content replicates, scenes are silently backfilled, or whole-image dimensions exceed the production contract.",
+  "controls": [
+    "GitHub-main SHA-256 identity and typed terminal tuple for the S1 v1 parent",
+    "GitHub-main SHA-256 identity and typed PASS for the S0 parent",
+    "exact SHA-256 identity of the cloud-only S0 scene-role ledger",
+    "the original v1 scene and variant selection salts and planned-scene digests",
+    "exact planned roster without replacement or backfill",
+    "decoded clear RGB identity against the S0 canonical digest",
+    "two selected haze file and decoded RGB payload digests per scene",
+    "opaque formation tokens separated from the exact content identity",
+    "aligned clear and haze dimensions and a frozen padded whole-image shape envelope",
+    "cloud-only SHA-bound per-scene mapping ledger with compact count and digest evidence",
+    "zero access to models, checkpoints, predictions, restoration outcomes, protected image roles, or scientific thresholds"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "evidence_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "planned_roster_coverage_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "canonical_clear_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "canonical_clear_identity": [
+            "fail",
+            "invalid"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "nested_haze_pairing_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "nested_haze_pairing": [
+            "fail",
+            "invalid"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "formation_content_separation_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "formation_content_separation": [
+            "fail",
+            "invalid"
+          ],
+          "nested_haze_pairing": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "scoring_geometry_validity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "formation_content_separation": [
+            "pass"
+          ],
+          "nested_haze_pairing": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ],
+          "scoring_geometry_validity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "valid_whole_image_resource_failure",
+        "terminal": "fail",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "formation_content_separation": [
+            "pass"
+          ],
+          "nested_haze_pairing": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ],
+          "scoring_geometry_validity": [
+            "pass"
+          ],
+          "whole_image_resource_feasibility": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_whole_image_resource_feasibility",
+        "terminal": "inconclusive",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "formation_content_separation": [
+            "pass"
+          ],
+          "nested_haze_pairing": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ],
+          "scoring_geometry_validity": [
+            "pass"
+          ],
+          "whole_image_resource_feasibility": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "qualified_pairing_contract",
+        "terminal": "pass",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "formation_content_separation": [
+            "pass"
+          ],
+          "identity_contract_precision": [
+            "met"
+          ],
+          "nested_haze_pairing": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ],
+          "scoring_geometry_validity": [
+            "pass"
+          ],
+          "whole_image_resource_feasibility": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "qualified_pairing_without_precision",
+        "terminal": "inconclusive",
+        "when": {
+          "canonical_clear_identity": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "formation_content_separation": [
+            "pass"
+          ],
+          "identity_contract_precision": [
+            "unmet",
+            "invalid"
+          ],
+          "nested_haze_pairing": [
+            "pass"
+          ],
+          "planned_roster_coverage": [
+            "pass"
+          ],
+          "scoring_geometry_validity": [
+            "pass"
+          ],
+          "whole_image_resource_feasibility": [
+            "favorable"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_dataset_contract_repair",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "review_reside_pairing_identity_evidence",
+        "terminal": {
+          "authorizes": "S1_DATA_IDENTITY_OR_PAIRING_EVIDENCE_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_revised_s1_utility_qualification_contract",
+        "terminal": {
+          "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "model or checkpoint access",
+    "training, fitting, fine-tuning, inference, prediction, candidate comparison, or restoration-metric computation",
+    "confirmation, sealed-final, canary, locked-test, NH-Haze, or non-development image access",
+    "replacement or backfill of any frozen planned ITS or OTS scene",
+    "changing the parent scene or variant selection salt after observing the filesystem",
+    "treating haze observations, source tokens, files, pixels, crops, regions, or resamples as independent samples",
+    "interpreting opaque source filename tokens as calibrated atmospheric parameters",
+    "claiming complete capture provenance, complete source disjointness, restoration need, local-over-global utility, near-clear safety, observable predictability, module effectiveness, or deployment readiness",
+    "saving or archiving images, arrays, checkpoints, feature maps, predictions, or per-pixel tables to GitHub",
+    "starting revised S1, S2, or training any adaptive module"
+  ],
+  "gates": [
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "the S1 v1 closeout and summary, S0 closeout and role summary, and S0 cloud ledger match their frozen SHA-256 identities and authorized tuples",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "planned_roster_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all original 150 ITS and 150 OTS planned scenes are retained under the parent digests with zero backfill",
+      "threshold": 300,
+      "type": "coverage",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "canonical_clear_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "every selected clear image decodes and exactly matches its S0 canonical width-height-RGB digest",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "nested_haze_pairing",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "every selected original clear scene has exactly two deterministic haze observations with distinct file and decoded RGB payloads",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "formation_content_separation",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact clear RGB identity holds content fixed while the two nested haze observations have distinct opaque source tokens and aligned dimensions",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "scoring_geometry_validity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "every selected aligned pair admits a square scoring crop of 256 to 512 pixels in exact steps of 32",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "decisive",
+      "direction": "max",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "whole_image_resource_feasibility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "every selected whole image is at most 4096 by 4096 and reflect-padding to a multiple of 32 produces at most 16777216 pixels",
+      "threshold": 16777216,
+      "type": "materiality",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    },
+    {
+      "comparison_family": "two_dataset_pairing_contract_family",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "valid_reside_pairing_contract_capacity",
+      "id": "identity_contract_precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "each complete 150-scene dataset roster exceeds the worst-case bounded-indicator planning requirement for simultaneous 95 percent half-width at most 0.20",
+      "threshold": 0.2,
+      "type": "precision",
+      "uncertainty_id": "exact_pairing_census_and_worst_case_indicator_precision"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "S1 v1 scene selection salt daytime-dehazing-local-restoration-need-v1|scenes",
+      "S1 v1 variant selection salt daytime-dehazing-local-restoration-need-v1|variants",
+      "expected ITS planned-scene digest e61a53e819f36f0ee718d1bf4d6d54cfa5982501397a46cbaa005f9877e62882",
+      "expected OTS planned-scene digest 6031862cc97f33bb2995df4cb23ad7db522cf0ed992ad9deb5c76003fc17acfb",
+      "no scene backfill when a planned scene lacks a valid clear or haze mapping",
+      "content identity is exact decoded canonical clear RGB width-height-payload SHA-256 equal to S0",
+      "formation distinction requires two different file SHA-256 values, two different decoded haze RGB SHA-256 values, and two different nonempty source filename suffix tokens",
+      "source filename tokens are opaque formation labels and are not interpreted as calibrated atmospheric parameters",
+      "the two haze observations are nested within one original clear scene and never count as independent replicates",
+      "the unique longest clear-stem prefix followed by an underscore boundary is the only haze-to-clear filename mapping rule",
+      "every selected haze image must decode and match its clear image dimensions",
+      "whole-image width and height are each at most 4096 and reflect-padding to a multiple of 32 produces at most 16777216 pixels",
+      "the future scoring crop is the largest square multiple of 32 no larger than 512 or either image dimension and no smaller than 256",
+      "revised S1 must run full-image ConvIR-B inference before applying the scoring crop and must separately qualify the exact maximum observed padded shape on its bound device class",
+      "confirmation, sealed-final, canary, locked-test, and NH-Haze image roles remain disabled",
+      "no model, checkpoint, inference, prediction, restoration metric, local-error metric, training, fitting, or threshold selection is permitted"
+    ],
+    "matched_budget": "one complete census of the frozen 150 ITS and 150 OTS development-screening scenes with exactly two selected haze observations per scene and no replacement or backfill",
+    "primary_variable": "deterministic outcome-blind mapping from each frozen original-clear scene to exactly two nested haze observations and a bounded whole-image input shape",
+    "reference": "the typed S1 v1 INCONCLUSIVE parent, its original scene and variant selection salts, and the SHA-bound S0 program-local scene-role ledger"
+  },
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 300,
+    "strata": [
+      {
+        "id": "ITS_DEVELOPMENT",
+        "independent_group_count": 150
+      },
+      {
+        "id": "OTS_DEVELOPMENT",
+        "independent_group_count": 150
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "minimum exact count over the frozen ITS and OTS planned rosters after all identity, pairing, formation/content, alignment, and whole-image shape checks",
+    "direction": "higher",
+    "id": "valid_reside_pairing_contract_capacity",
+    "metric_id": "minimum_valid_planned_scene_count_by_dataset",
+    "strata": [
+      "ITS_DEVELOPMENT",
+      "OTS_DEVELOPMENT"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Can the exact ITS and OTS development-screening rosters originally frozen for S1 v1 be bound outcome-blindly, without backfill, to their S0 canonical original-clear identities, exactly two deterministic distinct nested haze payloads, a verifiable content-held-fixed formation contrast, and bounded whole-image dimensions sufficient to author a revised full-image S1 input contract?",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "two_dataset_pairing_contract_family",
+    "confidence_level": 0.95,
+    "id": "exact_pairing_census_and_worst_case_indicator_precision",
+    "independent_unit": "original_clear_scene",
+    "method_id": "full_planned_roster_census_plus_bonferroni_worst_case_bounded_indicator_planning"
+  }
+}

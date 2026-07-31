@@ -1,0 +1,62 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_reside_pairing_contract_v1.py",
+      "sha256": "082de746b7304179c4e342efb95abf5a88f467cebbd195c7232c29d6bd4c58cc"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s1_v1_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_closeout.json",
+      "sha256": "8272c22034ad827c39ac2ff7d7c1903f39a9872f8a7a81ca854bc95b045af98b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s1_v1_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_summary.json",
+      "sha256": "5e3b678c8968a0c243f6bf79fe40b8ca80e860a376e475b61f90599eded0df1f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_closeout.json",
+      "sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_role_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_role_summary.json",
+      "sha256": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/daytime-dehazing-haze4k-identity-v1/daytime-dehazing-haze4k-identity-v1-r1/workload/daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    }
+  ],
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v1",
+  "schema_version": 2
+}

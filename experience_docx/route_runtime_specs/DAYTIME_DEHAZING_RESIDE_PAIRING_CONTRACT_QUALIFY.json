@@ -1,0 +1,49 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-reside-pairing-contract-v1__DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "cost_contract": null,
+    "max_seconds": 30,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_reside_pairing_contract_v1.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "daytime_dehazing_reside_pairing_contract_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_reside_pairing_contract_v1_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_reside_pairing_contract_v1_identity_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_reside_pairing_contract_v1_identity_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_reside_pairing_contract_v1_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_reside_pairing_contract_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 1800,
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-reside-pairing-contract-v1__DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY.json",
+    "mode": "descriptive_capacity",
+    "rationale": "Use an exact census of both frozen 150-scene rosters. The conservative bounded-indicator certificate only confirms that each complete roster exceeds the simultaneous coarse precision planning floor; any revised S1 effect claim requires its own formal primary-estimand certificate."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v1",
+  "schema_version": 2,
+  "timeout_seconds": 3600,
+  "total_units": 3
+}
