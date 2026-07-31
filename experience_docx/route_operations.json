@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-reside-pairing-contract-v2.json",
+  "experiment_spec_sha256": "c95af40c405bfc7a05863ec8284385eb9a8011ecad0dacaad2414cc90417ffac",
+  "operations": {
+    "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "S1_DATA_IDENTITY_OR_PAIRING_EVIDENCE_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_reside_pairing_contract_v2_closeout.json",
+      "heartbeat_timeout_seconds": 180,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "daytime_dehazing_reside_pairing_contract_qualification",
+      "monitor_profile": "short",
+      "output_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "577c3c81aba36b266d9d19a690e3b488774515c9320bd5bbc6d28dbd48c9cddf",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-reside-pairing-contract-v2.md",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+  "rules_commit": "ef3e912b417f6a5d28add8e8fc081b2ea6ebf1b1",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-reside-pairing-contract-v2__DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY.json"
+  }
+}
