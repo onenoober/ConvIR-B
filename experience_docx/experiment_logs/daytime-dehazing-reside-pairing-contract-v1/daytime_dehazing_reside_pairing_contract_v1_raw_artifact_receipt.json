@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 9
+  },
+  "entry_count": 10,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "491d1d17362cb69a14e20bb41546966a07232a782d5110597da709edb24ef330",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "route_commit": "fa51c9af9a08500506a4fae0c29edec667b94e57",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v1",
+  "run_id": "daytime-dehazing-reside-pairing-contract-v1-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 332010
+}

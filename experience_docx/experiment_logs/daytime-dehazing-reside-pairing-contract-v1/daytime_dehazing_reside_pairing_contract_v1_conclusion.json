@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "route_id": "daytime-dehazing-reside-pairing-contract-v1",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "run_id": "daytime-dehazing-reside-pairing-contract-v1-r1",
+  "state": "COMPLETED_INCONCLUSIVE",
+  "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_INCONCLUSIVE",
+  "authorizes": "S1_DATA_IDENTITY_OR_PAIRING_EVIDENCE_REVIEW_ONLY",
+  "primary_result": "The frozen ITS and OTS planned rosters and all 300 canonical clear-scene identities were reproduced exactly, but none of the three predeclared hazy roots existed at runtime. The route therefore found zero paired scenes and cannot establish the nested haze-pairing or formation/content contract needed to author revised S1.",
+  "primary_fact_ids": [
+    "evidence_identity",
+    "planned_roster_coverage",
+    "canonical_clear_identity",
+    "nested_haze_pairing",
+    "formation_content_separation",
+    "scoring_geometry_validity"
+  ],
+  "gate_fact_ids": [
+    "evidence_identity",
+    "planned_roster_coverage",
+    "canonical_clear_identity",
+    "nested_haze_pairing",
+    "formation_content_separation",
+    "scoring_geometry_validity",
+    "whole_image_resource_feasibility",
+    "identity_contract_precision"
+  ],
+  "gate_reasons": [
+    "The S1 v1 and S0 parent identities, typed terminal tuples, S0 ledger SHA-256, and exact ITS/OTS development capacities all matched the frozen evidence contract.",
+    "The original S1 v1 scene-selection salt reproduced the exact parent planned-scene digests for 150 ITS and 150 OTS scenes with no backfill.",
+    "All 300 planned clear images were present, decoded, and matched their S0 canonical RGB identities; scoring geometry was valid for all 300 scenes.",
+    "The ITS train, ITS validation, and OTS predeclared hazy roots were all unavailable, yielding zero haze files, zero paired scenes, and invalid downstream precision and resource-feasibility interpretation.",
+    "The run completed all 3 generic workload units and produced a 300-row SHA-bound mapping ledger without model, checkpoint, inference, restoration-outcome, confirmation, or sealed-final access."
+  ],
+  "competing_explanation": "The parent S1 coverage veto was caused by absent or incorrectly specified hazy dataset roots rather than drift in the original planned roster, S0 canonical clear-scene identity, clear-image dimensions, or scoring-crop geometry.",
+  "limitations": [
+    "No haze payload was found or decoded, so the route provides no evidence that any planned scene has two distinct formation observations.",
+    "The observed clear-image shape bounds do not by themselves qualify the exact full-image ConvIR-B production path; whole-image resource feasibility remains invalid until pairing validity is complete and a matching device-aware capability contract is authored.",
+    "The terminal is a measurement-validity INCONCLUSIVE, not a scientific FAIL and not evidence for or against local restoration need, local-over-global utility, near-clear safety, or S2 readiness.",
+    "Only further outcome-blind dataset-path, identity, or pairing evidence review is authorized; revised S1 authoring and execution remain unauthorized."
+  ]
+}

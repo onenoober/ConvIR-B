@@ -1,0 +1,57 @@
+{
+  "content_definition": "exact decoded canonical clear RGB digest",
+  "formation_definition": "two distinct nested haze file and decoded RGB payloads with distinct nonempty source tokens",
+  "independent_unit": "original_clear_scene",
+  "mapping_ledger_rows": 300,
+  "mapping_ledger_sha256": "d131b4db263eb20307be4fb07d24f48de7f4cfc70fac6fff960748d6d0ad64d5",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "planned_rosters": {
+    "ITS": {
+      "independence_contract": {
+        "content_equivalence": "exact decoded canonical clear RGB digest",
+        "formation_distinction": "distinct haze file SHA-256, decoded haze RGB SHA-256, and nonempty source filename token",
+        "haze_observations_are_independent_replicates": false,
+        "haze_observations_are_nested": true,
+        "independent_unit": "original_clear_scene"
+      },
+      "mapping_ledger_slice_digest": "25c0dc16ca212a3756e7759a91c6ef4ec9025953c8e9201162a9b3ccd241fb74",
+      "planned_scene_count": 150,
+      "planned_scene_digest": "e61a53e819f36f0ee718d1bf4d6d54cfa5982501397a46cbaa005f9877e62882",
+      "selected_scene_count": 0,
+      "shape_envelope": {
+        "max_allowed_height": 4096,
+        "max_allowed_padded_pixels": 16777216,
+        "max_allowed_width": 4096,
+        "max_observed_height": 460,
+        "max_observed_padded_pixels": 307200,
+        "max_observed_width": 620,
+        "scoring_crop_rule": "largest square multiple of 32 not exceeding 512 or either image dimension, with minimum 256"
+      }
+    },
+    "OTS": {
+      "independence_contract": {
+        "content_equivalence": "exact decoded canonical clear RGB digest",
+        "formation_distinction": "distinct haze file SHA-256, decoded haze RGB SHA-256, and nonempty source filename token",
+        "haze_observations_are_independent_replicates": false,
+        "haze_observations_are_nested": true,
+        "independent_unit": "original_clear_scene"
+      },
+      "mapping_ledger_slice_digest": "194bcf6c7204d08e636a4f68c0eb5a6529ffc8c0de61745c8287bce222bd91e1",
+      "planned_scene_count": 150,
+      "planned_scene_digest": "6031862cc97f33bb2995df4cb23ad7db522cf0ed992ad9deb5c76003fc17acfb",
+      "selected_scene_count": 0,
+      "shape_envelope": {
+        "max_allowed_height": 4096,
+        "max_allowed_padded_pixels": 16777216,
+        "max_allowed_width": 4096,
+        "max_observed_height": 982,
+        "max_observed_padded_pixels": 571392,
+        "max_observed_width": 552,
+        "scoring_crop_rule": "largest square multiple of 32 not exceeding 512 or either image dimension, with minimum 256"
+      }
+    }
+  },
+  "route_id": "daytime-dehazing-reside-pairing-contract-v1",
+  "run_id": "daytime-dehazing-reside-pairing-contract-v1-r1",
+  "schema_version": 1
+}
