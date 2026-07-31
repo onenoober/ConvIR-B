@@ -1,0 +1,30 @@
+{
+  "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+  "competing_explanation": "The terminal is explained by a pre-inference evidence-identity or development-coverage validity veto. It provides no evidence for or against repeatable bidirectional local restoration need, local-over-global utility, near-clear fidelity, or the learnability of an internal adaptive mechanism.",
+  "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+  "gate_fact_ids": [
+    "evidence_identity",
+    "development_scene_coverage"
+  ],
+  "gate_reasons": [
+    "The route completed with the frozen INCONCLUSIVE terminal after the pre-inference identity-and-development-scope phase entered the typed identity-or-coverage veto path.",
+    "All 451 workload ledger units were closed as typed invalid units for the veto path, so no partial scientific metric or action-map result is interpretable.",
+    "The engineering contract passed all eight protected-data-free GPU iterations before the validity veto; this establishes only that the repaired implementation contract executed, not that the scientific question passed."
+  ],
+  "limitations": [
+    "The run did not produce an interpretable primary local-over-global utility estimate, bidirectional repeatability estimate, spatial-specificity result, or near-clear fidelity result.",
+    "The INCONCLUSIVE terminal does not reject the research question or authorize S2 mechanism discovery.",
+    "Only measurement-validity or precision review is authorized; any second S1 operationalization requires a separately frozen route under the remaining program budget.",
+    "Confirmation, sealed-final, NH-Haze, canary, and locked-test images remained unauthorized, and no adaptive module was trained or selected."
+  ],
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "primary_fact_ids": [
+    "evidence_identity",
+    "development_scene_coverage"
+  ],
+  "primary_result": "S1 is inconclusive because the run ended under the pre-inference evidence-identity or development-scene-coverage validity veto. The experiment therefore does not answer whether the fixed baseline has repeatable, bidirectional, spatially heterogeneous restoration need with practical utility over a single global adjustment.",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v1-r2",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE"
+}

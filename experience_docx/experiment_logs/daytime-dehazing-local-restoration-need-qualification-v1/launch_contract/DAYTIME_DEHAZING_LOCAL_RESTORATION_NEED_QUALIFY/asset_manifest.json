@@ -1,0 +1,94 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "local_need_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v1.py",
+      "sha256": "e4a614e11c442d288513be8d7d9e19b0ecc7dbbad9bd83624adbf226986e3fec"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_local_restoration_need_v1.json",
+      "sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/layers.py",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_closeout.json",
+      "sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_role_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_role_summary.json",
+      "sha256": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/runs/daytime-dehazing-haze4k-identity-v1/daytime-dehazing-haze4k-identity-v1-r1/workload/daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE"
+    }
+  ],
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "schema_version": 2
+}

@@ -1,0 +1,138 @@
+{
+  "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "daytime_dehazing_local_restoration_need_v1_capability_qualification.json",
+    "identity_sha256": "3a913c16807b2c0dbe2f2778a531819e4e63911bcb6272a5df00bd2c693bacf6",
+    "qualification_id": "cap_3a913c16807b2c0dbe2f2778",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "3a913c16807b2c0dbe2f2778a531819e4e63911bcb6272a5df00bd2c693bacf6",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+  "decision_rule_id": "coverage_veto_after_valid_identity",
+  "details": {
+    "confirmation_or_sealed_data_touched": false,
+    "gate_summary_file": "daytime_dehazing_local_restoration_need_v1_gate_summary.json",
+    "independent_scene_count": 0,
+    "nested_variant_count": 0,
+    "network_training_occurred": false,
+    "privileged_oracle_only": true,
+    "scene_metrics_file": "daytime_dehazing_local_restoration_need_v1_scene_metrics.csv",
+    "summary_file": "daytime_dehazing_local_restoration_need_v1_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "daytime_dehazing_local_restoration_need_v1_capability_qualification.json": "672c719cdd958dcb5fb73a546afcaad9c51b7f3d0eacf1b2cda0cf12559df7a7",
+    "daytime_dehazing_local_restoration_need_v1_gate_summary.json": "d9cd480734b3a4aa8dd70cc46821b3357cd42b72261d392b638bac45a9fdb692",
+    "daytime_dehazing_local_restoration_need_v1_raw_artifact_receipt.json": "7c6028020ad4873cd782c7aa6df43be463ef20f0c64296beceb10ac4c80983f1",
+    "daytime_dehazing_local_restoration_need_v1_review_facts.json": "79d51873ad363b4bbb165282cdd42cacc4b2433d5d939363ae29c84a231fbacb",
+    "daytime_dehazing_local_restoration_need_v1_scene_metrics.csv": "ae69f25b5c27a3ba2fb8d3838fecd3a6af49cd1ede25503a949eaeea27a2976c",
+    "daytime_dehazing_local_restoration_need_v1_summary.json": "5e3b678c8968a0c243f6bf79fe40b8ca80e860a376e475b61f90599eded0df1f"
+  },
+  "failure_phase": null,
+  "family_effect": "allow_predeclared_evidence",
+  "gate_outcomes": {
+    "bidirectional_repeatability": "invalid",
+    "development_scene_coverage": "fail",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "invalid",
+    "measurement_null_control": "invalid",
+    "near_clear_fidelity": "invalid",
+    "primary_precision": "invalid"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "review_s1_measurement_validity_or_precision",
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "returncode": 0,
+  "route_commit": "3ff0f84577d2dd85aef3a4aac8bb83b812c54c52",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v1-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "terminal_label": "inconclusive",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "local_need_entrypoint",
+      "kind": "file",
+      "sha256": "e4a614e11c442d288513be8d7d9e19b0ecc7dbbad9bd83624adbf226986e3fec"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_closeout",
+      "kind": "file",
+      "sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_role_summary",
+      "kind": "file",
+      "sha256": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "gate_outcomes": {
+    "bidirectional_repeatability": "invalid",
+    "development_scene_coverage": "fail",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "invalid",
+    "measurement_null_control": "invalid",
+    "near_clear_fidelity": "invalid",
+    "primary_precision": "invalid"
+  },
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "prevalence": null,
+  "primary": null,
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "schema_version": 1
+}

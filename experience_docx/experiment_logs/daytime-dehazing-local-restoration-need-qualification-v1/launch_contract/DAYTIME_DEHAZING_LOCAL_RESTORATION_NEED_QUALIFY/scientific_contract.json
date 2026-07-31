@@ -1,0 +1,474 @@
+{
+  "competing_explanation": "An apparent local oracle gain can be produced by incompatible PSNR aggregation, same-pixel action selection, global haze severity needing only one scalar correction, unstable or unresolved directions mislabeled as keep, action histograms without correct spatial placement, crop-boundary context loss, endpoint clipping, an unrelated-target selection artifact, input-identity drift, or pseudoreplication of cells and haze observations.",
+  "controls": [
+    "typed S0 PASS, role-summary, and cloud-only scene-role ledger identities must match their frozen SHA-256 values",
+    "only the predeclared first 150 retained development_screening scene IDs per stratum may reach inference; missing, replaced, or duplicate observations never trigger backfill",
+    "every selected decoded clear image must match its S0 canonical RGB digest, and one pre-inference roster digest binds all selected filenames and clear and haze file SHA-256 values",
+    "strict official architecture, source, layer, checkpoint, runtime-environment, and entrypoint identities",
+    "the dense best single alpha selected with identical macroblock cross-fitting is an optimistic global-difficulty control and has strictly more scalar choices than the local oracle",
+    "alpha selection against the clear target circularly shifted by half the image in both axes is the fixed measurement-null control and is evaluated against the correct target",
+    "a deterministic five-cell cyclic permutation of the selected local action map must lose at least 0.05 dB, testing whether utility is spatially located rather than caused only by the action histogram",
+    "two deterministic haze observations per original clear scene test direction and exact-alpha repeatability without increasing independent sample size; each observation-derived supported map is also transferred to the other observation and compared with that target observation's in-sample dense global oracle",
+    "weaken, keep_supported, strengthen, and unresolved labels use frozen positive evidence rules; unresolved never contributes to stability or keep prevalence",
+    "near-clear exposure, repeatable baseline damage, and damage-conditional mitigation are separate scene estimands; absence of material damage is safe_no_material_damage rather than unsafe",
+    "endpoint-alpha frequency, unresolved-cell frequency, exact-alpha agreement, selected-candidate saturation, primary clipping, and edge-versus-interior effects are archived as compact diagnostics",
+    "all bootstrap and Wilson uncertainty remains grouped at the original-clear-scene level and reports overall equal-dataset and dataset-specific support",
+    "no network training, signal prediction, threshold search, mechanism selection, output image save, or per-cell GitHub evidence"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "evidence_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "coverage_veto_after_valid_identity",
+        "terminal": "inconclusive",
+        "when": {
+          "development_scene_coverage": [
+            "fail",
+            "invalid"
+          ],
+          "evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "null_control_veto_after_valid_coverage",
+        "terminal": "inconclusive",
+        "when": {
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "measurement_null_control": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "valid_utility_failure",
+        "terminal": "fail",
+        "when": {
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "unfavorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_utility",
+        "terminal": "inconclusive",
+        "when": {
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "indeterminate",
+            "invalid"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "valid_repeatability_failure",
+        "terminal": "fail",
+        "when": {
+          "bidirectional_repeatability": [
+            "unfavorable"
+          ],
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "favorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_repeatability",
+        "terminal": "inconclusive",
+        "when": {
+          "bidirectional_repeatability": [
+            "indeterminate",
+            "invalid"
+          ],
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "favorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "valid_near_clear_failure",
+        "terminal": "fail",
+        "when": {
+          "bidirectional_repeatability": [
+            "favorable"
+          ],
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "favorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "unsafe"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_near_clear_fidelity",
+        "terminal": "inconclusive",
+        "when": {
+          "bidirectional_repeatability": [
+            "favorable"
+          ],
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "favorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "qualified_utility_repeatability_fidelity_and_precision",
+        "terminal": "pass",
+        "when": {
+          "bidirectional_repeatability": [
+            "favorable"
+          ],
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "favorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe"
+          ],
+          "primary_precision": [
+            "met"
+          ]
+        }
+      },
+      {
+        "id": "qualified_effects_without_precision",
+        "terminal": "inconclusive",
+        "when": {
+          "bidirectional_repeatability": [
+            "favorable"
+          ],
+          "development_scene_coverage": [
+            "pass"
+          ],
+          "evidence_identity": [
+            "pass"
+          ],
+          "local_utility_over_global": [
+            "favorable"
+          ],
+          "measurement_null_control": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe"
+          ],
+          "primary_precision": [
+            "unmet",
+            "invalid"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "record_only",
+        "next_action_id": "author_second_s1_operationalization_contract_if_budget_remains",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "review_s1_measurement_validity_or_precision",
+        "terminal": {
+          "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_s2_mechanism_discovery_contract",
+        "terminal": {
+          "authorizes": "AUTHOR_S2_MECHANISM_DISCOVERY_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "confirmation, sealed-final, canary, locked-test, NH-Haze, or non-development image access",
+    "network training, fitting, fine-tuning, observable-signal prediction, mechanism selection, or candidate promotion",
+    "using GT or GT-derived labels as inference-time input",
+    "changing either alpha grid, crop or halo rule, cell grid, macroblock split, four-state label rule, direction or keep margin, effect margin, prevalence threshold, precision target, transfer rule, spatial permutation, or null control after outcomes",
+    "treating haze observations, cells, pixels, actions, or bootstrap draws as independent samples",
+    "interpreting the privileged residual-scaling oracle as a deployable post-processing method",
+    "saving or archiving images, arrays, checkpoints, feature maps, action maps, or per-cell tables to GitHub",
+    "claiming superiority to arbitrary global restoration operators outside the frozen residual-scaling interval and grid, complete source-provenance disjointness, observable predictability, module effectiveness, deployment readiness, or protected-set generalization",
+    "starting S2 or training any adaptive module without a later typed S1 PASS and a separate route-ready contract"
+  ],
+  "gates": [
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "S0 typed authorization, role counts, cloud ledger, official model, checkpoint, runtime, and entrypoint identities all match exactly",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    },
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "development_scene_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exactly the frozen 150-scene roster per dataset, two distinct valid haze payloads per scene, S0-matching clear canonical identities, a frozen selected-input roster digest, 16 scored cells per observation, zero protected image access, and 451 completed scene-plus-aggregate units including typed invalid units after a pre-inference veto",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    },
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "validity_veto",
+      "direction": "max",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "measurement_null_control",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "the un-clipped shifted-target selection null has simultaneous overall UCB below 0.05 dB and every dataset UCB below 0.10 dB when evaluated against the correct target",
+      "threshold": "overall_ucb_lt_0.05_and_each_dataset_ucb_lt_0.10",
+      "type": "integrity",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    },
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "local_utility_over_global",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "favorable requires overall primary LCB above 0.10 dB, at least two dataset LCBs above zero and no dataset UCB below zero; aligned-versus-permuted spatial-specificity LCB above 0.05 dB with the same dataset support; equal-dataset material-scene prevalence LCB above 0.20 with at least two dataset LCBs above 0.10 and no dataset UCB below 0.05; and negative-tail prevalence overall UCB below 0.10 and every dataset UCB below 0.15. Any corresponding UCB impossibility is unfavorable; intervals crossing a boundary are indeterminate.",
+      "threshold": "primary_and_spatial_specificity_and_material_prevalence_and_negative_tail_composite",
+      "type": "materiality",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    },
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "bidirectional_repeatability",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "favorable requires cross-observation transferred local maps to beat each target's in-sample dense global oracle with overall LCB above zero and support in at least two datasets; direction-and-exact-strength stable-scene LCB above 0.50; bidirectional-scene LCB above 0.20; keep-supported-scene LCB above 0.20; and same-scene useful-bidirectional prevalence LCB above 0.15, each with predeclared two-dataset support and no-dataset-absence floors. Any corresponding UCB impossibility is unfavorable; intervals crossing a boundary are indeterminate.",
+      "threshold": "transfer_and_direction_strength_and_bidirectional_and_keep_supported_and_joint_scene_composite",
+      "type": "materiality",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    },
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "near_clear_fidelity",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "after at least 42 near-clear-exposed scenes in at least two datasets, safe means either pooled and sufficiently exposed dataset-specific baseline-damage UCB below 0.10, or pooled and dataset-supported baseline-damage LCB above 0.10 with at least 42 damaged scenes and damage-conditional mitigation LCB above 0.50; unsafe requires material damage plus a conditional mitigation UCB at or below 0.50 in the pooled or sufficiently exposed dataset-specific analysis; all threshold-crossing or underpowered cases are indeterminate",
+      "threshold": "safe_no_material_damage_or_safe_damage_conditionally_mitigated",
+      "type": "safety",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    },
+    {
+      "comparison_family": "scene_grouped_s1_gate_families",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "crossfit_local_over_global_utility",
+      "id": "primary_precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "maximum distance from each overall or dataset primary bootstrap estimate to either simultaneous 95 percent interval endpoint; clipping frequencies and raw negative tails remain separately visible",
+      "threshold": 0.055,
+      "type": "precision",
+      "uncertainty_id": "simultaneous_scene_grouped_s1_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the official ConvIR-B base architecture and official Haze4K checkpoint remain frozen and strictly loaded",
+      "the diagnostic candidate is clip(hazy plus alpha times official-output-minus-hazy, 0, 1)",
+      "the local alpha grid is exactly 0.5, 0.75, 1.0, 1.25, and 1.5; the stronger global comparator uses 1001 values from 0.5 through 1.5 at step 0.001",
+      "every image uses one outcome-blind deterministic scored crop of at most 512 by 512 pixels and at least 256 by 256 pixels shared by its two nested haze observations; model inference includes up to 64 real image pixels of halo on every available side",
+      "four-by-four equal-area cells score the central 75 percent of each side, exactly 56.25 percent of cell area, without claiming or applying a taper",
+      "opposite 8-by-8 macroblock-checkerboard halves select and evaluate alpha in both directions; local ties within 0.005 dB prefer keep and then smaller alpha, while the dense global tie tolerance is 0.0001 dB",
+      "a non-keep cell is supported only when both halves select the same exact alpha and both opposite-half gains are at least 0.05 dB; keep_supported requires both halves to select 1.0 and every non-keep alternative to improve by no more than 0.02 dB on both halves; all other cells are unresolved",
+      "local and global evaluation-half SSE are pooled over identical scored pixels before one PSNR-ratio conversion; the two nested observation values are averaged and only the primary, transfer, and spatial-specificity scene values are clipped to minus 0.25 through plus 0.25 dB",
+      "Haze4K uses its fixed 150 development scenes; ITS and OTS use the first 150 ledger-authorized scenes under a fixed SHA-256 order without eligibility backfill; every scene uses the first two distinct paired haze payloads under a separate fixed SHA-256 filename order",
+      "decoded clear RGB dimensions and pixels must match each S0 canonical_digest; the exact selected scene roster, haze filename roster, and selected clear and haze payload hashes are frozen before inference and rechecked around every scene",
+      "the original clear scene is the only independent unit; haze observations, cells, pixels, actions, and resamples are nested",
+      "GT selects only this offline diagnostic oracle and is prohibited as an inference-time signal or proposed module input",
+      "confirmation, sealed-final, NH-Haze, canary, and locked-test images remain absent and unread"
+    ],
+    "matched_budget": "150 original-clear development scenes per dataset, exactly two outcome-blind haze observations per scene, 16 nested spatial cells per observation, five fixed local strengths, and one dense scene-global scalar comparator",
+    "primary_variable": "privileged cross-fitted local scaling of the fixed official ConvIR-B restoration residual",
+    "reference": "the optimistic best single alpha on a frozen 1001-point [0.5, 1.5] scene-global grid, selected by the same cross-fit split and evaluated on exactly the same pixels; keep alpha is 1.0"
+  },
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 450,
+    "strata": [
+      {
+        "id": "HAZE4K_TRAIN_DEVELOPMENT",
+        "independent_group_count": 150
+      },
+      {
+        "id": "ITS_DEVELOPMENT",
+        "independent_group_count": 150
+      },
+      {
+        "id": "OTS_DEVELOPMENT",
+        "independent_group_count": 150
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "equal-weight mean of the three dataset-specific means of scene-level two-observation local-versus-global PSNR ratios; within each observation, local-selected and dense-global-selected SSE are pooled over identical opposite-half pixels before one logarithm, then the observation values are averaged and clipped to [-0.25, 0.25] dB",
+    "direction": "higher",
+    "id": "crossfit_local_over_global_utility",
+    "metric_id": "equal_dataset_mean_scene_pooled_sse_local_minus_dense_global_psnr_db",
+    "strata": [
+      "HAZE4K_TRAIN_DEVELOPMENT",
+      "ITS_DEVELOPMENT",
+      "OTS_DEVELOPMENT"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Across development-only Haze4K, RESIDE ITS, and RESIDE OTS scenes, does the fixed ConvIR-B baseline exhibit same-scene, cross-observation repeatable spatial need for weaker, positively supported unchanged, and stronger residual restoration, with material privileged utility over one scene-global strength on a frozen dense scalar grid, spatial specificity beyond a permuted action map, and an interpretable near-clear fidelity outcome?",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "scene_grouped_s1_gate_families",
+    "confidence_level": 0.95,
+    "id": "simultaneous_scene_grouped_s1_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "stratified_scene_bootstrap_and_simultaneous_wilson"
+  }
+}

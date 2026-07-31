@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-local-restoration-need-qualification-v1.json",
+  "experiment_spec_sha256": "b0256f8df7a8cf28e81432eb9fffa161e686d9505783b3df8631af4f53cd7fcf",
+  "operations": {
+    "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "AUTHOR_S2_MECHANISM_DISCOVERY_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_local_restoration_need_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "daytime_dehazing_local_restoration_need_qualification",
+      "monitor_profile": "standard",
+      "output_id": "daytime-dehazing-local-restoration-need-qualification-v1-r2",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "d2e6963ebabec911b36dfd70718d47d6641500416c3d138e7bdf76041f3c2520",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-local-restoration-need-qualification-v1.md",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "rules_commit": "23a567c6a9962f18ef261cc376f3492f66db1b5c",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-local-restoration-need-qualification-v1__DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY.json"
+  }
+}
