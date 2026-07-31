@@ -1,0 +1,176 @@
+{
+  "datasets": {
+    "ITS": {
+      "allowed_development_scene_count": 869,
+      "check_counts": {
+        "canonical_clear_identity": 150,
+        "clear_haze_dimensions_aligned": 150,
+        "clear_present_and_decoded": 150,
+        "exactly_two_selected_haze_observations": 150,
+        "formation_tokens_distinct": 150,
+        "haze_observations_decoded": 150,
+        "haze_payloads_distinct": 150,
+        "scoring_geometry_valid": 150,
+        "whole_image_resource_feasible": 150
+      },
+      "dataset": "ITS",
+      "exact_planned_roster_without_backfill": true,
+      "expected_planned_scene_digest": "e61a53e819f36f0ee718d1bf4d6d54cfa5982501397a46cbaa005f9877e62882",
+      "independence_contract": {
+        "content_equivalence": "exact decoded canonical clear RGB digest",
+        "formation_distinction": "distinct haze file SHA-256, decoded haze RGB SHA-256, and nonempty source filename token",
+        "haze_observations_are_independent_replicates": false,
+        "haze_observations_are_nested": true,
+        "independent_unit": "original_clear_scene"
+      },
+      "mapping_ledger_slice_digest": "d730c6f2e94902fec20d904cc3e46a2d85979110d0b1988f2439bf8be66557ce",
+      "namespace_summaries": {
+        "ITS_TRAIN": {
+          "ambiguous_file_count": 0,
+          "clear_root_available": true,
+          "hazy_file_count": 100000,
+          "hazy_root_available": true,
+          "mapping_rule": "unique longest clear stem followed by an underscore boundary",
+          "matched_file_count": 1340,
+          "selected_clear_count": 134,
+          "unmatched_file_count": 98660
+        },
+        "ITS_VALIDATION": {
+          "ambiguous_file_count": 0,
+          "clear_root_available": true,
+          "hazy_file_count": 10000,
+          "hazy_root_available": true,
+          "mapping_rule": "unique longest clear stem followed by an underscore boundary",
+          "matched_file_count": 160,
+          "selected_clear_count": 16,
+          "unmatched_file_count": 9840
+        }
+      },
+      "planned_digest_matches_parent": true,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "e61a53e819f36f0ee718d1bf4d6d54cfa5982501397a46cbaa005f9877e62882",
+      "selected_scene_count": 150,
+      "shape_envelope": {
+        "max_allowed_height": 4096,
+        "max_allowed_padded_pixels": 16777216,
+        "max_allowed_width": 4096,
+        "max_observed_height": 460,
+        "max_observed_padded_pixels": 307200,
+        "max_observed_width": 620,
+        "scoring_crop_rule": "largest square multiple of 32 not exceeding 512 or either image dimension, with minimum 256"
+      }
+    },
+    "OTS": {
+      "allowed_development_scene_count": 801,
+      "check_counts": {
+        "canonical_clear_identity": 150,
+        "clear_haze_dimensions_aligned": 150,
+        "clear_present_and_decoded": 150,
+        "exactly_two_selected_haze_observations": 150,
+        "formation_tokens_distinct": 150,
+        "haze_observations_decoded": 150,
+        "haze_payloads_distinct": 150,
+        "scoring_geometry_valid": 150,
+        "whole_image_resource_feasible": 150
+      },
+      "dataset": "OTS",
+      "exact_planned_roster_without_backfill": true,
+      "expected_planned_scene_digest": "6031862cc97f33bb2995df4cb23ad7db522cf0ed992ad9deb5c76003fc17acfb",
+      "independence_contract": {
+        "content_equivalence": "exact decoded canonical clear RGB digest",
+        "formation_distinction": "distinct haze file SHA-256, decoded haze RGB SHA-256, and nonempty source filename token",
+        "haze_observations_are_independent_replicates": false,
+        "haze_observations_are_nested": true,
+        "independent_unit": "original_clear_scene"
+      },
+      "mapping_ledger_slice_digest": "adf79d7b7ab3040968a44451ff676586ccffbe01414a934bb2f58c747be5bcd1",
+      "namespace_summaries": {
+        "OTS": {
+          "ambiguous_file_count": 0,
+          "clear_root_available": true,
+          "hazy_file_count": 313950,
+          "hazy_root_available": true,
+          "mapping_rule": "unique longest clear stem followed by an underscore boundary",
+          "matched_file_count": 5250,
+          "selected_clear_count": 150,
+          "unmatched_file_count": 308700
+        }
+      },
+      "planned_digest_matches_parent": true,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "6031862cc97f33bb2995df4cb23ad7db522cf0ed992ad9deb5c76003fc17acfb",
+      "selected_scene_count": 150,
+      "shape_envelope": {
+        "max_allowed_height": 4096,
+        "max_allowed_padded_pixels": 16777216,
+        "max_allowed_width": 4096,
+        "max_observed_height": 982,
+        "max_observed_padded_pixels": 571392,
+        "max_observed_width": 552,
+        "scoring_crop_rule": "largest square multiple of 32 not exceeding 512 or either image dimension, with minimum 256"
+      }
+    }
+  },
+  "forbidden_activity_receipt": {
+    "confirmation_or_sealed_final_image_accessed": false,
+    "model_or_checkpoint_accessed": false,
+    "planned_scene_backfill_occurred": false,
+    "restoration_outcome_or_metric_computed": false,
+    "training_or_inference_occurred": false
+  },
+  "future_s1_constraints": {
+    "capability_profile_must_match_observed_shape_envelope": true,
+    "haze_variants_nested_within_scene": true,
+    "independent_unit": "original_clear_scene",
+    "scoring_crop_maximum": 512,
+    "scoring_crop_minimum": 256,
+    "scoring_crop_multiple": 32,
+    "whole_image_inference_before_scoring_crop": true
+  },
+  "gate_outcomes": {
+    "canonical_clear_identity": "pass",
+    "evidence_identity": "pass",
+    "formation_content_separation": "pass",
+    "identity_contract_precision": "met",
+    "nested_haze_pairing": "pass",
+    "planned_roster_coverage": "pass",
+    "scoring_geometry_validity": "pass",
+    "whole_image_resource_feasibility": "favorable"
+  },
+  "limitations": [
+    "The two haze files are nested formation observations of one original clear scene and are not independent replicates.",
+    "Distinct source tokens and decoded haze payloads verify a formation contrast while exact clear RGB identity holds content fixed; they do not validate a physical atmospheric parameter model.",
+    "The whole-image shape envelope is an input contract only. Revised S1 must separately qualify the exact full-image ConvIR-B production path at the bound device class before inference.",
+    "PASS authorizes only revised S1 contract authoring and provides no evidence about restoration need, local utility, near-clear safety, or S2 readiness."
+  ],
+  "mapping_ledger": {
+    "archived_to_github": false,
+    "filename": "daytime_dehazing_reside_pairing_contract_v2_mapping_ledger.jsonl",
+    "rows": 300,
+    "sha256": "d3e889b3cce92c0a11f25a6a49db0e3a3854b7eb427721b2410871ad65d39c25"
+  },
+  "marker": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_V1_COMPLETE",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "parent_evidence_checks": {
+    "s0_development_capacity": true,
+    "s0_parent_pass": true,
+    "s1_v1_pre_inference_pairing_defect": true,
+    "s1_v1_typed_parent": true
+  },
+  "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+  "required_scene_count": 300,
+  "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+  "run_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
+  "s0_ledger_summary": {
+    "development_counts": {
+      "ITS": 869,
+      "OTS": 801
+    },
+    "excluded_count": 3275,
+    "expected_counts_match": true,
+    "row_count": 21025
+  },
+  "schema_version": 1,
+  "scope": "outcome-blind ITS/OTS pairing and shape contract for revised S1 authoring",
+  "valid_scene_count": 300
+}

@@ -1,0 +1,43 @@
+{
+  "assurance": {
+    "method_id": "bounded_indicator_worst_case_variance",
+    "planning_sd_rule": "Use the distribution-free Bernoulli upper bound SD=0.5 for any bounded scene-level contract indicator; no historical outcome or variance estimate is used.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_reside_pairing_contract_capacity_v2",
+  "comparison_family": "two_dataset_pairing_contract_family",
+  "confidence_level": 0.95,
+  "critical_value": 2.58,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "binomial_worst_case",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "primary_estimand_id": "valid_reside_pairing_contract_capacity",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+  "schema_version": 2,
+  "source_reference": "Pre-run S0 development capacities and the already frozen parent planned-roster size, using only a worst-case bounded-indicator variance bound and no restoration outcome data.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "ITS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The SHA-bound S0 ledger fixes 869 retained ITS development-screening scenes; the unchanged parent salt freezes 150 planned scenes."
+    },
+    {
+      "feasible": true,
+      "id": "OTS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 42,
+      "planning_sd": 0.5,
+      "planning_sd_upper_bound": 0.5,
+      "source_reference": "The SHA-bound S0 ledger fixes 801 retained OTS development-screening scenes; the unchanged parent salt freezes 150 planned scenes."
+    }
+  ],
+  "target_half_width": 0.2
+}

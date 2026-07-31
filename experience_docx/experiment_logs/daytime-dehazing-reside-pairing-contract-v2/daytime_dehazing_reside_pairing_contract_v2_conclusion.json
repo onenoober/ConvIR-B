@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "run_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_PASS",
+  "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+  "primary_result": "The frozen ITS and OTS planned rosters were reproduced without backfill, and all 300 planned original-clear scenes matched their S0 canonical RGB identities. Using the verified ITS/train/ITS_haze, ITS/val/haze, and OTS_ALPHA/OTS roots, every scene decoded exactly two distinct nested haze payloads with distinct nonempty source tokens, valid aligned dimensions, valid scoring geometry, and favorable bounded whole-image shape checks.",
+  "primary_fact_ids": [
+    "evidence_identity",
+    "planned_roster_coverage",
+    "canonical_clear_identity",
+    "nested_haze_pairing",
+    "formation_content_separation",
+    "scoring_geometry_validity",
+    "whole_image_resource_feasibility",
+    "identity_contract_precision"
+  ],
+  "gate_fact_ids": [
+    "evidence_identity",
+    "planned_roster_coverage",
+    "canonical_clear_identity",
+    "nested_haze_pairing",
+    "formation_content_separation",
+    "scoring_geometry_validity",
+    "whole_image_resource_feasibility",
+    "identity_contract_precision"
+  ],
+  "gate_reasons": [
+    "The S1 v1 and S0 parent identities, typed terminal tuples, S0 ledger SHA-256, and exact ITS/OTS development capacities matched the frozen evidence contract.",
+    "The unchanged S1 v1 scene-selection and variant-selection salts reproduced the exact parent planned-scene digests for 150 ITS and 150 OTS scenes with no backfill.",
+    "All 300 planned clear images were present, decoded, and matched their S0 canonical RGB identities.",
+    "All 300 scenes had exactly two decoded haze observations with distinct file SHA-256 values, distinct decoded RGB payloads, nonempty distinct source tokens, and no ambiguous filename-to-scene matches.",
+    "All 300 scenes passed clear-haze dimension alignment, scoring geometry, and bounded whole-image resource checks; the maximum observed padded shape was 307200 pixels for ITS and 571392 pixels for OTS.",
+    "The generic three-unit ledger completed with a 300-row mapping ledger SHA-256, without model, checkpoint, inference, restoration-outcome, confirmation, or sealed-final access."
+  ],
+  "competing_explanation": "The prior pairing INCONCLUSIVE was caused by an incorrect frozen directory contract (ITS_hazy, val/hazy, and hazy_images). The corrected route bound the actual cloud roots and completed the planned identity and nested-pairing checks.",
+  "limitations": [
+    "The two haze files are nested formation observations of one original clear scene and are not independent replicates.",
+    "Distinct source tokens and decoded haze payloads establish a formation contrast while clear RGB identity is held fixed; they do not validate a physical atmospheric parameter model.",
+    "The observed shape envelope is an input contract only. Revised S1 must separately qualify the exact full-image ConvIR-B production path at the bound device class before inference.",
+    "This PASS authorizes only authoring a revised S1 utility-qualification contract; it is not evidence about restoration need, local utility, near-clear safety, or S2 readiness."
+  ]
+}
