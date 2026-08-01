@@ -1,0 +1,27 @@
+{
+  "descriptive_observations": [
+    "edge_minus_interior_local_advantage_db_descriptive"
+  ],
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "geometry_contract": "pass",
+    "null_control_validity": "pass",
+    "pairing_geometry": "pass",
+    "precision_feasibility": "met",
+    "review_contract_resolution": "favorable"
+  },
+  "inconclusive_only_gates": [
+    "precision_feasibility"
+  ],
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "run_id": "daytime-dehazing-s1-validity-precision-review-v1-r1",
+  "schema_version": 1,
+  "summary_filename": "daytime_dehazing_s1_validity_precision_review_v1_summary.json",
+  "validity_veto_gates": [
+    "evidence_identity",
+    "pairing_geometry",
+    "geometry_contract",
+    "null_control_validity"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "ai_inference": "The compact identity, pairing, geometry, diagnostic-scope, and planning-capacity records are sufficient only to author a revised S1 utility-qualification contract; they do not resolve the archived S1 scientific terminal.",
+  "checks": {
+    "evidence_identity": {
+      "all_compact_inputs_loaded": true,
+      "pairing_v2_identity_bound": true,
+      "pairing_v2_summary_bound": true,
+      "pairing_v2_terminal_identity": true,
+      "s0_role_summary_bound": true,
+      "s0_terminal_identity": true,
+      "s1_v1_summary_bound": true,
+      "s1_v1_terminal_identity": true,
+      "s1_v2_gate_summary_bound": true,
+      "s1_v2_summary_bound": true,
+      "s1_v2_terminal_identity": true
+    },
+    "geometry_contract": {
+      "crop_maximum_512": true,
+      "crop_minimum_256": true,
+      "crop_multiple_32": true,
+      "edge_interior_available_as_descriptive_only": true,
+      "its_crop_rule_bound": true,
+      "its_observed_shape_within_bound": true,
+      "ots_crop_rule_bound": true,
+      "ots_observed_shape_within_bound": true,
+      "whole_image_inference_before_crop": true
+    },
+    "pairing_geometry": {
+      "haze4k_capacity_150": true,
+      "its_all_identity_geometry_checks_150": true,
+      "its_capacity_at_least_150": true,
+      "its_nested_not_independent": true,
+      "its_planned_selected_150": true,
+      "no_pairing_backfill": true,
+      "ots_all_identity_geometry_checks_150": true,
+      "ots_capacity_at_least_150": true,
+      "ots_nested_not_independent": true,
+      "ots_planned_selected_150": true,
+      "pairing_ledger_identity": true,
+      "pairing_ledger_rows_300": true,
+      "pairing_valid_scene_count_300": true,
+      "parent_coverage_passed": true,
+      "s0_roles_disjoint": true
+    },
+    "review_scope": {
+      "crop_edge_interior_archived": true,
+      "cross_observation_transfer_archived": true,
+      "haze4k_negative_tail_archived": true,
+      "its_null_ucb_archived": true,
+      "prior_null_failure_preserved": true,
+      "prior_precision_met_preserved": true,
+      "prior_transfer_unfavorable_preserved": true,
+      "prior_utility_unfavorable_preserved": true
+    }
+  },
+  "forbidden_activity_receipt": {
+    "arrays_or_large_tables_accessed": false,
+    "historical_metric_recomputed": false,
+    "historical_terminal_modified": false,
+    "model_structure_modified": false,
+    "protected_data_touched": false,
+    "raw_images_accessed": false,
+    "training_or_inference_occurred": false,
+    "weights_or_checkpoints_accessed": false
+  },
+  "gate_outcomes": {
+    "evidence_identity": "pass",
+    "geometry_contract": "pass",
+    "null_control_validity": "pass",
+    "pairing_geometry": "pass",
+    "precision_feasibility": "met",
+    "review_contract_resolution": "favorable"
+  },
+  "github_archived_facts": {
+    "archived_observations": {
+      "cross_observation_transfer_overall_db": -0.03629596532555667,
+      "edge_minus_interior_local_advantage_db_descriptive": 0.7531127624850509,
+      "haze4k_negative_tail_prevalence": 0.44666666666666666,
+      "its_shifted_target_null_ucb_db": 0.2406042281979265,
+      "primary_precision_prior_gate": "met"
+    },
+    "pairing_terminal": {
+      "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+      "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_PASS",
+      "state": "COMPLETED_GATE_PASS"
+    },
+    "parent_terminal": {
+      "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+      "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+      "state": "COMPLETED_INCONCLUSIVE"
+    }
+  },
+  "input_errors": [],
+  "missing_evidence": [
+    "A frozen diagnostic that can distinguish an invalid ITS shifted-target null from a genuine target-construction response.",
+    "A predeclared check of whether Haze4K negative-tail behavior persists under the valid measurement contract.",
+    "A predeclared cross-observation transfer check under the same valid measurement contract.",
+    "Uncertainty-qualified crop and edge/interior diagnostics; the archived edge/interior value remains descriptive only."
+  ],
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "precision_feasibility": {
+    "critical_value": 2.58,
+    "planned_groups_per_stratum": {
+      "HAZE4K_TRAIN_DEVELOPMENT": 150,
+      "ITS_DEVELOPMENT": 150,
+      "OTS_DEVELOPMENT": 150
+    },
+    "planning_sd_upper_bound_db": 0.25,
+    "required_groups_per_stratum": 138,
+    "target_half_width_db": 0.055,
+    "unit": "independent original-clear scenes per dataset stratum"
+  },
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "run_id": "daytime-dehazing-s1-validity-precision-review-v1-r1",
+  "schema_version": 1,
+  "scope": "archived compact measurement-validity and precision review only"
+}

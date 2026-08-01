@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "run_id": "daytime-dehazing-s1-validity-precision-review-v1-r1",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_PASS",
+  "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+  "primary_result": "The archived compact evidence passed the frozen evidence-identity, pairing-geometry, geometry-contract, and null-control validity gates, and the pre-run precision feasibility requirement was met. This resolves only the S1 measurement-validity and precision review in favor of authoring a revised S1 utility-qualification contract; it does not alter the parent scientific terminal.",
+  "gate_reasons": [
+    "The evidence_identity gate passed for all frozen compact inputs and their archived identities.",
+    "The pairing_geometry gate passed with scene-level grouping, nested observations, disjoint data roles, and no pairing backfill.",
+    "The geometry_contract gate passed for the frozen whole-image-before-crop and bounded crop rules; edge/interior evidence remains descriptive only.",
+    "The null_control_validity gate passed for the scope of this compact review.",
+    "The precision_feasibility requirement was met under the frozen planning-SD upper bound and stratum capacity contract.",
+    "The review_contract_resolution outcome was favorable only for authoring a revised S1 utility-qualification contract."
+  ],
+  "competing_explanation": "Passing this review can be explained by the compact records being internally identity-bound and adequate for a future diagnostic contract, while the archived unfavorable ITS null, Haze4K negative-tail, cross-observation transfer, and utility observations remain scientifically unresolved; the review did not recompute or overturn them.",
+  "limitations": [
+    "This route used archived development-screening compact evidence only and performed no new scientific metric computation, inference, or training.",
+    "The archived parent terminal remains COMPLETED_INCONCLUSIVE with authorization limited to S1 review work.",
+    "The ITS shifted-target null still lacks a frozen diagnostic that separates measurement invalidity from a genuine target-construction response.",
+    "Haze4K negative-tail persistence and cross-observation transfer have not yet been tested under a revised valid measurement contract.",
+    "Crop and edge/interior observations remain descriptive until uncertainty-qualified diagnostics are predeclared and executed.",
+    "This terminal does not authorize S2, model-structure changes, training, deployment, or modification of historical results."
+  ],
+  "primary_fact_ids": [
+    "review_contract_resolution"
+  ],
+  "gate_fact_ids": [
+    "evidence_identity",
+    "pairing_geometry",
+    "geometry_contract",
+    "null_control_validity",
+    "precision_feasibility",
+    "review_contract_resolution"
+  ]
+}

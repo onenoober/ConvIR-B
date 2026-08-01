@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 4
+  },
+  "entry_count": 5,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "f55e00de64e1f30db400e89cda8b9411a44edac963563a6fdbd0179f56493498",
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "route_commit": "57725ae6881b36aa5a56e5b31dc8cd9bcb946433",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "run_id": "daytime-dehazing-s1-validity-precision-review-v1-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 13587
+}

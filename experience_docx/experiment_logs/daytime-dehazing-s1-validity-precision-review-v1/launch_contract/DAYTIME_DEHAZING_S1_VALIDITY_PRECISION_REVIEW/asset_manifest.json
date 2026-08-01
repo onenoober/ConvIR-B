@@ -1,0 +1,95 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/review_daytime_dehazing_s1_validity_precision_v1.py",
+      "sha256": "81d5a6df7689e7ec46e90c53ce3b522a920364a4ed1a46adebc755029c065911"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s0_closeout",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_closeout.json",
+      "sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s0_role_summary",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_role_summary.json",
+      "sha256": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v1_closeout",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_closeout.json",
+      "sha256": "8272c22034ad827c39ac2ff7d7c1903f39a9872f8a7a81ca854bc95b045af98b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v1_summary",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_summary.json",
+      "sha256": "5e3b678c8968a0c243f6bf79fe40b8ca80e860a376e475b61f90599eded0df1f"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "pairing_v2_closeout",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_closeout.json",
+      "sha256": "915d98b1dae5847cdb1166610e16ade96b5fb656373587d08895e2a7863492b9"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "pairing_v2_summary",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_summary.json",
+      "sha256": "d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "pairing_v2_identity_summary",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_identity_summary.json",
+      "sha256": "123acad0dcf73b958d2d02845c8c51f0eac89023a469de551102ca40a714794a"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_closeout",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_closeout.json",
+      "sha256": "64831258a340a0e3f9a3bad82c8138ce144c837b3e01cd42ded67daa82d59992"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_summary",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_summary.json",
+      "sha256": "fdb15c9da34b6e9bba815927578898957b1980f87d7bb3295dfb1b31fb3fa068"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_gate_summary",
+      "kind": "file",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_gate_summary.json",
+      "sha256": "a498559a645d547472185d889af9c19ce589f56ed91564cb3931deda4e338a69"
+    }
+  ],
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "schema_version": 2
+}
