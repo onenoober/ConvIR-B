@@ -1360,6 +1360,36 @@ class ConvirOpsV4Tests(unittest.TestCase):
                 })["structuredContent"]
             self.assertEqual(contract, fetched["archive_contract"])
 
+    def test_schema6_terminal_returns_ordered_decide_archive_handoff(self):
+        scientific_context = context()
+        scientific_context["route_manifest_schema_version"] = 6
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": scientific_context, "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {"launched": True, "finish_closed": None},
+        )
+        closeout = closeout_binding()
+        result = payload(OPS.validated_scientific_result(
+            receipt, closeout, {"closeout": closeout},
+        ))
+        expected = [
+            "convir_evidence_list",
+            "convir_evidence_fetch",
+            "author_scientific_conclusion",
+            "prepare_terminal_archive",
+        ]
+        self.assertEqual(expected, result["allowed_next_actions"])
+        self.assertEqual(expected, result["required_action_sequence"])
+        self.assertFalse(result["archive_ready"])
+        self.assertEqual(
+            "experience_docx/experiment_logs/a1x/s0_conclusion.json",
+            result["archive_contract"]["conclusion_path"],
+        )
+        self.assertEqual("CLOSEOUT_VALIDATED", result["operation_state"])
+
     def test_engineering_archive_evidence_has_no_scientific_archive_contract(self):
         engineering_context = context()
         engineering_context["route_manifest_schema_version"] = 6

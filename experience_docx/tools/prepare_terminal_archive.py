@@ -1479,10 +1479,18 @@ def prepare_destination(
         raise TerminalArchiveError("destination archive worktree must be clean")
     head = git(destination_repo, "rev-parse", "HEAD")
     base = git(destination_repo, "rev-parse", base_ref)
+    advanced_from = None
     if head != base:
-        raise TerminalArchiveError(
-            f"destination HEAD must equal current main: HEAD={head} main={base}"
-        )
+        if git(destination_repo, "merge-base", head, base) != head:
+            raise TerminalArchiveError(
+                "destination HEAD is not a clean ancestor of current main: "
+                f"HEAD={head} main={base}"
+            )
+        git(destination_repo, "switch", "--detach", base)
+        if git(destination_repo, "rev-parse", "HEAD") != base \
+                or git(destination_repo, "status", "--porcelain"):
+            raise TerminalArchiveError("destination main auto-advance did not settle cleanly")
+        advanced_from = head
 
     payloads: dict[str, bytes] = audit["payloads"]
     planned: dict[str, bytes] = {}
@@ -1559,6 +1567,8 @@ def prepare_destination(
         "status": "TERMINAL_ARCHIVE_PREPARED",
         "route_id": audit["route_id"],
         "base_commit": base,
+        "destination_main_auto_advanced": advanced_from is not None,
+        "destination_previous_head": advanced_from,
         "staged_paths": staged,
         "preserved_result_files": len(audit["result_files"]),
         "manual_parse_steps": 0,
@@ -1745,6 +1755,13 @@ def main() -> None:
             )
         report = serializable(audit)
         if not args.audit_only:
+            refreshed_ref, _ = refresh_remote_target(
+                args.destination_repo,
+                remote=args.remote,
+                target_ref=args.target_ref,
+            )
+            if refreshed_ref != args.base_ref:
+                raise TerminalArchiveError("refreshed archive base ref is not canonical")
             report["archive"] = prepare_destination(
                 args.destination_repo, args.base_ref, audit,
             )

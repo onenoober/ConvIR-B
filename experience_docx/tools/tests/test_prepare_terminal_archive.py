@@ -439,6 +439,57 @@ class TerminalArchiveTests(unittest.TestCase):
             self.assertIn("experience_docx/experiment_logs/route/a1_conclusion.json", staged)
             self.assertNotIn("experience_docx/experiment_logs/route/README.md", staged)
 
+    def test_clean_ancestor_destination_auto_advances_to_current_main(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            destination = self.destination(root)
+            previous = self.git(destination, "rev-parse", "HEAD")
+            self.git(destination, "switch", "-c", "main-advance")
+            (destination / "ADVANCE.md").write_text("advance\n", encoding="utf-8")
+            self.git(destination, "add", "ADVANCE.md")
+            self.git(destination, "commit", "-qm", "advance main")
+            current_main = self.git(destination, "rev-parse", "HEAD")
+            self.git(
+                destination, "update-ref", "refs/remotes/github/main", current_main,
+            )
+            self.git(destination, "switch", "--detach", previous)
+
+            report = ARCHIVE.prepare_destination(
+                destination, "refs/remotes/github/main", self.audit(source),
+            )
+
+            self.assertTrue(report["destination_main_auto_advanced"])
+            self.assertEqual(previous, report["destination_previous_head"])
+            self.assertEqual(current_main, report["base_commit"])
+            self.assertEqual(current_main, self.git(destination, "rev-parse", "HEAD"))
+
+    def test_diverged_destination_is_not_auto_advanced(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root)
+            destination = self.destination(root)
+            common = self.git(destination, "rev-parse", "HEAD")
+            self.git(destination, "switch", "-c", "remote-main")
+            (destination / "REMOTE.md").write_text("remote\n", encoding="utf-8")
+            self.git(destination, "add", "REMOTE.md")
+            self.git(destination, "commit", "-qm", "remote main")
+            remote_main = self.git(destination, "rev-parse", "HEAD")
+            self.git(
+                destination, "update-ref", "refs/remotes/github/main", remote_main,
+            )
+            self.git(destination, "switch", "-c", "local-side", common)
+            (destination / "LOCAL.md").write_text("local\n", encoding="utf-8")
+            self.git(destination, "add", "LOCAL.md")
+            self.git(destination, "commit", "-qm", "local side")
+
+            with self.assertRaisesRegex(
+                ARCHIVE.TerminalArchiveError, "not a clean ancestor",
+            ):
+                ARCHIVE.prepare_destination(
+                    destination, "refs/remotes/github/main", self.audit(source),
+                )
+
     def test_schema6_archive_preserves_full_launch_contract_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

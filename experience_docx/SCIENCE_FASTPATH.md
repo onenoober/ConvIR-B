@@ -35,6 +35,21 @@ cross-route review. Neither local files nor chat can replace those sources.
 Do not begin scientific interpretation or authorization decisions from local
 files before this GitHub-main read completes.
 
+## Continuous Operator Authorization
+
+An explicit operator instruction to carry one finite experiment workflow to
+terminal applies continuously across its ordinary CONTRACT, EXECUTE, DECIDE and
+ARCHIVE transitions. Do not pause for another stage-by-stage approval when the
+route identity is resolved, the frozen authorization permits the transition,
+machine gates pass and runtime state is known. The same standing instruction
+covers one deterministic same-contract command correction allowed by the finite
+recovery policy.
+
+Continuous authorization never overrides a typed scientific authorization,
+protected-data boundary, unknown launch state, sensitive or repeated
+engineering repair, dirty/diverged archive workspace, or any other explicit
+fail-closed stop. Those are blockers, not routine approval boundaries.
+
 ## Five State Transitions
 
 1. SNAPSHOT: use the compact authoritative snapshot, direct parent closeout and
@@ -116,7 +131,12 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    outcomes only and the generic lifecycle resolves the frozen decision table once.
    Require complete folds/seeds/cells/controls, valid uncertainty, and matching
    protected-data access. Publish one typed closeout plus one scientific
-   conclusion. Scientific FAIL is terminal, never an engineering retry.
+   conclusion. For a schema-6 scientific terminal, start/finish returns the
+   canonical `archive_contract`, `archive_ready=false` and the ordered DECIDE
+   handoff. List compact evidence once, fetch the necessary allowlist once,
+   interpret it once and author the schema-2 conclusion at the exact returned
+   path before calling archive. Do not use archive as a missing-conclusion
+   probe. Scientific FAIL is terminal, never an engineering retry.
 5. ARCHIVE: run `prepare_terminal_archive.py` once. The default receipt-bound
    path always fetches only compact closeout/result evidence into an ephemeral
    directory, requires the closeout bytes to match the exact SHA-256 sealed by

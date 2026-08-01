@@ -47,6 +47,11 @@ main may rebuild the complete bundle from the new base and retry push once; a
 second conflict stops. `--prepare-only` is an explicit review pause;
 `--local-evidence-only` is audit-only and forbids receipt transfer. Do not
 repeat diff, suffix, size, parse, hash, blob or remote identity checks manually.
+Before preparation, the default path refreshes the fixed `github/main` tracking
+ref itself. If the reusable worktree is clean and its HEAD is an ancestor of
+that refreshed main, it advances the detached worktree once and records the
+prior HEAD in the archive report. A dirty, ahead or diverged worktree still
+fails closed; no reset, overwrite or branch rewrite is permitted.
 
 Schema-2 terminal index records bind the contract, closeout, conclusion, formal
 results and archived launch bundle by SHA-256 and record the direct prior

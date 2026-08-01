@@ -208,6 +208,14 @@ not a generated conclusion: the operator must author the JSON, and archive
 derives the same canonical path when `--conclusion` is omitted. Engineering
 archive responses do not expose a scientific conclusion contract.
 
+The validated schema-6 terminal response from start/finish returns that same
+`archive_contract` immediately, sets `archive_ready=false`, and supplies the
+ordered action sequence `convir_evidence_list`, `convir_evidence_fetch`,
+`author_scientific_conclusion`, `prepare_terminal_archive`. This removes an
+ambiguous review-or-archive branch without duplicating evidence contents or
+adding a seventh tool. Historical schema-4/5 and engineering terminals retain
+their existing response contract.
+
 `convir_git_status` is intentionally the first route-bound call but not the
 first scientific evidence source. Its local worktree fields bind identity and
 protect against writing to the wrong branch; they do not prove that a route has

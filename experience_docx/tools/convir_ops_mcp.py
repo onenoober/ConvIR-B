@@ -1942,6 +1942,35 @@ def close_scientific_finish(token, closeout):
         record["finish_closed"] = "CLOSEOUT_VALIDATED"
 
 
+def validated_scientific_result(token, closeout, observed, *, manifest=None):
+    close_scientific_finish(token, closeout)
+    with locked_record("receipt", token) as record:
+        context = record["payload"]["context"]
+        archive_contract = scientific_archive_contract(
+            context, closeout, "CLOSEOUT_VALIDATED",
+        )
+    extra = {}
+    next_actions = ["scientific_review_or_archive"]
+    if archive_contract is not None:
+        next_actions = [
+            "convir_evidence_list",
+            "convir_evidence_fetch",
+            "author_scientific_conclusion",
+            "prepare_terminal_archive",
+        ]
+        extra.update({
+            "archive_contract": archive_contract,
+            "archive_ready": False,
+            "required_action_sequence": next_actions,
+        })
+    if manifest is not None:
+        extra["manifest"] = manifest
+    return typed_result(
+        True, "CLOSEOUT_VALIDATED", observed=observed,
+        next_actions=next_actions, receipt=token, **extra,
+    )
+
+
 def authorize_engineering_auto_repair(token, closeout):
     with locked_record("receipt", token) as record:
         record["terminal_closeout"] = closeout
@@ -2956,11 +2985,8 @@ def cancel_operator_route(token):
             failure_phase=failure_phase, archive_authorized=False,
             relaunch_authorized=False, receipt=token,
         )
-    close_scientific_finish(token, closeout)
-    return typed_result(
-        True, "CLOSEOUT_VALIDATED",
-        observed={"closeout": closeout, **observed},
-        next_actions=["scientific_review_or_archive"], receipt=token,
+    return validated_scientific_result(
+        token, closeout, {"closeout": closeout, **observed},
     )
 
 
@@ -3021,13 +3047,12 @@ def tool_finish(args):
                     failure_phase=failure_phase,
                     archive_authorized=False, relaunch_authorized=False, receipt=token,
                 )
-            close_scientific_finish(token, closeout)
-            return typed_result(
-                True, "CLOSEOUT_VALIDATED",
-                observed={"monitor": monitor, "closeout": closeout},
-                next_actions=["scientific_review_or_archive"],
-                manifest={"closeout_filename": closeout["closeout_filename"], "closeout_sha256": closeout["closeout_sha256"]},
-                receipt=token,
+            return validated_scientific_result(
+                token, closeout, {"monitor": monitor, "closeout": closeout},
+                manifest={
+                    "closeout_filename": closeout["closeout_filename"],
+                    "closeout_sha256": closeout["closeout_sha256"],
+                },
             )
         if not monitor["active"]:
             close_finish(token, "CLOSEOUT_MISSING")
