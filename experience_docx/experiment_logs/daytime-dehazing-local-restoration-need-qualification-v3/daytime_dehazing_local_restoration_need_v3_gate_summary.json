@@ -1,0 +1,40 @@
+{
+  "decisive_gates": [
+    "local_utility_over_global",
+    "bidirectional_repeatability",
+    "near_clear_fidelity"
+  ],
+  "descriptive_results": [
+    "edge_local_minus_global_psnr_db",
+    "interior_local_minus_global_psnr_db",
+    "edge_minus_interior_local_advantage_db",
+    "full_image_padded_area_strata"
+  ],
+  "gate_outcomes": {
+    "archived_scene_coverage": "pass",
+    "bidirectional_repeatability": "unfavorable",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "unfavorable",
+    "measurement_null_artifact": "pass",
+    "near_clear_fidelity": "indeterminate",
+    "primary_precision": "unmet"
+  },
+  "geometry_filename": "daytime_dehazing_local_restoration_need_v3_geometry.json",
+  "inconclusive_only_gates": [
+    "primary_precision"
+  ],
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "precision_components": {
+    "archived_primary_precision": "met",
+    "auxiliary_precision": "unmet"
+  },
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v3-r1",
+  "schema_version": 1,
+  "summary_filename": "daytime_dehazing_local_restoration_need_v3_summary.json",
+  "validity_veto_gates": [
+    "evidence_identity",
+    "archived_scene_coverage",
+    "measurement_null_artifact"
+  ]
+}

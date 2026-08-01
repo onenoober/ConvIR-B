@@ -1,0 +1,128 @@
+{
+  "archived_scientific_gate_outcomes": {
+    "bidirectional_repeatability": "unfavorable",
+    "local_utility_over_global": "unfavorable",
+    "near_clear_fidelity": "indeterminate",
+    "primary_precision": "met"
+  },
+  "coverage": {
+    "counts_by_dataset": {
+      "HAZE4K_TRAIN": 150,
+      "ITS": 150,
+      "OTS": 150
+    },
+    "expected_counts_by_dataset": {
+      "HAZE4K_TRAIN": 150,
+      "ITS": 150,
+      "OTS": 150
+    },
+    "row_error": null,
+    "scene_count": 450
+  },
+  "forbidden_activity_receipt": {
+    "historical_metric_recomputed": false,
+    "historical_terminal_modified": false,
+    "model_structure_modified": false,
+    "protected_data_touched": false,
+    "raw_images_accessed": false,
+    "training_or_inference_occurred": false,
+    "weights_or_checkpoints_accessed": false
+  },
+  "gate_outcomes": {
+    "archived_scene_coverage": "pass",
+    "bidirectional_repeatability": "unfavorable",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "unfavorable",
+    "measurement_null_artifact": "pass",
+    "near_clear_fidelity": "indeterminate",
+    "primary_precision": "unmet"
+  },
+  "geometry_diagnostics_file": "daytime_dehazing_local_restoration_need_v3_geometry.json",
+  "identity_checks": {
+    "review_terminal": true,
+    "s1_review_closeout_sha256": true,
+    "s1_v2_closeout_sha256": true,
+    "s1_v2_gate_summary_sha256": true,
+    "s1_v2_scene_metrics_sha256": true,
+    "s1_v2_summary_sha256": true,
+    "v2_gate_summary_bound": true,
+    "v2_scene_metrics_bound": true,
+    "v2_summary_bound": true,
+    "v2_terminal": true
+  },
+  "limitations": [
+    "This development-screening reanalysis is not independent confirmation.",
+    "Historical v2 estimates, thresholds, gate outcomes, and terminal are not modified.",
+    "The archived scene CSV has no scoring-crop-side column; padded full-image area cannot be relabeled as crop size.",
+    "Edge/interior intervals are descriptive and cannot by themselves establish a crop-boundary artifact.",
+    "No model, checkpoint, image, array, training, inference, S2, or protected data is accessed."
+  ],
+  "measurement_null": {
+    "classification_rule": "Affirmative artifact requires a simultaneous LCB at or above the unchanged 0.05 dB overall or 0.10 dB dataset margin. Failure to put every UCB below those margins is precision-unmet, not a validity failure.",
+    "diagnostic": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "estimate": -0.27353819703457216,
+          "lower": -0.68369502834772,
+          "max_half_width": 0.41015683131314784,
+          "resamples": 20000,
+          "scene_count": 150,
+          "simultaneous_family": "overall_plus_three_dataset_means",
+          "upper": 0.0834796722457963
+        },
+        "ITS": {
+          "estimate": 0.00396497835957969,
+          "lower": -0.30459375022261836,
+          "max_half_width": 0.30855872858219807,
+          "resamples": 20000,
+          "scene_count": 150,
+          "simultaneous_family": "overall_plus_three_dataset_means",
+          "upper": 0.2406042281979265
+        },
+        "OTS": {
+          "estimate": -1.1083733896371328,
+          "lower": -1.6183450316560224,
+          "max_half_width": 0.5099716420188896,
+          "resamples": 20000,
+          "scene_count": 150,
+          "simultaneous_family": "overall_plus_three_dataset_means",
+          "upper": -0.6510442091248171
+        }
+      },
+      "dataset_margin_db": 0.1,
+      "overall": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": -0.45931553610404174,
+        "lower": -0.6949311225626278,
+        "max_half_width": 0.23561558645858605,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": -0.24452382512171683
+      },
+      "overall_margin_db": 0.05,
+      "precision_certifies_absence": false,
+      "status": "no_affirmative_artifact"
+    },
+    "precision_outcome": "unmet",
+    "validity_outcome": "pass"
+  },
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "precision_components": {
+    "archived_primary_precision": "met",
+    "auxiliary_precision": "unmet",
+    "auxiliary_requirements": "null-control absence certified, edge/interior geometry valid, and scoring-crop side explicitly archived",
+    "combined_typed_gate": "unmet"
+  },
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v3-r1",
+  "schema_version": 1,
+  "scope": "SHA-bound archived S1 scene-level compact reanalysis",
+  "source_bindings": {
+    "s1_review_closeout": "b05665be761bbe90707cc622ce24cba285027b3c43a34041a007bcbe0e321670",
+    "s1_v2_closeout": "64831258a340a0e3f9a3bad82c8138ce144c837b3e01cd42ded67daa82d59992",
+    "s1_v2_gate_summary": "a498559a645d547472185d889af9c19ce589f56ed91564cb3931deda4e338a69",
+    "s1_v2_scene_metrics": "db6cfe210b3eedf08e06d2b6fd4447f523b1777661d87ccb53e0bf5e99bb1f8e",
+    "s1_v2_summary": "fdb15c9da34b6e9bba815927578898957b1980f87d7bb3295dfb1b31fb3fa068"
+  }
+}

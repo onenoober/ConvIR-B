@@ -1,0 +1,92 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
+  "decision_rule_id": "valid_utility_failure",
+  "details": {
+    "completed_units": 1,
+    "gate_summary_file": "daytime_dehazing_local_restoration_need_v3_gate_summary.json",
+    "geometry_file": "daytime_dehazing_local_restoration_need_v3_geometry.json",
+    "historical_results_modified": false,
+    "model_or_training_activity": false,
+    "raw_or_protected_data_touched": false,
+    "review_facts_file": "daytime_dehazing_local_restoration_need_v3_review_facts.json",
+    "summary_file": "daytime_dehazing_local_restoration_need_v3_summary.json",
+    "total_units": 1
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "daytime_dehazing_local_restoration_need_v3_gate_summary.json": "ef261fb35b36e1c2c17e178c88188f4e27e3cec3408f2a5c75742740c30917ff",
+    "daytime_dehazing_local_restoration_need_v3_geometry.json": "72d1aa67b632710dde1eb834590744499f6459b7aa636c0e035e23e0f8dfe8cb",
+    "daytime_dehazing_local_restoration_need_v3_raw_artifact_receipt.json": "ccb792b5735a617ac18973f33ce82493add30bd44a87fae9e4afbfce0521a40b",
+    "daytime_dehazing_local_restoration_need_v3_review_facts.json": "45f3c8c941e03f9d07ad662c2e9f2f14382892078610ae8218266571ded78da6",
+    "daytime_dehazing_local_restoration_need_v3_summary.json": "7a7530ce39d91e7f5e54014f54bd67779c70100ffdddbf08053b9b25020d27f3"
+  },
+  "failure_phase": null,
+  "family_effect": "record_only",
+  "gate_outcomes": {
+    "archived_scene_coverage": "pass",
+    "bidirectional_repeatability": "unfavorable",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "unfavorable",
+    "measurement_null_artifact": "pass",
+    "near_clear_fidelity": "indeterminate",
+    "primary_precision": "unmet"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "author_second_s1_operationalization_contract_if_budget_remains",
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "returncode": 0,
+  "route_commit": "cbf83e5a8b2a69beb0ac581cfe1e02cd21ce81b6",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v3-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_FAIL",
+  "terminal_label": "fail",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "sha256": "32ddb21c73f19f6ea711ce58a54f732f2336903fc56c857eca1890d9afda057a"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_review_closeout",
+      "kind": "file",
+      "sha256": "b05665be761bbe90707cc622ce24cba285027b3c43a34041a007bcbe0e321670"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_closeout",
+      "kind": "file",
+      "sha256": "64831258a340a0e3f9a3bad82c8138ce144c837b3e01cd42ded67daa82d59992"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_gate_summary",
+      "kind": "file",
+      "sha256": "a498559a645d547472185d889af9c19ce589f56ed91564cb3931deda4e338a69"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_scene_metrics",
+      "kind": "file",
+      "sha256": "db6cfe210b3eedf08e06d2b6fd4447f523b1777661d87ccb53e0bf5e99bb1f8e"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_summary",
+      "kind": "file",
+      "sha256": "fdb15c9da34b6e9bba815927578898957b1980f87d7bb3295dfb1b31fb3fa068"
+    }
+  ]
+}

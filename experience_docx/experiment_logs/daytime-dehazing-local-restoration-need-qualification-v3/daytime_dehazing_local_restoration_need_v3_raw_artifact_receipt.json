@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 6
+  },
+  "entry_count": 7,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "0ea474a4c8ff864abc264899110116bf38c50bf974e210d53bd848fc372fe327",
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "route_commit": "cbf83e5a8b2a69beb0ac581cfe1e02cd21ce81b6",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v3-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 19435
+}

@@ -1,0 +1,123 @@
+{
+  "bootstrap_resamples": 20000,
+  "confidence_level": 0.99,
+  "edge_local_minus_global_psnr_db": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": 0.0022567211066921913,
+        "lower": -0.32582931106492957,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 0.33734003429685194
+      },
+      "ITS": {
+        "estimate": 0.7181233484909566,
+        "lower": 0.5826828996735011,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 0.8654451524824581
+      },
+      "OTS": {
+        "estimate": 2.4850062673605513,
+        "lower": 2.1328675375462844,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 2.84730194749152
+      }
+    },
+    "overall_equal_dataset_weight": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 1.0684621123194,
+      "lower": 0.9000360592504828,
+      "resamples": 20000,
+      "scene_count": 450,
+      "upper": 1.239241503811686
+    }
+  },
+  "edge_minus_interior_local_advantage_db": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": 0.6787959276502878,
+        "lower": 0.33149652834804355,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 1.0455905838854576
+      },
+      "ITS": {
+        "estimate": 0.28289430291934453,
+        "lower": 0.12131579921503442,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 0.444538304243802
+      },
+      "OTS": {
+        "estimate": 1.2976480568855198,
+        "lower": 0.9376951220920065,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 1.6821163005508633
+      }
+    },
+    "overall_equal_dataset_weight": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.7531127624850508,
+      "lower": 0.5726765081732076,
+      "resamples": 20000,
+      "scene_count": 450,
+      "upper": 0.938229439515831
+    }
+  },
+  "full_image_padded_area_strata": {
+    "HAZE4K_TRAIN": {
+      "above_262144": 64,
+      "at_most_262144": 86
+    },
+    "ITS": {
+      "above_262144": 99,
+      "at_most_262144": 51
+    },
+    "OTS": {
+      "above_262144": 35,
+      "at_most_262144": 115
+    }
+  },
+  "independent_unit": "original_clear_scene",
+  "interior_local_minus_global_psnr_db": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": -0.6765392065435957,
+        "lower": -1.137286511291799,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": -0.24125550464776202
+      },
+      "ITS": {
+        "estimate": 0.43522904557161185,
+        "lower": 0.3098757576409096,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 0.5774478839756408
+      },
+      "OTS": {
+        "estimate": 1.187358210475033,
+        "lower": 0.782221038893867,
+        "resamples": 20000,
+        "scene_count": 150,
+        "upper": 1.591924617410847
+      }
+    },
+    "overall_equal_dataset_weight": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.31534934983434976,
+      "lower": 0.10682848965304347,
+      "resamples": 20000,
+      "scene_count": 450,
+      "upper": 0.521083324553251
+    }
+  },
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "schema_version": 1,
+  "scope_note": "Edge/interior intervals are uncertainty-qualified. The archived CSV does not contain scoring-crop side, so padded-area strata are descriptive and cannot be relabeled as a crop-size effect.",
+  "scoring_crop_side_available": false
+}

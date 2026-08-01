@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v3-r1",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The SHA-bound revised S1 development-screening qualification passed evidence identity, archived scene coverage, and measurement-null validity, but local utility over global and bidirectional repeatability were both unfavorable. Under the frozen valid_utility_failure decision rule, these decisive outcomes establish COMPLETED_GATE_FAIL and authorize no S2, model change, training, deployment, or scientific promotion.",
+  "gate_reasons": [
+    "The evidence_identity, archived_scene_coverage, and measurement_null_artifact validity-veto gates all passed, so no validity veto forced an inconclusive terminal.",
+    "The local_utility_over_global gate was unfavorable under the archived, unchanged S1 scientific outcomes.",
+    "The bidirectional_repeatability gate was unfavorable under the archived, unchanged S1 scientific outcomes.",
+    "The near_clear_fidelity gate was indeterminate, but it does not override the two decisive unfavorable utility gates in the frozen valid_utility_failure row.",
+    "Archived primary precision was met, while auxiliary precision was unmet. The combined primary_precision gate is inconclusive_only and cannot hide a decisive scientific FAIL."
+  ],
+  "competing_explanation": "The uncertainty-qualified edge/interior summaries show spatial heterogeneity, including positive overall edge-local and edge-minus-interior advantages, and the revised null diagnostic found no affirmative measurement artifact. These descriptive patterns do not override the frozen unfavorable local-utility and bidirectional-repeatability gates, and the absent scoring-crop-side field prevents attributing them to a crop-boundary effect.",
+  "limitations": [
+    "This is a SHA-bound reanalysis of archived development-screening evidence, not an independent confirmation experiment.",
+    "Historical v2 estimates, thresholds, gate outcomes, and terminal evidence were not modified.",
+    "The archived scene table does not contain scoring-crop side, so padded full-image area cannot be interpreted as crop size.",
+    "Edge/interior intervals are descriptive and cannot by themselves establish a crop-boundary artifact.",
+    "No model, checkpoint, image, array, protected data, training, inference, S2 activity, or deployment was involved."
+  ],
+  "primary_fact_ids": [
+    "local_utility_over_global",
+    "bidirectional_repeatability"
+  ],
+  "gate_fact_ids": [
+    "evidence_identity",
+    "archived_scene_coverage",
+    "measurement_null_artifact",
+    "local_utility_over_global",
+    "bidirectional_repeatability",
+    "near_clear_fidelity",
+    "primary_precision"
+  ]
+}
