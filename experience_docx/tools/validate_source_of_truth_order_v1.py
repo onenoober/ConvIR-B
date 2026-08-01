@@ -36,7 +36,7 @@ for path, terms in checks.items():
     if missing:
         raise SystemExit(f"{path}: missing {missing}")
 policy = json.loads((root / "experience_docx/AI_POLICY_SNAPSHOT.json").read_text())
-if policy["rules_commit"] != "bd73a099803dcca6ded09401ea7568ebb0e6ba71":
+if policy["rules_commit"] != "23ea15ca840f0718c41db38d2e3aebfb53907dc5":
     raise SystemExit("rules commit mismatch")
 sources = [item["source"] for item in policy["source_of_truth_order"]]
 if sources != ["local_route_worktree", "github_main", "convir_4090_or_receipt_bound_mcp"]:
