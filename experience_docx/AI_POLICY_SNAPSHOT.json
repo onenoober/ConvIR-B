@@ -73,8 +73,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "b04c772d8a7ee50cb411f1233ae2bcda7c5a596198c55d091d0b63cf9a234e4d",
-  "rules_commit": "b4f8ab82726526fdddf9973ecec641cf3b67c0d2",
+  "rules_bundle_sha256": "ee420ccb9a669ac4c35e425f025c43c53d1acd80c2e381c1ad529ff6266e2079",
+  "rules_commit": "7d03d0b424d487e687ad176b480ba91213d4256d",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -133,7 +133,7 @@
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
       "bytes": 17016,
-      "sha256": "4dcb99791f0b334a1a03df653c9da64b7211c637661a315e02e14509cd8fc838"
+      "sha256": "ae49a01a27856a79df0d88bbd77b7ecc5f3f9215637ae1339909a59ca6aff70d"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 7529,

@@ -248,7 +248,7 @@ multi-operation chains remain readable.
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. After an update, restart the host and verify version
-`5.4.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
+`5.5.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
 
 The stdio server is a long-lived process and never hot-updates from Git. A
