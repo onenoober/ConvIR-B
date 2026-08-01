@@ -40,11 +40,12 @@ tools="$work/repo/experience_docx/tools"
 
 stdout="$work/unittest.stdout"
 stderr="$work/unittest.stderr"
-set +e
-PYTHONPATH="$tools:$tools/tests" "$python" -m unittest discover \
-  -s "$tools/tests" -p 'test_*.py' >"$stdout" 2>"$stderr"
-rc=$?
-set -e
+if PYTHONPATH="$tools:$tools/tests" "$python" -m unittest discover \
+    -s "$tools/tests" -p 'test_*.py' >"$stdout" 2>"$stderr"; then
+  rc=0
+else
+  rc=$?
+fi
 if [[ $rc -ne 0 ]]; then
   tail -n 200 "$stdout" >&2 || true
   tail -n 200 "$stderr" >&2 || true
