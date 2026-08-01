@@ -219,7 +219,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             patch.object(OPS, "rule_compatibility_profile", return_value={
                 "schema_version": 1,
                 "compatibility_id": "science-fastpath-contract-v1",
-                "compatible_prior_rules_commits": ["a" * 40],
+                "compatible_prior_rules_commits": ["b" * 40],
             }),
         ):
             parsed = OPS.parse_manifest(

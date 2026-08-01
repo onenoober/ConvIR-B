@@ -495,25 +495,29 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.git(repo, "init", "-q")
             self.git(repo, "config", "user.name", "test")
             self.git(repo, "config", "user.email", "test@example.com")
+            (repo / "README.md").write_text("rules anchor\n", encoding="utf-8")
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "rules anchor")
+            rules_commit = self.git(repo, "rev-parse", "HEAD")
             evidence = repo / "experience_docx/experiment_logs/closed/conclusion.json"
             evidence.parent.mkdir(parents=True)
             evidence.write_text('{"state":"COMPLETED"}\n', encoding="utf-8")
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "archive evidence")
-            commit = self.git(repo, "rev-parse", "HEAD")
-            self.git(repo, "update-ref", "refs/remotes/github/main", commit)
+            current_main = self.git(repo, "rev-parse", "HEAD")
+            self.git(repo, "update-ref", "refs/remotes/github/main", current_main)
             evidence.unlink()
 
             resolved, exists = COMPILER._authoritative_evidence_resolver(
-                repo, commit, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
+                repo, rules_commit, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
             )
-            self.assertEqual(commit, resolved)
+            self.assertEqual(current_main, resolved)
             self.assertTrue(exists("experience_docx/experiment_logs/closed/conclusion.json"))
             self.assertFalse(COMPILER._repo_file_exists(
                 repo, "experience_docx/experiment_logs/closed/conclusion.json",
             ))
             with self.assertRaisesRegex(
-                COMPILER.ExperimentSpecError, "must equal the refreshed authoritative",
+                COMPILER.ExperimentSpecError, "git cat-file -e",
             ):
                 COMPILER._authoritative_evidence_resolver(
                     repo, "0" * 40, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
