@@ -1,8 +1,8 @@
 # Convir Operations MCP
 
-Date: 2026-07-27
+Date: 2026-08-01
 
-Status: governance-fastpath server `5.4.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.5.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
 runtime schema 2 for new routes. New experiment specs, scientific contracts and
@@ -212,6 +212,11 @@ committed manifest, then read the exact GitHub-main snapshot and its referenced
 closeout/conclusion/results. Use receipt-bound cloud evidence only after that
 binding. A missing record for an unverified route id is unresolved and must not
 be reported as a scientific no-terminal conclusion.
+The response includes one additive `SNAPSHOT_IDENTITY` phase receipt bound to
+route id, branch, HEAD, fresh GitHub-main commit, worktree safety and snapshot
+status. It always records `scientific_authorization=NOT_DERIVED` and exposes one
+next action: refresh main once, read the authoritative snapshot references, or
+resolve route identity/snapshot. It is a control receipt, not evidence.
 
 ## Capability Reuse And Recovery
 

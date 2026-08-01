@@ -1,6 +1,6 @@
 # Science Fastpath
 
-Date: 2026-07-27
+Date: 2026-08-01
 
 Status: adopted as the single default general experiment workflow after the
 cloud acceptance in experiment_logs/science_fastpath_validation_20260718/.
@@ -57,8 +57,12 @@ files before this GitHub-main read completes.
    device-aware synthetic contract. Use one atomic compiler `--finalize`; it
    returns independent schema, authorization, role, precision, engineering and
    source-text errors together, derives the capability input-contract identity
-   mechanically, and writes the complete bundle only after a clean result. A
-   caller-supplied mismatching identity is rejected. A cost-dependent
+   mechanically, resolves amendment/reopen evidence only from the exact fresh
+   GitHub-main commit named by `rules_commit`, and writes the complete bundle
+   only after a clean result. It emits one machine receipt into the Git-private
+   control directory; the receipt binds source SHA-256, generated paths, bundle
+   SHA-256 and the sole next phase, and is never committed as experiment
+   evidence. A caller-supplied mismatching identity is rejected. A cost-dependent
    operation must freeze a machine-checkable cost strategy: adaptive/search/
    graph/matrix work uses a same-scale protected-data-free probe; fixed-linear
    extrapolation is allowed only for a fixed-count exact production map with
@@ -66,9 +70,11 @@ files before this GitHub-main read completes.
 
 The compiler removes duplicated identity/path authoring only. It never chooses
 the question, model, dataset, primary variable, threshold, control, terminal, or
-authorization. Route-ready and MCP recompile from the committed program/spec and
-reject any byte-level derived-file drift. Historical schema 4/5 routes remain
-readable and are not migrated.
+authorization. Route-ready consumes the compiler receipt and rejects any changed
+source, generated path or byte without recompiling the authoring bundle. The MCP
+plan boundary independently recompiles the committed program/spec once while
+resolving archived authorization evidence from that same exact main commit. Historical
+schema 4/5 routes remain readable and are not migrated.
 
 Decision roles are typed: `validity_veto` makes any failed identity, integrity
 or coverage gate override all scientific outcomes to INCONCLUSIVE;
@@ -89,6 +95,10 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    `CANCELLED_BY_OPERATOR / null / NONE`. Never
    duplicate validator/lifecycle checks, create a
    watcher, scan unrelated logs or interpret partial outcomes.
+   A repeated route-ready request with the same staged tree, main commit,
+   operation set and authoring receipt returns the private cached gate report;
+   it does not execute the validator again. Any identity change invalidates the
+   cache and requires one new gate.
    Before a schema-2 scientific closeout, the lifecycle hashes the stable
    `contract/` and `workload/` file set into one cloud JSONL manifest and adds
    one compact receipt to the closeout evidence. Mutable control, heartbeat,

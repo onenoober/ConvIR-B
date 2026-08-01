@@ -278,6 +278,35 @@ class FinalSlimTests(unittest.TestCase):
         self.assertLess(len(text.encode()), 512)
         self.assertEqual(1000, len(result["structuredContent"]["changed_paths"]))
 
+    def test_snapshot_phase_receipt_never_derives_scientific_authorization(self):
+        base = {
+            "branch": "codex/route", "head": "a" * 40,
+            "github_main_remote": "b" * 40,
+            "github_main_ref_fresh": True, "worktree_clean": True,
+            "authoritative_snapshot": {
+                "status": "NO_TERMINAL_RECORD", "route_id": "route",
+            },
+        }
+        unresolved = OPS.build_snapshot_phase_receipt(base)
+        self.assertEqual("NOT_DERIVED", unresolved["scientific_authorization"])
+        self.assertEqual(
+            "resolve_route_identity_or_snapshot", unresolved["allowed_next_action"],
+        )
+        self.assertEqual(64, len(unresolved["receipt_sha256"]))
+        ready = OPS.build_snapshot_phase_receipt({
+            **base,
+            "authoritative_snapshot": {
+                "status": "AUTHORITATIVE_SNAPSHOT_OK", "route_id": "route",
+            },
+        })
+        self.assertEqual(
+            "read_authoritative_snapshot_references", ready["allowed_next_action"],
+        )
+        stale = OPS.build_snapshot_phase_receipt({
+            **base, "github_main_ref_fresh": False,
+        })
+        self.assertEqual("refresh_github_main_once", stale["allowed_next_action"])
+
     def test_authoritative_snapshot_uses_terminal_index_not_markdown_history(self):
         with tempfile.TemporaryDirectory() as directory:
             repo = Path(directory)

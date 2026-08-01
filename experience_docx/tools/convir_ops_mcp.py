@@ -31,7 +31,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.4.0"
+SERVER_VERSION = "5.5.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -905,6 +905,10 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
                 or scientific_contract_value.get("operation_id") != operation_id:
             raise ToolError("scientific contract identity or first operation mismatch")
     if manifest_schema == 6:
+        if rules_commit != current_main:
+            raise ToolError(
+                "manifest schema 6 rules_commit must equal exact current GitHub main"
+            )
         program_path = require_relpath(
             value["program_contract_relpath"], "program_contract_relpath", ".json",
             prefix="experience_docx/research_programs/",
@@ -936,7 +940,7 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
                 spec_raw=spec_raw,
                 program_raw=program_raw,
                 evidence_exists=lambda relpath: git_object_exists(
-                    bare_repo, route_commit, relpath,
+                    bare_repo, current_main, relpath,
                 ),
             )
         except Exception as exc:
@@ -3508,6 +3512,31 @@ def tool_evidence_fetch(args):
         return failure_result("EVIDENCE_FETCH_FAILED", exc, "evidence_transfer")
 
 
+def build_snapshot_phase_receipt(value):
+    snapshot = value.get("authoritative_snapshot")
+    snapshot_status = snapshot.get("status") if isinstance(snapshot, dict) else None
+    if not value.get("github_main_ref_fresh"):
+        allowed_next_action = "refresh_github_main_once"
+    elif snapshot_status == "AUTHORITATIVE_SNAPSHOT_OK":
+        allowed_next_action = "read_authoritative_snapshot_references"
+    else:
+        allowed_next_action = "resolve_route_identity_or_snapshot"
+    receipt = {
+        "schema_version": 1,
+        "phase": "SNAPSHOT_IDENTITY",
+        "route_id": value.get("authoritative_snapshot", {}).get("route_id"),
+        "branch": value.get("branch"),
+        "head": value.get("head"),
+        "github_main_commit": value.get("github_main_remote"),
+        "github_main_ref_fresh": value.get("github_main_ref_fresh") is True,
+        "worktree_clean": value.get("worktree_clean") is True,
+        "authoritative_snapshot_status": snapshot_status,
+        "scientific_authorization": "NOT_DERIVED",
+        "allowed_next_action": allowed_next_action,
+    }
+    return {**receipt, "receipt_sha256": canonical_digest(receipt)}
+
+
 def tool_git_evidence_status(args):
     try:
         route_id = require_token(args.get("route_id"), "route_id")
@@ -3537,6 +3566,7 @@ def tool_git_evidence_status(args):
                 "first_issue": lines[0][:512] if lines else "",
             }
 
+        snapshot = authoritative_snapshot(repo, route_id, "github/main")
         value = {
             "local_repo": str(repo), "branch": branch, "head": head,
             "github_main_local": local_main, "github_main_remote": remote[0],
@@ -3546,7 +3576,7 @@ def tool_git_evidence_status(args):
             "route_evidence_change_count": len(route_changed),
             "diff_check": compact_check([*prefix, "diff", "--check"]),
             "cached_diff_check": compact_check([*prefix, "diff", "--cached", "--check"]),
-            "authoritative_snapshot": authoritative_snapshot(repo, route_id, "github/main"),
+            "authoritative_snapshot": snapshot,
             "detail_level": detail,
             "git_mutations_performed": False,
         }
@@ -3556,6 +3586,7 @@ def tool_git_evidence_status(args):
         if detail == "full":
             value["changed_paths"] = changed_all[:100]
             value["changed_paths_truncated"] = len(changed_all) > 100
+        value["phase_receipt"] = build_snapshot_phase_receipt(value)
         return text_result(json.dumps(value, indent=2), structured=value)
     except Exception as exc:
         return failure_result("GIT_STATUS_FAILED", exc, "git_status")

@@ -489,6 +489,97 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
                 )
             self.assertFalse((outside / "generated/result.json").exists())
 
+    def test_authoritative_evidence_is_read_from_exact_main_commit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            self.git(repo, "init", "-q")
+            self.git(repo, "config", "user.name", "test")
+            self.git(repo, "config", "user.email", "test@example.com")
+            evidence = repo / "experience_docx/experiment_logs/closed/conclusion.json"
+            evidence.parent.mkdir(parents=True)
+            evidence.write_text('{"state":"COMPLETED"}\n', encoding="utf-8")
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "archive evidence")
+            commit = self.git(repo, "rev-parse", "HEAD")
+            self.git(repo, "update-ref", "refs/remotes/github/main", commit)
+            evidence.unlink()
+
+            resolved, exists = COMPILER._authoritative_evidence_resolver(
+                repo, commit, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
+            )
+            self.assertEqual(commit, resolved)
+            self.assertTrue(exists("experience_docx/experiment_logs/closed/conclusion.json"))
+            self.assertFalse(COMPILER._repo_file_exists(
+                repo, "experience_docx/experiment_logs/closed/conclusion.json",
+            ))
+            with self.assertRaisesRegex(
+                COMPILER.ExperimentSpecError, "must equal the refreshed authoritative",
+            ):
+                COMPILER._authoritative_evidence_resolver(
+                    repo, "0" * 40, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
+                )
+
+    def test_finalize_receipt_is_private_and_identity_bound(self):
+        program, spec = sources_v2("a" * 40)
+        spec_raw, program_raw, bundle = compile_sources(program, spec)
+        receipt = COMPILER.build_authoring_receipt(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=spec_raw,
+            program_relpath="experience_docx/research_programs/final_slim.json",
+            program_raw=program_raw,
+            bundle=bundle,
+            authoritative_main_commit="a" * 40,
+        )
+        self.assertEqual(
+            "stage_complete_bundle_then_route_ready_once",
+            receipt["allowed_next_action"],
+        )
+        self.assertEqual(
+            COMPILER.sha256(COMPILER.json_bytes(receipt["generated_files"])),
+            receipt["bundle_sha256"],
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            self.git(repo, "init", "-q")
+            path = COMPILER.write_private_receipt_atomic(
+                repo, receipt["route_id"], receipt,
+            )
+            self.assertTrue(path.is_file())
+            self.assertIn(".git", path.parts)
+            self.assertEqual([], self.git(repo, "status", "--porcelain").splitlines())
+
+    def test_finalize_uses_exact_main_and_writes_one_private_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            self.git(repo, "init", "-q")
+            self.git(repo, "config", "user.name", "test")
+            self.git(repo, "config", "user.email", "test@example.com")
+            (repo / "README.md").write_text("rules anchor\n", encoding="utf-8")
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "rules main")
+            rules_commit = self.git(repo, "rev-parse", "HEAD")
+            self.git(repo, "update-ref", "refs/remotes/github/main", rules_commit)
+            program, spec = sources_v2(rules_commit)
+            spec_path = repo / "experience_docx/experiment_specs/final_slim.json"
+            program_path = repo / "experience_docx/research_programs/final_slim.json"
+            spec_path.parent.mkdir(parents=True)
+            program_path.parent.mkdir(parents=True)
+            spec_path.write_bytes(COMPILER.json_bytes(spec))
+            program_path.write_bytes(COMPILER.json_bytes(program))
+
+            completed = subprocess.run([
+                sys.executable, str(TOOLS / "experiment_spec_compiler.py"),
+                "--repo", str(repo), "--spec",
+                "experience_docx/experiment_specs/final_slim.json", "--finalize",
+            ], text=True, capture_output=True, check=False)
+            self.assertEqual(0, completed.returncode, completed.stderr)
+            report = json.loads(completed.stdout)
+            self.assertEqual("EXPERIMENT_SPEC_BUNDLE_FINALIZED", report["status"])
+            self.assertEqual(rules_commit, report["receipt"]["authoritative_main_commit"])
+            receipt_path = COMPILER._authoring_receipt_path(repo, "final_slim")
+            self.assertEqual(report["receipt"], json.loads(receipt_path.read_bytes()))
+            self.assertTrue((repo / COMPILER.MANIFEST_RELPATH).is_file())
+
     def test_compiler_rejects_adjacent_budget_overrun_but_allows_orthogonal_escape(self):
         program, spec = sources()
         program["route_families"]["selector_family"]["adjacent_budget"] = 1

@@ -14,6 +14,7 @@ from typing import Any, Callable
 
 import convir_ops_mcp as ops
 import capability_registry
+import experiment_spec_compiler as spec_compiler
 import validate_experiment_card as card_validator
 from route_runtime_contract import (
     GENERIC_RUNNER_RELPATH,
@@ -390,6 +391,227 @@ def authoring_errors(manifest: dict[str, Any], card_errors: list[str]) -> list[s
     return errors
 
 
+def _private_receipt_path(repo: Path, route_id: str) -> Path:
+    ops.require_token(route_id, "route_id")
+    relative = f"convir/authoring-receipts/{route_id}.json"
+    return Path(command(
+        repo, GIT, "rev-parse", "--path-format=absolute", "--git-path", relative,
+    ))
+
+
+def _private_route_ready_path(repo: Path, route_id: str) -> Path:
+    ops.require_token(route_id, "route_id")
+    relative = f"convir/route-ready-receipts/{route_id}.json"
+    return Path(command(
+        repo, GIT, "rev-parse", "--path-format=absolute", "--git-path", relative,
+    ))
+
+
+def route_ready_request_identity(
+    repo: Path, snapshot: str, current_main: str, selected: list[str] | None,
+) -> tuple[dict[str, Any], str]:
+    manifest_raw = show(repo, snapshot, ops.ROUTE_OPERATIONS_RELPATH)
+    manifest = json.loads(manifest_raw)
+    if not isinstance(manifest, dict):
+        raise ReadyError("route manifest must be an object")
+    route_id = ops.require_token(manifest.get("route_id"), "route_id")
+    operations = manifest.get("operations")
+    if not isinstance(operations, dict) or not operations:
+        raise ReadyError("route manifest contains no operations")
+    requested = list(dict.fromkeys(selected or list(operations)))
+    authoring_path = _private_receipt_path(repo, route_id)
+    authoring_sha = None
+    try:
+        authoring_sha = __import__("hashlib").sha256(authoring_path.read_bytes()).hexdigest()
+    except OSError:
+        pass
+    identity = {
+        "route_id": route_id,
+        "branch": command(repo, GIT, "branch", "--show-current"),
+        "head": command(repo, GIT, "rev-parse", "HEAD"),
+        "tree": command(repo, GIT, "rev-parse", f"{snapshot}^{{tree}}"),
+        "current_main": current_main,
+        "requested_operations": requested,
+        "manifest_sha256": __import__("hashlib").sha256(manifest_raw).hexdigest(),
+        "authoring_receipt_sha256": authoring_sha,
+    }
+    digest = __import__("hashlib").sha256(
+        json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return identity, digest
+
+
+def load_cached_route_ready(
+    repo: Path, identity: dict[str, Any], identity_sha: str,
+) -> dict[str, Any] | None:
+    path = _private_route_ready_path(repo, identity["route_id"])
+    try:
+        cached = json.loads(path.read_bytes())
+    except (OSError, json.JSONDecodeError):
+        return None
+    required = {
+        "schema_version", "status", "identity", "identity_sha256", "report",
+        "report_sha256", "allowed_next_action",
+    }
+    if not isinstance(cached, dict) or set(cached) != required \
+            or cached["schema_version"] != 1 \
+            or cached["status"] != "ROUTE_READY_COMPLETED" \
+            or cached["identity"] != identity \
+            or cached["identity_sha256"] != identity_sha \
+            or cached["allowed_next_action"] != "commit_push_then_plan_once" \
+            or not isinstance(cached["report"], dict) \
+            or cached["report_sha256"] != spec_compiler.sha256(
+                spec_compiler.json_bytes(cached["report"])
+            ):
+        return None
+    report = cached["report"]
+    if report.get("status") != "ROUTE_READY" \
+            or report.get("route_id") != identity["route_id"] \
+            or report.get("current_main") != identity["current_main"] \
+            or report.get("requested_operations") != identity["requested_operations"] \
+            or report.get("authoring_receipt_sha256") != \
+                identity["authoring_receipt_sha256"]:
+        return None
+    return {**report, "cache_reused": True}
+
+
+def write_route_ready_receipt_atomic(
+    repo: Path, identity: dict[str, Any], identity_sha: str, report: dict[str, Any],
+) -> None:
+    path = _private_route_ready_path(repo, identity["route_id"])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    receipt = {
+        "schema_version": 1,
+        "status": "ROUTE_READY_COMPLETED",
+        "identity": identity,
+        "identity_sha256": identity_sha,
+        "report": report,
+        "report_sha256": spec_compiler.sha256(spec_compiler.json_bytes(report)),
+        "allowed_next_action": "commit_push_then_plan_once",
+    }
+    with tempfile.NamedTemporaryFile(
+        dir=path.parent, prefix=f".{path.name}.", delete=False,
+    ) as handle:
+        temporary = Path(handle.name)
+        handle.write(spec_compiler.json_bytes(receipt))
+        handle.flush()
+        os.fsync(handle.fileno())
+    try:
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _safe_receipt_relpath(value: Any) -> str:
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise ReadyError("authoring receipt contains an invalid generated relpath")
+    path = Path(value)
+    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
+        raise ReadyError("authoring receipt contains an unsafe generated relpath")
+    return path.as_posix()
+
+
+def _expected_compiler_paths(
+    repo: Path, snapshot: str, manifest: dict[str, Any],
+) -> set[str]:
+    card_path = manifest.get("route_card_relpath")
+    scientific_paths = manifest.get("scientific_contract_relpaths")
+    if not isinstance(card_path, str) or not isinstance(scientific_paths, dict) \
+            or set(scientific_paths) != set(manifest["operations"]) \
+            or any(not isinstance(path, str) for path in scientific_paths.values()):
+        raise ReadyError("manifest compiler path contract is invalid")
+    expected = {
+        ops.ROUTE_OPERATIONS_RELPATH,
+        card_path,
+        *scientific_paths.values(),
+    }
+    for operation_id in manifest["operations"]:
+        spec_path = runtime_spec_relpath(operation_id)
+        expected.add(spec_path)
+        runtime = json.loads(show(repo, snapshot, spec_path))
+        if not isinstance(runtime, dict) \
+                or not isinstance(runtime.get("engineering_contract"), dict) \
+                or not isinstance(runtime.get("precision_contract"), dict):
+            raise ReadyError(f"runtime compiler path contract is invalid: {operation_id}")
+        for relpath in (
+            runtime.get("asset_manifest_relpath"),
+            runtime["engineering_contract"].get("capability_profile_relpath"),
+            runtime["precision_contract"].get("certificate_relpath"),
+        ):
+            if relpath is not None and not isinstance(relpath, str):
+                raise ReadyError(f"runtime compiler relpath is invalid: {operation_id}")
+            if isinstance(relpath, str):
+                expected.add(relpath)
+    return expected
+
+
+def validate_authoring_receipt(
+    repo: Path, snapshot: str, current_main: str, manifest: dict[str, Any],
+) -> tuple[str, str]:
+    """Verify compiler identity without checking out archived main evidence."""
+    route_id = manifest["route_id"]
+    path = _private_receipt_path(repo, route_id)
+    try:
+        raw = path.read_bytes()
+        receipt = json.loads(raw)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ReadyError(
+            "schema-6 route requires the private receipt from one successful --finalize"
+        ) from exc
+    required = {
+        "schema_version", "status", "route_id", "authoritative_main_commit",
+        "experiment_spec", "program_contract", "generated_files", "bundle_sha256",
+        "allowed_next_action",
+    }
+    if not isinstance(receipt, dict) or set(receipt) != required:
+        raise ReadyError("authoring receipt field contract is invalid")
+    if receipt["schema_version"] != spec_compiler.AUTHORING_RECEIPT_SCHEMA \
+            or receipt["status"] != "EXPERIMENT_SPEC_BUNDLE_FINALIZED" \
+            or receipt["route_id"] != route_id \
+            or receipt["authoritative_main_commit"] != current_main \
+            or receipt["allowed_next_action"] != "stage_complete_bundle_then_route_ready_once":
+        raise ReadyError("authoring receipt identity or phase is stale")
+    source_pairs = (
+        ("experiment_spec", "experiment_spec_relpath", "experiment_spec_sha256"),
+        ("program_contract", "program_contract_relpath", "program_contract_sha256"),
+    )
+    for receipt_key, path_key, digest_key in source_pairs:
+        source = receipt[receipt_key]
+        if not isinstance(source, dict) or set(source) != {"relpath", "sha256"} \
+                or source["relpath"] != manifest[path_key] \
+                or source["sha256"] != manifest[digest_key]:
+            raise ReadyError(f"authoring receipt {receipt_key} identity mismatch")
+        if __import__("hashlib").sha256(
+            show(repo, snapshot, source["relpath"])
+        ).hexdigest() != source["sha256"]:
+            raise ReadyError(f"authoring receipt {receipt_key} bytes drifted after finalize")
+    files = receipt["generated_files"]
+    if not isinstance(files, list) or not files:
+        raise ReadyError("authoring receipt generated_files must be non-empty")
+    observed_paths = []
+    for item in files:
+        if not isinstance(item, dict) or set(item) != {"relpath", "sha256", "size_bytes"}:
+            raise ReadyError("authoring receipt generated file record is invalid")
+        relpath = _safe_receipt_relpath(item["relpath"])
+        generated_raw = show(repo, snapshot, relpath)
+        if item["size_bytes"] != len(generated_raw) or item["sha256"] != \
+                __import__("hashlib").sha256(generated_raw).hexdigest():
+            raise ReadyError(f"generated file drifted after finalize: {relpath}")
+        observed_paths.append(relpath)
+    if len(observed_paths) != len(set(observed_paths)):
+        raise ReadyError("authoring receipt generated_files contains duplicates")
+    expected_paths = _expected_compiler_paths(repo, snapshot, manifest)
+    if set(observed_paths) != expected_paths:
+        raise ReadyError(
+            "authoring receipt generated path set mismatch: "
+            f"missing={sorted(expected_paths - set(observed_paths))} "
+            f"unexpected={sorted(set(observed_paths) - expected_paths)}"
+        )
+    if spec_compiler.sha256(spec_compiler.json_bytes(files)) != receipt["bundle_sha256"]:
+        raise ReadyError("authoring receipt bundle_sha256 mismatch")
+    return receipt["bundle_sha256"], __import__("hashlib").sha256(raw).hexdigest()
+
+
 def canonical_bundle_check(repo: Path, snapshot: str, current_main: str,
                            bootstrap: bool) -> tuple[dict[str, str], list[str]]:
     result = {}
@@ -436,6 +658,12 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         raise ReadyError("operation output_id values must be unique")
     if len({item.get("closeout_filename") for item in operations.values()}) != len(operations):
         raise ReadyError("operation closeout filenames must be unique")
+    authoring_bundle_sha = None
+    authoring_receipt_sha = None
+    if manifest_schema >= 6:
+        authoring_bundle_sha, authoring_receipt_sha = validate_authoring_receipt(
+            repo, snapshot, current_main, manifest,
+        )
     card_errors = []
     card_digest = None
     route_card_relpath = manifest.get("route_card_relpath")
@@ -653,11 +881,14 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         "route_id": manifest["route_id"],
         "requested_operations": requested,
         "route_card_sha256": card_digest,
+        "authoring_bundle_sha256": authoring_bundle_sha,
+        "authoring_receipt_sha256": authoring_receipt_sha,
         "runtime_bundle_sha256": bundle,
         "bootstrap_missing_from_main": bootstrap_missing,
         "operations": reports,
         "checks": {
             "mcp_parser_shared": True,
+            "compiler_authoring_receipt": manifest_schema < 6 or bool(authoring_receipt_sha),
             "staged_snapshot": True,
             "card_launch_ready": True,
             "runtime_bundle_canonical": not bootstrap_missing,
@@ -684,18 +915,30 @@ def main() -> None:
     try:
         snapshot = staged_snapshot(repo) if args.snapshot == "staged" else clean_head(repo)
         current_main = command(repo, GIT, "rev-parse", args.current_main)
-        report = validate_all(
+        identity, identity_sha = route_ready_request_identity(
             repo, snapshot, current_main, args.operations,
-            args.bootstrap_runtime_bundle,
         )
-    except (ReadyError, ops.ToolError, ContractError, json.JSONDecodeError) as exc:
+        report = load_cached_route_ready(repo, identity, identity_sha)
+        if report is None:
+            report = validate_all(
+                repo, snapshot, current_main, args.operations,
+                args.bootstrap_runtime_bundle,
+            )
+            report["cache_reused"] = False
+            write_route_ready_receipt_atomic(repo, identity, identity_sha, report)
+    except (
+        OSError, ReadyError, ops.ToolError, ContractError, json.JSONDecodeError,
+    ) as exc:
         print(f"ROUTE_READY_ERROR {exc}")
         raise SystemExit(1)
     if args.report is not None:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(report, sort_keys=True))
-    print(f"ROUTE_READY_OK snapshot_commit={snapshot}")
+    print(
+        f"ROUTE_READY_OK snapshot_commit={report['snapshot_commit']} "
+        f"cache_reused={str(report['cache_reused']).lower()}"
+    )
 
 
 if __name__ == "__main__":

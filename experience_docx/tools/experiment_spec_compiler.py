@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import stat
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any, Callable
@@ -44,6 +45,8 @@ SCIENTIFIC_DIRECTORY = "experience_docx/scientific_contracts"
 ASSET_DIRECTORY = "experience_docx/route_assets"
 CARD_DIRECTORY = "experience_docx/experiment_cards"
 MANIFEST_RELPATH = "experience_docx/route_operations.json"
+DEFAULT_AUTHORITATIVE_MAIN = "refs/remotes/github/main"
+AUTHORING_RECEIPT_SCHEMA = 1
 SHA40 = __import__("re").compile(r"^[0-9a-f]{40}$")
 SOURCE_FIELDS = {
     "schema_version", "route_id", "rules_commit", "title", "rationale",
@@ -166,6 +169,110 @@ def _repo_file_exists(repo: Path, relpath: str) -> bool:
     except ExperimentSpecError:
         return False
     return True
+
+
+def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[bytes]:
+    try:
+        completed = subprocess.run(
+            ["/usr/bin/git", *args], cwd=repo, capture_output=True,
+            timeout=30, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise ExperimentSpecError(f"git {' '.join(args)} could not complete: {exc}") from exc
+    if check and completed.returncode:
+        detail = (completed.stdout + completed.stderr).decode(errors="replace").strip()[:2048]
+        raise ExperimentSpecError(f"git {' '.join(args)} failed: {detail}")
+    return completed
+
+
+def _authoritative_evidence_resolver(
+    repo: Path, rules_commit: Any, authoritative_main: str,
+) -> tuple[str, Callable[[str], bool]]:
+    """Bind archived authorization evidence to one exact GitHub-main commit."""
+    if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
+        raise ExperimentSpecError("rules_commit must be an exact 40-character commit")
+    if not isinstance(authoritative_main, str) or not authoritative_main:
+        raise ExperimentSpecError("authoritative main ref must be non-empty")
+    resolved = _git(
+        repo, "rev-parse", "--verify", f"{authoritative_main}^{{commit}}",
+    ).stdout.decode("ascii").strip()
+    if resolved != rules_commit:
+        raise ExperimentSpecError(
+            "rules_commit must equal the refreshed authoritative GitHub-main commit: "
+            f"rules_commit={rules_commit} authoritative_main={resolved}"
+        )
+    cache: dict[str, bool] = {}
+
+    def exists(relpath: str) -> bool:
+        try:
+            relpath = _safe_repo_relpath(relpath, "authoritative evidence path")
+        except ExperimentSpecError:
+            return False
+        if relpath not in cache:
+            completed = _git(
+                repo, "cat-file", "-t", f"{resolved}:{relpath}", check=False,
+            )
+            cache[relpath] = (
+                completed.returncode == 0
+                and completed.stdout.decode("ascii", errors="replace").strip() == "blob"
+            )
+        return cache[relpath]
+
+    return resolved, exists
+
+
+def _authoring_receipt_path(repo: Path, route_id: str) -> Path:
+    relative = f"convir/authoring-receipts/{_token(route_id, 'route_id')}.json"
+    raw = _git(repo, "rev-parse", "--path-format=absolute", "--git-path", relative).stdout
+    return Path(raw.decode("utf-8").strip())
+
+
+def _bundle_identity(bundle: dict[str, bytes]) -> tuple[list[dict[str, Any]], str]:
+    files = [
+        {"relpath": relpath, "sha256": sha256(raw), "size_bytes": len(raw)}
+        for relpath, raw in sorted(bundle.items())
+    ]
+    return files, sha256(json_bytes(files))
+
+
+def build_authoring_receipt(
+    *, spec_relpath: str, spec_raw: bytes, program_relpath: str,
+    program_raw: bytes, bundle: dict[str, bytes], authoritative_main_commit: str,
+) -> dict[str, Any]:
+    source = json.loads(spec_raw)
+    files, bundle_sha = _bundle_identity(bundle)
+    return {
+        "schema_version": AUTHORING_RECEIPT_SCHEMA,
+        "status": "EXPERIMENT_SPEC_BUNDLE_FINALIZED",
+        "route_id": source["route_id"],
+        "authoritative_main_commit": authoritative_main_commit,
+        "experiment_spec": {
+            "relpath": spec_relpath, "sha256": sha256(spec_raw),
+        },
+        "program_contract": {
+            "relpath": program_relpath, "sha256": sha256(program_raw),
+        },
+        "generated_files": files,
+        "bundle_sha256": bundle_sha,
+        "allowed_next_action": "stage_complete_bundle_then_route_ready_once",
+    }
+
+
+def write_private_receipt_atomic(repo: Path, route_id: str, receipt: dict[str, Any]) -> Path:
+    destination = _authoring_receipt_path(repo, route_id)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(
+        dir=destination.parent, prefix=f".{destination.name}.", delete=False,
+    ) as handle:
+        temporary = Path(handle.name)
+        handle.write(json_bytes(receipt))
+        handle.flush()
+        os.fsync(handle.fileno())
+    try:
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return destination
 
 
 def _ensure_repo_parent(repo: Path, relpath: str, name: str) -> Path:
@@ -521,7 +628,8 @@ def _lint_operation_components(
 
 def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 evidence_exists: Callable[[str], bool] | None = None,
-                read_repo_file: Callable[[str], bytes] | None = None) -> dict[str, Any]:
+                read_repo_file: Callable[[str], bytes] | None = None,
+                return_bundle: bool = False) -> dict[str, Any]:
     """Return stable, aggregate authoring diagnostics without writing files."""
     errors: list[dict[str, str]] = []
     try:
@@ -620,6 +728,7 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         }
         for item in errors
     )
+    compiled_bundle = None
     if top_ready:
         for operation_id in structurally_valid_operations:
             _lint_operation_components(
@@ -632,7 +741,7 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             )
         if not errors and len(structurally_valid_operations) == len(operations):
             try:
-                compile_bundle(
+                compiled_bundle = compile_bundle(
                     spec_relpath=spec_relpath, spec_raw=spec_raw,
                     program_raw=program_raw, evidence_exists=evidence_exists,
                 )
@@ -642,10 +751,13 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         (item["path"], item["code"], item["message"]): item for item in errors
     }
     ordered = sorted(unique.values(), key=lambda item: (item["path"], item["code"], item["message"]))
-    return {
+    result = {
         "status": "EXPERIMENT_SPEC_INVALID" if ordered else "EXPERIMENT_SPEC_VALID",
         "errors": ordered,
     }
+    if return_bundle and not ordered:
+        result["_bundle"] = compiled_bundle
+    return result
 
 
 def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
@@ -842,7 +954,9 @@ def compare_bundle(bundle: dict[str, bytes], read_bytes: Callable[[str], bytes])
     return mismatches
 
 
-def compile_from_repo(repo: Path, spec_relpath: str) -> dict[str, bytes]:
+def _source_inputs_from_repo(
+    repo: Path, spec_relpath: str, authoritative_main: str,
+) -> tuple[str, bytes, str, bytes, str, Callable[[str], bool]]:
     repo = repo.resolve(strict=True)
     spec_relpath = _relpath(spec_relpath, "experiment spec", SPEC_DIRECTORY)
     spec_raw = _repo_read_bytes(repo, spec_relpath, "experiment spec")
@@ -853,16 +967,35 @@ def compile_from_repo(repo: Path, spec_relpath: str) -> dict[str, bytes]:
     program_relpath = _relpath(
         program_relpath, "program_contract_relpath", PROGRAM_DIRECTORY,
     )
+    authoritative_commit, evidence_exists = _authoritative_evidence_resolver(
+        repo, source.get("rules_commit"), authoritative_main,
+    )
+    return (
+        spec_relpath, spec_raw, program_relpath,
+        _repo_read_bytes(repo, program_relpath, "program contract"),
+        authoritative_commit, evidence_exists,
+    )
+
+
+def compile_from_repo(
+    repo: Path, spec_relpath: str,
+    authoritative_main: str = DEFAULT_AUTHORITATIVE_MAIN,
+) -> dict[str, bytes]:
+    spec_relpath, spec_raw, _, program_raw, _, evidence_exists = _source_inputs_from_repo(
+        repo, spec_relpath, authoritative_main,
+    )
     return compile_bundle(
         spec_relpath=spec_relpath,
         spec_raw=spec_raw,
-        program_raw=_repo_read_bytes(repo, program_relpath, "program contract"),
-        evidence_exists=lambda relpath: _repo_file_exists(repo, relpath),
+        program_raw=program_raw,
+        evidence_exists=evidence_exists,
     )
 
 
 def lint_from_repo(
     repo: Path, spec_relpath: str, *, require_current_schema: bool = False,
+    authoritative_main: str = DEFAULT_AUTHORITATIVE_MAIN,
+    return_bundle: bool = False,
 ) -> dict[str, Any]:
     repo = repo.resolve(strict=True)
     try:
@@ -894,11 +1027,33 @@ def lint_from_repo(
                 "status": "EXPERIMENT_SPEC_INVALID",
                 "errors": [_lint_error("program_contract_relpath", "READ_FAILED", exc)],
             }
-    result = lint_bundle(
-        spec_relpath=spec_relpath, spec_raw=spec_raw, program_raw=program_raw,
-        evidence_exists=lambda relpath: _repo_file_exists(repo, relpath),
-        read_repo_file=lambda relpath: _repo_read_bytes(repo, relpath, "repository evidence"),
-    )
+    try:
+        authoritative_commit, evidence_exists = _authoritative_evidence_resolver(
+            repo, source.get("rules_commit"), authoritative_main,
+        )
+        result = lint_bundle(
+            spec_relpath=spec_relpath, spec_raw=spec_raw, program_raw=program_raw,
+            evidence_exists=evidence_exists,
+            read_repo_file=lambda relpath: _repo_read_bytes(
+                repo, relpath, "route repository asset",
+            ),
+            return_bundle=return_bundle,
+        )
+        if return_bundle and not result["errors"]:
+            result["_authoring_inputs"] = {
+                "spec_relpath": spec_relpath,
+                "spec_raw": spec_raw,
+                "program_relpath": program_relpath,
+                "program_raw": program_raw,
+                "authoritative_main_commit": authoritative_commit,
+            }
+    except (OSError, ExperimentSpecError) as exc:
+        result = {
+            "status": "EXPERIMENT_SPEC_INVALID",
+            "errors": [_lint_error(
+                "rules_commit", "AUTHORITATIVE_MAIN_IDENTITY_INVALID", exc,
+            )],
+        }
     if require_current_schema and (
         not isinstance(source, dict) or source.get("schema_version") != 2
     ):
@@ -980,15 +1135,17 @@ def main() -> None:
     lint = lint_from_repo(
         args.repo, args.spec,
         require_current_schema=args.write or args.finalize,
+        authoritative_main=DEFAULT_AUTHORITATIVE_MAIN,
+        return_bundle=not args.lint_all,
     )
-    if args.lint_all or args.write or args.finalize:
-        if lint["errors"]:
-            print(json.dumps(lint, sort_keys=True))
-            raise SystemExit(2)
-        if args.lint_all:
-            print(json.dumps(lint, sort_keys=True))
-            return
-    bundle = compile_from_repo(args.repo, args.spec)
+    if lint["errors"]:
+        print(json.dumps(lint, sort_keys=True))
+        raise SystemExit(2)
+    if args.lint_all:
+        print(json.dumps(lint, sort_keys=True))
+        return
+    bundle = lint.pop("_bundle")
+    inputs = lint.pop("_authoring_inputs")
     if args.check:
         mismatches = compare_bundle(
             bundle,
@@ -1005,7 +1162,13 @@ def main() -> None:
         "EXPERIMENT_SPEC_BUNDLE_FINALIZED"
         if args.finalize else "EXPERIMENT_SPEC_BUNDLE_WRITTEN"
     )
-    print(json.dumps({"status": status, "files": len(bundle)}))
+    report: dict[str, Any] = {"status": status, "files": len(bundle)}
+    if args.finalize:
+        receipt = build_authoring_receipt(bundle=bundle, **inputs)
+        write_private_receipt_atomic(args.repo.resolve(strict=True), receipt["route_id"], receipt)
+        report["receipt"] = receipt
+        report["receipt_sha256"] = sha256(json_bytes(receipt))
+    print(json.dumps(report, sort_keys=True))
 
 
 if __name__ == "__main__":

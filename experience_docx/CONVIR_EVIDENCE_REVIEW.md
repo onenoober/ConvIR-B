@@ -1,6 +1,6 @@
 # Convir Evidence Review
 
-Date: 2026-07-30
+Date: 2026-08-01
 
 Status: the restarted host exposes the seven-tool server version `1.3.0` from
 GitHub `main`. Version `1.4.0` is the schema-2 response and authoritative-review
@@ -31,7 +31,7 @@ compact, identity-bound discovery records rather than bulk experiment data.
 
 | Tool | Purpose |
 | --- | --- |
-| `convir_evidence_catalog_summary` | freeze the trusted `refs/remotes/github/main` ref to an immutable commit and return catalog/index/tree identities plus coverage counts |
+| `convir_evidence_catalog_summary` | compatibility diagnostic for catalog identity only; not part of the default review sequence because the completeness receipt already returns this identity |
 | `convir_evidence_completeness_receipt` | return one schema-2 project GitHub receipt with exact indexed, unindexed, legacy and unresolved partitions for the current or an exact main-history commit |
 | `convir_evidence_catalog_query` | query that exact GitHub-main-history commit with bounded filters and an identity-bound cursor |
 | `convir_evidence_bundle` | verify one selected schema-2 terminal leaf and page the complete SHA-bound GitHub evidence-file manifest |
@@ -41,7 +41,7 @@ compact, identity-bound discovery records rather than bulk experiment data.
 
 The normal read sequence is: establish the freshness of local
 `refs/remotes/github/main` through the repository-approved GitHub read path;
-call catalog summary and completeness receipt; query candidate routes; page the
+call the completeness receipt once; query candidate routes; page the
 selected terminal's evidence bundle to completion; and use `repo-show` for only
 the needed GitHub files. When more detail is needed, inventory that same bound
 cloud run, query relevant text entries, and page an allowed file with
@@ -50,6 +50,8 @@ cloud text continuation also supplies the returned full-file SHA-256. An
 unconsumed page or an explicit excluded source remains unread and cannot be
 reported as reviewed. The MCP never fetches Git, so every response reports
 `ref_freshness=not_assessed`.
+Do not call catalog summary before completeness receipt. Use the summary only
+when diagnosing catalog identity without claiming project completeness.
 When a bundle contains `review_facts`, read it immediately after the scientific
 conclusion, then read only the formal JSON sources needed for the claims under
 review. The archive has already checked its JSON Pointers and source SHA-256;

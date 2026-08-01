@@ -52,6 +52,11 @@ hash changes.
    New typed asset manifests use schema 2. Historical experiment-spec,
    scientific and asset schema 1 plus manifest schema 4/5 routes remain
    immutable and supported.
+   Amendment and reopen evidence is resolved directly from the exact refreshed
+   GitHub-main commit equal to `rules_commit`; never materialize family history
+   in the new route. Finalize writes one Git-private source/generated-bundle
+   receipt. Route-ready consumes it, rejects drift, and returns the cached report
+   instead of rerunning when staged tree, main, operation set and receipt match.
 3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
    once. Confirm positive workload progress once. The frozen ETA is a cost
    estimate, not an observation embargo. At operator request, use only the
@@ -64,6 +69,8 @@ hash changes.
    not block the bounded result-blind refresh, early terminal detection, or
    operator cancellation. Do not turn refresh into a watcher.
    Never repeat checks owned by the validator/lifecycle or create a watcher.
+   Schema-6 plan recompilation resolves archived authorization evidence from
+   the exact current main commit, not from the route checkout.
 4. DECIDE: route code writes typed gate outcomes; the generic lifecycle derives
    the frozen terminal once. Interpret complete evidence once. The typed closeout alone
    authorizes a next stage; scientific FAIL is never an engineering retry.

@@ -1,13 +1,17 @@
 """Tests for route-ready entrypoint and staged-snapshot guards."""
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 TOOLS = Path(__file__).parents[1]
 sys.path.insert(0, str(TOOLS))
 import validate_route_ready as READY  # noqa: E402
+import experiment_spec_compiler as COMPILER  # noqa: E402
 
 
 GOOD = b'''\
@@ -230,6 +234,102 @@ def main():
         )
         self.assertLess(initialization, conditional)
         self.assertLess(conditional, alignment)
+
+    def test_authoring_receipt_accepts_exact_bundle_and_rejects_drift(self):
+        route_id = "receipt_fixture"
+        spec_relpath = f"experience_docx/experiment_specs/{route_id}.json"
+        program_relpath = f"experience_docx/research_programs/{route_id}.json"
+        card_relpath = f"experience_docx/experiment_cards/{route_id}.md"
+        scientific_relpath = (
+            f"experience_docx/scientific_contracts/{route_id}__S1.json"
+        )
+        runtime_relpath = "experience_docx/route_runtime_specs/S1.json"
+        spec_raw = b'{"route_id":"receipt_fixture"}\n'
+        program_raw = b'{"program_id":"receipt_fixture"}\n'
+        runtime_raw = json.dumps({
+            "asset_manifest_relpath": None,
+            "engineering_contract": {"capability_profile_relpath": None},
+            "precision_contract": {"certificate_relpath": None},
+        }, sort_keys=True).encode("utf-8") + b"\n"
+        manifest = {
+            "schema_version": 6,
+            "route_id": route_id,
+            "route_card_relpath": card_relpath,
+            "scientific_contract_relpaths": {"S1": scientific_relpath},
+            "program_contract_relpath": program_relpath,
+            "program_contract_sha256": COMPILER.sha256(program_raw),
+            "experiment_spec_relpath": spec_relpath,
+            "experiment_spec_sha256": COMPILER.sha256(spec_raw),
+            "operations": {"S1": {}},
+        }
+        generated = {
+            READY.ops.ROUTE_OPERATIONS_RELPATH: COMPILER.json_bytes(manifest),
+            card_relpath: b"# receipt fixture\n",
+            scientific_relpath: b'{"schema_version":2}\n',
+            runtime_relpath: runtime_raw,
+        }
+        receipt = COMPILER.build_authoring_receipt(
+            spec_relpath=spec_relpath, spec_raw=spec_raw,
+            program_relpath=program_relpath, program_raw=program_raw,
+            bundle=generated, authoritative_main_commit="a" * 40,
+        )
+        files = {spec_relpath: spec_raw, program_relpath: program_raw, **generated}
+        with tempfile.TemporaryDirectory() as directory:
+            receipt_path = Path(directory) / "receipt.json"
+            receipt_path.write_bytes(COMPILER.json_bytes(receipt))
+
+            def shown(_repo, _snapshot, relpath):
+                return files[relpath]
+
+            with patch.object(READY, "_private_receipt_path", return_value=receipt_path), \
+                    patch.object(READY, "show", side_effect=shown):
+                bundle_sha, receipt_sha = READY.validate_authoring_receipt(
+                    Path(directory), "snapshot", "a" * 40, manifest,
+                )
+                self.assertEqual(receipt["bundle_sha256"], bundle_sha)
+                self.assertEqual(64, len(receipt_sha))
+                files[card_relpath] = b"drifted\n"
+                with self.assertRaisesRegex(READY.ReadyError, "drifted after finalize"):
+                    READY.validate_authoring_receipt(
+                        Path(directory), "snapshot", "a" * 40, manifest,
+                    )
+
+    def test_identical_route_ready_request_reuses_private_phase_receipt(self):
+        identity = {
+            "route_id": "receipt_fixture",
+            "branch": "codex/receipt-fixture",
+            "head": "a" * 40,
+            "tree": "b" * 40,
+            "current_main": "c" * 40,
+            "requested_operations": ["S1"],
+            "manifest_sha256": "d" * 64,
+            "authoring_receipt_sha256": "e" * 64,
+        }
+        identity_sha = COMPILER.sha256(json.dumps(
+            identity, sort_keys=True, separators=(",", ":"),
+        ).encode("utf-8"))
+        report = {
+            "status": "ROUTE_READY", "snapshot_commit": "f" * 40,
+            "route_id": identity["route_id"],
+            "current_main": identity["current_main"],
+            "requested_operations": identity["requested_operations"],
+            "authoring_receipt_sha256": identity["authoring_receipt_sha256"],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "route-ready.json"
+            with patch.object(READY, "_private_route_ready_path", return_value=path):
+                READY.write_route_ready_receipt_atomic(
+                    Path(directory), identity, identity_sha, report,
+                )
+                cached = READY.load_cached_route_ready(
+                    Path(directory), identity, identity_sha,
+                )
+                self.assertTrue(cached["cache_reused"])
+                self.assertEqual("ROUTE_READY", cached["status"])
+                changed = {**identity, "tree": "0" * 40}
+                self.assertIsNone(READY.load_cached_route_ready(
+                    Path(directory), changed, identity_sha,
+                ))
 
 
 if __name__ == "__main__":
