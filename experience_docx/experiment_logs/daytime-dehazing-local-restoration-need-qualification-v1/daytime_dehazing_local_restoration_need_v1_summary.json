@@ -1,0 +1,87 @@
+{
+  "coverage": {
+    "HAZE4K_TRAIN": {
+      "allowed_scene_count": 150,
+      "canonical_clear_identity_match": true,
+      "distinct_haze_payloads": true,
+      "exact_planned_roster_retained": true,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "5628b0dbd556db929320a4082c1b0c26153d95fcabd80318ed3da082f7906295",
+      "selected_input_roster_digest": "34a74bcc22d4e184c6a956c4d6837ca025e76706506ed6008eacd7005650b7a2",
+      "selected_scene_count": 150,
+      "two_variants_per_scene": true
+    },
+    "ITS": {
+      "allowed_scene_count": 869,
+      "canonical_clear_identity_match": false,
+      "distinct_haze_payloads": false,
+      "exact_planned_roster_retained": false,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "e61a53e819f36f0ee718d1bf4d6d54cfa5982501397a46cbaa005f9877e62882",
+      "selected_input_roster_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selected_scene_count": 0,
+      "two_variants_per_scene": true
+    },
+    "OTS": {
+      "allowed_scene_count": 801,
+      "canonical_clear_identity_match": false,
+      "distinct_haze_payloads": false,
+      "exact_planned_roster_retained": false,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "6031862cc97f33bb2995df4cb23ad7db522cf0ed992ad9deb5c76003fc17acfb",
+      "selected_input_roster_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selected_scene_count": 0,
+      "two_variants_per_scene": true
+    }
+  },
+  "coverage_checks": {
+    "confirmation_and_sealed_assets_absent": true,
+    "development_only_membership": true,
+    "distinct_haze_observation_payloads": false,
+    "exact_planned_roster_without_backfill": false,
+    "exact_planned_scene_counts": false,
+    "preflight_completed_without_error": true,
+    "s0_canonical_clear_identity": false,
+    "selected_input_roster_frozen": true,
+    "two_nested_variants_each": true
+  },
+  "gate_outcomes": {
+    "bidirectional_repeatability": "invalid",
+    "development_scene_coverage": "fail",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "invalid",
+    "measurement_null_control": "invalid",
+    "near_clear_fidelity": "invalid",
+    "primary_precision": "invalid"
+  },
+  "identity_checks": {
+    "ledger_schema_and_counts": true,
+    "s0_closeout_sha256": true,
+    "s0_role_summary_sha256": true,
+    "s0_scene_role_ledger_sha256": true,
+    "s0_terminal": true
+  },
+  "ledger_summary": {
+    "development_counts": {
+      "HAZE4K_TRAIN": 150,
+      "ITS": 869,
+      "OTS": 801
+    },
+    "excluded_count": 3275,
+    "expected_counts_match": true,
+    "row_count": 21025
+  },
+  "limitations": [
+    "No scientific inference is permitted when S0 identity or planned paired-scene coverage is invalid.",
+    "No confirmation, sealed-final, canary, or NH-Haze image is delivered to this route."
+  ],
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "preflight_error": null,
+  "prevalence": null,
+  "primary": null,
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v1",
+  "run_id": "daytime-dehazing-local-restoration-need-qualification-v1-r2",
+  "schema_version": 1,
+  "scope": "development-only privileged local-restoration-need qualification",
+  "selected_input_roster_digest": "64f603a87b403fb38125b242d0d34beb1334342d06c4b91e65474fa2cdf44101"
+}

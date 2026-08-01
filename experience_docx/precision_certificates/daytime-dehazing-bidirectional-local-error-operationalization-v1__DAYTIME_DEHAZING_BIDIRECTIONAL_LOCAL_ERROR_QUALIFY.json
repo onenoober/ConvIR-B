@@ -1,0 +1,53 @@
+{
+  "assurance": {
+    "method_id": "bounded_scene_range_worst_case_variance",
+    "planning_sd_rule": "The frozen scene-level primary estimand is clipped to [-0.25, 0.25] dB, so Popoviciu's inequality gives the distribution-free planning SD upper bound 0.25 dB without historical outcome or variance reuse.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_bidirectional_local_error_precision_v1",
+  "comparison_family": "scene_grouped_s1_gate_families",
+  "confidence_level": 0.95,
+  "critical_value": 2.58,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY",
+  "primary_estimand_id": "bidirectional_transfer_local_over_global_utility",
+  "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+  "schema_version": 2,
+  "source_reference": "GitHub-main S0 typed role summary and SHA-bound cloud-only program scene ledger; the certificate uses only exact scene capacities and a distribution-free bounded-range variance limit.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "HAZE4K_TRAIN_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "S0 typed role summary fixes 150 retained Haze4K-train development_screening original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "ITS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "S0 typed role summary fixes 869 retained ITS development_screening original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "OTS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "S0 typed role summary fixes 801 retained OTS development_screening original-clear scenes."
+    }
+  ],
+  "target_half_width": 0.055
+}

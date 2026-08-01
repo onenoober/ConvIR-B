@@ -1,0 +1,70 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-bidirectional-local-error-operationalization-v1__DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/daytime-dehazing-bidirectional-local-error-operationalization-v1__DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 300.0,
+      "formal_iterations": 900,
+      "formal_max_wall_seconds": 9600,
+      "max_peak_memory_mib": 12288,
+      "max_seconds_per_iteration": 5.0,
+      "memory_scaling": "constant",
+      "probe_iterations": 8,
+      "production_path": "exact",
+      "safety_factor": 2.0,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 600,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_bidirectional_local_error_v1.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "daytime_dehazing_bidirectional_local_error_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_bidirectional_local_error_v1_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_bidirectional_local_error_v1_scene_metrics.csv",
+      "max_bytes": 524288,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_bidirectional_local_error_v1_scene_metrics.csv"
+    },
+    {
+      "destination_filename": "daytime_dehazing_bidirectional_local_error_v1_gate_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_bidirectional_local_error_v1_gate_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_bidirectional_local_error_v1_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_bidirectional_local_error_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 9600,
+  "operation_id": "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-bidirectional-local-error-operationalization-v1__DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "Each bounded scene-level primary bidirectional-transfer value lies in [-0.25, 0.25] dB, giving a distribution-free SD upper bound of 0.25 dB. With simultaneous critical value 2.58 and half-width target 0.055 dB, 138 independent scenes are required per dataset; the frozen plan uses 150 in each stratum. Shifted-target absence precision is auxiliary and inconclusive-only."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+  "schema_version": 2,
+  "timeout_seconds": 10800,
+  "total_units": 451
+}

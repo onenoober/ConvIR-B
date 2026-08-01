@@ -1,0 +1,98 @@
+{
+  "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_PASS",
+  "decision_rule_id": "qualified_pairing_contract",
+  "details": {
+    "confirmation_or_sealed_data_touched": false,
+    "identity_summary_file": "daytime_dehazing_reside_pairing_contract_v2_identity_summary.json",
+    "independent_scene_count": 300,
+    "mapping_ledger_file": "daytime_dehazing_reside_pairing_contract_v2_mapping_ledger.jsonl",
+    "mapping_ledger_sha256": "d3e889b3cce92c0a11f25a6a49db0e3a3854b7eb427721b2410871ad65d39c25",
+    "nested_variant_count": 600,
+    "restoration_outcomes_accessed": false,
+    "summary_file": "daytime_dehazing_reside_pairing_contract_v2_summary.json",
+    "training_or_inference_occurred": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "daytime_dehazing_reside_pairing_contract_v2_identity_summary.json": "123acad0dcf73b958d2d02845c8c51f0eac89023a469de551102ca40a714794a",
+    "daytime_dehazing_reside_pairing_contract_v2_raw_artifact_receipt.json": "8323b3f808f86c9302d5208b6fcb389c504e041b2039783fee52bd2910ad42f6",
+    "daytime_dehazing_reside_pairing_contract_v2_review_facts.json": "6ff1f3c9cf8a6b34c1a377ecfc69118cf210ef0a696e02c8fdf0117a7576a347",
+    "daytime_dehazing_reside_pairing_contract_v2_summary.json": "d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "canonical_clear_identity": "pass",
+    "evidence_identity": "pass",
+    "formation_content_separation": "pass",
+    "identity_contract_precision": "met",
+    "nested_haze_pairing": "pass",
+    "planned_roster_coverage": "pass",
+    "scoring_geometry_validity": "pass",
+    "whole_image_resource_feasibility": "favorable"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "author_revised_s1_utility_qualification_contract",
+  "operation_id": "DAYTIME_DEHAZING_RESIDE_PAIRING_CONTRACT_QUALIFY",
+  "returncode": 0,
+  "route_commit": "7bdd06f50f5e946b6d9403b843722b93005329b6",
+  "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+  "run_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "sha256": "948e18e202721f499ffe0e1f3e9458ad08311b6877c5340be2c3d06270ea7cc7"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "reside_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_closeout",
+      "kind": "file",
+      "sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s0_role_summary",
+      "kind": "file",
+      "sha256": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s1_v1_closeout",
+      "kind": "file",
+      "sha256": "8272c22034ad827c39ac2ff7d7c1903f39a9872f8a7a81ca854bc95b045af98b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "s1_v1_summary",
+      "kind": "file",
+      "sha256": "5e3b678c8968a0c243f6bf79fe40b8ca80e860a376e475b61f90599eded0df1f"
+    }
+  ]
+}
