@@ -1,0 +1,53 @@
+{
+  "assurance": {
+    "method_id": "bounded_scene_range_worst_case_variance",
+    "planning_sd_rule": "The planned future S1 scene-level review target uses a distribution-free planning SD upper bound of 0.25 dB without outcome variance reuse.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_s1_validity_precision_review_v1_precision",
+  "comparison_family": "s1_measurement_validity_precision_review",
+  "confidence_level": 0.95,
+  "critical_value": 2.58,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "primary_estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "schema_version": 2,
+  "source_reference": "GitHub-main compact evidence and frozen distribution-free planning SD upper bound; no outcome variance or new metric computation is used.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "HAZE4K_TRAIN_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "S0 role evidence and the prior S1 contract freeze 150 retained Haze4K development-screening scenes."
+    },
+    {
+      "feasible": true,
+      "id": "ITS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "S1-v1 roster and pairing-v2 identity evidence freeze 150 ITS development-screening scenes."
+    },
+    {
+      "feasible": true,
+      "id": "OTS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "S1-v1 roster and pairing-v2 identity evidence freeze 150 OTS development-screening scenes."
+    }
+  ],
+  "target_half_width": 0.055
+}

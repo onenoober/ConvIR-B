@@ -1,0 +1,167 @@
+{
+  "schema_version": 2,
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "rules_commit": "b57c033629765bebe733b43712fbc945f2ae9f73",
+  "title": "Daytime Dehazing S1 Validity and Precision Review v1",
+  "rationale": "Review only archived identity, pairing, geometry, null-control, coverage, and formal precision prerequisites for the completed daytime dehazing S1 route. Exact compact cloud assets must match their GitHub-main archived SHA-256 identities before the review reads them. This route does not recompute utility, change historical metrics or terminals, access raw or protected data, run inference, train, modify model structure, or enter S2. PASS authorizes only authoring a revised S1 utility-qualification contract; execution still requires separate authorization, validity gaps remain vetoes, and precision gaps remain inconclusive-only.",
+  "first_operation": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "operations": {
+    "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "daytime_dehazing_s1_validity_precision_review",
+        "require_gpu": false,
+        "output_id": "daytime-dehazing-s1-validity-precision-review-v1-r1",
+        "closeout_filename": "daytime_dehazing_s1_validity_precision_review_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 300,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+        "stage_id": "utility_qualification",
+        "family_id": "local_restoration_need_qualification",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "dependencies": [
+          {"role": "parent_authorization", "use": "diagnostic", "anchor_id": "s0_program_foundation_pass"},
+          {"role": "program_role_ledger", "use": "evaluation", "anchor_id": "s0_scene_role_ledger"},
+          {"role": "parent_authorization", "use": "diagnostic", "anchor_id": "s1_v1_measurement_validity_review"},
+          {"role": "parent_authorization", "use": "diagnostic", "anchor_id": "reside_pairing_v2_pass"}
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [{"dimension": "precision_model", "reason": "Review precision and measurement-validity prerequisites only; introduce no utility estimator, model edit, training, inference, S2 route, or deployment."}],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Do archived S0, S1-v1, S1-v2, and RESIDE pairing-v2 compact records provide sufficient identity, pairing, geometry, null-control, coverage, and formal precision basis to author exactly one revised S1 utility-qualification contract without changing any historical conclusion?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 450,
+          "strata": [{"id": "HAZE4K_TRAIN_DEVELOPMENT", "independent_group_count": 150}, {"id": "ITS_DEVELOPMENT", "independent_group_count": 150}, {"id": "OTS_DEVELOPMENT", "independent_group_count": 150}],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "archived S1 measurement-validity and precision evidence review",
+          "reference": "The existing COMPLETED_INCONCLUSIVE S1 terminal remains unchanged; this route only determines whether a later revised S1 contract may be authored.",
+          "matched_budget": "Three 150-scene development strata; no image metrics are recomputed and no protected data is accessed.",
+          "fixed_factors": [
+            "Review ITS null, Haze4K negative tail, cross-observation transfer, square 256-512 crop with side multiple of 32, and descriptive edge/interior strata.",
+            "Two RESIDE haze observations remain nested within one original_clear_scene; original_clear_scene is the only independent unit.",
+            "Any future S1 utility contract must freeze full-image inference before the 256-512 square scoring crop and keep edge/interior analysis descriptive unless separately uncertainty-qualified; this route performs no inference.",
+            "Planning SD upper bound is 0.25 dB, critical value 2.58, target half-width 0.055 dB, 138 required groups, and 150 planned groups per stratum.",
+            "Missing, invalid, identity-conflicting, or uncovered evidence is validity_veto; insufficient precision is inconclusive_only and cannot hide a decisive FAIL.",
+            "No raw images, weights, arrays, checkpoints, large per-sample tables, protected data, training, deployment, S2, or model-structure change is allowed."
+          ]
+        },
+        "primary_estimand": {
+          "id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+          "metric_id": "planned_future_s1_scene_mean_local_minus_global_psnr_db",
+          "direction": "higher",
+          "aggregation": "Stratum-bound planning review for the future S1 scene-level local-minus-global PSNR contrast over three predeclared 150-scene development strata, using only archived compact evidence and receipt-bound ledger identities.",
+          "unit": "original_clear_scene",
+          "strata": ["HAZE4K_TRAIN_DEVELOPMENT", "ITS_DEVELOPMENT", "OTS_DEVELOPMENT"]
+        },
+        "controls": [
+          "GitHub main compact closeouts, conclusions, review facts, formal JSON or CSV summaries, and launch-contract files are authoritative for terminal facts and authorizations.",
+          "convir-4090 or receipt-bound MCP is read-only detail after identity binding; local files, directory names, diffs, and chat are not conclusions.",
+          "S1-v2 remains COMPLETED_INCONCLUSIVE with DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE; pairing-v2 PASS authorizes only revised S1 contract authoring.",
+          "Evidence review separates project-observed facts, GitHub-archived facts, AI inference, and missing evidence.",
+          "convir-evidence-review may verify completeness and archived facts only; it cannot recompute metrics, modify results, or authorize S2.",
+          "A review PASS authorizes only authoring a revised S1 utility-qualification contract, not execution."
+        ],
+        "uncertainty": {"id": "s1_review_uncertainty", "method_id": "stratum_bound_planning_sd_upper_bound_certificate", "confidence_level": 0.95, "independent_unit": "original_clear_scene", "comparison_family": "s1_measurement_validity_precision_review"},
+        "gates": [
+          {"id": "evidence_identity", "type": "integrity", "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis", "reference": "All referenced GitHub-main compact evidence and receipt-bound ledger identities are present, hash-bound, and route-consistent.", "direction": "equal", "threshold": true, "uncertainty_id": "s1_review_uncertainty", "comparison_family": "s1_measurement_validity_precision_review", "decision_role": "validity_veto", "outcomes": ["pass", "fail", "invalid"], "neutral_outcome": "pass"},
+          {"id": "pairing_geometry", "type": "coverage", "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis", "reference": "The archive supports 150 planned scenes per stratum, 300 RESIDE clear scenes, and 600 nested haze observations with bounded paths, hashes, dimensions, crop feasibility, and no backfill.", "direction": "equal", "threshold": true, "uncertainty_id": "s1_review_uncertainty", "comparison_family": "s1_measurement_validity_precision_review", "decision_role": "validity_veto", "outcomes": ["pass", "fail", "invalid"], "neutral_outcome": "pass"},
+          {"id": "geometry_contract", "type": "integrity", "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis", "reference": "The future S1 contract freezes full-image inference before scoring crop, square 256-512 crop with side multiple of 32, and descriptive-only edge/interior analysis unless separately uncertainty-qualified.", "direction": "equal", "threshold": true, "uncertainty_id": "s1_review_uncertainty", "comparison_family": "s1_measurement_validity_precision_review", "decision_role": "validity_veto", "outcomes": ["pass", "fail", "invalid"], "neutral_outcome": "pass"},
+          {"id": "null_control_validity", "type": "integrity", "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis", "reference": "ITS null-control, Haze4K negative-tail, and cross-observation transfer remain frozen review requirements and cannot be replaced by local-only reinterpretation.", "direction": "equal", "threshold": true, "uncertainty_id": "s1_review_uncertainty", "comparison_family": "s1_measurement_validity_precision_review", "decision_role": "validity_veto", "outcomes": ["pass", "fail", "invalid"], "neutral_outcome": "pass"},
+          {"id": "review_contract_resolution", "type": "materiality", "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis", "reference": "Favorable means compact review facts suffice to author a revised S1 contract without historical reinterpretation; unfavorable means a non-repairable contradiction; indeterminate means evidence remains insufficient.", "direction": "equal", "threshold": "favorable_all_required_review_facts_without_historical_reinterpretation", "uncertainty_id": "s1_review_uncertainty", "comparison_family": "s1_measurement_validity_precision_review", "decision_role": "decisive", "outcomes": ["favorable", "unfavorable", "indeterminate", "invalid"], "neutral_outcome": "favorable"},
+          {"id": "precision_feasibility", "type": "precision", "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis", "reference": "Each stratum has 150 planned groups, exceeding 138 required by critical value 2.58, SD upper bound 0.25 dB, and half-width 0.055 dB.", "direction": "max", "threshold": 0.055, "uncertainty_id": "s1_review_uncertainty", "comparison_family": "s1_measurement_validity_precision_review", "decision_role": "inconclusive_only", "outcomes": ["met", "unmet", "invalid"], "neutral_outcome": "met"}
+        ],
+        "competing_explanation": "A PASS means only that archived compact evidence can support authoring a revised S1 contract; it does not prove utility, repair historical inconclusiveness, or authorize S2, training, or deployment.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {"terminal": {"state": "COMPLETED_GATE_PASS", "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_PASS", "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY"}, "next_action_id": null, "family_effect": "record_only"},
+            "fail": {"terminal": {"state": "COMPLETED_GATE_FAIL", "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_FAIL", "authorizes": "NONE"}, "next_action_id": null, "family_effect": "record_only"},
+            "inconclusive": {"terminal": {"state": "COMPLETED_INCONCLUSIVE", "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE", "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY"}, "next_action_id": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY", "family_effect": "allow_predeclared_evidence"}
+          },
+          "rules": [
+            {"id": "evidence_identity_veto", "when": {"evidence_identity": ["fail", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "pairing_geometry_veto", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["fail", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "geometry_contract_veto", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["fail", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "null_control_veto", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["pass"], "null_control_validity": ["fail", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "resolution_invalid", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["pass"], "null_control_validity": ["pass"], "review_contract_resolution": ["invalid"]}, "terminal": "inconclusive"},
+            {"id": "resolution_unfavorable", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["pass"], "null_control_validity": ["pass"], "review_contract_resolution": ["unfavorable"]}, "terminal": "fail"},
+            {"id": "resolution_indeterminate", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["pass"], "null_control_validity": ["pass"], "review_contract_resolution": ["indeterminate"]}, "terminal": "inconclusive"},
+            {"id": "precision_unmet", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["pass"], "null_control_validity": ["pass"], "review_contract_resolution": ["favorable"], "precision_feasibility": ["unmet", "invalid"]}, "terminal": "inconclusive"},
+            {"id": "all_review_conditions_met", "when": {"evidence_identity": ["pass"], "pairing_geometry": ["pass"], "geometry_contract": ["pass"], "null_control_validity": ["pass"], "review_contract_resolution": ["favorable"], "precision_feasibility": ["met"]}, "terminal": "pass"}
+          ]
+        },
+        "disabled_actions": ["do not execute S1", "do not enter S2", "do not modify model structure", "do not train or run inference", "do not modify historical metrics, thresholds, results, or terminal conclusions", "do not read or commit raw images, weights, arrays, or large per-sample tables", "do not use local worktree state, directory names, diffs, or chat as evidence"]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/review_daytime_dehazing_s1_validity_precision_v1.py",
+        "timeout_seconds": 600,
+        "expected_wall_seconds": 300,
+        "total_units": 0,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {"allow_confirmation": false, "allow_canary": false, "allow_locked_test": false},
+        "environment": {},
+        "evidence_files": [
+          {"source_relpath": "workload/daytime_dehazing_s1_validity_precision_review_v1_summary.json", "destination_filename": "daytime_dehazing_s1_validity_precision_review_v1_summary.json", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/daytime_dehazing_s1_validity_precision_review_v1_gate_summary.json", "destination_filename": "daytime_dehazing_s1_validity_precision_review_v1_gate_summary.json", "required": true, "max_bytes": 65536},
+          {"source_relpath": "workload/daytime_dehazing_s1_validity_precision_review_v1_review_facts.json", "destination_filename": "daytime_dehazing_s1_validity_precision_review_v1_review_facts.json", "required": true, "max_bytes": 65536}
+        ],
+        "engineering_contract": {"mode": "metadata_only", "max_seconds": 300, "cost_contract": null},
+        "precision_contract": {"mode": "formal_precision", "rationale": "Each future S1 stratum freezes 150 planned independent original-clear scenes; SD upper bound 0.25 dB, critical value 2.58, half-width 0.055 dB, and 138 required groups per stratum."}
+      },
+      "assets": [
+        {"id": "entrypoint_source", "kind": "file", "path": "{REMOTE_REPO}/experience_docx/tools/review_daytime_dehazing_s1_validity_precision_v1.py", "sha256": "81d5a6df7689e7ec46e90c53ce3b522a920364a4ed1a46adebc755029c065911", "access_role": "engineering_debug", "contract_access": true},
+        {"id": "s0_closeout", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_closeout.json", "sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346", "access_role": "unrestricted", "contract_access": false},
+        {"id": "s0_role_summary", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_role_summary.json", "sha256": "d2262c8ba28c56a21b992c8f2c445d92099d7c9861f4263171c522c2efd8e7b1", "access_role": "unrestricted", "contract_access": false},
+        {"id": "s1_v1_closeout", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_closeout.json", "sha256": "8272c22034ad827c39ac2ff7d7c1903f39a9872f8a7a81ca854bc95b045af98b", "access_role": "unrestricted", "contract_access": false},
+        {"id": "s1_v1_summary", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_summary.json", "sha256": "5e3b678c8968a0c243f6bf79fe40b8ca80e860a376e475b61f90599eded0df1f", "access_role": "unrestricted", "contract_access": false},
+        {"id": "pairing_v2_closeout", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_closeout.json", "sha256": "915d98b1dae5847cdb1166610e16ade96b5fb656373587d08895e2a7863492b9", "access_role": "unrestricted", "contract_access": false},
+        {"id": "pairing_v2_summary", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_summary.json", "sha256": "d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699", "access_role": "unrestricted", "contract_access": false},
+        {"id": "pairing_v2_identity_summary", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_identity_summary.json", "sha256": "123acad0dcf73b958d2d02845c8c51f0eac89023a469de551102ca40a714794a", "access_role": "unrestricted", "contract_access": false},
+        {"id": "s1_v2_closeout", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_closeout.json", "sha256": "64831258a340a0e3f9a3bad82c8138ce144c837b3e01cd42ded67daa82d59992", "access_role": "unrestricted", "contract_access": false},
+        {"id": "s1_v2_summary", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_summary.json", "sha256": "fdb15c9da34b6e9bba815927578898957b1980f87d7bb3295dfb1b31fb3fa068", "access_role": "unrestricted", "contract_access": false},
+        {"id": "s1_v2_gate_summary", "kind": "file", "path": "/sda/home/wangyuxin/ConvIR-B/repos/daytime-dehazing-local-restorati-daytime-dehazing-local--4cdfb4e16aac5fd1/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_gate_summary.json", "sha256": "a498559a645d547472185d889af9c19ce589f56ed91564cb3931deda4e338a69", "access_role": "unrestricted", "contract_access": false}
+      ],
+      "capability": null,
+      "precision": {
+        "certificate_id": "daytime_dehazing_s1_validity_precision_review_v1_precision",
+        "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+        "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+        "primary_estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "s1_measurement_validity_precision_review",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 2.58,
+        "target_half_width": 0.055,
+        "assurance": {"method_id": "bounded_scene_range_worst_case_variance", "probability": 0.95, "planning_sd_rule": "The planned future S1 scene-level review target uses a distribution-free planning SD upper bound of 0.25 dB without outcome variance reuse."},
+        "strata": [
+          {"id": "HAZE4K_TRAIN_DEVELOPMENT", "independent_groups_available": 150, "independent_groups_planned": 150, "planning_sd": 0.25, "planning_sd_upper_bound": 0.25, "independent_groups_required": 138, "feasible": true, "source_reference": "S0 role evidence and the prior S1 contract freeze 150 retained Haze4K development-screening scenes."},
+          {"id": "ITS_DEVELOPMENT", "independent_groups_available": 150, "independent_groups_planned": 150, "planning_sd": 0.25, "planning_sd_upper_bound": 0.25, "independent_groups_required": 138, "feasible": true, "source_reference": "S1-v1 roster and pairing-v2 identity evidence freeze 150 ITS development-screening scenes."},
+          {"id": "OTS_DEVELOPMENT", "independent_groups_available": 150, "independent_groups_planned": 150, "planning_sd": 0.25, "planning_sd_upper_bound": 0.25, "independent_groups_required": 138, "feasible": true, "source_reference": "S1-v1 roster and pairing-v2 identity evidence freeze 150 OTS development-screening scenes."}
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "GitHub-main compact evidence and frozen distribution-free planning SD upper bound; no outcome variance or new metric computation is used."
+      }
+    }
+  }
+}

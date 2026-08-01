@@ -1,0 +1,49 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-s1-validity-precision-review-v1__DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "cost_contract": null,
+    "max_seconds": 300,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/review_daytime_dehazing_s1_validity_precision_v1.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "daytime_dehazing_s1_validity_precision_review_v1_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_s1_validity_precision_review_v1_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_s1_validity_precision_review_v1_gate_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_s1_validity_precision_review_v1_gate_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_s1_validity_precision_review_v1_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_s1_validity_precision_review_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 300,
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-s1-validity-precision-review-v1__DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW.json",
+    "mode": "formal_precision",
+    "rationale": "Each future S1 stratum freezes 150 planned independent original-clear scenes; SD upper bound 0.25 dB, critical value 2.58, half-width 0.055 dB, and 138 required groups per stratum."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "schema_version": 2,
+  "timeout_seconds": 600,
+  "total_units": 0
+}

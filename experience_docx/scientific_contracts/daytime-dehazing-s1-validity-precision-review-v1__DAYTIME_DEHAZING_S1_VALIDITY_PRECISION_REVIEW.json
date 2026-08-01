@@ -1,0 +1,386 @@
+{
+  "competing_explanation": "A PASS means only that archived compact evidence can support authoring a revised S1 contract; it does not prove utility, repair historical inconclusiveness, or authorize S2, training, or deployment.",
+  "controls": [
+    "GitHub main compact closeouts, conclusions, review facts, formal JSON or CSV summaries, and launch-contract files are authoritative for terminal facts and authorizations.",
+    "convir-4090 or receipt-bound MCP is read-only detail after identity binding; local files, directory names, diffs, and chat are not conclusions.",
+    "S1-v2 remains COMPLETED_INCONCLUSIVE with DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE; pairing-v2 PASS authorizes only revised S1 contract authoring.",
+    "Evidence review separates project-observed facts, GitHub-archived facts, AI inference, and missing evidence.",
+    "convir-evidence-review may verify completeness and archived facts only; it cannot recompute metrics, modify results, or authorize S2.",
+    "A review PASS authorizes only authoring a revised S1 utility-qualification contract, not execution."
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "evidence_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "pairing_geometry_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "pairing_geometry": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "geometry_contract_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "fail",
+            "invalid"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "null_control_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "pass"
+          ],
+          "null_control_validity": [
+            "fail",
+            "invalid"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "resolution_invalid",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "pass"
+          ],
+          "null_control_validity": [
+            "pass"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ],
+          "review_contract_resolution": [
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "resolution_unfavorable",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "pass"
+          ],
+          "null_control_validity": [
+            "pass"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ],
+          "review_contract_resolution": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "resolution_indeterminate",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "pass"
+          ],
+          "null_control_validity": [
+            "pass"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ],
+          "review_contract_resolution": [
+            "indeterminate"
+          ]
+        }
+      },
+      {
+        "id": "precision_unmet",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "pass"
+          ],
+          "null_control_validity": [
+            "pass"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ],
+          "precision_feasibility": [
+            "unmet",
+            "invalid"
+          ],
+          "review_contract_resolution": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "all_review_conditions_met",
+        "terminal": "pass",
+        "when": {
+          "evidence_identity": [
+            "pass"
+          ],
+          "geometry_contract": [
+            "pass"
+          ],
+          "null_control_validity": [
+            "pass"
+          ],
+          "pairing_geometry": [
+            "pass"
+          ],
+          "precision_feasibility": [
+            "met"
+          ],
+          "review_contract_resolution": [
+            "favorable"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "record_only",
+        "next_action_id": null,
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+        "terminal": {
+          "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "record_only",
+        "next_action_id": null,
+        "terminal": {
+          "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "do not execute S1",
+    "do not enter S2",
+    "do not modify model structure",
+    "do not train or run inference",
+    "do not modify historical metrics, thresholds, results, or terminal conclusions",
+    "do not read or commit raw images, weights, arrays, or large per-sample tables",
+    "do not use local worktree state, directory names, diffs, or chat as evidence"
+  ],
+  "gates": [
+    {
+      "comparison_family": "s1_measurement_validity_precision_review",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+      "id": "evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "All referenced GitHub-main compact evidence and receipt-bound ledger identities are present, hash-bound, and route-consistent.",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "s1_review_uncertainty"
+    },
+    {
+      "comparison_family": "s1_measurement_validity_precision_review",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+      "id": "pairing_geometry",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "The archive supports 150 planned scenes per stratum, 300 RESIDE clear scenes, and 600 nested haze observations with bounded paths, hashes, dimensions, crop feasibility, and no backfill.",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "s1_review_uncertainty"
+    },
+    {
+      "comparison_family": "s1_measurement_validity_precision_review",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+      "id": "geometry_contract",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "The future S1 contract freezes full-image inference before scoring crop, square 256-512 crop with side multiple of 32, and descriptive-only edge/interior analysis unless separately uncertainty-qualified.",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "s1_review_uncertainty"
+    },
+    {
+      "comparison_family": "s1_measurement_validity_precision_review",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+      "id": "null_control_validity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "ITS null-control, Haze4K negative-tail, and cross-observation transfer remain frozen review requirements and cannot be replaced by local-only reinterpretation.",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "s1_review_uncertainty"
+    },
+    {
+      "comparison_family": "s1_measurement_validity_precision_review",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+      "id": "review_contract_resolution",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "Favorable means compact review facts suffice to author a revised S1 contract without historical reinterpretation; unfavorable means a non-repairable contradiction; indeterminate means evidence remains insufficient.",
+      "threshold": "favorable_all_required_review_facts_without_historical_reinterpretation",
+      "type": "materiality",
+      "uncertainty_id": "s1_review_uncertainty"
+    },
+    {
+      "comparison_family": "s1_measurement_validity_precision_review",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+      "id": "precision_feasibility",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "Each stratum has 150 planned groups, exceeding 138 required by critical value 2.58, SD upper bound 0.25 dB, and half-width 0.055 dB.",
+      "threshold": 0.055,
+      "type": "precision",
+      "uncertainty_id": "s1_review_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "Review ITS null, Haze4K negative tail, cross-observation transfer, square 256-512 crop with side multiple of 32, and descriptive edge/interior strata.",
+      "Two RESIDE haze observations remain nested within one original_clear_scene; original_clear_scene is the only independent unit.",
+      "Any future S1 utility contract must freeze full-image inference before the 256-512 square scoring crop and keep edge/interior analysis descriptive unless separately uncertainty-qualified; this route performs no inference.",
+      "Planning SD upper bound is 0.25 dB, critical value 2.58, target half-width 0.055 dB, 138 required groups, and 150 planned groups per stratum.",
+      "Missing, invalid, identity-conflicting, or uncovered evidence is validity_veto; insufficient precision is inconclusive_only and cannot hide a decisive FAIL.",
+      "No raw images, weights, arrays, checkpoints, large per-sample tables, protected data, training, deployment, S2, or model-structure change is allowed."
+    ],
+    "matched_budget": "Three 150-scene development strata; no image metrics are recomputed and no protected data is accessed.",
+    "primary_variable": "archived S1 measurement-validity and precision evidence review",
+    "reference": "The existing COMPLETED_INCONCLUSIVE S1 terminal remains unchanged; this route only determines whether a later revised S1 contract may be authored."
+  },
+  "operation_id": "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 450,
+    "strata": [
+      {
+        "id": "HAZE4K_TRAIN_DEVELOPMENT",
+        "independent_group_count": 150
+      },
+      {
+        "id": "ITS_DEVELOPMENT",
+        "independent_group_count": 150
+      },
+      {
+        "id": "OTS_DEVELOPMENT",
+        "independent_group_count": 150
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "Stratum-bound planning review for the future S1 scene-level local-minus-global PSNR contrast over three predeclared 150-scene development strata, using only archived compact evidence and receipt-bound ledger identities.",
+    "direction": "higher",
+    "id": "future_s1_crossfit_local_over_global_utility_precision_basis",
+    "metric_id": "planned_future_s1_scene_mean_local_minus_global_psnr_db",
+    "strata": [
+      "HAZE4K_TRAIN_DEVELOPMENT",
+      "ITS_DEVELOPMENT",
+      "OTS_DEVELOPMENT"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Do archived S0, S1-v1, S1-v2, and RESIDE pairing-v2 compact records provide sufficient identity, pairing, geometry, null-control, coverage, and formal precision basis to author exactly one revised S1 utility-qualification contract without changing any historical conclusion?",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "schema_version": 2,
+  "uncertainty": {
+    "comparison_family": "s1_measurement_validity_precision_review",
+    "confidence_level": 0.95,
+    "id": "s1_review_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "stratum_bound_planning_sd_upper_bound_certificate"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-s1-validity-precision-review-v1.json",
+  "experiment_spec_sha256": "3559714a8468b4c6f2f12c8f759ab1bf2ee66ca65cd974cea406f0709632bf94",
+  "operations": {
+    "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "AUTHOR_REVISED_S1_UTILITY_QUALIFICATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_S1_VALIDITY_REVIEW_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_s1_validity_precision_review_v1_closeout.json",
+      "heartbeat_timeout_seconds": 300,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "daytime_dehazing_s1_validity_precision_review",
+      "monitor_profile": "standard",
+      "output_id": "daytime-dehazing-s1-validity-precision-review-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "538a3f28b120197ed6d2704adb4347ae1d9d8b0430f56abbfd76815b083bfc51",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-s1-validity-precision-review-v1.md",
+  "route_id": "daytime-dehazing-s1-validity-precision-review-v1",
+  "rules_commit": "b57c033629765bebe733b43712fbc945f2ae9f73",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW": "experience_docx/scientific_contracts/daytime-dehazing-s1-validity-precision-review-v1__DAYTIME_DEHAZING_S1_VALIDITY_PRECISION_REVIEW.json"
+  }
+}

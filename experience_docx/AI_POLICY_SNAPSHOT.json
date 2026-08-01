@@ -1,0 +1,167 @@
+{
+  "change_routes": {
+    "cloud_control": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md",
+        "experience_docx/CONVIR_OPS_MCP.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "evidence_archive": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md",
+        "experience_docx/SCIENCE_FASTPATH.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "governance_change": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/RULE_COMPATIBILITY.json",
+        "experience_docx/SCIENCE_FASTPATH.md",
+        "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
+        "experience_docx/ROUTE_READY_FASTPATH.md",
+        "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
+        "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md",
+        "experience_docx/CONVIR_OPS_MCP.md",
+        "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "model_or_training": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "read_only_audit": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/SCIENCE_FASTPATH.md",
+        "experience_docx/CONVIR_EVIDENCE_REVIEW.md"
+      ],
+      "snapshot_is_authority": false
+    },
+    "route_authoring": {
+      "read_full": [
+        "AGENTS.md",
+        "experience_docx/ROUTE_READY_FASTPATH.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md"
+      ],
+      "snapshot_is_authority": false
+    }
+  },
+  "default_runtime_host": "convir-4090",
+  "full_rule_read_required_when": [
+    "the change class route lists the file",
+    "the snapshot hash differs from the repository source",
+    "the request changes governance, protected data, or scientific authorization",
+    "rules conflict or the change class is unknown"
+  ],
+  "local_runtime_allowed": false,
+  "protected_roles_fail_closed": [
+    "confirmation",
+    "canary",
+    "locked_test"
+  ],
+  "route_mechanisms": [
+    "adjacent",
+    "orthogonal",
+    "reopen"
+  ],
+  "rules_bundle_sha256": "2a5bbc3a30ec19e1810681ec22aa8a33939c6a807c1a5eea210846c7705fc534",
+  "rules_commit": "b57c033629765bebe733b43712fbc945f2ae9f73",
+  "schema_version": 1,
+  "snapshot_role": "deterministic_read_index_not_policy_authority",
+  "source_of_truth_order": [
+    {
+      "allowed_uses": [
+        "bind_branch_head_route_id",
+        "check_worktree_safety",
+        "check_github_main_freshness"
+      ],
+      "forbidden_uses": [
+        "infer_metric",
+        "infer_verdict",
+        "infer_terminal",
+        "infer_authorization",
+        "infer_completed_workload"
+      ],
+      "source": "local_route_worktree",
+      "step": "route_identity"
+    },
+    {
+      "owns": [
+        "current_rules",
+        "compact_terminal_evidence",
+        "terminal_authorization"
+      ],
+      "required_action": "read_exact_snapshot_and_referenced_files",
+      "source": "github_main",
+      "step": "authoritative_evidence"
+    },
+    {
+      "owns": [
+        "raw_runtime_state",
+        "detailed_outputs"
+      ],
+      "required_action": "read_only_after_identity_and_github_binding",
+      "source": "convir_4090_or_receipt_bound_mcp",
+      "step": "runtime_detail"
+    }
+  ],
+  "sources": {
+    "AGENTS.md": {
+      "bytes": 12069,
+      "sha256": "3ed334955523461b7c2dd6e8b540ffda3c936c32be45a1b658772b8e76da17b2"
+    },
+    "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
+      "bytes": 4970,
+      "sha256": "bee5089e6d4a2c510b7dbc0d998ac13222f4485eb58955bb5093daf7a57e0e3d"
+    },
+    "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
+      "bytes": 13057,
+      "sha256": "8dcbb3d2d72e4ebd4c4be1eace6afc3ca03098b6e6bf8a2be45ea31820e103d7"
+    },
+    "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
+      "bytes": 14669,
+      "sha256": "f227763610895a283bed9bbb096392d92a38b8f62fca07d6f77bb769e8b77ec4"
+    },
+    "experience_docx/CONVIR_OPS_MCP.md": {
+      "bytes": 17452,
+      "sha256": "ede43db18ac135d75c743a53db1166337136cb8237b41c6f12bb88c1bb4238d4"
+    },
+    "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
+      "bytes": 7529,
+      "sha256": "a77315b59f23ebc224a954a3d1ead07d8f13479355d24dbed777c77e72329921"
+    },
+    "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
+      "bytes": 10624,
+      "sha256": "d67578552d34cbd78fe4ac187e652598078cef30f85771365e8cbb6777029385"
+    },
+    "experience_docx/ROUTE_READY_FASTPATH.md": {
+      "bytes": 15588,
+      "sha256": "f2972ec8d3668b52cad4e957f649f030dcba9a6b07f7050e501803642278c806"
+    },
+    "experience_docx/RULE_COMPATIBILITY.json": {
+      "bytes": 170,
+      "sha256": "58ea7811d6069675b97743624431c680735067ce26938d1761a88d06a1411b21"
+    },
+    "experience_docx/SCIENCE_FASTPATH.md": {
+      "bytes": 16240,
+      "sha256": "9ba19bfd896037718c9ca18f9a3327c9d0b8a4ae3d8ea5f9d59ac483fa8616bd"
+    }
+  },
+  "workflow": [
+    "SNAPSHOT",
+    "CONTRACT",
+    "EXECUTE",
+    "DECIDE",
+    "ARCHIVE"
+  ]
+}
