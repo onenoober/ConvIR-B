@@ -1,0 +1,295 @@
+{
+  "gate_outcomes": {
+    "bidirectional_repeatability": "unfavorable",
+    "development_scene_coverage": "pass",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "unfavorable",
+    "measurement_null_control": "fail",
+    "near_clear_fidelity": "indeterminate",
+    "primary_precision": "met"
+  },
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "prevalence": {
+    "bidirectional_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.0,
+          "lower": 3.469446951953614e-18,
+          "successes": 0,
+          "total": 150,
+          "upper": 0.04249044405463166
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.31333333333333335,
+          "lower": 0.22532237627947024,
+          "successes": 47,
+          "total": 150,
+          "upper": 0.4172073895009256
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.31333333333333335,
+          "lower": 0.22532237627947024,
+          "successes": 47,
+          "total": 150,
+          "upper": 0.4172073895009256
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.2088888888888889,
+        "lower": 0.16444444444444445,
+        "max_half_width": 0.046666666666666634,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.25555555555555554
+      }
+    },
+    "direction_and_strength_stable_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.82,
+          "lower": 0.7260509180625241,
+          "successes": 123,
+          "total": 150,
+          "upper": 0.8867551977425117
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.49333333333333335,
+          "lower": 0.39055932378436764,
+          "successes": 74,
+          "total": 150,
+          "upper": 0.596673882136361
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.6,
+          "lower": 0.49467790799295713,
+          "successes": 90,
+          "total": 150,
+          "upper": 0.6968240031961166
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.6377777777777777,
+        "lower": 0.5822222222222222,
+        "max_half_width": 0.05555555555555547,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.6911111111111111
+      }
+    },
+    "joint_useful_bidirectional_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.0,
+          "lower": 3.469446951953614e-18,
+          "successes": 0,
+          "total": 150,
+          "upper": 0.04249044405463166
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.25333333333333335,
+          "lower": 0.17355272073146072,
+          "successes": 38,
+          "total": 150,
+          "upper": 0.35407589833549097
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.2733333333333333,
+          "lower": 0.19059401940827853,
+          "successes": 41,
+          "total": 150,
+          "upper": 0.3753349818964878
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.17555555555555555,
+        "lower": 0.13333333333333333,
+        "max_half_width": 0.044444444444444425,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.21999999999999997
+      }
+    },
+    "keep_supported_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.98,
+          "lower": 0.9242664264478373,
+          "successes": 147,
+          "total": 150,
+          "upper": 0.9949427472597165
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.07333333333333333,
+          "lower": 0.03475164114324501,
+          "successes": 11,
+          "total": 150,
+          "upper": 0.148173537783374
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.4266666666666667,
+          "lower": 0.32778353408109623,
+          "successes": 64,
+          "total": 150,
+          "upper": 0.5317817310469164
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.49333333333333335,
+        "lower": 0.45333333333333337,
+        "max_half_width": 0.03999999999999998,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.5333333333333333
+      }
+    },
+    "material_utility_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.36,
+          "lower": 0.2668265915084257,
+          "successes": 54,
+          "total": 150,
+          "upper": 0.46507073282687117
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.8333333333333334,
+          "lower": 0.741054202031611,
+          "successes": 125,
+          "total": 150,
+          "upper": 0.897285501931968
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.9066666666666666,
+          "lower": 0.8269835729190496,
+          "successes": 136,
+          "total": 150,
+          "upper": 0.9517908659165166
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.7000000000000001,
+        "lower": 0.6533333333333333,
+        "max_half_width": 0.046666666666666745,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.7466666666666667
+      }
+    },
+    "negative_tail_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.44666666666666666,
+          "lower": 0.34642972727238064,
+          "successes": 67,
+          "total": 150,
+          "upper": 0.5514359200934467
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.0,
+          "lower": 3.469446951953614e-18,
+          "successes": 0,
+          "total": 150,
+          "upper": 0.04249044405463166
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.06,
+          "lower": 0.026293564422722543,
+          "successes": 9,
+          "total": 150,
+          "upper": 0.1310980263453533
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.16888888888888887,
+        "lower": 0.1311111111111111,
+        "max_half_width": 0.0377777777777778,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.20666666666666667
+      }
+    }
+  },
+  "primary": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": -0.02137699846517631,
+        "lower": -0.06424234507352243,
+        "max_half_width": 0.04321048271460334,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.021833484249427035
+      },
+      "ITS": {
+        "estimate": 0.19930889829742876,
+        "lower": 0.18087281209608808,
+        "max_half_width": 0.018436086201340685,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.21694033002153673
+      },
+      "OTS": {
+        "estimate": 0.2118011404723059,
+        "lower": 0.18586940473350325,
+        "max_half_width": 0.02593173573880264,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.23436523223173017
+      }
+    },
+    "clip_db": [
+      -0.25,
+      0.25
+    ],
+    "clipping_diagnostics": {
+      "high_scene_count": 278,
+      "low_scene_count": 55
+    },
+    "minimum_meaningful_effect_db": 0.1,
+    "overall_equal_dataset_weight": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.12991101343485278,
+      "lower": 0.11201242964270809,
+      "max_half_width": 0.017898583792144693,
+      "resamples": 20000,
+      "scene_count": 450,
+      "simultaneous_family": "overall_plus_three_dataset_means",
+      "upper": 0.147550965548061
+    },
+    "precision_target_half_width_db": 0.055
+  },
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v2",
+  "schema_version": 1
+}

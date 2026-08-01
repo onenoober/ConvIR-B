@@ -1,0 +1,53 @@
+{
+  "assurance": {
+    "method_id": "bounded_scene_range_worst_case_variance",
+    "planning_sd_rule": "The frozen scene-level primary estimand remains clipped to [-0.25, 0.25] dB, so Popoviciu's inequality gives a distribution-free planning SD upper bound of 0.25 dB without historical outcome-variance reuse.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_local_restoration_need_precision_v3",
+  "comparison_family": "scene_grouped_s1_gate_families",
+  "confidence_level": 0.95,
+  "critical_value": 2.58,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "primary_estimand_id": "crossfit_local_over_global_utility",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "schema_version": 2,
+  "source_reference": "GitHub-main archived compact v2 evidence and the frozen distribution-free planning SD upper bound; no outcome-derived planning variance, new inference, or protected evidence is used.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "HAZE4K_TRAIN_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The SHA-bound archived v2 scene CSV contains exactly 150 Haze4K-train development-screening original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "ITS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The SHA-bound archived v2 scene CSV and pairing-v2 evidence contain exactly 150 ITS development-screening original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "OTS_DEVELOPMENT",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 138,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The SHA-bound archived v2 scene CSV and pairing-v2 evidence contain exactly 150 OTS development-screening original-clear scenes."
+    }
+  ],
+  "target_half_width": 0.055
+}

@@ -1,0 +1,55 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "entrypoint_source",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_local_restoration_need_v3.py",
+      "sha256": "32ddb21c73f19f6ea711ce58a54f732f2336903fc56c857eca1890d9afda057a"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_closeout.json",
+      "sha256": "64831258a340a0e3f9a3bad82c8138ce144c837b3e01cd42ded67daa82d59992"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_summary.json",
+      "sha256": "fdb15c9da34b6e9bba815927578898957b1980f87d7bb3295dfb1b31fb3fa068"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_gate_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_gate_summary.json",
+      "sha256": "a498559a645d547472185d889af9c19ce589f56ed91564cb3931deda4e338a69"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_v2_scene_metrics",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_scene_metrics.csv",
+      "sha256": "db6cfe210b3eedf08e06d2b6fd4447f523b1777661d87ccb53e0bf5e99bb1f8e"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": false,
+      "id": "s1_review_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/daytime-dehazing-s1-validity-precision-review-v1/daytime_dehazing_s1_validity_precision_review_v1_closeout.json",
+      "sha256": "b05665be761bbe90707cc622ce24cba285027b3c43a34041a007bcbe0e321670"
+    }
+  ],
+  "operation_id": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_QUALIFY",
+  "route_id": "daytime-dehazing-local-restoration-need-qualification-v3",
+  "schema_version": 2
+}
