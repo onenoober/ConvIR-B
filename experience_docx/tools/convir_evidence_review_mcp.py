@@ -2,6 +2,7 @@
 """Read-only MCP facade for the commit-bound experiment evidence catalog."""
 
 import base64
+from collections import OrderedDict
 import hashlib
 import json
 import os
@@ -18,7 +19,7 @@ import legacy_backfill_registry as legacy
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "1.5.0"
+SERVER_VERSION = "2.0.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -56,6 +57,9 @@ LEGACY_REGISTRY_SOURCE_SHA256 = hashlib.sha256(
     (SELF_PATH.parent / "legacy_backfill_registry.py").read_bytes()
 ).hexdigest()
 MAX_REQUEST_ID_PLACEHOLDER = "x" * (MAX_REQUEST_ID_BYTES - 2)
+CATALOG_CACHE_ENTRIES = 8
+_CATALOG_CACHE = OrderedDict()
+_CATALOG_CACHE_LOCK = threading.RLock()
 
 
 class ReviewError(RuntimeError):
@@ -63,6 +67,26 @@ class ReviewError(RuntimeError):
         super().__init__(message)
         self.state = state
         self.exit_code = exit_code
+
+
+def load_catalog_cached(repo, commit):
+    """Reuse immutable commit-bound catalogs without creating review state."""
+    key = (str(Path(repo).resolve()), commit)
+    with _CATALOG_CACHE_LOCK:
+        loaded = _CATALOG_CACHE.get(key)
+        if loaded is not None:
+            _CATALOG_CACHE.move_to_end(key)
+            return loaded
+    loaded = catalog.load_catalog(repo, commit)
+    with _CATALOG_CACHE_LOCK:
+        existing = _CATALOG_CACHE.get(key)
+        if existing is not None:
+            _CATALOG_CACHE.move_to_end(key)
+            return existing
+        _CATALOG_CACHE[key] = loaded
+        while len(_CATALOG_CACHE) > CATALOG_CACHE_ENTRIES:
+            _CATALOG_CACHE.popitem(last=False)
+    return loaded
 
 
 def canonical_bytes(value):
@@ -307,7 +331,7 @@ def load_legacy_registry(repo, commit):
             state="LEGACY_REGISTRY_SNAPSHOT_MISMATCH", exit_code=3,
         )
     try:
-        base_catalog = catalog.load_catalog(repo, base_commit)
+        base_catalog = load_catalog_cached(repo, base_commit)
     except catalog.CatalogError as exc:
         raise ReviewError(str(exc), state=exc.state, exit_code=exc.exit_code) from exc
     source_tree = value.get("source_tree", {})
@@ -434,24 +458,6 @@ def bounded_mcp_result(value):
     return mcp_result(fallback)
 
 
-def tool_catalog_summary(args):
-    operation = "catalog-summary"
-    try:
-        repo = validate_repo(args.get("local_repo"))
-        remote_url, commit = trusted_main_identity(repo)
-        registry_value = load_legacy_registry(repo, commit)
-        loaded = catalog.load_catalog(repo, commit)
-        value = add_github_identity(
-            catalog.summary_response(loaded),
-            remote_url,
-            commit,
-        )
-        value["legacy_backfill"] = legacy_registry_summary(registry_value)
-        return bounded_mcp_result(value)
-    except Exception as exc:
-        return bounded_mcp_result(failure_value(operation, exc))
-
-
 def tool_completeness_receipt(args):
     operation = "completeness-receipt"
     try:
@@ -465,7 +471,7 @@ def tool_completeness_receipt(args):
                 repo, requested_commit
             )
         registry_value = load_legacy_registry(repo, commit)
-        loaded = catalog.load_catalog(repo, commit)
+        loaded = load_catalog_cached(repo, commit)
         value = catalog.completeness_receipt(loaded)
         value["legacy_backfill"] = legacy_registry_summary(registry_value)
         add_github_identity(value, remote_url, tip)
@@ -501,7 +507,7 @@ def tool_catalog_query(args):
         )
         coverage, terms, cursor, requested_limit = query_arguments(args)
         registry_value = load_legacy_registry(repo, commit)
-        loaded = filter_review_candidates(catalog.load_catalog(repo, commit), registry_value)
+        loaded = filter_review_candidates(load_catalog_cached(repo, commit), registry_value)
         effective_limit = requested_limit
         while True:
             value = catalog.entries_response(
@@ -645,7 +651,7 @@ def _prepare_legacy_evidence_bundle(
         "record": record, "resolution": "LEGACY_HASH_BOUND_REVIEWABLE",
         "lineage": lineage, "files": files, "bundle_sha256": bundle_sha256,
         "project_receipt": catalog.completeness_receipt(
-            catalog.load_catalog(repo, commit)
+            load_catalog_cached(repo, commit)
         ),
         "binding": binding,
         "legacy_registry": legacy_registry_summary(registry_value),
@@ -665,7 +671,7 @@ def _prepare_evidence_bundle(args):
     if not isinstance(terminal_record_sha256, str) \
             or not inventory.SHA256.fullmatch(terminal_record_sha256):
         raise ReviewError("terminal_record_sha256 has an invalid SHA identity")
-    loaded = catalog.load_catalog(repo, commit)
+    loaded = load_catalog_cached(repo, commit)
     if loaded["catalog_sha256"] != requested_catalog_sha256:
         raise ReviewError(
             "catalog identity differs", state="IDENTITY_CONFLICT", exit_code=3
@@ -1509,22 +1515,6 @@ OUTPUT_SCHEMA = {
 
 
 TOOLS = {
-    "convir_evidence_catalog_summary": {
-        "description": (
-            "Freeze trusted github/main to an immutable commit and return only "
-            "the compact GitHub evidence-catalog identity and coverage summary."
-        ),
-        "inputSchema": {
-            "type": "object",
-            "required": ["local_repo"],
-            "properties": {
-                "local_repo": {"type": "string"},
-            },
-            "additionalProperties": False,
-        },
-        "outputSchema": OUTPUT_SCHEMA,
-        "handler": tool_catalog_summary,
-    },
     "convir_evidence_completeness_receipt": {
         "description": (
             "Return one compact schema-2 receipt that partitions the complete "

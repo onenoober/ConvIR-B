@@ -613,6 +613,21 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "rules")
             rules_commit = self.git(repo, "rev-parse", "HEAD")
+            compatibility = repo / OPS.RULE_COMPATIBILITY_RELPATH
+            compatibility.parent.mkdir(parents=True, exist_ok=True)
+            compatibility.write_text(json.dumps({
+                "schema_version": 1,
+                "compatibility_id": "science-fastpath-contract-v1",
+                "compatible_prior_rules_commits": [rules_commit],
+            }), encoding="utf-8")
+            agents = repo / "AGENTS.md"
+            agents.write_text(
+                agents.read_text(encoding="utf-8") + "compatible documentation update\n",
+                encoding="utf-8",
+            )
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "compatible rules update")
+            current_main = self.git(repo, "rev-parse", "HEAD")
             program, spec = sources_v2(rules_commit)
             spec_raw, program_raw, bundle = compile_sources(program, spec)
             sources_by_path = {
@@ -628,10 +643,13 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             route_commit = self.git(repo, "rev-parse", "HEAD")
             manifest = json.loads(bundle[COMPILER.MANIFEST_RELPATH])
             context = OPS.parse_manifest(
-                manifest, "codex/schema6-fixture", route_commit, rules_commit,
+                manifest, "codex/schema6-fixture", route_commit, current_main,
                 str(repo), "ACCEPT",
             )
             self.assertEqual(6, context["route_manifest_schema_version"])
+            self.assertEqual(
+                "science-fastpath-contract-v1", context["rules_compatibility_id"],
+            )
             derived = repo / "experience_docx/scientific_contracts/final_slim__ACCEPT.json"
             value = json.loads(derived.read_text(encoding="utf-8"))
             value["question"] += " tampered"
@@ -641,7 +659,7 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             tampered_commit = self.git(repo, "rev-parse", "HEAD")
             with self.assertRaises(OPS.ToolError):
                 OPS.parse_manifest(
-                    manifest, "codex/schema6-fixture", tampered_commit, rules_commit,
+                    manifest, "codex/schema6-fixture", tampered_commit, current_main,
                     str(repo), "ACCEPT",
                 )
 

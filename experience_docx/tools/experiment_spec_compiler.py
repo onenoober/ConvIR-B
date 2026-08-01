@@ -188,7 +188,7 @@ def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProc
 def _authoritative_evidence_resolver(
     repo: Path, rules_commit: Any, authoritative_main: str,
 ) -> tuple[str, Callable[[str], bool]]:
-    """Bind archived authorization evidence to one exact GitHub-main commit."""
+    """Resolve archived authorization evidence from the current GitHub main."""
     if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
         raise ExperimentSpecError("rules_commit must be an exact 40-character commit")
     if not isinstance(authoritative_main, str) or not authoritative_main:
@@ -196,11 +196,7 @@ def _authoritative_evidence_resolver(
     resolved = _git(
         repo, "rev-parse", "--verify", f"{authoritative_main}^{{commit}}",
     ).stdout.decode("ascii").strip()
-    if resolved != rules_commit:
-        raise ExperimentSpecError(
-            "rules_commit must equal the refreshed authoritative GitHub-main commit: "
-            f"rules_commit={rules_commit} authoritative_main={resolved}"
-        )
+    _git(repo, "cat-file", "-e", f"{rules_commit}^{{commit}}")
     cache: dict[str, bool] = {}
 
     def exists(relpath: str) -> bool:

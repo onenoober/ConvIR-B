@@ -1,7 +1,6 @@
 """Focused acceptance tests for the final-slim experiment control plane."""
 
 import copy
-import hashlib
 import json
 import subprocess
 import sys
@@ -283,6 +282,10 @@ class FinalSlimTests(unittest.TestCase):
             "branch": "codex/route", "head": "a" * 40,
             "github_main_remote": "b" * 40,
             "github_main_ref_fresh": True, "worktree_clean": True,
+            "route_identity": {
+                "status": "ROUTE_ID_UNRESOLVED_NO_MANIFEST",
+                "route_id_confirmed": False,
+            },
             "authoritative_snapshot": {
                 "status": "NO_TERMINAL_RECORD", "route_id": "route",
             },
@@ -295,8 +298,13 @@ class FinalSlimTests(unittest.TestCase):
         self.assertEqual(64, len(unresolved["receipt_sha256"]))
         ready = OPS.build_snapshot_phase_receipt({
             **base,
+            "route_identity": {
+                "status": "ROUTE_ID_CONFIRMED_BY_HEAD_MANIFEST",
+                "route_id_confirmed": True,
+            },
             "authoritative_snapshot": {
                 "status": "AUTHORITATIVE_SNAPSHOT_OK", "route_id": "route",
+                "route_id_confirmed": True,
             },
         })
         self.assertEqual(
@@ -307,7 +315,7 @@ class FinalSlimTests(unittest.TestCase):
         })
         self.assertEqual("refresh_github_main_once", stale["allowed_next_action"])
 
-    def test_authoritative_snapshot_uses_terminal_index_not_markdown_history(self):
+    def test_authoritative_snapshot_returns_terminal_pointer_without_results(self):
         with tempfile.TemporaryDirectory() as directory:
             repo = Path(directory)
             subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
@@ -343,9 +351,15 @@ class FinalSlimTests(unittest.TestCase):
             index.write_text(json.dumps(record) + "\n")
             subprocess.run(["git", "add", "."], cwd=repo, check=True)
             subprocess.run(["git", "commit", "-qm", "snapshot"], cwd=repo, check=True)
-            snapshot = OPS.authoritative_snapshot(repo, "route", "HEAD")
+            snapshot = OPS.authoritative_snapshot(
+                repo, "route", "HEAD", route_id_confirmed=True,
+            )
             self.assertEqual("AUTHORITATIVE_SNAPSHOT_OK", snapshot["status"])
-            self.assertEqual("pass", snapshot["primary_result"])
+            self.assertEqual(64, len(snapshot["terminal_record_sha256"]))
+            self.assertEqual(str(conclusion.relative_to(repo)), snapshot["conclusion_path"])
+            self.assertNotIn("primary_result", snapshot)
+            self.assertNotIn("decision", snapshot)
+            self.assertEqual("NOT_DERIVED", snapshot["scientific_authorization"])
 
     def test_authoritative_snapshot_rejects_ambiguous_terminal_records(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -376,8 +390,39 @@ class FinalSlimTests(unittest.TestCase):
             )
             subprocess.run(["git", "add", "."], cwd=repo, check=True)
             subprocess.run(["git", "commit", "-qm", "ambiguous"], cwd=repo, check=True)
-            snapshot = OPS.authoritative_snapshot(repo, "route", "HEAD")
+            snapshot = OPS.authoritative_snapshot(
+                repo, "route", "HEAD", route_id_confirmed=True,
+            )
             self.assertEqual("TERMINAL_RECORD_AMBIGUOUS", snapshot["status"])
+
+    def test_unconfirmed_route_id_does_not_read_terminal_index(self):
+        with patch.object(OPS.subprocess, "run") as run:
+            snapshot = OPS.authoritative_snapshot(
+                Path("/unused"), "requested-route", "HEAD",
+                route_id_confirmed=False,
+            )
+        self.assertEqual("ROUTE_ID_UNRESOLVED", snapshot["status"])
+        self.assertFalse(snapshot["route_id_confirmed"])
+        run.assert_not_called()
+
+    def test_manifest_route_mismatch_cannot_be_overridden_by_snapshot(self):
+        receipt = OPS.build_snapshot_phase_receipt({
+            "branch": "codex/actual-route", "head": "a" * 40,
+            "github_main_remote": "b" * 40,
+            "github_main_ref_fresh": True, "worktree_clean": True,
+            "route_identity": {
+                "status": "ROUTE_ID_MISMATCH_WITH_HEAD_MANIFEST",
+                "route_id_confirmed": False,
+            },
+            "authoritative_snapshot": {
+                "status": "AUTHORITATIVE_SNAPSHOT_OK",
+                "route_id": "requested-route", "route_id_confirmed": True,
+            },
+        })
+        self.assertFalse(receipt["route_id_confirmed"])
+        self.assertEqual(
+            "resolve_route_identity_or_snapshot", receipt["allowed_next_action"],
+        )
 
     def test_terminal_leaf_selection_accepts_one_complete_operation_chain(self):
         root = {
@@ -408,62 +453,6 @@ class FinalSlimTests(unittest.TestCase):
         branch["run_id"] = "r2"
         branch["closeout_path"] = "logs/a2_closeout.json"
         self.assertIsNone(OPS._select_terminal_leaf([root, leaf, branch]))
-
-    def test_snapshot_launch_binding_matches_the_archived_manifest(self):
-        with tempfile.TemporaryDirectory() as directory:
-            repo = Path(directory)
-            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
-            subprocess.run(["git", "config", "user.name", "test"], cwd=repo, check=True)
-            subprocess.run(
-                ["git", "config", "user.email", "test@example.com"],
-                cwd=repo, check=True,
-            )
-            prior = {
-                "state": "COMPLETED_GATE_PASS", "decision": "A0_PASS",
-                "authorizes": "A1",
-            }
-            current = {
-                "state": "COMPLETED_GATE_FAIL", "decision": "A1_FAIL",
-                "authorizes": "NONE",
-            }
-            archived = repo / (
-                "experience_docx/experiment_logs/route/launch_contract/A1/manifest.json"
-            )
-            archived.parent.mkdir(parents=True)
-            archived.write_text(json.dumps({
-                "schema_version": 6,
-                "route_id": "route",
-                "operations": {
-                    "A1": {
-                        "prior_closeout_relpath": "logs/a0_closeout.json",
-                        "prior_terminal_tuple": prior,
-                        "allowed_terminal_tuples": [current],
-                    },
-                },
-            }), encoding="utf-8")
-            subprocess.run(["git", "add", "."], cwd=repo, check=True)
-            subprocess.run(["git", "commit", "-qm", "launch"], cwd=repo, check=True)
-            raw = archived.read_bytes()
-            bundle = [{
-                "path": str(archived.relative_to(repo)),
-                "source_path": OPS.ROUTE_OPERATIONS_RELPATH,
-                "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest(),
-            }]
-            record = {
-                "route_id": "route", "operation_id": "A1", **current,
-                "prior_terminal_record": {
-                    "prior_closeout_path": "logs/a0_closeout.json",
-                    "prior_terminal_tuple": prior,
-                },
-            }
-            self.assertTrue(
-                OPS._snapshot_launch_binding_matches(repo, "HEAD", record, bundle)
-            )
-            record["prior_terminal_record"]["prior_closeout_path"] = "logs/other.json"
-            self.assertFalse(
-                OPS._snapshot_launch_binding_matches(repo, "HEAD", record, bundle)
-            )
-
 
 if __name__ == "__main__":
     unittest.main()

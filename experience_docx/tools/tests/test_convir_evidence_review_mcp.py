@@ -110,6 +110,8 @@ def remote_summary(binding, inventory_sha256="6" * 64):
 
 class EvidenceReviewMcpTests(unittest.TestCase):
     def setUp(self):
+        with review._CATALOG_CACHE_LOCK:
+            review._CATALOG_CACHE.clear()
         self.temp = tempfile.TemporaryDirectory(prefix="convir evidence review ")
         self.root = Path(self.temp.name)
         self.repo = self.root / "repo"
@@ -179,17 +181,16 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         )
         self.assertEqual(review._binding_identity(binding), generated["identity"])
 
-    def test_server_exposes_exact_seven_read_only_tools(self):
+    def test_server_exposes_exact_six_read_only_tools(self):
         initialized = review.handle({
             "method": "initialize",
             "params": {"protocolVersion": "2024-11-05"},
         })
         self.assertEqual("convir-evidence-review", initialized["serverInfo"]["name"])
-        self.assertEqual("1.5.0", initialized["serverInfo"]["version"])
+        self.assertEqual("2.0.0", initialized["serverInfo"]["version"])
         listed = review.handle({"method": "tools/list", "params": {}})
         self.assertEqual(
             [
-                "convir_evidence_catalog_summary",
                 "convir_evidence_completeness_receipt",
                 "convir_evidence_catalog_query",
                 "convir_evidence_bundle",
@@ -212,6 +213,20 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             forbidden.isdisjoint(tool["inputSchema"]["properties"])
             for tool in cloud_tools
         ))
+
+    def test_catalog_cache_reuses_one_commit_and_isolates_another(self):
+        first = {"catalog_sha256": "a" * 64}
+        second = {"catalog_sha256": "b" * 64}
+        with mock.patch.object(
+            review.catalog, "load_catalog", side_effect=[first, second],
+        ) as load_catalog:
+            first_read = review.load_catalog_cached(self.repo, "1" * 40)
+            repeated = review.load_catalog_cached(self.repo, "1" * 40)
+            other_commit = review.load_catalog_cached(self.repo, "2" * 40)
+        self.assertIs(first, first_read)
+        self.assertIs(first_read, repeated)
+        self.assertIs(second, other_commit)
+        self.assertEqual(2, load_catalog.call_count)
 
     def test_evidence_bundle_resolves_sha_bound_leaf_and_pages_all_files(self):
         record = terminal_record()
@@ -407,15 +422,15 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             rejected["structuredContent"]["state"],
         )
 
-    def test_summary_freezes_symbolic_ref_before_repository_moves(self):
+    def test_completeness_freezes_symbolic_ref_before_repository_moves(self):
         record = terminal_record()
         first = self.commit_snapshot(record)
         summary = self.call(
-            "convir_evidence_catalog_summary",
+            "convir_evidence_completeness_receipt",
             {"local_repo": str(self.repo)},
         )
         self.assertFalse(summary["isError"])
-        self.assertEqual(first, summary["structuredContent"]["header"]["snapshot_commit"])
+        self.assertEqual(first, summary["structuredContent"]["snapshot_commit"])
         self.assertEqual(
             "not_assessed", summary["structuredContent"]["ref_freshness"]
         )
@@ -526,7 +541,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         record = terminal_record()
         commit = self.commit_snapshot(record)
         outside = self.call(
-            "convir_evidence_catalog_summary",
+            "convir_evidence_completeness_receipt",
             {"local_repo": "/"},
         )
         self.assertTrue(outside["isError"])
@@ -581,7 +596,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
 
         self.git("remote", "set-url", review.TRUSTED_REMOTE_NAME, "https://example.invalid/repo")
         untrusted = self.call(
-            "convir_evidence_catalog_summary", {"local_repo": str(self.repo)}
+            "convir_evidence_completeness_receipt", {"local_repo": str(self.repo)}
         )
         self.assertTrue(untrusted["isError"])
         self.assertEqual("GITHUB_REMOTE_UNTRUSTED", untrusted["structuredContent"]["state"])
@@ -1046,7 +1061,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             {
                 "jsonrpc": "2.0", "id": 3, "method": "tools/call",
                 "params": {
-                    "name": "convir_evidence_catalog_summary",
+                    "name": "convir_evidence_completeness_receipt",
                     "arguments": {"local_repo": str(self.repo)},
                 },
             },

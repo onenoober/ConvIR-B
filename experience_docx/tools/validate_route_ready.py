@@ -419,12 +419,6 @@ def route_ready_request_identity(
     if not isinstance(operations, dict) or not operations:
         raise ReadyError("route manifest contains no operations")
     requested = list(dict.fromkeys(selected or list(operations)))
-    authoring_path = _private_receipt_path(repo, route_id)
-    authoring_sha = None
-    try:
-        authoring_sha = __import__("hashlib").sha256(authoring_path.read_bytes()).hexdigest()
-    except OSError:
-        pass
     identity = {
         "route_id": route_id,
         "branch": command(repo, GIT, "branch", "--show-current"),
@@ -433,7 +427,6 @@ def route_ready_request_identity(
         "current_main": current_main,
         "requested_operations": requested,
         "manifest_sha256": __import__("hashlib").sha256(manifest_raw).hexdigest(),
-        "authoring_receipt_sha256": authoring_sha,
     }
     digest = __import__("hashlib").sha256(
         json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -468,9 +461,7 @@ def load_cached_route_ready(
     if report.get("status") != "ROUTE_READY" \
             or report.get("route_id") != identity["route_id"] \
             or report.get("current_main") != identity["current_main"] \
-            or report.get("requested_operations") != identity["requested_operations"] \
-            or report.get("authoring_receipt_sha256") != \
-                identity["authoring_receipt_sha256"]:
+            or report.get("requested_operations") != identity["requested_operations"]:
         return None
     return {**report, "cache_reused": True}
 
@@ -547,17 +538,52 @@ def _expected_compiler_paths(
 
 def validate_authoring_receipt(
     repo: Path, snapshot: str, current_main: str, manifest: dict[str, Any],
-) -> tuple[str, str]:
+) -> tuple[str, str, bool]:
     """Verify compiler identity without checking out archived main evidence."""
     route_id = manifest["route_id"]
     path = _private_receipt_path(repo, route_id)
+    recovered = False
     try:
         raw = path.read_bytes()
         receipt = json.loads(raw)
     except (OSError, json.JSONDecodeError) as exc:
-        raise ReadyError(
-            "schema-6 route requires the private receipt from one successful --finalize"
-        ) from exc
+        spec_path = manifest["experiment_spec_relpath"]
+        program_path = manifest["program_contract_relpath"]
+        spec_raw = show(repo, snapshot, spec_path)
+        program_raw = show(repo, snapshot, program_path)
+        try:
+            bundle = spec_compiler.compile_bundle(
+                spec_relpath=spec_path,
+                spec_raw=spec_raw,
+                program_raw=program_raw,
+                evidence_exists=lambda relpath: show_optional(
+                    repo, current_main, relpath,
+                ) is not None,
+            )
+        except (spec_compiler.ExperimentSpecError, KeyError, TypeError, ValueError) as rebuild_exc:
+            raise ReadyError(
+                "schema-6 authoring receipt is missing and deterministic recovery failed: "
+                f"{rebuild_exc}"
+            ) from rebuild_exc
+        drift = spec_compiler.compare_bundle(
+            bundle, lambda relpath: show(repo, snapshot, relpath),
+        )
+        if drift:
+            raise ReadyError(
+                "schema-6 authoring receipt is missing and generated bundle drifted: "
+                + "; ".join(drift)
+            ) from exc
+        receipt = spec_compiler.build_authoring_receipt(
+            spec_relpath=spec_path,
+            spec_raw=spec_raw,
+            program_relpath=program_path,
+            program_raw=program_raw,
+            bundle=bundle,
+            authoritative_main_commit=current_main,
+        )
+        spec_compiler.write_private_receipt_atomic(repo, route_id, receipt)
+        raw = spec_compiler.json_bytes(receipt)
+        recovered = True
     required = {
         "schema_version", "status", "route_id", "authoritative_main_commit",
         "experiment_spec", "program_contract", "generated_files", "bundle_sha256",
@@ -568,7 +594,8 @@ def validate_authoring_receipt(
     if receipt["schema_version"] != spec_compiler.AUTHORING_RECEIPT_SCHEMA \
             or receipt["status"] != "EXPERIMENT_SPEC_BUNDLE_FINALIZED" \
             or receipt["route_id"] != route_id \
-            or receipt["authoritative_main_commit"] != current_main \
+            or not isinstance(receipt["authoritative_main_commit"], str) \
+            or not ops.SHA40.fullmatch(receipt["authoritative_main_commit"]) \
             or receipt["allowed_next_action"] != "stage_complete_bundle_then_route_ready_once":
         raise ReadyError("authoring receipt identity or phase is stale")
     source_pairs = (
@@ -609,7 +636,11 @@ def validate_authoring_receipt(
         )
     if spec_compiler.sha256(spec_compiler.json_bytes(files)) != receipt["bundle_sha256"]:
         raise ReadyError("authoring receipt bundle_sha256 mismatch")
-    return receipt["bundle_sha256"], __import__("hashlib").sha256(raw).hexdigest()
+    return (
+        receipt["bundle_sha256"],
+        __import__("hashlib").sha256(raw).hexdigest(),
+        recovered,
+    )
 
 
 def canonical_bundle_check(repo: Path, snapshot: str, current_main: str,
@@ -660,10 +691,13 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         raise ReadyError("operation closeout filenames must be unique")
     authoring_bundle_sha = None
     authoring_receipt_sha = None
+    authoring_receipt_recovered = False
     if manifest_schema >= 6:
-        authoring_bundle_sha, authoring_receipt_sha = validate_authoring_receipt(
-            repo, snapshot, current_main, manifest,
-        )
+        (
+            authoring_bundle_sha,
+            authoring_receipt_sha,
+            authoring_receipt_recovered,
+        ) = validate_authoring_receipt(repo, snapshot, current_main, manifest)
     card_errors = []
     card_digest = None
     route_card_relpath = manifest.get("route_card_relpath")
@@ -883,6 +917,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         "route_card_sha256": card_digest,
         "authoring_bundle_sha256": authoring_bundle_sha,
         "authoring_receipt_sha256": authoring_receipt_sha,
+        "authoring_receipt_recovered": authoring_receipt_recovered,
         "runtime_bundle_sha256": bundle,
         "bootstrap_missing_from_main": bootstrap_missing,
         "operations": reports,

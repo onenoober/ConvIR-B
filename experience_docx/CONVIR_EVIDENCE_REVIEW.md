@@ -2,12 +2,11 @@
 
 Date: 2026-08-01
 
-Status: the restarted host exposes the seven-tool server version `1.3.0` from
-GitHub `main`. Version `1.4.0` is the schema-2 response and authoritative-review
-routing update; it retains the same seven tools and is pending its normal
-cloud validation, main integration and restarted-host activation. The accepted
-`1.3.0` source passed 317 cloud tests at
-`18e5c6eadb7d367fa03af29f59ace0237905ca26`. Historical phase status follows.
+Status: current server version `2.0.0` exposes exactly six read-only tools. The
+redundant catalog-summary tool was removed because the completeness receipt
+already returns the same catalog identity. Immutable catalogs are cached by
+exact repository and commit in one bounded eight-entry process-local LRU;
+mutable cloud inventories are always rescanned. Historical phase status follows.
 Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
@@ -31,7 +30,6 @@ compact, identity-bound discovery records rather than bulk experiment data.
 
 | Tool | Purpose |
 | --- | --- |
-| `convir_evidence_catalog_summary` | compatibility diagnostic for catalog identity only; not part of the default review sequence because the completeness receipt already returns this identity |
 | `convir_evidence_completeness_receipt` | return one schema-2 project GitHub receipt with exact indexed, unindexed, legacy and unresolved partitions for the current or an exact main-history commit |
 | `convir_evidence_catalog_query` | query that exact GitHub-main-history commit with bounded filters and an identity-bound cursor |
 | `convir_evidence_bundle` | verify one selected schema-2 terminal leaf and page the complete SHA-bound GitHub evidence-file manifest |
@@ -50,8 +48,6 @@ cloud text continuation also supplies the returned full-file SHA-256. An
 unconsumed page or an explicit excluded source remains unread and cannot be
 reported as reviewed. The MCP never fetches Git, so every response reports
 `ref_freshness=not_assessed`.
-Do not call catalog summary before completeness receipt. Use the summary only
-when diagnosing catalog identity without claiming project completeness.
 When a bundle contains `review_facts`, read it immediately after the scientific
 conclusion, then read only the formal JSON sources needed for the claims under
 review. The archive has already checked its JSON Pointers and source SHA-256;
@@ -94,8 +90,8 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
-- `convir-ops` remains unchanged with exactly six lifecycle tools and protocol
-  schema 4.
+- `convir-ops` remains a separate six-tool lifecycle server at version `5.6.0`
+  with protocol schema 4.
 
 ## P0 Project Completeness Receipt
 
@@ -227,3 +223,12 @@ inventory core. The schema-2 registration record is
 This authorizes bounded GitHub discovery and identity-bound inventory of an
 inactive, unprotected terminal. It does not authorize scientific
 interpretation, unbounded scans, protected-data access or experiment mutation.
+
+## Current Registration
+
+Register this server from the same clean dedicated GitHub-main MCP worktree as
+`convir-ops`, under a short host key such as `convir_review`. Never point the
+host at a historical adoption or route worktree. After each accepted main
+update, fast-forward the dedicated worktree and restart the host; a fresh task
+must report version `2.0.0`, exactly six tools and source SHA-256 equal to that
+GitHub-main commit. The process-local catalog cache begins empty after restart.

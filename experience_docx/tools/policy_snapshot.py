@@ -19,6 +19,7 @@ SNAPSHOT_RELPATH = "experience_docx/AI_POLICY_SNAPSHOT.json"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 POLICY_SOURCES = (
     "AGENTS.md",
+    "experience_docx/RULE_COMPATIBILITY.json",
     "experience_docx/SCIENCE_FASTPATH.md",
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
     "experience_docx/ROUTE_READY_FASTPATH.md",

@@ -53,10 +53,12 @@ hash changes.
    scientific and asset schema 1 plus manifest schema 4/5 routes remain
    immutable and supported.
    Amendment and reopen evidence is resolved directly from the exact refreshed
-   GitHub-main commit equal to `rules_commit`; never materialize family history
+   current GitHub-main commit; `rules_commit` records design provenance and is
+   checked through `RULE_COMPATIBILITY.json`. Never materialize family history
    in the new route. Finalize writes one Git-private source/generated-bundle
-   receipt. Route-ready consumes it, rejects drift, and returns the cached report
-   instead of rerunning when staged tree, main, operation set and receipt match.
+   receipt. Route-ready verifies or deterministically reconstructs it, rejects
+   source/generated-byte drift, and returns the cached report instead of
+   rerunning when staged tree, main and operation set match.
 3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
    once. Confirm positive workload progress once. The frozen ETA is a cost
    estimate, not an observation embargo. At operator request, use only the
@@ -70,7 +72,10 @@ hash changes.
    operator cancellation. Do not turn refresh into a watcher.
    Never repeat checks owned by the validator/lifecycle or create a watcher.
    Schema-6 plan recompilation resolves archived authorization evidence from
-   the exact current main commit, not from the route checkout.
+   the exact current main commit, not from the route checkout. A rules-byte
+   change is compatible only when current main explicitly retains the same
+   compatibility id and names the prior `rules_commit`; incompatible governance
+   changes rotate that id and fail closed.
 4. DECIDE: route code writes typed gate outcomes; the generic lifecycle derives
    the frozen terminal once. Interpret complete evidence once. The typed closeout alone
    authorizes a next stage; scientific FAIL is never an engineering retry.
@@ -164,7 +169,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.4.0 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.6.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.

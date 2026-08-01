@@ -19,6 +19,7 @@
     "governance_change": {
       "read_full": [
         "AGENTS.md",
+        "experience_docx/RULE_COMPATIBILITY.json",
         "experience_docx/SCIENCE_FASTPATH.md",
         "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
         "experience_docx/ROUTE_READY_FASTPATH.md",
@@ -73,8 +74,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "ee420ccb9a669ac4c35e425f025c43c53d1acd80c2e381c1ad529ff6266e2079",
-  "rules_commit": "7d03d0b424d487e687ad176b480ba91213d4256d",
+  "rules_bundle_sha256": "0c9ba5afcb81584db742780c23623cf552e25c7549aba8d55215f49e3ff9c34c",
+  "rules_commit": "d707c0ffc158df4a8cab38a74a41555e7e4af456",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -116,8 +117,8 @@
   ],
   "sources": {
     "AGENTS.md": {
-      "bytes": 11730,
-      "sha256": "9f0840948695b5b7f956c6d358dbb4ab1b298ea75eacfa860664a7f2d96495a6"
+      "bytes": 12069,
+      "sha256": "3ed334955523461b7c2dd6e8b540ffda3c936c32be45a1b658772b8e76da17b2"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
       "bytes": 4970,
@@ -128,12 +129,12 @@
       "sha256": "8dcbb3d2d72e4ebd4c4be1eace6afc3ca03098b6e6bf8a2be45ea31820e103d7"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 14168,
-      "sha256": "1f359dbef811bb7cc58342d30be0b6e493887fff6acdb6e807c531fdd8c5a8b0"
+      "bytes": 14290,
+      "sha256": "064c0355a14b40c7c446c9c25f49676f21cef9ba640d3abc5b42345ceb7cd8c1"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 17016,
-      "sha256": "ae49a01a27856a79df0d88bbd77b7ecc5f3f9215637ae1339909a59ca6aff70d"
+      "bytes": 17452,
+      "sha256": "ede43db18ac135d75c743a53db1166337136cb8237b41c6f12bb88c1bb4238d4"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 7529,
@@ -144,12 +145,16 @@
       "sha256": "d67578552d34cbd78fe4ac187e652598078cef30f85771365e8cbb6777029385"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 15336,
-      "sha256": "41c1ed1206e51b917f3719a949cf26505903226f5c91606797bfd33c5bf3550e"
+      "bytes": 15588,
+      "sha256": "f2972ec8d3668b52cad4e957f649f030dcba9a6b07f7050e501803642278c806"
+    },
+    "experience_docx/RULE_COMPATIBILITY.json": {
+      "bytes": 170,
+      "sha256": "58ea7811d6069675b97743624431c680735067ce26938d1761a88d06a1411b21"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 15725,
-      "sha256": "263aa51f0ea1a767853accd96936387b6da834f8d9c97fc9d00fded87c3310f3"
+      "bytes": 16240,
+      "sha256": "9ba19bfd896037718c9ca18f9a3327c9d0b8a4ae3d8ea5f9d59ac483fa8616bd"
     }
   },
   "workflow": [

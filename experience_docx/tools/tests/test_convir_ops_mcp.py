@@ -209,6 +209,27 @@ class ConvirOpsV4Tests(unittest.TestCase):
             with self.assertRaises(OPS.ToolError):
                 OPS.parse_manifest(manifest(), "codex/a1x", "a" * 40, "b" * 40, "/tmp/repo", "S0")
 
+    def test_explicit_compatibility_profile_accepts_prior_rules_commit(self):
+        with (
+            patch.object(OPS, "git_show", side_effect=lambda _repo, _commit, path: "- First operation: S0\n" if path.endswith("a1x.md") else "runner"),
+            patch.object(OPS, "git_show_bytes", return_value=b"runner\n"),
+            patch.object(OPS, "blob_sha", return_value="c" * 40),
+            patch.object(OPS, "rule_bundle_digest", side_effect=["d" * 64, "f" * 64]),
+            patch.object(OPS, "git_object_exists", return_value=True),
+            patch.object(OPS, "rule_compatibility_profile", return_value={
+                "schema_version": 1,
+                "compatibility_id": "science-fastpath-contract-v1",
+                "compatible_prior_rules_commits": ["a" * 40],
+            }),
+        ):
+            parsed = OPS.parse_manifest(
+                manifest(), "codex/a1x", "a" * 40, "b" * 40, "/tmp/repo", "S0",
+            )
+        self.assertEqual(
+            "science-fastpath-contract-v1", parsed["rules_compatibility_id"],
+        )
+        self.assertEqual("f" * 64, parsed["rules_bundle_digest"])
+
     def test_monitor_profiles_are_bounded_to_sixty_seconds(self):
         for profile in OPS.MONITOR_PROFILES.values():
             self.assertLessEqual(profile["max_polls"] * profile["interval_seconds"], 60)
@@ -1436,7 +1457,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.5.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.6.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

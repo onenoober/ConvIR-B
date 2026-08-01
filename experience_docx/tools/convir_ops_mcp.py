@@ -31,7 +31,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.5.0"
+SERVER_VERSION = "5.6.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -49,6 +49,7 @@ REMOTE_TMUX = "/usr/bin/tmux"
 MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
 MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
+RULE_COMPATIBILITY_RELPATH = "experience_docx/RULE_COMPATIBILITY.json"
 RULE_BUNDLE_RELPATHS = (
     "AGENTS.md",
     "experience_docx/SCIENCE_FASTPATH.md",
@@ -738,6 +739,54 @@ def rule_bundle_digest(repo, commit):
     return digest.hexdigest()
 
 
+def rule_compatibility_profile(repo, commit):
+    try:
+        value = json.loads(git_show_bytes(repo, commit, RULE_COMPATIBILITY_RELPATH))
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise ToolError("rule compatibility profile is invalid JSON") from exc
+    required = {
+        "schema_version", "compatibility_id", "compatible_prior_rules_commits",
+    }
+    if not isinstance(value, dict) or set(value) != required \
+            or value.get("schema_version") != 1:
+        raise ToolError("rule compatibility profile has an invalid field contract")
+    compatibility_id = value.get("compatibility_id")
+    prior = value.get("compatible_prior_rules_commits")
+    if not isinstance(compatibility_id, str) \
+            or not SAFE_TOKEN.fullmatch(compatibility_id) \
+            or not isinstance(prior, list) or len(prior) > 64 \
+            or len(prior) != len(set(prior)) \
+            or any(not isinstance(item, str) or not SHA40.fullmatch(item) for item in prior):
+        raise ToolError("rule compatibility profile identity is invalid")
+    return value
+
+
+def require_rule_compatibility(
+    repo, recorded_commit, current_commit, recorded_digest, current_digest,
+    *, expected_compatibility_id=None,
+):
+    """Accept exact rules or one explicit current-main compatibility declaration."""
+    profile = None
+    if git_object_exists(repo, current_commit, RULE_COMPATIBILITY_RELPATH):
+        profile = rule_compatibility_profile(repo, current_commit)
+    if profile is not None:
+        compatibility_id = profile["compatibility_id"]
+        if expected_compatibility_id is not None \
+                and compatibility_id != expected_compatibility_id:
+            raise ToolError("rule compatibility identity changed")
+        if recorded_digest == current_digest \
+                or recorded_commit in profile["compatible_prior_rules_commits"]:
+            return compatibility_id
+        raise ToolError(
+            "canonical rule bundle changed without an explicit compatibility declaration"
+        )
+    if recorded_digest == current_digest:
+        if expected_compatibility_id is not None:
+            raise ToolError("rule compatibility profile disappeared")
+        return f"exact-{current_digest}"
+    raise ToolError("canonical rule bundle changed; one compatibility review is required")
+
+
 def blob_sha(repo, commit, path):
     value = run_local(
         ["git", "-C", repo, "rev-parse", f"{commit}:{path}"],
@@ -905,10 +954,6 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
                 or scientific_contract_value.get("operation_id") != operation_id:
             raise ToolError("scientific contract identity or first operation mismatch")
     if manifest_schema == 6:
-        if rules_commit != current_main:
-            raise ToolError(
-                "manifest schema 6 rules_commit must equal exact current GitHub main"
-            )
         program_path = require_relpath(
             value["program_contract_relpath"], "program_contract_relpath", ".json",
             prefix="experience_docx/research_programs/",
@@ -955,10 +1000,9 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
             raise ToolError(f"compiled experiment bundle drift: {mismatches[:8]}")
     recorded_rules = rule_bundle_digest(bare_repo, rules_commit)
     current_rules = rule_bundle_digest(bare_repo, current_main)
-    if recorded_rules != current_rules:
-        raise ToolError(
-            "canonical rule bundle changed; one compatibility review is required"
-        )
+    rules_compatibility_id = require_rule_compatibility(
+        bare_repo, rules_commit, current_main, recorded_rules, current_rules,
+    )
     runner_raw = git_show_bytes(bare_repo, route_commit, runner)
     runner_sha = hashlib.sha256(runner_raw).hexdigest()
     min_free = require_int(operation["min_free_gpu_mib"], "min_free_gpu_mib", 0, 1048576)
@@ -990,7 +1034,8 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
             if scientific_contract_value is not None else None
         ),
         "rules_commit": rules_commit,
-        "rules_bundle_digest": recorded_rules,
+        "rules_bundle_digest": current_rules,
+        "rules_compatibility_id": rules_compatibility_id,
         "runner_relpath": runner,
         "runner_sha256": runner_sha,
         "mode": mode,
@@ -1258,8 +1303,20 @@ def verify_live_context(context):
         repo = str(Path(temporary) / "repo.git")
         prepare_seeded_bare(repo)
         ensure_commit(repo, current)
-        if rule_bundle_digest(repo, current) != context["rules_bundle_digest"]:
-            raise ToolError("canonical rules changed after planning; create one fresh plan")
+        current_digest = rule_bundle_digest(repo, current)
+        try:
+            require_rule_compatibility(
+                repo,
+                context["current_rules_commit"],
+                current,
+                context["rules_bundle_digest"],
+                current_digest,
+                expected_compatibility_id=context.get("rules_compatibility_id"),
+            )
+        except ToolError as exc:
+            raise ToolError(
+                "canonical rules changed after planning; create one fresh plan"
+            ) from exc
 
 
 def gpu_probe_body(context, gpu_index=None):
@@ -3173,19 +3230,6 @@ def sha256_file(path):
     return digest.hexdigest()
 
 
-def _git_json_blob(repo, ref, relpath):
-    completed = subprocess.run(
-        ["git", "-C", str(repo), "show", f"{ref}:{relpath}"],
-        capture_output=True, timeout=30, check=False,
-    )
-    if completed.returncode:
-        return None
-    try:
-        return json.loads(completed.stdout)
-    except json.JSONDecodeError:
-        return None
-
-
 def _terminal_tuple_from_record(record):
     return {
         key: record.get(key) for key in ("state", "decision", "authorizes")
@@ -3257,63 +3301,49 @@ def _snapshot_blob(repo, ref, relpath):
     return completed.stdout if completed.returncode == 0 else None
 
 
-def _snapshot_blob_matches(repo, ref, item):
-    if not isinstance(item, dict) or set(item) != {"path", "bytes", "sha256"}:
-        return False
-    raw = _snapshot_blob(repo, ref, item["path"])
-    return raw is not None \
-        and isinstance(item["bytes"], int) and not isinstance(item["bytes"], bool) \
-        and item["bytes"] >= 0 and len(raw) == item["bytes"] \
-        and isinstance(item["sha256"], str) and SHA256.fullmatch(item["sha256"]) \
-        and hashlib.sha256(raw).hexdigest() == item["sha256"]
-
-
-def _snapshot_launch_binding_matches(repo, ref, record, contract_bundle):
-    route_id = record.get("route_id")
-    operation_id = record.get("operation_id")
-    if not isinstance(route_id, str) or not SAFE_TOKEN.fullmatch(route_id) \
-            or not isinstance(operation_id, str) or not SAFE_TOKEN.fullmatch(operation_id):
-        return False
-    manifest_path = (
-        f"experience_docx/experiment_logs/{route_id}/launch_contract/"
-        f"{operation_id}/manifest.json"
-    )
-    manifest_items = [
-        item for item in contract_bundle
-        if isinstance(item, dict) and item.get("path") == manifest_path
-        and item.get("source_path") == ROUTE_OPERATIONS_RELPATH
-    ]
-    if len(manifest_items) != 1:
-        return False
-    raw = _snapshot_blob(repo, ref, manifest_path)
+def worktree_route_identity(repo, route_id, ref):
+    """Bind the requested route id to the committed route manifest when present."""
+    raw = _snapshot_blob(repo, ref, ROUTE_OPERATIONS_RELPATH)
+    if raw is None:
+        return {
+            "status": "ROUTE_ID_UNRESOLVED_NO_MANIFEST",
+            "requested_route_id": route_id,
+            "manifest_route_id": None,
+            "route_id_confirmed": False,
+        }
     try:
-        manifest = json.loads(raw) if raw is not None else None
+        manifest = json.loads(raw)
     except json.JSONDecodeError:
-        return False
-    if not isinstance(manifest, dict) or manifest.get("schema_version") != 6 \
-            or manifest.get("route_id") != route_id:
-        return False
-    operation = manifest.get("operations", {}).get(operation_id)
-    binding = record.get("prior_terminal_record")
-    if not isinstance(operation, dict) or not isinstance(binding, dict):
-        return False
-    if operation.get("prior_closeout_relpath") != binding.get("prior_closeout_path") \
-            or operation.get("prior_terminal_tuple") != binding.get("prior_terminal_tuple"):
-        return False
-    prior = binding.get("prior_terminal_tuple")
-    if prior is not None and (
-        not isinstance(prior, dict)
-        or prior.get("state") != "COMPLETED_GATE_PASS"
-        or prior.get("authorizes") != operation_id
-    ):
-        return False
-    return _terminal_tuple_from_record(record) in operation.get(
-        "allowed_terminal_tuples", []
-    )
+        return {
+            "status": "ROUTE_ID_UNRESOLVED_INVALID_MANIFEST",
+            "requested_route_id": route_id,
+            "manifest_route_id": None,
+            "route_id_confirmed": False,
+        }
+    manifest_route_id = manifest.get("route_id") if isinstance(manifest, dict) else None
+    if manifest_route_id == route_id:
+        return {
+            "status": "ROUTE_ID_CONFIRMED_BY_HEAD_MANIFEST",
+            "requested_route_id": route_id,
+            "manifest_route_id": manifest_route_id,
+            "route_id_confirmed": True,
+        }
+    return {
+        "status": "ROUTE_ID_MISMATCH_WITH_HEAD_MANIFEST",
+        "requested_route_id": route_id,
+        "manifest_route_id": manifest_route_id,
+        "route_id_confirmed": False,
+    }
 
 
-def authoritative_snapshot(repo, route_id, ref):
-    """Return one bounded authority record without reading Markdown history."""
+def authoritative_snapshot(repo, route_id, ref, *, route_id_confirmed=False):
+    """Return a terminal-record pointer without reading result contents."""
+    if not route_id_confirmed:
+        return {
+            "status": "ROUTE_ID_UNRESOLVED",
+            "route_id": route_id,
+            "route_id_confirmed": False,
+        }
     index_path = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
     completed = subprocess.run(
         ["git", "-C", str(repo), "show", f"{ref}:{index_path}"],
@@ -3322,6 +3352,7 @@ def authoritative_snapshot(repo, route_id, ref):
     if completed.returncode:
         return {"status": "TERMINAL_INDEX_UNAVAILABLE", "route_id": route_id}
     matches = []
+    record_hashes = {}
     try:
         for raw in completed.stdout.decode("utf-8").splitlines():
             if not raw.strip():
@@ -3329,10 +3360,18 @@ def authoritative_snapshot(repo, route_id, ref):
             item = json.loads(raw)
             if isinstance(item, dict) and item.get("route_id") == route_id:
                 matches.append(item)
+                record_hashes[id(item)] = hashlib.sha256(raw.encode("utf-8")).hexdigest()
     except (UnicodeDecodeError, json.JSONDecodeError):
         return {"status": "TERMINAL_INDEX_INVALID", "route_id": route_id}
     if not matches:
-        return {"status": "NO_TERMINAL_RECORD", "route_id": route_id}
+        return {
+            "status": (
+                "NO_TERMINAL_RECORD" if route_id_confirmed
+                else "ROUTE_ID_UNRESOLVED"
+            ),
+            "route_id": route_id,
+            "route_id_confirmed": route_id_confirmed,
+        }
     record = _select_terminal_leaf(matches)
     if record is None:
         return {
@@ -3343,90 +3382,16 @@ def authoritative_snapshot(repo, route_id, ref):
                 str(item.get("operation_id")) for item in matches
             }),
         }
-    conclusion = _git_json_blob(repo, ref, record.get("conclusion_path", ""))
-    closeout = _git_json_blob(repo, ref, record.get("closeout_path", ""))
-    identity_fields = (
-        "route_id", "operation_id", "run_id", "state", "decision", "authorizes",
-    )
-    if not isinstance(closeout, dict) or any(
-        closeout.get(key) != record.get(key) for key in identity_fields
-    ):
-        return {"status": "TERMINAL_CLOSEOUT_INVALID", "route_id": route_id}
-    if record.get("schema_version") == 2 \
-            and closeout.get("route_commit") != record.get("route_commit"):
-        return {"status": "TERMINAL_CLOSEOUT_INVALID", "route_id": route_id}
-    if record.get("schema_version") == 2 and not isinstance(conclusion, dict):
-        return {"status": "TERMINAL_CONCLUSION_INVALID", "route_id": route_id}
-    conclusion_fields = identity_fields if record.get("schema_version") == 2 else (
-        "route_id", "operation_id", "run_id", "decision", "authorizes",
-    )
-    if isinstance(conclusion, dict) and any(
-            conclusion.get(key) != record.get(key) for key in conclusion_fields):
-        return {"status": "TERMINAL_CONCLUSION_INVALID", "route_id": route_id}
-    contract_bundle = record.get("contract_bundle", [])
-    if not isinstance(contract_bundle, list):
-        return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
-    if record.get("schema_version") == 2 and not contract_bundle:
-        return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
-    bundle_paths = [
-        item.get("path") for item in contract_bundle if isinstance(item, dict)
-    ]
-    if len(bundle_paths) != len(set(bundle_paths)):
-        return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
-    for item in contract_bundle:
-        if not isinstance(item, dict) or set(item) != {
-            "path", "source_path", "bytes", "sha256",
-        }:
-            return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
-        if not isinstance(item["source_path"], str) or not _snapshot_blob_matches(
-            repo, ref, {key: item[key] for key in ("path", "bytes", "sha256")},
-        ):
-            return {"status": "TERMINAL_CONTRACT_BUNDLE_INVALID", "route_id": route_id}
-    if record.get("schema_version") == 2 and not _snapshot_launch_binding_matches(
-            repo, ref, record, contract_bundle):
-        return {"status": "TERMINAL_LAUNCH_BINDING_INVALID", "route_id": route_id}
     result_files = record.get("result_files", [])
-    if record.get("schema_version") == 2:
-        primary_files = (
-            ("contract_path", "contract_sha256"),
-            ("closeout_path", "closeout_sha256"),
-            ("conclusion_path", "conclusion_sha256"),
-        )
-        if any(
-            not isinstance(record.get(digest_key), str)
-            or not SHA256.fullmatch(record[digest_key])
-            or (raw := _snapshot_blob(repo, ref, record.get(path_key))) is None
-            or hashlib.sha256(raw).hexdigest() != record[digest_key]
-            for path_key, digest_key in primary_files
-        ):
-            return {"status": "TERMINAL_PRIMARY_EVIDENCE_INVALID", "route_id": route_id}
-        if not isinstance(result_files, list) or not result_files or any(
-            not _snapshot_blob_matches(repo, ref, item) for item in result_files
-        ):
-            return {"status": "TERMINAL_RESULT_EVIDENCE_INVALID", "route_id": route_id}
-        result_paths = [
-            item.get("path") for item in result_files if isinstance(item, dict)
-        ]
-        if len(result_paths) != len(set(result_paths)) \
-                or record.get("result_paths") != result_paths:
-            return {"status": "TERMINAL_RESULT_EVIDENCE_INVALID", "route_id": route_id}
-    protected = {}
-    if isinstance(closeout, dict):
-        protected = {
-            "confirmation_touched": bool(closeout.get("confirmation_images_targets_outcomes_touched")),
-            "canary_touched": bool(closeout.get("canary_touched")),
-            "locked_test_touched": bool(closeout.get("locked_test_touched")),
-        }
-    snapshot = {
+    contract_bundle = record.get("contract_bundle", [])
+    return {
         "status": "AUTHORITATIVE_SNAPSHOT_OK",
         "route_id": route_id,
+        "route_id_confirmed": True,
+        "terminal_index_path": index_path,
+        "terminal_record_sha256": record_hashes[id(record)],
         "operation_id": record.get("operation_id"),
         "run_id": record.get("run_id"),
-        "state": record.get("state"),
-        "decision": record.get("decision"),
-        "authorizes": record.get("authorizes"),
-        "route_commit": record.get("route_commit"),
-        "receipt": record.get("receipt"),
         "contract_path": record.get("contract_path"),
         "closeout_path": record.get("closeout_path"),
         "conclusion_path": record.get("conclusion_path"),
@@ -3434,21 +3399,9 @@ def authoritative_snapshot(repo, route_id, ref):
             result_files if record.get("schema_version") == 2
             else record.get("result_paths", [])
         ),
-        "contract_bundle_file_count": len(contract_bundle),
-        "contract_bundle_verified": bool(contract_bundle),
-        "protected_access": protected,
+        "contract_bundle_file_count": len(contract_bundle) if isinstance(contract_bundle, list) else 0,
+        "scientific_authorization": "NOT_DERIVED",
     }
-    if isinstance(conclusion, dict):
-        snapshot.update({
-            "primary_result": conclusion.get("primary_result"),
-            "competing_explanation": conclusion.get("competing_explanation"),
-            "limitations": conclusion.get("limitations", []),
-        })
-    raw = json.dumps(snapshot, sort_keys=True, separators=(",", ":")).encode()
-    if len(raw) > 8192:
-        snapshot.pop("limitations", None)
-        snapshot["limitations_omitted"] = True
-    return snapshot
 
 
 def tool_evidence_fetch(args):
@@ -3515,9 +3468,13 @@ def tool_evidence_fetch(args):
 def build_snapshot_phase_receipt(value):
     snapshot = value.get("authoritative_snapshot")
     snapshot_status = snapshot.get("status") if isinstance(snapshot, dict) else None
+    route_identity = value.get("route_identity")
+    route_id_confirmed = bool(
+        isinstance(route_identity, dict) and route_identity.get("route_id_confirmed")
+    )
     if not value.get("github_main_ref_fresh"):
         allowed_next_action = "refresh_github_main_once"
-    elif snapshot_status == "AUTHORITATIVE_SNAPSHOT_OK":
+    elif snapshot_status == "AUTHORITATIVE_SNAPSHOT_OK" and route_id_confirmed:
         allowed_next_action = "read_authoritative_snapshot_references"
     else:
         allowed_next_action = "resolve_route_identity_or_snapshot"
@@ -3531,6 +3488,10 @@ def build_snapshot_phase_receipt(value):
         "github_main_ref_fresh": value.get("github_main_ref_fresh") is True,
         "worktree_clean": value.get("worktree_clean") is True,
         "authoritative_snapshot_status": snapshot_status,
+        "route_id_confirmed": route_id_confirmed,
+        "route_id_binding_status": (
+            route_identity.get("status") if isinstance(route_identity, dict) else None
+        ),
         "scientific_authorization": "NOT_DERIVED",
         "allowed_next_action": allowed_next_action,
     }
@@ -3556,17 +3517,11 @@ def tool_git_evidence_status(args):
         route_prefix = f"experience_docx/experiment_logs/{route_id}/"
         route_changed = [line for line in changed_all if route_prefix in line]
 
-        def compact_check(arguments):
-            result = inspect_local(arguments)
-            lines = result.get("output", "").splitlines()
-            return {
-                "ok": result.get("ok") is True,
-                "returncode": result.get("returncode"),
-                "issue_line_count": len(lines),
-                "first_issue": lines[0][:512] if lines else "",
-            }
-
-        snapshot = authoritative_snapshot(repo, route_id, "github/main")
+        route_identity = worktree_route_identity(repo, route_id, head)
+        snapshot = authoritative_snapshot(
+            repo, route_id, "github/main",
+            route_id_confirmed=route_identity["route_id_confirmed"],
+        )
         value = {
             "local_repo": str(repo), "branch": branch, "head": head,
             "github_main_local": local_main, "github_main_remote": remote[0],
@@ -3574,8 +3529,7 @@ def tool_git_evidence_status(args):
             "worktree_clean": not status,
             "changed_path_count": len(changed_all),
             "route_evidence_change_count": len(route_changed),
-            "diff_check": compact_check([*prefix, "diff", "--check"]),
-            "cached_diff_check": compact_check([*prefix, "diff", "--cached", "--check"]),
+            "route_identity": route_identity,
             "authoritative_snapshot": snapshot,
             "detail_level": detail,
             "git_mutations_performed": False,

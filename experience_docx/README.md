@@ -15,6 +15,7 @@ Read only the source needed for the next decision.
 | route amendment/assets/fixture/evidence helpers | `ROUTE_FLOW_TOOLS.md` |
 | new or changed route | `ROUTE_READY_FASTPATH.md`; research-program contract plus one schema-2 experiment spec compiled to route schema 6 |
 | compact AI rule routing | `AI_POLICY_SNAPSHOT.json` first, then every full authority file routed by its change class |
+| route-rule compatibility | `RULE_COMPATIBILITY.json`; machine decision only, never policy authority |
 | exact engineering qualification reuse | `capability_registry.jsonl` and `tools/capability_registry.py`; engineering-only, six-field exact identity |
 | complete-unit recovery | `ROUTE_READY_FASTPATH.md`; hash-bound ledger asset plus verified unit outputs in a fresh run |
 | cloud launch/monitor/closeout | `MODEL_RUN_OPERATIONS_PROTOCOL.md` and `CONVIR_OPS_MCP.md` |

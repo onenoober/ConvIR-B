@@ -283,16 +283,36 @@ def main():
 
             with patch.object(READY, "_private_receipt_path", return_value=receipt_path), \
                     patch.object(READY, "show", side_effect=shown):
-                bundle_sha, receipt_sha = READY.validate_authoring_receipt(
-                    Path(directory), "snapshot", "a" * 40, manifest,
+                bundle_sha, receipt_sha, recovered = READY.validate_authoring_receipt(
+                    Path(directory), "snapshot", "b" * 40, manifest,
                 )
                 self.assertEqual(receipt["bundle_sha256"], bundle_sha)
                 self.assertEqual(64, len(receipt_sha))
+                self.assertFalse(recovered)
                 files[card_relpath] = b"drifted\n"
                 with self.assertRaisesRegex(READY.ReadyError, "drifted after finalize"):
                     READY.validate_authoring_receipt(
-                        Path(directory), "snapshot", "a" * 40, manifest,
+                        Path(directory), "snapshot", "b" * 40, manifest,
                     )
+
+                files[card_relpath] = generated[card_relpath]
+                receipt_path.unlink()
+                with patch.object(
+                    READY.spec_compiler, "compile_bundle", return_value=generated,
+                ), patch.object(
+                    READY.spec_compiler, "compare_bundle", return_value=[],
+                ), patch.object(
+                    READY.spec_compiler, "write_private_receipt_atomic",
+                ) as write_receipt:
+                    rebuilt_bundle_sha, rebuilt_receipt_sha, rebuilt = (
+                        READY.validate_authoring_receipt(
+                            Path(directory), "snapshot", "b" * 40, manifest,
+                        )
+                    )
+                self.assertEqual(receipt["bundle_sha256"], rebuilt_bundle_sha)
+                self.assertEqual(64, len(rebuilt_receipt_sha))
+                self.assertTrue(rebuilt)
+                write_receipt.assert_called_once()
 
     def test_identical_route_ready_request_reuses_private_phase_receipt(self):
         identity = {
@@ -303,7 +323,6 @@ def main():
             "current_main": "c" * 40,
             "requested_operations": ["S1"],
             "manifest_sha256": "d" * 64,
-            "authoring_receipt_sha256": "e" * 64,
         }
         identity_sha = COMPILER.sha256(json.dumps(
             identity, sort_keys=True, separators=(",", ":"),
@@ -313,7 +332,7 @@ def main():
             "route_id": identity["route_id"],
             "current_main": identity["current_main"],
             "requested_operations": identity["requested_operations"],
-            "authoring_receipt_sha256": identity["authoring_receipt_sha256"],
+            "authoring_receipt_sha256": "e" * 64,
         }
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "route-ready.json"

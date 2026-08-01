@@ -2,7 +2,7 @@
 
 Date: 2026-08-01
 
-Status: governance-fastpath server `5.5.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.6.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
 runtime schema 2 for new routes. New experiment specs, scientific contracts and
@@ -70,8 +70,12 @@ is only a rationale/pointer and is never parsed for scientific fields.
 The exact route commit fixes the contract, card and runner. MCP derives their
 blob/SHA values and the canonical-rule bundle digest directly from Git; route
 authors do not copy these digests into the manifest. `rules_commit` records the
-GitHub-main rules used for design. Planning accepts it only when its canonical
-bundle still equals current main.
+GitHub-main rules used for design. An exact bundle match passes directly. A
+changed bundle passes only when current main's `RULE_COMPATIBILITY.json` keeps
+the same compatibility id and explicitly names the prior `rules_commit`.
+Incompatible scientific or authorization changes rotate that id and fail
+closed. The compatibility file records a reviewed decision; it is not policy
+authority and cannot silently relax a route contract.
 
 For schema 6, the route author edits the research-program contract, one
 experiment spec and the route entrypoint. The deterministic compiler emits the
@@ -247,8 +251,10 @@ multi-operation chains remain readable.
 ## Registration
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
-tracking GitHub main. After an update, restart the host and verify version
-`5.5.0`, source SHA-256, exactly six tools, schema 4/5/6 parsing, and the
+tracking GitHub main. Never register a historical route or feature worktree.
+After an update, fast-forward that dedicated worktree to verified GitHub main,
+restart the host and verify version `5.6.0`, source SHA-256, exactly six tools,
+schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
 
 The stdio server is a long-lived process and never hot-updates from Git. A
