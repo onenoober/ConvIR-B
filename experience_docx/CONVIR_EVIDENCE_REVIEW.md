@@ -2,11 +2,16 @@
 
 Date: 2026-08-01
 
-Status: current server version `2.0.0` exposes exactly six read-only tools. The
+Status: current server version `2.0.1` exposes exactly six read-only tools. The
 redundant catalog-summary tool was removed because the completeness receipt
 already returns the same catalog identity. Immutable catalogs are cached by
 exact repository and commit in one bounded eight-entry process-local LRU;
 mutable cloud inventories are always rescanned. Historical phase status follows.
+Version 2.0.1 accepts one archive-time review-facts recovery proof outside the
+run-time closeout hash manifest only when the terminal record declares its exact
+path, size and SHA-256 and the verifier deterministically rebuilds identical
+proof bytes from the closeout-bound original facts and sources. Every other
+extra or mismatched terminal result remains an identity conflict.
 Phase 3 GitHub-only source passed committed cloud acceptance at
 `ea088ea28d56f034395f53212c6e259b290d87fc`. Presence of the adjacent
 acceptance record on GitHub `main` completes source adoption. The 2026-07-29
@@ -230,5 +235,5 @@ Register this server from the same clean dedicated GitHub-main MCP worktree as
 `convir-ops`, under a short host key such as `convir_review`. Never point the
 host at a historical adoption or route worktree. After each accepted main
 update, fast-forward the dedicated worktree and restart the host; a fresh task
-must report version `2.0.0`, exactly six tools and source SHA-256 equal to that
+must report version `2.0.1`, exactly six tools and source SHA-256 equal to that
 GitHub-main commit. The process-local catalog cache begins empty after restart.

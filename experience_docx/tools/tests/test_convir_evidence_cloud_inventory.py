@@ -14,6 +14,7 @@ from unittest import mock
 
 import convir_evidence_catalog as catalog
 import convir_evidence_cloud_inventory as inventory
+import prepare_terminal_archive as terminal_archive
 
 
 def raw_json(value):
@@ -37,7 +38,7 @@ class SyntheticTerminal:
     run_id = "route-a-r1"
     route_commit = "b" * 40
     runner_sha256 = "c" * 64
-    result_raw = b'{"metric":1}\n'
+    result_raw = b'{"gate":"pass","metric":1}\n'
 
     def __init__(self, root):
         self.repo = Path(root) / "repo"
@@ -63,6 +64,8 @@ class SyntheticTerminal:
               include_optional_unarchived=False,
               invalid_runtime_source=False,
               shared_source_mapping=False,
+              include_review_facts_recovery=False,
+              tamper_review_facts_recovery=False,
               noncanonical_manifest_archive=False,
               noncanonical_result=False,
               manifest_route_card_mismatch=False):
@@ -183,6 +186,16 @@ class SyntheticTerminal:
                 "required": True,
                 "max_bytes": 4096,
             })
+        review_facts_filename = terminal_archive.review_facts_filename(
+            closeout_filename
+        )
+        if include_review_facts_recovery:
+            runtime["evidence_files"].append({
+                "source_relpath": f"workload/{review_facts_filename}",
+                "destination_filename": review_facts_filename,
+                "required": True,
+                "max_bytes": 4096,
+            })
         manifest_raw = raw_json(manifest)
         runtime_raw = raw_json(runtime)
         result_files = [file_record(result_path, self.result_raw)]
@@ -196,6 +209,42 @@ class SyntheticTerminal:
             unmapped_raw = b'{"unmapped":true}\n'
             result_files.append(file_record(unmapped_path, unmapped_raw))
             extra_files[unmapped_path] = unmapped_raw
+        review_facts_path = f"{prefix}/{review_facts_filename}"
+        review_facts_raw = None
+        if include_review_facts_recovery:
+            review_facts_raw = raw_json({
+                "schema_version": 2,
+                "route_id": self.route_id,
+                "operation_id": self.operation_id,
+                "run_id": self.run_id,
+                "facts": [{
+                    "fact_id": "synthetic_gate",
+                    "claim_id": "synthetic_gate",
+                    "metric": "synthetic gate outcome",
+                    "unit": "typed outcome",
+                    "population": "synthetic identity fixture",
+                    "grouping": "one synthetic unit",
+                    "point": None,
+                    "ci_lower": None,
+                    "ci_upper": None,
+                    "confidence_level": 0.95,
+                    "threshold": None,
+                    "threshold_operator": None,
+                    "gate_outcome": "pass",
+                    "source_filename": Path(result_path).name,
+                    "source_sha256": hashlib.sha256(self.result_raw).hexdigest(),
+                    "json_pointers": {
+                        "point": None,
+                        "ci_lower": None,
+                        "ci_upper": None,
+                        "confidence_level": None,
+                        "threshold": None,
+                        "gate_outcome": "/gate",
+                    },
+                }],
+            })
+            result_files.append(file_record(review_facts_path, review_facts_raw))
+            extra_files[review_facts_path] = review_facts_raw
         closeout = {
             "schema_version": 2,
             "route_id": self.route_id,
@@ -227,10 +276,50 @@ class SyntheticTerminal:
             "competing_explanation": "synthetic identity-only fixture",
             "limitations": ["synthetic evidence only"],
         }
+        if include_review_facts_recovery:
+            conclusion.update({
+                "primary_fact_ids": ["synthetic_gate"],
+                "gate_fact_ids": ["synthetic_gate"],
+            })
         if conclusion_schema is not None:
             conclusion["schema_version"] = conclusion_schema
         conclusion.update(conclusion_overrides or {})
         conclusion_raw = raw_json(conclusion)
+        review_facts_recovery = None
+        if include_review_facts_recovery:
+            _, proof, proof_path, proof_raw = (
+                terminal_archive.build_review_facts_recovery(
+                    raw=review_facts_raw,
+                    relpath=review_facts_path,
+                    closeout=closeout,
+                    conclusion=conclusion,
+                    payloads={
+                        result_path: self.result_raw,
+                        review_facts_path: review_facts_raw,
+                    },
+                    evidence_sha256=closeout["evidence_sha256"],
+                    closeout_filename=closeout_filename,
+                    closeout_sha256=hashlib.sha256(closeout_raw).hexdigest(),
+                )
+            )
+            if tamper_review_facts_recovery:
+                proof["checks"]["terminal_identity_unchanged"] = False
+                proof_raw = raw_json(proof)
+            proof_record = file_record(proof_path, proof_raw)
+            result_files.append(proof_record)
+            extra_files[proof_path] = proof_raw
+            review_facts_recovery = {
+                "status": "REVIEW_FACTS_RECOVERED",
+                "recovery_type": terminal_archive.REVIEW_FACTS_RECOVERY_TYPE,
+                "proof_path": proof_path,
+                "proof_bytes": proof_record["bytes"],
+                "proof_sha256": proof_record["sha256"],
+                "original_path": review_facts_path,
+                "original_sha256": hashlib.sha256(review_facts_raw).hexdigest(),
+                "recovered_review_facts_sha256": (
+                    proof["recovered_review_facts_sha256"]
+                ),
+            }
         record = {
             "schema_version": terminal_schema,
             "route_id": self.route_id,
@@ -299,6 +388,8 @@ class SyntheticTerminal:
                 "closeout_sha256": hashlib.sha256(closeout_raw).hexdigest(),
                 "conclusion_sha256": hashlib.sha256(conclusion_raw).hexdigest(),
             })
+            if review_facts_recovery is not None:
+                record["review_facts_recovery"] = review_facts_recovery
         files = {
             contract_path: contract_raw,
             closeout_path: closeout_raw,
@@ -701,6 +792,29 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
                 self.fixture.prepare(snapshot)
         self.assertEqual("IDENTITY_CONFLICT", caught.exception.state)
         self.assertIn("aggregate bound", str(caught.exception))
+
+    def test_review_facts_recovery_proof_is_archive_bound(self):
+        snapshot = self.fixture.build(include_review_facts_recovery=True)
+        binding = self.fixture.prepare(snapshot)
+        self.assertEqual("TERMINAL_BINDING_VERIFIED", binding["state"])
+        self.assertEqual(3, binding["github_result_count"])
+        self.assertEqual(2, len(binding["expected_evidence"]))
+        self.assertEqual(1, len(binding["unmapped_results"]))
+        self.assertTrue(
+            binding["unmapped_results"][0]["destination_filename"].endswith(
+                "_review_facts_recovery.json"
+            )
+        )
+
+    def test_review_facts_recovery_proof_tamper_fails_closed(self):
+        snapshot = self.fixture.build(
+            include_review_facts_recovery=True,
+            tamper_review_facts_recovery=True,
+        )
+        with self.assertRaises(inventory.InventoryError) as caught:
+            self.fixture.prepare(snapshot)
+        self.assertEqual("IDENTITY_CONFLICT", caught.exception.state)
+        self.assertIn("deterministic recovery", str(caught.exception))
 
     def test_complete_scan_reconciles_matched_and_cloud_only_without_raw_reads(self):
         snapshot = self.fixture.build()

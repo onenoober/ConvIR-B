@@ -429,6 +429,7 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
             item["path"], "contract_bundle[].path"
         )
     result_payloads: dict[str, bytes] = {}
+    result_payloads_by_path: dict[str, bytes] = {}
     for item in record["result_files"]:
         raw = read_github_blob(
             item["path"],
@@ -442,6 +443,7 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
                 state="IDENTITY_CONFLICT",
             )
         result_payloads[name] = raw
+        result_payloads_by_path[item["path"]] = raw
 
     manifest_raw = bundle_payloads.get(MANIFEST_SOURCE_PATH)
     runtime_raw = bundle_payloads.get(runtime_source_path)
@@ -652,15 +654,62 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         raise InventoryError(
             "closeout evidence SHA manifest is invalid", state="IDENTITY_CONFLICT"
         )
+    review_facts_recovery = record.get("review_facts_recovery")
+    recovery_proof_path = (
+        review_facts_recovery["proof_path"]
+        if review_facts_recovery is not None else None
+    )
     expected_closeout_hashes = {
         PurePosixPath(item["path"]).name: item["sha256"]
         for item in record["result_files"]
+        if item["path"] != recovery_proof_path
     }
     if evidence_sha256 != expected_closeout_hashes:
         raise InventoryError(
             "closeout evidence SHA manifest differs from terminal results",
             state="IDENTITY_CONFLICT",
         )
+    if review_facts_recovery is not None:
+        original_path = review_facts_recovery["original_path"]
+        proof_path = review_facts_recovery["proof_path"]
+        original_raw = result_payloads_by_path.get(original_path)
+        proof_raw = result_payloads_by_path.get(proof_path)
+        if original_raw is None or proof_raw is None:
+            raise InventoryError(
+                "review facts recovery payload is absent",
+                state="IDENTITY_CONFLICT",
+            )
+        try:
+            _, rebuilt_proof, rebuilt_path, rebuilt_raw = (
+                prepare_terminal_archive.build_review_facts_recovery(
+                    raw=original_raw,
+                    relpath=original_path,
+                    closeout=closeout,
+                    conclusion=conclusion,
+                    payloads=result_payloads_by_path,
+                    evidence_sha256=evidence_sha256,
+                    closeout_filename=closeout_name,
+                    closeout_sha256=record["closeout_sha256"],
+                )
+            )
+        except prepare_terminal_archive.TerminalArchiveError as exc:
+            raise InventoryError(
+                f"review facts recovery proof is invalid: {exc}",
+                state="IDENTITY_CONFLICT",
+            ) from exc
+        if (
+            rebuilt_path != proof_path
+            or rebuilt_raw != proof_raw
+            or len(rebuilt_raw) != review_facts_recovery["proof_bytes"]
+            or hashlib.sha256(rebuilt_raw).hexdigest()
+                != review_facts_recovery["proof_sha256"]
+            or rebuilt_proof["recovered_review_facts_sha256"]
+                != review_facts_recovery["recovered_review_facts_sha256"]
+        ):
+            raise InventoryError(
+                "review facts recovery proof differs from deterministic recovery",
+                state="IDENTITY_CONFLICT",
+            )
     raw_receipt_name = _raw_artifact_receipt_filename(closeout_name)
     raw_receipt_candidates = sorted(
         name for name in result_payloads if name.endswith(RAW_ARTIFACT_RECEIPT_SUFFIX)

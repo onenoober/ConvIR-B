@@ -19,7 +19,7 @@ import legacy_backfill_registry as legacy
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "2.0.0"
+SERVER_VERSION = "2.0.1"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"

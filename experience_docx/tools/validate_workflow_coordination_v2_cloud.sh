@@ -96,7 +96,7 @@ activate(tools / "convir_ops_mcp.py", "5.6.0", [
     "convir_route_plan", "convir_route_start", "convir_route_finish",
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
 ])
-activate(tools / "convir_evidence_review_mcp.py", "2.0.0", [
+activate(tools / "convir_evidence_review_mcp.py", "2.0.1", [
     "convir_evidence_completeness_receipt",
     "convir_evidence_catalog_query",
     "convir_evidence_bundle",
@@ -108,5 +108,5 @@ PY
 
 git -C "$work/repo" diff --check "$base" "$candidate"
 git -C "$work/repo" diff --quiet
-printf 'WORKFLOW_COORDINATION_V2_CLOUD_OK candidate=%s tests=%s ops_version=5.6.0 review_version=2.0.0 tools=6+6 model_calls=0 gpu_access=0 protected_data_access=0\n' \
+printf 'WORKFLOW_COORDINATION_V2_CLOUD_OK candidate=%s tests=%s ops_version=5.6.0 review_version=2.0.1 tools=6+6 model_calls=0 gpu_access=0 protected_data_access=0\n' \
   "$candidate" "$tests"
