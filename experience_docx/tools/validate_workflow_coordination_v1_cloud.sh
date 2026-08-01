@@ -50,8 +50,12 @@ tests=$(sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | tail -n 1)
 [[ $tests =~ ^[0-9]+$ ]]
 test "$tests" -ge 300
 
+policy_rules_commit=$("$python" -c \
+  'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["rules_commit"])' \
+  "$work/repo/experience_docx/AI_POLICY_SNAPSHOT.json")
+[[ $policy_rules_commit =~ ^[0-9a-f]{40}$ ]]
 "$python" "$tools/policy_snapshot.py" \
-  --repo "$work/repo" --rules-commit "$base" --check
+  --repo "$work/repo" --rules-commit "$policy_rules_commit" --check
 
 PYTHONPATH="$tools" "$python" - <<'PY'
 import convir_ops_mcp as ops
