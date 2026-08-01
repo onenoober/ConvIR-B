@@ -24,9 +24,24 @@ Read only the source needed for the next decision.
 | legacy/engineering evidence archive | `BRANCH_EXPERIMENT_SYNC_PROTOCOL.md` and `validate_evidence_sync.py` |
 | Haze4K architecture route | `OFFICIAL_ARCH_ANCHOR_POLICY.md` and `Haze4K_ARCH_FINETUNE_WORKFLOW.md` |
 
-Authority is GitHub `main` for current rules and terminal evidence, the named
-route branch for runnable/intermediate state, and `convir-4090` for raw runtime
-state. Local files and chat are inputs, not project memory.
+## Reading Order And Authority
+
+Use this order when starting any task:
+
+1. Call `convir_git_status` for the named route. This is a local identity and
+   safety snapshot: branch, HEAD, worktree changes, route id and GitHub-main
+   freshness. It does not establish scientific completion, metrics, a verdict
+   or authorization. Never substitute a directory name for the route id.
+2. Read the authoritative snapshot and only its referenced files from the
+   exact GitHub-main commit. These files own current rules and compact terminal
+   evidence.
+3. When details are needed, use receipt-bound `convir_ops` evidence for that
+   route's cloud run, or the read-only `convir-evidence-review` MCP for a
+   bounded cross-route review. Raw runtime state remains on `convir-4090`.
+
+The named route branch owns runnable/intermediate state and pending authoring.
+The local worktree and chat are inputs, not project memory, and cannot support
+a scientific conclusion or next-stage authorization by themselves.
 
 Historical reliability, workflow-evaluation, route, and incident documents are
 provenance only. They do not define current defaults.

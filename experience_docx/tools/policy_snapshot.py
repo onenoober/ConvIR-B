@@ -51,6 +51,40 @@ CHANGE_ROUTES = {
     ],
     "governance_change": list(POLICY_SOURCES),
 }
+SOURCE_OF_TRUTH_ORDER = [
+    {
+        "step": "route_identity",
+        "source": "local_route_worktree",
+        "allowed_uses": [
+            "bind_branch_head_route_id",
+            "check_worktree_safety",
+            "check_github_main_freshness",
+        ],
+        "forbidden_uses": [
+            "infer_metric",
+            "infer_verdict",
+            "infer_terminal",
+            "infer_authorization",
+            "infer_completed_workload",
+        ],
+    },
+    {
+        "step": "authoritative_evidence",
+        "source": "github_main",
+        "required_action": "read_exact_snapshot_and_referenced_files",
+        "owns": [
+            "current_rules",
+            "compact_terminal_evidence",
+            "terminal_authorization",
+        ],
+    },
+    {
+        "step": "runtime_detail",
+        "source": "convir_4090_or_receipt_bound_mcp",
+        "required_action": "read_only_after_identity_and_github_binding",
+        "owns": ["raw_runtime_state", "detailed_outputs"],
+    },
+]
 
 
 def json_bytes(value) -> bytes:
@@ -91,6 +125,7 @@ def build_snapshot(*, rules_commit: str, read_bytes: Callable[[str], bytes]) -> 
         "default_runtime_host": "convir-4090",
         "local_runtime_allowed": False,
         "workflow": ["SNAPSHOT", "CONTRACT", "EXECUTE", "DECIDE", "ARCHIVE"],
+        "source_of_truth_order": SOURCE_OF_TRUTH_ORDER,
         "route_mechanisms": ["adjacent", "orthogonal", "reopen"],
         "protected_roles_fail_closed": ["confirmation", "canary", "locked_test"],
         "full_rule_read_required_when": [

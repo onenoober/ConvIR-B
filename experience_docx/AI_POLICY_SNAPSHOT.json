@@ -73,14 +73,51 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "2d36c46e54796d3ac6849d8867e27751450b7e98c20a610e8691b92e622ce33b",
-  "rules_commit": "03382b8b662c636268b507414a616862d8416284",
+  "rules_bundle_sha256": "ba4e24de7131a5f101883c591d7e47a190354b007acf2e6f4d1ad86284b9db93",
+  "rules_commit": "bd73a099803dcca6ded09401ea7568ebb0e6ba71",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
+  "source_of_truth_order": [
+    {
+      "allowed_uses": [
+        "bind_branch_head_route_id",
+        "check_worktree_safety",
+        "check_github_main_freshness"
+      ],
+      "forbidden_uses": [
+        "infer_metric",
+        "infer_verdict",
+        "infer_terminal",
+        "infer_authorization",
+        "infer_completed_workload"
+      ],
+      "source": "local_route_worktree",
+      "step": "route_identity"
+    },
+    {
+      "owns": [
+        "current_rules",
+        "compact_terminal_evidence",
+        "terminal_authorization"
+      ],
+      "required_action": "read_exact_snapshot_and_referenced_files",
+      "source": "github_main",
+      "step": "authoritative_evidence"
+    },
+    {
+      "owns": [
+        "raw_runtime_state",
+        "detailed_outputs"
+      ],
+      "required_action": "read_only_after_identity_and_github_binding",
+      "source": "convir_4090_or_receipt_bound_mcp",
+      "step": "runtime_detail"
+    }
+  ],
   "sources": {
     "AGENTS.md": {
-      "bytes": 10744,
-      "sha256": "c5841515ddd9af8dc1d024c017e9af41955016ae15f6f34086b28d69fbc0b0c2"
+      "bytes": 11191,
+      "sha256": "44fd58fbc1a9d0967f732985df438de07a0bcc87fc798467ed816ac28eeb1cbb"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
       "bytes": 4970,
@@ -95,8 +132,8 @@
       "sha256": "c8463531022274e4c2baadcaaedb91136706bec7466941f65c2495b25a35b380"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 15951,
-      "sha256": "ea2932576775620479e6949650a97e0fd76c17f82a2ae8b27b1f6bcf35a5f327"
+      "bytes": 16627,
+      "sha256": "24a589f8bd8eae173b126275c87cb861a9d54e8f640de8d1e59faf87205c5afc"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 7529,
@@ -107,12 +144,12 @@
       "sha256": "d67578552d34cbd78fe4ac187e652598078cef30f85771365e8cbb6777029385"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 14377,
-      "sha256": "c6d9bc73d98de548e11c7686629f7f613e38c5534b8a7a85eaf9b79cdfcb13d3"
+      "bytes": 14705,
+      "sha256": "b228bb516337e0cfdf4702c0a0154be82456f576f0924bbba159d5f77a064681"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 13613,
-      "sha256": "bdf6d22cbf251e4401e171cf849af0b608f19d96b41f49b4e713a2e05b685a57"
+      "bytes": 14940,
+      "sha256": "25faf3e2bc10770ab0b7f6129f48e350e5acc02a58bdb87256c803de05a997d3"
     }
   },
   "workflow": [

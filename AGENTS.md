@@ -26,9 +26,15 @@ the active change class, and read the full authoritative set for governance,
 protected-data, scientific-authorization, conflict, unknown-class, or snapshot-
 hash changes.
 
-1. SNAPSHOT: call compact `convir_git_status` for the target route. Read its
-   authoritative snapshot, direct parent closeout and only referenced files.
-   Do not read the full Markdown index or family history by default.
+1. SNAPSHOT: call compact `convir_git_status` for the target route only as a
+   local identity and worktree-safety check. It binds branch, HEAD, route id
+   and GitHub-main freshness; local files/diffs are not scientific evidence
+   and cannot establish a metric, verdict, terminal, completed workload or
+   next-stage authorization. Never substitute a directory name for `route_id`;
+   an unresolved route id or `NO_TERMINAL_RECORD` is not evidence of no
+   terminal. After identity binding, read the exact GitHub-main authoritative
+   snapshot, direct parent closeout and only its referenced files. Do not read
+   the full Markdown index or family history by default.
 2. CONTRACT: new routes use one schema-2 experiment spec compiled to manifest
    schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
    schema 2. Freeze every control, typed gate outcome, complete mutually

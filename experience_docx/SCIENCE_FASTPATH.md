@@ -13,6 +13,28 @@ handling. The fastpath does not reduce experimental scope, samples, folds,
 seeds, epochs, controls, uncertainty estimation, GPU budget, or protected-data
 separation.
 
+## Source-of-Truth Order
+
+The local route worktree is an identity and authoring surface, not an
+experiment-results store. At the start of a task, call `convir_git_status` for
+the named route only to bind the branch, HEAD, worktree state, route id and
+GitHub-main freshness. Treat its local fields and local diffs as safety and
+authoring metadata; never use them to infer a metric, verdict, terminal state,
+scientific authorization or completed workload. A directory name is not a
+route id, and `NO_TERMINAL_RECORD` for an unverified id is unresolved rather
+than evidence that no terminal exists.
+
+After that identity snapshot, read the authoritative snapshot and only its
+referenced contract, typed closeout, conclusion and formal results from the
+GitHub-main commit it names. GitHub `main` is the source of truth for current
+rules and compact terminal evidence. The named route branch owns runnable code
+and pending contract authoring; `convir-4090` owns raw runtime state and
+detailed outputs. Use `convir_ops` receipt-bound evidence for one route's cloud
+details, or the read-only `convir-evidence-review` MCP for a bounded
+cross-route review. Neither local files nor chat can replace those sources.
+Do not begin scientific interpretation or authorization decisions from local
+files before this GitHub-main read completes.
+
 ## Five State Transitions
 
 1. SNAPSHOT: use the compact authoritative snapshot, direct parent closeout and

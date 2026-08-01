@@ -27,7 +27,7 @@ route validator or a route-specific shell surface.
 | `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation and one same-contract repair state machine |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
-| `convir_git_status` | token-bounded worktree/GitHub audit plus authoritative route snapshot |
+| `convir_git_status` | token-bounded local identity/worktree safety audit plus GitHub-main freshness and authoritative route-snapshot pointer; never a result reader |
 
 Do not add generic shell, SSH, cleanup, retry, watcher, commit, push,
 authorization-file, validator or model-routing tools.
@@ -203,6 +203,15 @@ paths, conclusion schema version and required fields. This is a contract hint,
 not a generated conclusion: the operator must author the JSON, and archive
 derives the same canonical path when `--conclusion` is omitted. Engineering
 archive responses do not expose a scientific conclusion contract.
+
+`convir_git_status` is intentionally the first route-bound call but not the
+first scientific evidence source. Its local worktree fields bind identity and
+protect against writing to the wrong branch; they do not prove that a route has
+run or authorize a next stage. Resolve the route id from the route snapshot or
+committed manifest, then read the exact GitHub-main snapshot and its referenced
+closeout/conclusion/results. Use receipt-bound cloud evidence only after that
+binding. A missing record for an unverified route id is unresolved and must not
+be reported as a scientific no-terminal conclusion.
 
 ## Capability Reuse And Recovery
 

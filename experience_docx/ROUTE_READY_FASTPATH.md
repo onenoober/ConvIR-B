@@ -110,8 +110,13 @@ verified on cloud before reuse, and reuse always reports scientific
 authorization `NONE`.
 
 From Windows, use fixed WSL argv such as `wsl.exe --exec /usr/bin/git -C
-<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. Use the compact
-authoritative snapshot first and read only its referenced files.
+<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. The initial
+`convir_git_status` call binds the local route identity and worktree safety
+only; it is not evidence of a result or authorization. After it, read the
+exact GitHub-main authoritative snapshot and only its referenced files. Use
+receipt-bound cloud evidence for detailed runtime state. Never infer a
+terminal, metric or next-stage permission from local files, uncommitted diffs,
+or a directory name.
 
 `--bootstrap-runtime-bundle` is valid only for the first infrastructure branch
 that introduces this bundle. It still requires every already-present main file
