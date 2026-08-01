@@ -6,7 +6,7 @@ BASE=/sda/home/wangyuxin/ConvIR-B
 PYTHON=$BASE/envs/convir-cu121/bin/python
 REMOTE_URL=git@github.com:onenoober/ConvIR-B.git
 MAIN_SHA=bd73a099803dcca6ded09401ea7568ebb0e6ba71
-TMP_ROOT=$(mktemp -d "$BASE/runs/source-of-truth-order-validation.XXXXXX")
+TMP_ROOT=$(mktemp -d)
 REPO=$TMP_ROOT/repo
 trap 'rm -rf "$TMP_ROOT"' EXIT
 
