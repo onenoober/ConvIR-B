@@ -74,8 +74,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "2a5bbc3a30ec19e1810681ec22aa8a33939c6a807c1a5eea210846c7705fc534",
-  "rules_commit": "b57c033629765bebe733b43712fbc945f2ae9f73",
+  "rules_bundle_sha256": "df85b5389fd3dc8fc6633ddb5a36a73f49c642be5aa8febecc607afa8be58271",
+  "rules_commit": "20b20038d22affae8bdd2657885f254369c88561",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -121,8 +121,8 @@
       "sha256": "3ed334955523461b7c2dd6e8b540ffda3c936c32be45a1b658772b8e76da17b2"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
-      "bytes": 4970,
-      "sha256": "bee5089e6d4a2c510b7dbc0d998ac13222f4485eb58955bb5093daf7a57e0e3d"
+      "bytes": 5345,
+      "sha256": "c836cdf117381fdb969eb1f0d6399b3adc00667e65cb790fbe3fa0c0e3c9f922"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
       "bytes": 13057,
@@ -133,8 +133,8 @@
       "sha256": "f227763610895a283bed9bbb096392d92a38b8f62fca07d6f77bb769e8b77ec4"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 17452,
-      "sha256": "ede43db18ac135d75c743a53db1166337136cb8237b41c6f12bb88c1bb4238d4"
+      "bytes": 17944,
+      "sha256": "8ee008c2ca01a2640405cbd7ae0cd4a62228ce7d7947f78a458bb34eef69fb87"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 7529,
@@ -149,12 +149,12 @@
       "sha256": "f2972ec8d3668b52cad4e957f649f030dcba9a6b07f7050e501803642278c806"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
-      "bytes": 170,
-      "sha256": "58ea7811d6069675b97743624431c680735067ce26938d1761a88d06a1411b21"
+      "bytes": 218,
+      "sha256": "dcdeb3fe7a8df4e671f45754cedb9c3bc9f4974750ccdd0cdc01be8defa324e9"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 16240,
-      "sha256": "9ba19bfd896037718c9ca18f9a3327c9d0b8a4ae3d8ea5f9d59ac483fa8616bd"
+      "bytes": 17435,
+      "sha256": "d6f646663b333b562e77c5990e82d8adda928c24a3f4302c315f17d41569d8b6"
     }
   },
   "workflow": [
