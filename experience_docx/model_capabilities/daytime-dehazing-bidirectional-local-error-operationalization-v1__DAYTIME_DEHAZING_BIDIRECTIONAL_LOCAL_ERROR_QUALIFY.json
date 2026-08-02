@@ -6,7 +6,7 @@
     },
     {
       "id": "bidirectional_local_error_entrypoint",
-      "identity": "421928dd060b5d06c94b96ee63a7c14b473f3dc824e8cd35e142e992491b5ce2"
+      "identity": "6730cb49868a30603cea2a75da8891ef42f10f8821fe307453f57abd76c7c5e9"
     },
     {
       "id": "runtime_environment",
@@ -42,7 +42,7 @@
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
-    "code_path_sha256": "421928dd060b5d06c94b96ee63a7c14b473f3dc824e8cd35e142e992491b5ce2",
+    "code_path_sha256": "6730cb49868a30603cea2a75da8891ef42f10f8821fe307453f57abd76c7c5e9",
     "device_class": "cuda_sm89",
     "input_contract_sha256": "b2d637baa168df3d606940497935a2ed879dc9e900b75126519aa0983bac52b5",
     "runtime_environment_sha256": "ede9744c12b6f154092277bb8d7b6ad1d7ade5011de3e186df19afac2a3b0fde",

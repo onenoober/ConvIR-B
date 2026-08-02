@@ -1580,7 +1580,7 @@ def terminal_summary(
             "point": None,
             "ci_lower": None,
             "ci_upper": None,
-            "confidence_level": 0.95,
+            "confidence_level": None,
             "threshold": None,
             "threshold_operator": None,
             "gate_outcome": outcome,
