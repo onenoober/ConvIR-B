@@ -26,15 +26,24 @@ the active change class, and read the full authoritative set for governance,
 protected-data, scientific-authorization, conflict, unknown-class, or snapshot-
 hash changes.
 
-1. SNAPSHOT: call compact `convir_git_status` for the target route only as a
-   local identity and worktree-safety check. It binds branch, HEAD, route id
-   and GitHub-main freshness; local files/diffs are not scientific evidence
-   and cannot establish a metric, verdict, terminal, completed workload or
-   next-stage authorization. Never substitute a directory name for `route_id`;
-   an unresolved route id or `NO_TERMINAL_RECORD` is not evidence of no
-   terminal. After identity binding, read the exact GitHub-main authoritative
-   snapshot, direct parent closeout and only its referenced files. Do not read
-   the full Markdown index or family history by default.
+1. SNAPSHOT has three ordered bindings. `SNAPSHOT-A AUTHORITY` calls compact
+   `convir_git_status scope=project` against the dedicated GitHub-main control
+   repository, proves live-main freshness and reads the exact project/rule and
+   terminal-catalog identities without a route worktree. `SNAPSHOT-B TARGET`
+   uses `scope=route`: an archived route is confirmed by its unique terminal
+   chain on that main commit; a new route id is confirmed by a GitHub route-
+   branch manifest, or by the local HEAD manifest during pre-push authoring,
+   while its scientific authorization is derived separately from main's typed
+   program/parent lineage. `SNAPSHOT-C WORKTREE_BIND` constrains edits, commit,
+   plan/start, repair and archive with branch, HEAD, route id, freshness and
+   worktree safety. A dirty or mismatched local worktree blocks that local
+   write binding but never hides an otherwise valid GitHub-main terminal.
+   Local files/diffs are not scientific evidence and cannot establish a metric,
+   verdict, terminal, completed workload or next-stage authorization. Never
+   substitute a directory name for `route_id`; an unresolved route id is not
+   `NO_TERMINAL_RECORD`. After authority and target binding, read the exact
+   GitHub-main snapshot, direct parent closeout and only its referenced files.
+   Do not read the full Markdown index or family history by default.
 2. CONTRACT: new routes use one schema-2 experiment spec compiled to manifest
    schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
    schema 2. Freeze every control, typed gate outcome, complete mutually
@@ -186,7 +195,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.7.0 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.8.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.

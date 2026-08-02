@@ -54,29 +54,39 @@ CHANGE_ROUTES = {
 }
 SOURCE_OF_TRUTH_ORDER = [
     {
-        "step": "route_identity",
+        "step": "project_authority",
+        "source": "github_main",
+        "required_action": "establish_live_main_then_read_exact_project_snapshot",
+        "owns": [
+            "current_rules",
+            "compact_terminal_evidence",
+            "terminal_authorization",
+        ],
+    },
+    {
+        "step": "route_target",
+        "source": "github_main_terminal_or_github_route_branch",
+        "required_action": "bind_archived_route_from_terminal_index_or_new_route_from_manifest_and_program_lineage",
+        "forbidden_uses": [
+            "infer_metric_from_manifest",
+            "infer_verdict_from_manifest",
+            "infer_authorization_from_directory_or_chat",
+        ],
+    },
+    {
+        "step": "local_write_binding",
         "source": "local_route_worktree",
         "allowed_uses": [
-            "bind_branch_head_route_id",
+            "bind_branch_head_route_id_before_write",
             "check_worktree_safety",
-            "check_github_main_freshness",
         ],
         "forbidden_uses": [
+            "block_github_terminal_read_because_of_local_mismatch",
             "infer_metric",
             "infer_verdict",
             "infer_terminal",
             "infer_authorization",
             "infer_completed_workload",
-        ],
-    },
-    {
-        "step": "authoritative_evidence",
-        "source": "github_main",
-        "required_action": "read_exact_snapshot_and_referenced_files",
-        "owns": [
-            "current_rules",
-            "compact_terminal_evidence",
-            "terminal_authorization",
         ],
     },
     {

@@ -32,7 +32,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.7.0"
+SERVER_VERSION = "5.8.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -51,6 +51,8 @@ MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
 MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 ROUTE_OPERATIONS_RELPATH = "experience_docx/route_operations.json"
 RULE_COMPATIBILITY_RELPATH = "experience_docx/RULE_COMPATIBILITY.json"
+POLICY_SNAPSHOT_RELPATH = "experience_docx/AI_POLICY_SNAPSHOT.json"
+TERMINAL_INDEX_RELPATH = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
 RULE_BUNDLE_RELPATHS = (
     "AGENTS.md",
     "experience_docx/SCIENCE_FASTPATH.md",
@@ -3668,25 +3670,75 @@ def worktree_route_identity(repo, route_id, ref):
     }
 
 
-def authoritative_snapshot(repo, route_id, ref, *, route_id_confirmed=False):
-    """Return a terminal-record pointer without reading result contents."""
-    if not route_id_confirmed:
+def github_route_branch_identity(repo, branch, route_id, head):
+    """Confirm a route from an exact live GitHub branch manifest without fetching."""
+    if not isinstance(branch, str) or not SAFE_BRANCH.fullmatch(branch):
         return {
-            "status": "ROUTE_ID_UNRESOLVED",
-            "route_id": route_id,
+            "status": "GITHUB_ROUTE_BRANCH_UNRESOLVED",
+            "requested_route_id": route_id,
+            "branch": branch,
             "route_id_confirmed": False,
         }
-    index_path = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
-    completed = subprocess.run(
-        ["git", "-C", str(repo), "show", f"{ref}:{index_path}"],
-        capture_output=True, timeout=30, check=False,
+    branch_ref = f"refs/heads/{branch}"
+    remote = run_local(
+        ["git", "-C", str(repo), "ls-remote", "github", branch_ref],
+        timeout=60, phase="github_ref_fetch",
+    ).split()
+    if not remote:
+        return {
+            "status": "GITHUB_ROUTE_BRANCH_UNPUBLISHED",
+            "requested_route_id": route_id,
+            "branch": branch,
+            "route_id_confirmed": False,
+        }
+    if len(remote) != 2 or not SHA40.fullmatch(remote[0]) or remote[1] != branch_ref:
+        raise ToolError("GitHub route branch is malformed", failure_class="command_infra")
+    remote_commit = remote[0]
+    tracking = subprocess.run(
+        ["git", "-C", str(repo), "rev-parse", f"refs/remotes/github/{branch}"],
+        capture_output=True, text=True, timeout=30, check=False,
     )
-    if completed.returncode:
+    tracking_commit = tracking.stdout.strip() if tracking.returncode == 0 else None
+    if head == remote_commit:
+        readable_ref = head
+    elif tracking_commit == remote_commit:
+        readable_ref = remote_commit
+    else:
+        return {
+            "status": "GITHUB_ROUTE_BRANCH_STALE_OR_UNAVAILABLE",
+            "requested_route_id": route_id,
+            "branch": branch,
+            "remote_commit": remote_commit,
+            "tracking_commit": tracking_commit,
+            "route_id_confirmed": False,
+        }
+    identity = worktree_route_identity(repo, route_id, readable_ref)
+    if identity["route_id_confirmed"]:
+        status = "ROUTE_ID_CONFIRMED_BY_GITHUB_BRANCH_MANIFEST"
+    elif identity["status"] == "ROUTE_ID_MISMATCH_WITH_HEAD_MANIFEST":
+        status = "ROUTE_ID_MISMATCH_WITH_GITHUB_BRANCH_MANIFEST"
+    else:
+        status = identity["status"].replace("HEAD", "GITHUB_BRANCH")
+    return {
+        **identity,
+        "status": status,
+        "branch": branch,
+        "remote_commit": remote_commit,
+        "tracking_commit": tracking_commit,
+        "manifest_ref": readable_ref,
+    }
+
+
+def authoritative_snapshot(repo, route_id, ref, *, route_id_confirmed=False):
+    """Return a terminal-record pointer without reading result contents."""
+    index_path = TERMINAL_INDEX_RELPATH
+    raw_index = _snapshot_blob(repo, ref, index_path)
+    if raw_index is None:
         return {"status": "TERMINAL_INDEX_UNAVAILABLE", "route_id": route_id}
     matches = []
     record_hashes = {}
     try:
-        for raw in completed.stdout.decode("utf-8").splitlines():
+        for raw in raw_index.decode("utf-8").splitlines():
             if not raw.strip():
                 continue
             item = json.loads(raw)
@@ -3720,6 +3772,7 @@ def authoritative_snapshot(repo, route_id, ref, *, route_id_confirmed=False):
         "status": "AUTHORITATIVE_SNAPSHOT_OK",
         "route_id": route_id,
         "route_id_confirmed": True,
+        "route_id_confirmation_source": "github_main_terminal_index",
         "terminal_index_path": index_path,
         "terminal_record_sha256": record_hashes[id(record)],
         "operation_id": record.get("operation_id"),
@@ -3732,6 +3785,85 @@ def authoritative_snapshot(repo, route_id, ref, *, route_id_confirmed=False):
             else record.get("result_paths", [])
         ),
         "contract_bundle_file_count": len(contract_bundle) if isinstance(contract_bundle, list) else 0,
+        "scientific_authorization": "NOT_DERIVED",
+    }
+
+
+def project_authoritative_snapshot(repo, ref):
+    """Return compact GitHub-main project/rule identities without route inference."""
+    policy_raw = _snapshot_blob(repo, ref, POLICY_SNAPSHOT_RELPATH)
+    index_raw = _snapshot_blob(repo, ref, TERMINAL_INDEX_RELPATH)
+    compatibility_raw = _snapshot_blob(repo, ref, RULE_COMPATIBILITY_RELPATH)
+    if policy_raw is None or index_raw is None or compatibility_raw is None:
+        return {
+            "status": "AUTHORITATIVE_PROJECT_SNAPSHOT_UNAVAILABLE",
+            "github_main_commit": ref,
+            "scientific_authorization": "NOT_DERIVED",
+        }
+    try:
+        policy = json.loads(policy_raw)
+        compatibility = json.loads(compatibility_raw)
+        records = [
+            json.loads(line) for line in index_raw.decode("utf-8").splitlines()
+            if line.strip()
+        ]
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return {
+            "status": "AUTHORITATIVE_PROJECT_SNAPSHOT_INVALID",
+            "github_main_commit": ref,
+            "scientific_authorization": "NOT_DERIVED",
+        }
+    policy_valid = isinstance(policy, dict) \
+        and policy.get("schema_version") == 1 \
+        and isinstance(policy.get("rules_commit"), str) \
+        and SHA40.fullmatch(policy["rules_commit"]) \
+        and isinstance(policy.get("rules_bundle_sha256"), str) \
+        and SHA256.fullmatch(policy["rules_bundle_sha256"])
+    compatibility_valid = isinstance(compatibility, dict) \
+        and set(compatibility) == {
+            "schema_version", "compatibility_id", "compatible_prior_rules_commits",
+        } \
+        and compatibility.get("schema_version") == 1 \
+        and isinstance(compatibility.get("compatibility_id"), str) \
+        and SAFE_TOKEN.fullmatch(compatibility["compatibility_id"]) \
+        and isinstance(compatibility.get("compatible_prior_rules_commits"), list) \
+        and len(compatibility["compatible_prior_rules_commits"]) \
+        == len(set(compatibility["compatible_prior_rules_commits"])) \
+        and all(
+            isinstance(item, str) and SHA40.fullmatch(item)
+            for item in compatibility["compatible_prior_rules_commits"]
+        )
+    records_valid = all(
+        isinstance(item, dict)
+        and isinstance(item.get("route_id"), str)
+        and SAFE_TOKEN.fullmatch(item["route_id"])
+        for item in records
+    )
+    if not policy_valid or not compatibility_valid or not records_valid:
+        return {
+            "status": "AUTHORITATIVE_PROJECT_SNAPSHOT_INVALID",
+            "github_main_commit": ref,
+            "scientific_authorization": "NOT_DERIVED",
+        }
+    route_ids = {
+        item.get("route_id") for item in records
+        if isinstance(item.get("route_id"), str)
+    }
+    return {
+        "status": "AUTHORITATIVE_PROJECT_SNAPSHOT_OK",
+        "github_main_commit": ref,
+        "policy_snapshot_path": POLICY_SNAPSHOT_RELPATH,
+        "policy_snapshot_sha256": hashlib.sha256(policy_raw).hexdigest(),
+        "policy_rules_commit": policy.get("rules_commit"),
+        "rules_bundle_sha256": policy.get("rules_bundle_sha256"),
+        "rule_compatibility_path": RULE_COMPATIBILITY_RELPATH,
+        "rule_compatibility_sha256": hashlib.sha256(compatibility_raw).hexdigest(),
+        "rule_compatibility_id": compatibility.get("compatibility_id"),
+        "terminal_index_path": TERMINAL_INDEX_RELPATH,
+        "terminal_index_sha256": hashlib.sha256(index_raw).hexdigest(),
+        "terminal_record_count": len(records),
+        "terminal_route_count": len(route_ids),
+        "scientific_completeness": "not_assessed",
         "scientific_authorization": "NOT_DERIVED",
     }
 
@@ -4005,82 +4137,256 @@ def tool_evidence_fetch(args):
         return failure_result("EVIDENCE_FETCH_FAILED", exc, "evidence_transfer")
 
 
+def snapshot_bindings(*, scope, main_fresh, snapshot, route_identity=None,
+                      github_route_identity=None, worktree_clean=None, branch=None):
+    """Separate GitHub read authority from route-worktree write safety."""
+    snapshot_status = snapshot.get("status") if isinstance(snapshot, dict) else None
+    if not main_fresh:
+        read = {
+            "status": "BLOCKED", "read_allowed": False,
+            "reason": "AUTHORITATIVE_MAIN_STALE",
+            "route_id_confirmed": False,
+        }
+    elif scope == "project":
+        ok = snapshot_status == "AUTHORITATIVE_PROJECT_SNAPSHOT_OK"
+        read = {
+            "status": "BOUND" if ok else "BLOCKED",
+            "read_allowed": ok,
+            "reason": snapshot_status,
+            "route_id_confirmed": False,
+            "binding_source": "github_main",
+        }
+    else:
+        local_confirmed = bool(
+            isinstance(route_identity, dict)
+            and route_identity.get("route_id_confirmed")
+        )
+        github_confirmed = bool(
+            isinstance(github_route_identity, dict)
+            and github_route_identity.get("route_id_confirmed")
+        )
+        terminal_confirmed = snapshot_status == "AUTHORITATIVE_SNAPSHOT_OK"
+        confirmed = terminal_confirmed or github_confirmed or local_confirmed
+        if terminal_confirmed:
+            source = "github_main_terminal_index"
+        elif github_confirmed:
+            source = "github_route_branch_manifest"
+        elif local_confirmed:
+            source = "local_head_manifest"
+        else:
+            source = None
+        blocked_statuses = {
+            "TERMINAL_INDEX_UNAVAILABLE", "TERMINAL_INDEX_INVALID",
+            "TERMINAL_RECORD_AMBIGUOUS",
+        }
+        if snapshot_status in blocked_statuses:
+            status, allowed = "BLOCKED", False
+        elif confirmed:
+            status, allowed = "BOUND", True
+        else:
+            status, allowed = "UNRESOLVED", False
+        read = {
+            "status": status, "read_allowed": allowed,
+            "reason": snapshot_status,
+            "route_id_confirmed": confirmed,
+            "binding_source": source,
+        }
+    if scope == "project":
+        write = {
+            "status": "NOT_APPLICABLE", "write_allowed": False,
+            "reason": "PROJECT_SCOPE_IS_READ_ONLY",
+        }
+    else:
+        local_confirmed = bool(
+            isinstance(route_identity, dict)
+            and route_identity.get("route_id_confirmed")
+        )
+        branch_valid = isinstance(branch, str) and SAFE_BRANCH.fullmatch(branch)
+        write_allowed = main_fresh and local_confirmed \
+            and worktree_clean is True and bool(branch_valid)
+        reasons = []
+        if not main_fresh:
+            reasons.append("AUTHORITATIVE_MAIN_STALE")
+        if not local_confirmed:
+            reasons.append("LOCAL_ROUTE_ID_UNCONFIRMED")
+        if worktree_clean is not True:
+            reasons.append("WORKTREE_DIRTY")
+        if not branch_valid:
+            reasons.append("LOCAL_BRANCH_INVALID")
+        write = {
+            "status": "BOUND" if write_allowed else "BLOCKED",
+            "write_allowed": write_allowed,
+            "reason": "LOCAL_WRITE_BINDING_OK" if write_allowed else "+".join(reasons),
+        }
+    return read, write
+
+
 def build_snapshot_phase_receipt(value):
+    scope = value.get("scope", "route")
     snapshot = value.get("authoritative_snapshot")
     snapshot_status = snapshot.get("status") if isinstance(snapshot, dict) else None
-    route_identity = value.get("route_identity")
-    route_id_confirmed = bool(
-        isinstance(route_identity, dict) and route_identity.get("route_id_confirmed")
-    )
+    read = value.get("authoritative_read_binding", {})
+    write = value.get("local_write_binding", {})
     if not value.get("github_main_ref_fresh"):
         allowed_next_action = "refresh_github_main_once"
-    elif snapshot_status == "AUTHORITATIVE_SNAPSHOT_OK" and route_id_confirmed:
+    elif scope == "project" and read.get("read_allowed"):
+        allowed_next_action = "read_project_snapshot_references"
+    elif snapshot_status == "AUTHORITATIVE_SNAPSHOT_OK" and read.get("read_allowed"):
         allowed_next_action = "read_authoritative_snapshot_references"
+    elif snapshot_status == "NO_TERMINAL_RECORD" and read.get("read_allowed"):
+        allowed_next_action = "read_program_and_parent_authorization"
     else:
         allowed_next_action = "resolve_route_identity_or_snapshot"
     receipt = {
         "schema_version": 1,
         "phase": "SNAPSHOT_IDENTITY",
-        "route_id": value.get("authoritative_snapshot", {}).get("route_id"),
+        "scope": scope,
+        "route_id": value.get("route_id"),
         "branch": value.get("branch"),
         "head": value.get("head"),
         "github_main_commit": value.get("github_main_remote"),
         "github_main_ref_fresh": value.get("github_main_ref_fresh") is True,
         "worktree_clean": value.get("worktree_clean") is True,
         "authoritative_snapshot_status": snapshot_status,
-        "route_id_confirmed": route_id_confirmed,
-        "route_id_binding_status": (
-            route_identity.get("status") if isinstance(route_identity, dict) else None
-        ),
+        "authoritative_read_binding_status": read.get("status"),
+        "local_write_binding_status": write.get("status"),
+        "route_id_confirmed": read.get("route_id_confirmed") is True,
+        "route_id_binding_source": read.get("binding_source"),
         "scientific_authorization": "NOT_DERIVED",
         "allowed_next_action": allowed_next_action,
     }
     return {**receipt, "receipt_sha256": canonical_digest(receipt)}
 
 
+def _live_main_identity(repo):
+    prefix = ["git", "-C", str(repo)]
+    remote = run_local(
+        [*prefix, "ls-remote", "github", "refs/heads/main"],
+        timeout=60, phase="github_ref_fetch",
+    ).split()
+    if len(remote) != 2 or not SHA40.fullmatch(remote[0]) \
+            or remote[1] != "refs/heads/main":
+        raise ToolError("GitHub main is malformed", failure_class="command_infra")
+    local_main = run_local(
+        [*prefix, "rev-parse", "github/main"], timeout=30, phase="git_status",
+    )
+    return local_main, remote[0]
+
+
 def tool_git_evidence_status(args):
     try:
-        route_id = require_token(args.get("route_id"), "route_id")
-        repo = validate_local_repo(args.get("local_repo"))
-        prefix = ["git", "-C", str(repo)]
-        branch = run_local([*prefix, "branch", "--show-current"], timeout=30, phase="git_status")
-        head = run_local([*prefix, "rev-parse", "HEAD"], timeout=30, phase="git_status")
-        local_main = run_local([*prefix, "rev-parse", "github/main"], timeout=30, phase="git_status")
-        remote = run_local([*prefix, "ls-remote", "github", "refs/heads/main"], timeout=60, phase="github_ref_fetch").split()
-        if len(remote) != 2 or not SHA40.fullmatch(remote[0]):
-            raise ToolError("GitHub main is malformed", failure_class="command_infra")
+        scope = args.get("scope", "route")
+        if scope not in {"project", "route"}:
+            raise ToolError("scope must be project or route")
         detail = args.get("detail", "summary")
         if detail not in {"summary", "route", "full"}:
             raise ToolError("detail must be summary, route, or full")
-        status = run_local([*prefix, "status", "--short"], timeout=30, phase="git_status")
-        changed_all = status.splitlines() if status else []
-        route_prefix = f"experience_docx/experiment_logs/{route_id}/"
-        route_changed = [line for line in changed_all if route_prefix in line]
+        local_repo = args.get("local_repo")
+        if scope == "project" and local_repo is None:
+            local_repo = str(LOCAL_GIT_SEED)
+        repo = validate_local_repo(local_repo)
+        local_main, remote_main = _live_main_identity(repo)
+        main_fresh = local_main == remote_main
+        if scope == "project":
+            snapshot = (
+                project_authoritative_snapshot(repo, remote_main)
+                if main_fresh else {
+                    "status": "AUTHORITATIVE_MAIN_STALE",
+                    "github_main_commit": remote_main,
+                    "local_main_commit": local_main,
+                    "scientific_authorization": "NOT_DERIVED",
+                }
+            )
+            read, write = snapshot_bindings(
+                scope=scope, main_fresh=main_fresh, snapshot=snapshot,
+            )
+            value = {
+                "scope": scope, "route_id": None, "local_repo": str(repo),
+                "github_main_local": local_main,
+                "github_main_remote": remote_main,
+                "github_main_ref_fresh": main_fresh,
+                "local_worktree_assessed": False,
+                "authoritative_snapshot": snapshot,
+                "authoritative_read_binding": read,
+                "local_write_binding": write,
+                "detail_level": detail,
+                "git_mutations_performed": False,
+            }
+            value["phase_receipt"] = build_snapshot_phase_receipt(value)
+            return text_result(json.dumps(value, indent=2), structured=value)
 
-        route_identity = worktree_route_identity(repo, route_id, head)
-        main_fresh = local_main == remote[0]
+        route_id = require_token(args.get("route_id"), "route_id")
+        if args.get("local_repo") is None:
+            raise ToolError("route scope requires local_repo")
         snapshot = (
             authoritative_snapshot(
-                repo, route_id, remote[0],
-                route_id_confirmed=route_identity["route_id_confirmed"],
+                repo, route_id, remote_main, route_id_confirmed=False,
             )
             if main_fresh else {
                 "status": "AUTHORITATIVE_MAIN_STALE",
                 "route_id": route_id,
-                "route_id_confirmed": route_identity["route_id_confirmed"],
+                "route_id_confirmed": False,
                 "local_main_commit": local_main,
-                "remote_main_commit": remote[0],
+                "remote_main_commit": remote_main,
             }
         )
+        prefix = ["git", "-C", str(repo)]
+        branch = run_local(
+            [*prefix, "branch", "--show-current"], timeout=30, phase="git_status",
+        )
+        head = run_local(
+            [*prefix, "rev-parse", "HEAD"], timeout=30, phase="git_status",
+        )
+        status = run_local(
+            [*prefix, "status", "--short"], timeout=30, phase="git_status",
+        )
+        changed_all = status.splitlines() if status else []
+        route_prefix = f"experience_docx/experiment_logs/{route_id}/"
+        route_changed = [line for line in changed_all if route_prefix in line]
+        route_identity = worktree_route_identity(repo, route_id, head)
+        if main_fresh and snapshot.get("status") != "AUTHORITATIVE_SNAPSHOT_OK":
+            github_identity = github_route_branch_identity(
+                repo, branch, route_id, head,
+            )
+        else:
+            github_identity = {
+                "status": "GITHUB_ROUTE_BRANCH_NOT_REQUIRED",
+                "requested_route_id": route_id,
+                "branch": branch,
+                "route_id_confirmed": False,
+            }
+        target_confirmed = snapshot.get("status") == "AUTHORITATIVE_SNAPSHOT_OK" \
+            or github_identity.get("route_id_confirmed") is True \
+            or route_identity.get("route_id_confirmed") is True
+        if snapshot.get("status") == "ROUTE_ID_UNRESOLVED" and target_confirmed:
+            if github_identity.get("route_id_confirmed") is True:
+                source = "github_route_branch_manifest"
+            else:
+                source = "local_head_manifest"
+            snapshot = {
+                **snapshot,
+                "status": "NO_TERMINAL_RECORD",
+                "route_id_confirmed": True,
+                "route_id_confirmation_source": source,
+            }
+        read, write = snapshot_bindings(
+            scope=scope, main_fresh=main_fresh, snapshot=snapshot,
+            route_identity=route_identity, github_route_identity=github_identity,
+            worktree_clean=not status, branch=branch,
+        )
         value = {
+            "scope": scope, "route_id": route_id,
             "local_repo": str(repo), "branch": branch, "head": head,
-            "github_main_local": local_main, "github_main_remote": remote[0],
+            "github_main_local": local_main, "github_main_remote": remote_main,
             "github_main_ref_fresh": main_fresh,
             "worktree_clean": not status,
             "changed_path_count": len(changed_all),
             "route_evidence_change_count": len(route_changed),
             "route_identity": route_identity,
+            "github_route_identity": github_identity,
             "authoritative_snapshot": snapshot,
+            "authoritative_read_binding": read,
+            "local_write_binding": write,
             "detail_level": detail,
             "git_mutations_performed": False,
         }
@@ -4166,11 +4472,12 @@ TOOLS = {
         "handler": tool_evidence_fetch,
     },
     "convir_git_status": {
-        "description": "Read-only compact worktree, GitHub-main freshness, and authoritative route snapshot audit; defaults to a token-bounded summary and never mutates Git.",
+        "description": "Read GitHub-main project or route authority first, then report a separate local write binding; defaults to backward-compatible route scope and never mutates Git.",
         "inputSchema": {
-            "type": "object", "required": ["route_id", "local_repo"],
+            "type": "object", "required": [],
             "properties": {
                 "route_id": {"type": "string"}, "local_repo": {"type": "string"},
+                "scope": {"enum": ["project", "route"], "default": "route"},
                 "detail": {"enum": ["summary", "route", "full"], "default": "summary"},
             },
             "additionalProperties": False,

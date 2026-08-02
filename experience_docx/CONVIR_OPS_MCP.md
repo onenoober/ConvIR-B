@@ -2,16 +2,23 @@
 
 Date: 2026-08-01
 
-Status: governance-fastpath server `5.7.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.8.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
 runtime schema 2 for new routes. New experiment specs, scientific contracts and
 typed asset manifests use schema 2; historical schema 1 remains readable and is
 not migrated.
 
-`convir-ops` is a restricted local stdio bridge to `convir-4090`. It accepts
-only a GitHub route branch, exact commit, and operation id. It never accepts an
-arbitrary command, remote path, metric, threshold, or scientific verdict.
+Version 5.8.0 changes authority discovery and write binding only. It does not
+change any scientific contract, data role, gate, threshold, terminal action or
+runtime authorization, so the existing compatibility id is retained and the
+prior rule-source commits are named explicitly in `RULE_COMPATIBILITY.json`.
+
+`convir-ops` is a restricted local stdio bridge to `convir-4090`. Its lifecycle
+tools accept only a GitHub route branch, exact commit, and operation id; its
+status tool accepts only bounded project/route identity inputs. It never
+accepts an arbitrary command, remote path, metric, threshold, or scientific
+verdict.
 
 For new routes, first require one staged `validate_route_ready.py` pass under
 `ROUTE_READY_FASTPATH.md`, then commit/push once and call plan/start. The staged
@@ -27,7 +34,7 @@ route validator or a route-specific shell surface.
 | `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation and one same-contract repair state machine |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
-| `convir_git_status` | token-bounded local identity/worktree safety audit plus GitHub-main freshness and authoritative route-snapshot pointer; never a result reader |
+| `convir_git_status` | token-bounded GitHub-main project/route authority snapshot plus a separate local write binding; never a result reader |
 
 Do not add generic shell, SSH, cleanup, retry, watcher, commit, push,
 authorization-file, validator or model-routing tools.
@@ -235,19 +242,30 @@ ambiguous review-or-archive branch without duplicating evidence contents or
 adding a seventh tool. Historical schema-4/5 and engineering terminals retain
 their existing response contract.
 
-`convir_git_status` is intentionally the first route-bound call but not the
-first scientific evidence source. Its local worktree fields bind identity and
-protect against writing to the wrong branch; they do not prove that a route has
-run or authorize a next stage. Resolve the route id from the route snapshot or
-committed manifest, then read the exact GitHub-main snapshot and its referenced
-closeout/conclusion/results. Use receipt-bound cloud evidence only after that
-binding. A missing record for an unverified route id is unresolved and must not
-be reported as a scientific no-terminal conclusion.
-The response includes one additive `SNAPSHOT_IDENTITY` phase receipt bound to
-route id, branch, HEAD, fresh GitHub-main commit, worktree safety and snapshot
-status. It always records `scientific_authorization=NOT_DERIVED` and exposes one
-next action: refresh main once, read the authoritative snapshot references, or
-resolve route identity/snapshot. It is a control receipt, not evidence.
+`convir_git_status` supports `scope=project|route` without adding a seventh
+tool. Project scope is the first call for a new task. It may omit `local_repo`
+and then uses the registered dedicated main worktree; it proves live GitHub-main
+freshness and returns compact policy, rule-compatibility and terminal-index
+identities without inspecting a route worktree. It never infers a route or
+scientific authorization.
+
+Route scope preserves the legacy `local_repo, route_id, detail` call. It reads
+the fresh main terminal index before local worktree state. A unique terminal
+chain confirms an archived route independently of a dirty, missing or wrong
+local manifest. A route with no terminal is `NO_TERMINAL_RECORD` only after a
+GitHub route-branch manifest or local pre-push HEAD manifest confirms the id;
+an arbitrary id remains `ROUTE_ID_UNRESOLVED`. The response separates
+`authoritative_read_binding` from `local_write_binding`. Local dirtiness,
+branch failure or manifest mismatch blocks only the latter, while stale main or
+terminal-index identity conflict blocks the former. Require local write binding
+before editing, commit, plan/start, repair or archive. Neither binding proves a
+metric, verdict, completed workload or next-stage authorization.
+
+The additive `SNAPSHOT_IDENTITY` phase receipt records scope, fresh main,
+authoritative-read status, local-write status and one next action. It always
+records `scientific_authorization=NOT_DERIVED`; authoritative closeout and
+conclusion files must still be read for any authorization decision. It is a
+control receipt, not evidence.
 
 ## Capability Reuse And Recovery
 
@@ -282,7 +300,7 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.7.0`, source SHA-256, exactly six tools,
+restart the host and verify version `5.8.0`, source SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
 

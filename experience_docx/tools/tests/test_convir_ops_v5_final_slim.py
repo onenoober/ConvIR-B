@@ -279,6 +279,7 @@ class FinalSlimTests(unittest.TestCase):
 
     def test_snapshot_phase_receipt_never_derives_scientific_authorization(self):
         base = {
+            "scope": "route", "route_id": "route",
             "branch": "codex/route", "head": "a" * 40,
             "github_main_remote": "b" * 40,
             "github_main_ref_fresh": True, "worktree_clean": True,
@@ -287,7 +288,14 @@ class FinalSlimTests(unittest.TestCase):
                 "route_id_confirmed": False,
             },
             "authoritative_snapshot": {
-                "status": "NO_TERMINAL_RECORD", "route_id": "route",
+                "status": "ROUTE_ID_UNRESOLVED", "route_id": "route",
+            },
+            "authoritative_read_binding": {
+                "status": "UNRESOLVED", "read_allowed": False,
+                "route_id_confirmed": False, "binding_source": None,
+            },
+            "local_write_binding": {
+                "status": "BLOCKED", "write_allowed": False,
             },
         }
         unresolved = OPS.build_snapshot_phase_receipt(base)
@@ -305,6 +313,14 @@ class FinalSlimTests(unittest.TestCase):
             "authoritative_snapshot": {
                 "status": "AUTHORITATIVE_SNAPSHOT_OK", "route_id": "route",
                 "route_id_confirmed": True,
+            },
+            "authoritative_read_binding": {
+                "status": "BOUND", "read_allowed": True,
+                "route_id_confirmed": True,
+                "binding_source": "github_main_terminal_index",
+            },
+            "local_write_binding": {
+                "status": "BOUND", "write_allowed": True,
             },
         })
         self.assertEqual(
@@ -352,7 +368,7 @@ class FinalSlimTests(unittest.TestCase):
             subprocess.run(["git", "add", "."], cwd=repo, check=True)
             subprocess.run(["git", "commit", "-qm", "snapshot"], cwd=repo, check=True)
             snapshot = OPS.authoritative_snapshot(
-                repo, "route", "HEAD", route_id_confirmed=True,
+                repo, "route", "HEAD", route_id_confirmed=False,
             )
             self.assertEqual("AUTHORITATIVE_SNAPSHOT_OK", snapshot["status"])
             self.assertEqual(64, len(snapshot["terminal_record_sha256"]))
@@ -395,33 +411,127 @@ class FinalSlimTests(unittest.TestCase):
             )
             self.assertEqual("TERMINAL_RECORD_AMBIGUOUS", snapshot["status"])
 
-    def test_unconfirmed_route_id_does_not_read_terminal_index(self):
-        with patch.object(OPS.subprocess, "run") as run:
+    def test_unconfirmed_route_id_checks_main_and_remains_unresolved_when_absent(self):
+        with patch.object(OPS, "_snapshot_blob", return_value=b"") as read:
             snapshot = OPS.authoritative_snapshot(
                 Path("/unused"), "requested-route", "HEAD",
                 route_id_confirmed=False,
             )
         self.assertEqual("ROUTE_ID_UNRESOLVED", snapshot["status"])
         self.assertFalse(snapshot["route_id_confirmed"])
-        run.assert_not_called()
+        read.assert_called_once_with(
+            Path("/unused"), "HEAD", OPS.TERMINAL_INDEX_RELPATH,
+        )
 
-    def test_manifest_route_mismatch_cannot_be_overridden_by_snapshot(self):
+    def test_main_terminal_remains_readable_when_local_manifest_mismatches(self):
+        route_identity = {
+            "status": "ROUTE_ID_MISMATCH_WITH_HEAD_MANIFEST",
+            "route_id_confirmed": False,
+        }
+        snapshot = {
+            "status": "AUTHORITATIVE_SNAPSHOT_OK",
+            "route_id": "requested-route", "route_id_confirmed": True,
+        }
+        read, write = OPS.snapshot_bindings(
+            scope="route", main_fresh=True, snapshot=snapshot,
+            route_identity=route_identity,
+            github_route_identity={"route_id_confirmed": False},
+            worktree_clean=False, branch="codex/actual-route",
+        )
+        self.assertTrue(read["read_allowed"])
+        self.assertEqual("github_main_terminal_index", read["binding_source"])
+        self.assertFalse(write["write_allowed"])
         receipt = OPS.build_snapshot_phase_receipt({
+            "scope": "route", "route_id": "requested-route",
             "branch": "codex/actual-route", "head": "a" * 40,
             "github_main_remote": "b" * 40,
-            "github_main_ref_fresh": True, "worktree_clean": True,
-            "route_identity": {
-                "status": "ROUTE_ID_MISMATCH_WITH_HEAD_MANIFEST",
-                "route_id_confirmed": False,
-            },
-            "authoritative_snapshot": {
-                "status": "AUTHORITATIVE_SNAPSHOT_OK",
-                "route_id": "requested-route", "route_id_confirmed": True,
-            },
+            "github_main_ref_fresh": True, "worktree_clean": False,
+            "route_identity": route_identity,
+            "authoritative_snapshot": snapshot,
+            "authoritative_read_binding": read,
+            "local_write_binding": write,
         })
-        self.assertFalse(receipt["route_id_confirmed"])
+        self.assertTrue(receipt["route_id_confirmed"])
         self.assertEqual(
-            "resolve_route_identity_or_snapshot", receipt["allowed_next_action"],
+            "read_authoritative_snapshot_references", receipt["allowed_next_action"],
+        )
+
+    def test_clean_matching_worktree_binds_read_and_write(self):
+        route_identity = {"route_id_confirmed": True}
+        snapshot = {
+            "status": "NO_TERMINAL_RECORD", "route_id_confirmed": True,
+        }
+        read, write = OPS.snapshot_bindings(
+            scope="route", main_fresh=True, snapshot=snapshot,
+            route_identity=route_identity,
+            github_route_identity={"route_id_confirmed": False},
+            worktree_clean=True, branch="codex/new-route",
+        )
+        self.assertTrue(read["read_allowed"])
+        self.assertTrue(write["write_allowed"])
+        self.assertEqual("local_head_manifest", read["binding_source"])
+
+    def test_stale_main_blocks_authoritative_read_only(self):
+        read, write = OPS.snapshot_bindings(
+            scope="route", main_fresh=False,
+            snapshot={"status": "AUTHORITATIVE_MAIN_STALE"},
+            route_identity={"route_id_confirmed": True},
+            github_route_identity={"route_id_confirmed": False},
+            worktree_clean=True, branch="codex/new-route",
+        )
+        self.assertFalse(read["read_allowed"])
+        self.assertFalse(write["write_allowed"])
+        self.assertEqual("AUTHORITATIVE_MAIN_STALE", read["reason"])
+
+    def test_project_snapshot_does_not_require_route_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            self.git(repo, "init", "-q")
+            self.git(repo, "config", "user.name", "test")
+            self.git(repo, "config", "user.email", "test@example.com")
+            policy = repo / OPS.POLICY_SNAPSHOT_RELPATH
+            index = repo / OPS.TERMINAL_INDEX_RELPATH
+            compatibility = repo / OPS.RULE_COMPATIBILITY_RELPATH
+            policy.parent.mkdir(parents=True)
+            policy.write_text(json.dumps({
+                "schema_version": 1,
+                "rules_commit": "a" * 40, "rules_bundle_sha256": "b" * 64,
+            }))
+            index.write_text(json.dumps({"route_id": "archived-route"}) + "\n")
+            compatibility.write_text(json.dumps({
+                "schema_version": 1,
+                "compatibility_id": "contract-v2",
+                "compatible_prior_rules_commits": [],
+            }))
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "project snapshot")
+            snapshot = OPS.project_authoritative_snapshot(repo, "HEAD")
+            self.assertFalse((repo / OPS.ROUTE_OPERATIONS_RELPATH).exists())
+        self.assertEqual("AUTHORITATIVE_PROJECT_SNAPSHOT_OK", snapshot["status"])
+        self.assertEqual(1, snapshot["terminal_route_count"])
+
+    def test_github_branch_manifest_confirms_new_route_without_terminal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+            self.git(repo, "init", "-q")
+            self.git(repo, "config", "user.name", "test")
+            self.git(repo, "config", "user.email", "test@example.com")
+            manifest_path = repo / OPS.ROUTE_OPERATIONS_RELPATH
+            manifest_path.parent.mkdir(parents=True)
+            manifest_path.write_text(json.dumps({"route_id": "new-route"}))
+            self.git(repo, "add", ".")
+            self.git(repo, "commit", "-qm", "route")
+            head = self.git(repo, "rev-parse", "HEAD")
+            with patch.object(
+                OPS, "run_local",
+                return_value=f"{head}\trefs/heads/codex/new-route",
+            ):
+                identity = OPS.github_route_branch_identity(
+                    repo, "codex/new-route", "new-route", head,
+                )
+        self.assertTrue(identity["route_id_confirmed"])
+        self.assertEqual(
+            "ROUTE_ID_CONFIRMED_BY_GITHUB_BRANCH_MANIFEST", identity["status"],
         )
 
     def test_terminal_leaf_selection_accepts_one_complete_operation_chain(self):

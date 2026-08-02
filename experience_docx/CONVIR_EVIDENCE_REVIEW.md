@@ -46,9 +46,10 @@ compact, identity-bound discovery records rather than bulk experiment data.
 | `convir_evidence_cloud_inventory_query` | rescan and page the same run root only while its inventory identity remains unchanged |
 | `convir_evidence_cloud_text_read` | read one bounded UTF-8 page from an allowed text file in that exact complete inventory |
 
-The normal read sequence is: establish the freshness of local
-`refs/remotes/github/main` through the repository-approved GitHub read path;
-call the completeness receipt once; query candidate routes; page the
+The normal read sequence is: call `convir_git_status scope=project` from the
+dedicated main control repository to establish live GitHub-main freshness and
+project identities without a route worktree; call the completeness receipt
+once; query candidate routes; page the
 selected terminal's evidence bundle to completion; and use `repo-show` for only
 the needed GitHub files. When more detail is needed, inventory that same bound
 cloud run, query relevant text entries, and page an allowed file with
@@ -99,7 +100,7 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
-- `convir-ops` remains a separate six-tool lifecycle server at version `5.7.0`
+- `convir-ops` remains a separate six-tool lifecycle server at version `5.8.0`
   with protocol schema 4.
 
 ## P0 Project Completeness Receipt

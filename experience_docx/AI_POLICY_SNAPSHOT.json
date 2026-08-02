@@ -74,18 +74,38 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "19af0c9e7c7a41cecd5560b7b3259417158858683fe1b9fc24d5b2e702ad928d",
-  "rules_commit": "7024906a5441d055ab4dbe8a12311ae9bdfb9766",
+  "rules_bundle_sha256": "85b76d3a9e7aa5334e13805b6c66822fc2551c2b37314a0a027dd972677b06de",
+  "rules_commit": "7866e061b8784d778d5b26fb1fead99dc65cbcc5",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
     {
+      "owns": [
+        "current_rules",
+        "compact_terminal_evidence",
+        "terminal_authorization"
+      ],
+      "required_action": "establish_live_main_then_read_exact_project_snapshot",
+      "source": "github_main",
+      "step": "project_authority"
+    },
+    {
+      "forbidden_uses": [
+        "infer_metric_from_manifest",
+        "infer_verdict_from_manifest",
+        "infer_authorization_from_directory_or_chat"
+      ],
+      "required_action": "bind_archived_route_from_terminal_index_or_new_route_from_manifest_and_program_lineage",
+      "source": "github_main_terminal_or_github_route_branch",
+      "step": "route_target"
+    },
+    {
       "allowed_uses": [
-        "bind_branch_head_route_id",
-        "check_worktree_safety",
-        "check_github_main_freshness"
+        "bind_branch_head_route_id_before_write",
+        "check_worktree_safety"
       ],
       "forbidden_uses": [
+        "block_github_terminal_read_because_of_local_mismatch",
         "infer_metric",
         "infer_verdict",
         "infer_terminal",
@@ -93,17 +113,7 @@
         "infer_completed_workload"
       ],
       "source": "local_route_worktree",
-      "step": "route_identity"
-    },
-    {
-      "owns": [
-        "current_rules",
-        "compact_terminal_evidence",
-        "terminal_authorization"
-      ],
-      "required_action": "read_exact_snapshot_and_referenced_files",
-      "source": "github_main",
-      "step": "authoritative_evidence"
+      "step": "local_write_binding"
     },
     {
       "owns": [
@@ -117,24 +127,24 @@
   ],
   "sources": {
     "AGENTS.md": {
-      "bytes": 13463,
-      "sha256": "7862dfc22d53bc17c0a3b7114642f50152ce18a2058de9846b5a5ed857f7ecdb"
+      "bytes": 14177,
+      "sha256": "b8d6f5a4d4019443fb4765be5e95b870e0aeef39803204b22ef57ec47a208578"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
       "bytes": 6172,
       "sha256": "63d5088ac73e7ce586d23265e2f85e9a2dd99a8d4ce2f54d6ca868a88e2b1a78"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
-      "bytes": 13964,
-      "sha256": "b6569fb366d176dfd98945e47e6cafd7bb3c9217f8eba10f5d5115e6d8cec147"
+      "bytes": 14394,
+      "sha256": "69f50f4b06e883a8f9df104eb9797e6876a5f1b4b4841abcb1d9dcf3e729f537"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 14945,
-      "sha256": "b8efc3af61e2c47d88583e7ac2fcac7677d79b09d4aaa0cfeda689c6688ed081"
+      "bytes": 15006,
+      "sha256": "b0ee5f12f8472165f07308dfdc10700ca18046ff96faee4927e2b31606371ffe"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 19497,
-      "sha256": "187200b57b1ca826f5d7c1a09fa6306e5ad900000c6ae904588e1e670e81b622"
+      "bytes": 20461,
+      "sha256": "09abe52a403d6d5001fce1d02b6621c0c7fb0fd003829a428fab78c91f5f096f"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 8390,
@@ -145,16 +155,16 @@
       "sha256": "3f47ca86e4fa42af93e387d9b26fbccf61e3e4aa52955fb36c91299f751dc53a"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 16111,
-      "sha256": "5dd2d9fd8ecf71673e2a77262fe374350533b356019c52962b23153c62af31a2"
+      "bytes": 16263,
+      "sha256": "18e1e9d79ed0ad08e08f36e3a2965da63bbc7152454d791b5fa551fcbff0eec4"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
-      "bytes": 120,
-      "sha256": "8f2c46f7b6a57cfec0c3a782788442a12772bed9599502690f7267b7a2963381"
+      "bytes": 218,
+      "sha256": "68304d1e025533514936fffee3e4ef5b8fcea7ea5471d0a9eec89e76ea70d499"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 18557,
-      "sha256": "915cef9d1a989b079a68229d34448e0a940fb4868fef1e74162f54933b5dfd90"
+      "bytes": 19396,
+      "sha256": "aa8ae67c9dd6ccac91214eca4a2eca0fef981208ce97eae2afd83e6fbbb3017d"
     }
   },
   "workflow": [

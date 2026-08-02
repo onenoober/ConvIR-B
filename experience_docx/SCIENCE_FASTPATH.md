@@ -16,15 +16,23 @@ separation.
 ## Source-of-Truth Order
 
 The local route worktree is an identity and authoring surface, not an
-experiment-results store. At the start of a task, call `convir_git_status` for
-the named route only to bind the branch, HEAD, worktree state, route id and
-GitHub-main freshness. Treat its local fields and local diffs as safety and
-authoring metadata; never use them to infer a metric, verdict, terminal state,
-scientific authorization or completed workload. A directory name is not a
-route id, and `NO_TERMINAL_RECORD` for an unverified id is unresolved rather
-than evidence that no terminal exists.
+experiment-results store. Begin with `convir_git_status scope=project` from the
+dedicated GitHub-main control repository. This `SNAPSHOT-A AUTHORITY` proves the
+live main identity and returns the exact project/rule and terminal-catalog
+bindings without reading any route worktree. `SNAPSHOT-B TARGET` then uses
+`scope=route`: the unique GitHub-main terminal chain confirms an archived route
+even when the local checkout is dirty, missing or wrong; a new route id requires
+a GitHub route-branch manifest, with the local HEAD manifest accepted only as
+the pre-push authoring identity, and its scientific authorization is read
+separately from main's typed program/parent lineage. `SNAPSHOT-C WORKTREE_BIND`
+checks branch, HEAD, worktree state and route id before any edit or lifecycle
+write. Its failure blocks local writes, never an already-bound main terminal.
+Treat all local fields and diffs as safety and authoring metadata; never use
+them to infer a metric, verdict, terminal state, scientific authorization or
+completed workload. A directory name is not a route id, and
+`NO_TERMINAL_RECORD` is valid only after route identity is confirmed.
 
-After that identity snapshot, read the authoritative snapshot and only its
+After authority and target binding, read the authoritative snapshot and only its
 referenced contract, typed closeout, conclusion and formal results from the
 GitHub-main commit it names. GitHub `main` is the source of truth for current
 rules and compact terminal evidence. The named route branch owns runnable code
@@ -55,9 +63,12 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
 
 ## Five State Transitions
 
-1. SNAPSHOT: use the compact authoritative snapshot, direct parent closeout and
-   only referenced evidence. Do not load the full Markdown index/history by
-   default. Decide whether the stage is authorized, answered or conflicting.
+1. SNAPSHOT: complete AUTHORITY, TARGET and WORKTREE_BIND in that order. Use the
+   compact authoritative snapshot, direct parent closeout and only referenced
+   evidence. Read-only project/terminal discovery does not require a route
+   worktree; WORKTREE_BIND becomes mandatory before a write. Do not load the
+   full Markdown index/history by default. Decide whether the stage is
+   authorized, answered or conflicting.
 2. CONTRACT: new routes author one research-program contract and one schema-2
    experiment spec. The deterministic compiler emits manifest schema 6, canonical scientific
    JSON, runtime/asset/capability/precision contracts and a <=8 KiB rationale

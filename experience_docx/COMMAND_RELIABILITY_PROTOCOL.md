@@ -11,7 +11,8 @@ shell recipes as operating instructions.
 | Need | Only default | Do not use |
 | --- | --- | --- |
 | Windows to WSL file, Git, or fixed program | wsl.exe -d Ubuntu-22.04 --exec followed by an absolute Linux program and literal argv | Windows Git on a WSL UNC path; bash -lc; nested quoting |
-| Task/worktree binding | convirctl.py task-context --repo <repo> --cwd <cwd> | relying on the PowerShell or editor cwd |
+| Project/route snapshot | convir_git_status scope=project, then scope=route when needed | making route-worktree cleanliness a prerequisite for reading GitHub-main progress |
+| Task/worktree write binding | convirctl.py task-context --repo <repo> --cwd <cwd> plus the route-scope local_write_binding | relying on the PowerShell or editor cwd |
 | Repository read | convirctl.py repo-show, repo-list, or repo-search | cross-shell grep, sed, head, regex, or git-show pipelines |
 | Standard plan/start/finish/progress/cancel/evidence | the six bounded convir-ops tools under stable protocol schema 4 | generic SSH, manual PID signals, dispatcher, watcher, or per-poll task |
 | Non-experiment infrastructure validation/diagnostic not covered by MCP | one clean, committed and same-branch GitHub-bound .sh through convirctl.py remote-script | experiment launch/stop/delete/evidence/protected-data access; inline SSH; heredoc across shells; untracked or dirty scripts |
@@ -34,8 +35,11 @@ remote-script is not an alternative lifecycle. It cannot launch, stop, delete,
 resume or fetch experiment state and cannot access scientific or protected data.
 Such behavior requires the receipt-bound convir-ops tool that owns that action.
 
-task-context fails closed when the requested cwd is not the requested worktree;
-all writes must be explicitly bound to the local_repo path. The repo-show,
+Project-scope status establishes live GitHub-main authority without a route
+worktree. Route scope returns separate authoritative-read and local-write
+bindings; local mismatch or dirtiness blocks writes only. task-context fails
+closed when the requested cwd is not the requested worktree; all writes must
+be explicitly bound to the local_repo path. The repo-show,
 repo-list, and repo-search readers resolve a safe commit/ref and use literal
 argv. repo-search accepts literal terms only; zero matches are a successful
 empty result, not a command failure.
