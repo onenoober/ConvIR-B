@@ -492,12 +492,14 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             trigger_sha=prior_sha, snapshot_commit=prior_commit,
             route_id="previous-route",
         )
+        previous["receipt"] = "d" * 64
         previous_commit = self.commit_snapshot(
             [prior, previous], previous_files, message="existing program terminal",
         )
         foundation, files = context_terminal_record(
             snapshot_commit=previous_commit,
         )
+        foundation["receipt"] = "e" * 64
         spec_binding = next(
             item for item in foundation["contract_bundle"]
             if item["source_path"].startswith("experience_docx/experiment_specs/")
