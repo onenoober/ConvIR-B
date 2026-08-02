@@ -2130,7 +2130,7 @@ def finalization_repair_body(
         validate_evidence_name(name)
     failed_copy = f"{source_context['output_path']}/control/failed_engineering_closeout.json"
     backup_root = f"{source_context['output_path']}/control/finalization_repair_backup"
-    lifecycle = f"{source_context['remote_repo']}/experience_docx/tools/route_lifecycle.py"
+    control_repo = f"{source_context['output_path']}/control/finalization_main_checkout"
     lines = [
         f"REMOTE_REPO={q(source_context['remote_repo'])}",
         f"OUTPUT_PATH={q(source_context['output_path'])}",
@@ -2145,8 +2145,8 @@ def finalization_repair_body(
         f"CLOSEOUT_SHA={q(closeout['closeout_sha256'])}",
         f"FAILED_COPY={q(failed_copy)}",
         f"BACKUP_ROOT={q(backup_root)}",
+        f"CONTROL_REPO={q(control_repo)}",
         f"EVIDENCE_ROOT={q(evidence_root)}",
-        f"LIFECYCLE={q(lifecycle)}",
         f"PYTHON={q(REMOTE_PYTHON)}",
         'test -d "$REMOTE_REPO/.git"',
         'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$SOURCE_COMMIT"',
@@ -2155,6 +2155,9 @@ def finalization_repair_body(
         'test "$(sha256sum "$CLOSEOUT" | awk \'{print $1}\')" = "$CLOSEOUT_SHA"',
         'git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/main:refs/convir-runtime/main"',
         'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$MAIN_COMMIT"',
+        'test ! -e "$CONTROL_REPO"',
+        'git -C "$REMOTE_REPO" worktree add --quiet --detach "$CONTROL_REPO" "$MAIN_COMMIT"',
+        'LIFECYCLE="$CONTROL_REPO/experience_docx/tools/route_lifecycle.py"',
         'if test "$FINAL_COMMIT" != "$SOURCE_COMMIT"; then',
         '  git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/$BRANCH:refs/convir-runtime/finalization"',
         '  test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/finalization)" = "$FINAL_COMMIT"',
@@ -2177,7 +2180,10 @@ def finalization_repair_body(
         '  git -C "$REMOTE_REPO" checkout --quiet --detach "$FINAL_COMMIT"',
         'fi',
         'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
-        f'RC=0; env EXPECTED_ROUTE_COMMIT="$FINAL_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$MAIN_COMMIT" RUNNER_SHA256={q(source_context["runner_sha256"])} MODE={q(source_context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(source_context["output_id"])} OUTPUT_ID={q(source_context["output_id"])} GPU={q("")} "$PYTHON" "$LIFECYCLE" --finalize-existing "$SOURCE_COMMIT" || RC=$?',
+        f'RC=0; env PYTHONDONTWRITEBYTECODE=1 EXPECTED_ROUTE_COMMIT="$FINAL_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$MAIN_COMMIT" RUNNER_SHA256={q(source_context["runner_sha256"])} MODE={q(source_context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(source_context["output_id"])} OUTPUT_ID={q(source_context["output_id"])} GPU={q("")} "$PYTHON" "$LIFECYCLE" --finalize-existing "$SOURCE_COMMIT" || RC=$?',
+        'test -z "$(git -C "$CONTROL_REPO" status --porcelain)"',
+        'git -C "$REMOTE_REPO" worktree remove "$CONTROL_REPO"',
+        'test ! -e "$CONTROL_REPO"',
         'if test ! -f "$CLOSEOUT"; then',
         '  RC=97',
     ])

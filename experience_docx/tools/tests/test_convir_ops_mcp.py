@@ -1074,6 +1074,35 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIn("CONVIR_OPS_FINALIZATION_ORIGINAL_EVIDENCE_RESTORED", body)
         self.assertIn('test ! -f "$CLOSEOUT"', body)
 
+    def test_finalization_body_uses_authoritative_main_control_plane(self):
+        source = context()
+        final = {
+            **source,
+            "route_manifest_schema_version": 6,
+        }
+        spec = {
+            "evidence_files": [],
+            "engineering_contract": {"capability_profile_relpath": None},
+        }
+        body = OPS.finalization_repair_body(
+            source, final, spec,
+            {"closeout_sha256": "1" * 64},
+            {"status": "FINALIZATION_PUBLICATION_RETRY_ELIGIBLE"},
+        )
+        self.assertIn(
+            'worktree add --quiet --detach "$CONTROL_REPO" "$MAIN_COMMIT"', body,
+        )
+        self.assertIn(
+            'LIFECYCLE="$CONTROL_REPO/experience_docx/tools/route_lifecycle.py"',
+            body,
+        )
+        self.assertNotIn(
+            'LIFECYCLE="$REMOTE_REPO/experience_docx/tools/route_lifecycle.py"',
+            body,
+        )
+        self.assertIn('PYTHONDONTWRITEBYTECODE=1', body)
+        self.assertIn('worktree remove "$CONTROL_REPO"', body)
+
     def test_finalization_candidate_rejection_does_not_consume_execution_slot(self):
         receipt = self.discardable_receipt(
             failure_phase="finalize", workload_started=True,
