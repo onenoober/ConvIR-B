@@ -571,7 +571,8 @@ def _terminal_research_context(repo, commit, record, records_by_sha=None):
             update = scientific.get("research_update_binding") \
                 if isinstance(scientific, dict) else None
             required = {
-                "snapshot_commit", "trigger_terminals", "bottleneck_class",
+                "snapshot_commit", "trigger_type", "trigger_terminals",
+                "bottleneck_class",
                 "bottleneck_statement", "literature_basis", "hypotheses",
                 "design_selection",
             }
@@ -591,7 +592,15 @@ def _terminal_research_context(repo, commit, record, records_by_sha=None):
                 repo, "merge-base", "--is-ancestor", research_snapshot, commit,
             )
             triggers = update["trigger_terminals"]
-            if not isinstance(triggers, list) or not 1 <= len(triggers) <= 8:
+            trigger_type = update["trigger_type"]
+            valid_triggers = (
+                trigger_type == "post_terminal"
+                and isinstance(triggers, list) and 1 <= len(triggers) <= 8
+            ) or (
+                trigger_type == "program_foundation"
+                and isinstance(triggers, list) and len(triggers) == 0
+            )
+            if not valid_triggers:
                 raise ReviewError(
                     "terminal research trigger contract differs",
                     state="IDENTITY_CONFLICT", exit_code=3,
@@ -644,6 +653,7 @@ def _terminal_research_context(repo, commit, record, records_by_sha=None):
                 )
             research_update = {
                 "research_snapshot_commit": research_snapshot,
+                "research_trigger_type": trigger_type,
                 "trigger_terminals": normalized_triggers,
                 "trigger_route_ids": sorted({
                     item["route_id"] for item in normalized_triggers

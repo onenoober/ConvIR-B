@@ -67,6 +67,7 @@ def context_terminal_record(
                 "scientific_contract": {
                     "research_update_binding": {
                         "snapshot_commit": snapshot_commit,
+                        "trigger_type": "post_terminal",
                         "trigger_terminals": [{
                             "route_id": trigger_route_id,
                             "terminal_record_sha256": trigger_sha,
@@ -399,6 +400,40 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         ]
         self.assertEqual("identity_conflict", context["relationship_status"])
         self.assertIn("operations are not an object", context["reason"])
+
+    def test_program_foundation_relationship_has_no_invented_trigger(self):
+        prior = terminal_record(route_id="unrelated", group="unrelated")
+        prior["receipt"] = "c" * 64
+        prior_commit = self.commit_snapshot(prior, message="main before foundation")
+        record, files = context_terminal_record(snapshot_commit=prior_commit)
+        binding = next(
+            item for item in record["contract_bundle"]
+            if item["source_path"].startswith("experience_docx/experiment_specs/")
+        )
+        spec = json.loads(files[binding["path"]])
+        update = spec["operations"]["A0"]["scientific_contract"][
+            "research_update_binding"
+        ]
+        update["trigger_type"] = "program_foundation"
+        update["trigger_terminals"] = []
+        raw = json.dumps(
+            spec, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8") + b"\n"
+        files[binding["path"]] = raw
+        binding["bytes"] = len(raw)
+        binding["sha256"] = hashlib.sha256(raw).hexdigest()
+        commit = self.commit_snapshot(record, files, message="foundation terminal")
+        result = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "route_ids": ["route-a"],
+        })
+        self.assertFalse(result["isError"])
+        context = result["structuredContent"]["entries"][0]["routes"][0][
+            "research_context"
+        ]
+        self.assertEqual("program_foundation", context["research_trigger_type"])
+        self.assertEqual([], context["trigger_route_ids"])
 
     def test_legacy_relationship_is_not_guessed_from_route_or_directory_name(self):
         record = terminal_record(route_id="program-a-family-a")

@@ -55,8 +55,10 @@ hash changes.
    Do not read the full Markdown index or family history by default.
 2. CONTRACT: new routes use one schema-3 experiment spec compiled to manifest
    schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
-   schema 2. The schema-3 research-update binding records the exact triggering
-   terminal evidence, stable authoritative-literature identifiers and transfer
+   schema 2. The schema-3 research-update binding declares `post_terminal` with
+   1-8 exact triggering terminals, or `program_foundation` with none for the
+   first route of a genuinely new program. Both record stable authoritative-
+   literature identifiers and transfer
    limits, bottleneck, live competing hypotheses, discriminating predictions,
    falsifiers and design-selection basis. Freeze every control,
    typed gate outcome, complete mutually
@@ -136,6 +138,11 @@ the bottleneck and competing hypotheses. `authorizes=NONE` or a stopped family
 permits only a typed orthogonal dimension, a valid evidence-backed reopen or a
 formal amendment. Diagnostic intent never substitutes for one of those
 governance types.
+
+`program_foundation` is only the zero-terminal bootstrap for a genuinely new
+program. It still requires the live-main snapshot, competing hypotheses,
+literature transfer limits, design basis and typed program authorization; it is
+not a way to bypass a failed, stopped or unauthorized existing family.
 
 The existing manifest/runtime-spec/asset files remain machine interfaces and
 may be generated or validated mechanically. They are not separate documentation

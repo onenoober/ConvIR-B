@@ -45,6 +45,7 @@ LITERATURE_SOURCE_STATUSES = {
     "peer_reviewed", "author_formal_version", "official_benchmark",
     "official_protocol",
 }
+RESEARCH_TRIGGER_TYPES = {"post_terminal", "program_foundation"}
 
 
 def _token(value: Any, name: str) -> str:
@@ -102,7 +103,7 @@ def _validate_research_update_binding(
     read_evidence_file: Callable[[str], bytes] | None = None,
 ) -> dict[str, Any]:
     item = _object(value, {
-        "snapshot_commit", "trigger_terminals", "bottleneck_class",
+        "snapshot_commit", "trigger_type", "trigger_terminals", "bottleneck_class",
         "bottleneck_statement", "literature_basis", "hypotheses",
         "design_selection",
     }, "research_update_binding")
@@ -116,13 +117,26 @@ def _validate_research_update_binding(
             "research_update_binding.snapshot_commit does not equal authoritative main"
         )
 
-    triggers = item["trigger_terminals"]
-    if not isinstance(triggers, list) or not 1 <= len(triggers) <= 8:
+    trigger_type = item["trigger_type"]
+    if trigger_type not in RESEARCH_TRIGGER_TYPES:
         raise ScientificContractError(
-            "research_update_binding.trigger_terminals must contain 1-8 entries"
+            "research_update_binding.trigger_type is invalid"
+        )
+    triggers = item["trigger_terminals"]
+    expected_range = (
+        isinstance(triggers, list)
+        and (
+            (trigger_type == "post_terminal" and 1 <= len(triggers) <= 8)
+            or (trigger_type == "program_foundation" and len(triggers) == 0)
+        )
+    )
+    if not expected_range:
+        raise ScientificContractError(
+            "research_update_binding.trigger_terminals must contain 1-8 entries "
+            "for post_terminal or zero entries for program_foundation"
         )
     terminal_records: dict[str, dict[str, Any]] = {}
-    if read_evidence_file is not None:
+    if triggers and read_evidence_file is not None:
         try:
             raw_index = read_evidence_file(TERMINAL_INDEX_RELPATH)
         except Exception as exc:
@@ -257,6 +271,7 @@ def _validate_research_update_binding(
         )
     return {
         "snapshot_commit": snapshot_commit,
+        "trigger_type": trigger_type,
         "trigger_terminals": normalized_triggers,
         "bottleneck_class": bottleneck_class,
         "bottleneck_statement": _text(

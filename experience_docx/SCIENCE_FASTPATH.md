@@ -247,6 +247,12 @@ The review narrative itself
 is not project evidence, does not become an authorization source and cannot
 alter the prior terminal.
 
+For the first route of a genuinely new program only, schema 3 uses
+`trigger_type=program_foundation` and an empty terminal list. This bootstrap
+still binds live main, literature transfer limits, competing hypotheses, design
+basis and typed program authorization. Existing blocked or stopped work must
+use `post_terminal`; foundation cannot bypass its lineage or governance state.
+
 ## GitHub Evidence Contract
 
 GitHub main remains the durable scientific memory, not a verdict-only registry.

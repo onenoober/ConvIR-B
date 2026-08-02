@@ -153,6 +153,7 @@ def contract_v3(snapshot_commit="a" * 40, terminal_record_sha256="b" * 64):
     value["schema_version"] = 3
     value["research_update_binding"] = {
         "snapshot_commit": snapshot_commit,
+        "trigger_type": "post_terminal",
         "trigger_terminals": [{
             "route_id": "prior-route",
             "terminal_record_sha256": terminal_record_sha256,
@@ -310,6 +311,35 @@ class ScientificContractTests(unittest.TestCase):
                 read_evidence_file=lambda _: raw_index,
             )
 
+    def test_schema3_program_foundation_has_no_terminal_dependency(self):
+        value = contract_v3()
+        binding = value["research_update_binding"]
+        binding["trigger_type"] = "program_foundation"
+        binding["trigger_terminals"] = []
+        validated = SCIENCE.validate_scientific_contract_v3(
+            value, "route", "S0", expected_snapshot_commit="a" * 40,
+            read_evidence_file=lambda _: (_ for _ in ()).throw(
+                AssertionError("foundation must not read a terminal index")
+            ),
+        )
+        self.assertEqual(
+            "program_foundation",
+            validated["research_update_binding"]["trigger_type"],
+        )
+
+        value = contract_v3()
+        value["research_update_binding"]["trigger_terminals"] = []
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "post_terminal or zero entries",
+        ):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
+        value = contract_v3()
+        value["research_update_binding"]["trigger_type"] = "program_foundation"
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "post_terminal or zero entries",
+        ):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
     def test_complete_table_is_valid_and_terminal_tuples_are_derived(self):
         value = SCIENCE.validate_scientific_contract_v2(contract(), "route", "S0")
         terminals = SCIENCE.scientific_terminal_tuples(value)

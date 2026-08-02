@@ -12,8 +12,8 @@ route/terminal, terminal-state, decision and authorization filters. Program/fami
 only from SHA-bound launch copies of the experiment spec and program contract;
 legacy evidence without these fields is `not_modeled`, and one malformed
 historical binding is a route-local `identity_conflict` rather than a catalog-
-wide failure. Schema-3 context also returns the frozen research snapshot,
-bottleneck class, hypothesis ids, design strategy and literature identifiers;
+wide failure. Schema-3 context also returns the trigger type, frozen research
+snapshot, bottleneck class, hypothesis ids, design strategy and literature identifiers;
 the research context is included in cursor and evidence-bundle identity.
 Version 2.1.0 additionally accepts schema-3 conclusions and validates
 finalization-only provenance: terminal identity remains bound to the

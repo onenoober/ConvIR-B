@@ -328,6 +328,31 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         ):
             COMPILER.research_snapshot_commit(spec)
 
+    def test_schema3_program_foundation_compiles_without_terminal_index(self):
+        program, spec = sources_v3()
+        binding = spec["operations"]["ACCEPT"]["scientific_contract"][
+            "research_update_binding"
+        ]
+        binding["trigger_type"] = "program_foundation"
+        binding["trigger_terminals"] = []
+        bundle = COMPILER.compile_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec),
+            program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            authoritative_snapshot_commit="a" * 40,
+            read_authoritative_file=lambda _: (_ for _ in ()).throw(
+                AssertionError("foundation must not read a terminal index")
+            ),
+        )
+        scientific = json.loads(
+            bundle["experience_docx/scientific_contracts/final_slim__ACCEPT.json"]
+        )
+        self.assertEqual(
+            "program_foundation",
+            scientific["research_update_binding"]["trigger_type"],
+        )
+
     def test_schema2_mechanically_derives_capability_input_identity(self):
         program, spec = sources_v2()
         identity = spec["operations"]["ACCEPT"]["capability"]["reuse_identity"]

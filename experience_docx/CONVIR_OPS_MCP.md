@@ -11,7 +11,8 @@ use schema 3; typed asset manifests and other supporting contracts remain schema
 migrated.
 
 Version 5.9.0 adds a machine-enforced research-update binding for future routes:
-the exact GitHub-main snapshot and triggering terminal records, explicit
+the exact GitHub-main snapshot; either 1-8 `post_terminal` records or a zero-
+terminal `program_foundation` bootstrap for a genuinely new program; explicit
 bottleneck, stable literature identifiers and applicability limits, competing
 falsifiable hypotheses, and the decision-value/time/cost basis for the chosen
 design. The scientific contract changed, so the

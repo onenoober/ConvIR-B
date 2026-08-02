@@ -15,13 +15,18 @@ data roles, locked-test policy, and the exact actions for pass, inconclusive and
 fail.
 
 For a new schema-3 route, bind the read-only research update that selected the
-question: exact triggering terminal evidence, the current bottleneck, a finite
+question. `post_terminal` binds 1-8 exact triggering terminal records;
+`program_foundation` binds none and is limited to the first route of a genuinely
+new program. Both bind the current bottleneck, a finite
 set of live competing hypotheses, discriminating predictions, explicit
 falsifiers, stable DOI/arXiv/official-source identifiers with transferable
 claims and applicability limits, and the design-selection basis. A hypothesis without an observation
 that can count against it is not contract-ready. This binding preserves the
 reason for the next experiment; it does not inherit authorization from review
 prose or change the triggering terminal.
+
+The zero-terminal foundation form still requires typed program authorization
+and cannot reopen or escape an existing stopped family.
 
 For new routes, enumerate finite typed outcomes for every gate and freeze one
 complete, mutually exclusive decision table over their Cartesian product.
