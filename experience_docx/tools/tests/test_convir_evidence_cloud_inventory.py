@@ -14,6 +14,7 @@ from unittest import mock
 
 import convir_evidence_catalog as catalog
 import convir_evidence_cloud_inventory as inventory
+import convir_ops_mcp as ops
 import prepare_terminal_archive as terminal_archive
 
 
@@ -725,7 +726,7 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
             source_commit, binding["expected_lifecycle_identity"]["route_commit"],
         )
         self.assertEqual(
-            inventory.derive_session(
+            ops.derive_session(
                 self.fixture.route_id, "synthetic", source_commit,
                 self.fixture.run_id,
             ),
