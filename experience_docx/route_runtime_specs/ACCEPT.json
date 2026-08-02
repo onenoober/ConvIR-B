@@ -1,0 +1,43 @@
+{
+  "asset_manifest_relpath": null,
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "cost_contract": null,
+    "max_seconds": 30,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/run_general_science_control_plane_schema3_e2e_acceptance_v3.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "general_science_control_plane_schema3_e2e_acceptance_v3_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/acceptance_summary.json"
+    },
+    {
+      "destination_filename": "general_science_control_plane_schema3_e2e_acceptance_v3_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/general_science_control_plane_schema3_e2e_acceptance_v3_review_facts.json"
+    }
+  ],
+  "evidence_role": "engineering_debug",
+  "expected_wall_seconds": 65,
+  "operation_id": "ACCEPT",
+  "precision_contract": {
+    "certificate_relpath": null,
+    "mode": "not_applicable",
+    "rationale": "Zero-data engineering acceptance has no sampling uncertainty."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v3",
+  "schema_version": 2,
+  "timeout_seconds": 240,
+  "total_units": 1
+}
