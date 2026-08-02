@@ -264,7 +264,9 @@ def check_entrypoint(
     def call_name(node: ast.Call) -> str | None:
         return node.func.id if isinstance(node.func, ast.Name) else None
 
-    run_writer = "write_gate_result" if scientific_schema == 2 else "write_run_result"
+    run_writer = (
+        "write_gate_result" if scientific_schema in {2, 3} else "write_run_result"
+    )
     for phase, writer in (("contract", "write_contract_result"), ("run", run_writer)):
         function = functions.get(phase)
         if function is None:
@@ -288,16 +290,16 @@ def check_entrypoint(
                 function, require_cost_evidence=require_cost_evidence,
             )
         _check_context_attributes(function)
-        if phase == "run" and scientific_schema == 2 \
+        if phase == "run" and scientific_schema in {2, 3} \
                 and any(call_name(node) == "write_run_result" for node in calls):
-            raise ReadyError("scientific schema 2 cannot call write_run_result")
+            raise ReadyError("scientific schema 2/3 cannot call write_run_result")
         if phase == "run" and require_unit_ledger:
             observed = {call_name(node) for node in calls}
             if not {
                 "load_completed_unit_ledger", "record_completed_unit",
             } <= observed:
                 raise ReadyError(
-                    "scientific schema-2 run must load and record the completed-unit ledger"
+                    "scientific schema-2/3 run must load and record the completed-unit ledger"
                 )
     main_function = functions.get("main")
     main_calls = set() if main_function is None else {

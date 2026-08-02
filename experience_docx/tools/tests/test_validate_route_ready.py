@@ -130,6 +130,27 @@ class RouteReadyTests(unittest.TestCase):
                 require_engineering=True, scientific_schema=2,
             )
 
+    def test_scientific_schema3_requires_gate_writer_and_rejects_legacy_writer(self):
+        READY.check_entrypoint(
+            SCIENTIFIC_SCHEMA2, "experience_docx/tools/program.py",
+            require_engineering=True, scientific_schema=3,
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "write_gate_result"):
+            READY.check_entrypoint(
+                SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
+                require_engineering=True, scientific_schema=3,
+            )
+        mixed_writers = SCIENTIFIC_SCHEMA2.replace(
+            b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
+            b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})\n'
+            b'    write_run_result(context, state="PASS", decision="PASS", authorizes="NEXT")',
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "schema 2/3"):
+            READY.check_entrypoint(
+                mixed_writers, "experience_docx/tools/program.py",
+                require_engineering=True, scientific_schema=3,
+            )
+
     def test_unknown_context_field_is_rejected_prelaunch(self):
         raw = SCIENTIFIC_SCHEMA2.replace(
             b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
