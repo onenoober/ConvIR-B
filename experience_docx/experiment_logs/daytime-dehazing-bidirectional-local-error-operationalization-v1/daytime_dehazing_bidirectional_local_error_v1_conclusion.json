@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+  "operation_id": "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY",
+  "run_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1-r2",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The SHA-bound sequence-2 development-screening qualification passed evidence identity, complete scene coverage, and the measurement-null validity veto, but local utility over global and bidirectional repeatability were both unfavorable. Under the frozen valid_utility_failure decision rule, these decisive outcomes establish COMPLETED_GATE_FAIL, close the local-restoration-need qualification family, and authorize no S2, model change, training, deployment, or scientific promotion.",
+  "gate_reasons": [
+    "The evidence_identity, development_scene_coverage, and measurement_null_artifact validity-veto gates all passed, so no validity failure forced an inconclusive terminal.",
+    "The local_utility_over_global decisive gate was unfavorable: strong same-observation local-oracle and spatial-specificity aggregates did not overcome the excessive cross-observation negative tail required by the frozen composite gate.",
+    "The bidirectional_repeatability decisive gate was unfavorable: the transferred local map did not achieve the frozen material-effect requirement and the stability, keep-supported, and negative-tail requirements were not jointly satisfied.",
+    "The near_clear_fidelity gate was indeterminate because the frozen cross-dataset support requirement was not met, but this does not override either decisive unfavorable utility gate.",
+    "The primary_precision gate was unmet because the frozen null-absence precision conditions were not all satisfied. This gate is inconclusive_only and cannot hide a decisive scientific FAIL."
+  ],
+  "competing_explanation": "The aggregate evidence shows substantial privileged local opportunity and spatial specificity within the same observation, with the strongest transferred effect concentrated in OTS. However, Haze4K and ITS did not show a comparable transferable advantage, the cross-observation negative tail was excessive, direction-and-strength stability was insufficient, and no scene satisfied the frozen keep-supported criterion. The evidence therefore supports observation- and dataset-dependent local oracle behavior rather than the program's required robust bidirectional local-error operationalization.",
+  "limitations": [
+    "The evidence is development-screening only and does not include confirmation, canary, sealed-final, NH-Haze, or locked-test data.",
+    "Ground truth is used only by a privileged offline diagnostic oracle; this route makes no inference-time observability or deployability claim.",
+    "The global comparator is limited to one scene-global residual strength on the frozen 1001-point interval and is not a claim over arbitrary restoration operators.",
+    "Each original clear scene contributes once; haze observations, content-aligned regions, pixels, actions, and bootstrap draws remain nested.",
+    "Near-clear fidelity remained indeterminate because only one dataset met the frozen exposure requirement, so this route does not establish a cross-dataset near-clear safety conclusion.",
+    "Exact RGB and archived known-overlap controls do not prove complete source-provenance disjointness.",
+    "No network training, trainable mechanism selection, protected-data access, S2 activity, or deployment occurred."
+  ],
+  "primary_fact_ids": [
+    "local_utility_over_global",
+    "bidirectional_repeatability"
+  ],
+  "gate_fact_ids": [
+    "evidence_identity",
+    "development_scene_coverage",
+    "measurement_null_artifact",
+    "local_utility_over_global",
+    "bidirectional_repeatability",
+    "near_clear_fidelity",
+    "primary_precision"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 457
+  },
+  "entry_count": 458,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "58e9ccf50b7f88174cf1c34c0e6ad3c7228f0c4b2edbd6a9e9a78f8f06fabcbd",
+  "operation_id": "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY",
+  "route_commit": "3c9170e7e72c99a9c743ae51745d81d13f0b21a6",
+  "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+  "run_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1-r2",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 1352353
+}

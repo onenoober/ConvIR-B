@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-bidirectional-local-error-operationalization-v1.json",
+  "experiment_spec_sha256": "a6b7849f29a64a6b1acc6197e939143b90a2e61d47c7bbed4870eb2c0a98d5a6",
+  "operations": {
+    "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "AUTHOR_S2_MECHANISM_DISCOVERY_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "S1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_LOCAL_RESTORATION_NEED_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_bidirectional_local_error_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "daytime_dehazing_bidirectional_local_error_qualification",
+      "monitor_profile": "standard",
+      "output_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1-r2",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "4eb49d5bcdc8af45a18c8c2edb3ce0df6fe8d26fb8b441237d8c0efec62e3661",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-bidirectional-local-error-operationalization-v1.md",
+  "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+  "rules_commit": "20b20038d22affae8bdd2657885f254369c88561",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-bidirectional-local-error-operationalization-v1__DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY.json"
+  }
+}

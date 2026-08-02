@@ -1,0 +1,703 @@
+{
+  "coverage": {
+    "HAZE4K_TRAIN": {
+      "allowed_scene_count": 150,
+      "canonical_clear_identity_match": true,
+      "distinct_haze_payloads": true,
+      "exact_planned_roster_retained": true,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "5628b0dbd556db929320a4082c1b0c26153d95fcabd80318ed3da082f7906295",
+      "selected_input_roster_digest": "34a74bcc22d4e184c6a956c4d6837ca025e76706506ed6008eacd7005650b7a2",
+      "selected_scene_count": 150,
+      "two_variants_per_scene": true
+    },
+    "ITS": {
+      "allowed_scene_count": 869,
+      "canonical_clear_identity_match": true,
+      "distinct_haze_payloads": true,
+      "exact_planned_roster_retained": true,
+      "pairing_contract_verified": true,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "e61a53e819f36f0ee718d1bf4d6d54cfa5982501397a46cbaa005f9877e62882",
+      "selected_scene_count": 150,
+      "two_variants_per_scene": true
+    },
+    "OTS": {
+      "allowed_scene_count": 801,
+      "canonical_clear_identity_match": true,
+      "distinct_haze_payloads": true,
+      "exact_planned_roster_retained": true,
+      "pairing_contract_verified": true,
+      "planned_scene_count": 150,
+      "planned_scene_digest": "6031862cc97f33bb2995df4cb23ad7db522cf0ed992ad9deb5c76003fc17acfb",
+      "selected_scene_count": 150,
+      "two_variants_per_scene": true
+    }
+  },
+  "coverage_checks": {
+    "completed_unit_ledger": true,
+    "confirmation_and_sealed_assets_absent": true,
+    "development_only_membership": true,
+    "distinct_haze_observation_payloads": true,
+    "exact_planned_roster_without_backfill": true,
+    "exact_planned_scene_counts": true,
+    "preflight_completed_without_error": true,
+    "reside_pairing_contract_verified": true,
+    "s0_canonical_clear_identity": true,
+    "selected_input_roster_frozen": true,
+    "two_nested_variants_each": true
+  },
+  "cross_observation_transfer": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": -0.0043425460371536405,
+        "lower": -0.05010071179883118,
+        "max_half_width": 0.04655423183768434,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.0422116858005307
+      },
+      "ITS": {
+        "estimate": 0.005495177516009301,
+        "lower": -0.03585681808096728,
+        "max_half_width": 0.04135199559697658,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.046563558179795135
+      },
+      "OTS": {
+        "estimate": 0.12034623674963252,
+        "lower": 0.07550509186042893,
+        "max_half_width": 0.044841144889203585,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.16089497642941208
+      }
+    },
+    "overall": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.040499622742829394,
+      "lower": 0.014810923536408126,
+      "max_half_width": 0.025688699206421268,
+      "resamples": 20000,
+      "scene_count": 450,
+      "simultaneous_family": "overall_plus_three_dataset_means",
+      "upper": 0.06605745410498702
+    }
+  },
+  "dataset_scene_counts": {
+    "HAZE4K_TRAIN": 150,
+    "ITS": 150,
+    "OTS": 150
+  },
+  "diagnostics": {
+    "edge_minus_interior_local_advantage_db": 0.6112624338556386,
+    "mean_alpha_tolerance_agreement_fraction": 0.6019444444444444,
+    "mean_global_endpoint_selection_fraction": 0.1988888888888889,
+    "mean_local_endpoint_selection_fraction": 0.12638888888888888,
+    "mean_selected_candidate_saturation_fraction": 0.028954007674511034,
+    "mean_unresolved_cell_fraction": 0.04534722222222222
+  },
+  "forbidden_activity_receipt": {
+    "confirmation_or_sealed_final_touched": false,
+    "images_or_arrays_archived_to_github": false,
+    "network_training_or_fitting_occurred": false,
+    "trainable_observable_signal_or_mechanism_selected": false
+  },
+  "gate_outcomes": {
+    "bidirectional_repeatability": "unfavorable",
+    "development_scene_coverage": "pass",
+    "evidence_identity": "pass",
+    "local_utility_over_global": "unfavorable",
+    "measurement_null_artifact": "pass",
+    "near_clear_fidelity": "indeterminate",
+    "primary_precision": "unmet"
+  },
+  "identity_checks": {
+    "ledger_schema_and_counts": true,
+    "pairing_v2_authorization": true,
+    "pairing_v2_closeout_sha256": true,
+    "pairing_v2_identity_summary_sha256": true,
+    "pairing_v2_summary_sha256": true,
+    "reside_pairing_ledger_sha256": true,
+    "s0_closeout_sha256": true,
+    "s0_role_summary_sha256": true,
+    "s0_scene_role_ledger_sha256": true,
+    "s0_terminal": true,
+    "s1_v1_closeout_sha256": true,
+    "s1_v1_pre_inference_validity_terminal": true,
+    "s1_v1_summary_sha256": true
+  },
+  "independent_unit": "original_clear_scene",
+  "intervention": {
+    "formula": "clip(hazy + alpha * (official_output - hazy), 0, 1)",
+    "global_alpha_grid": {
+      "count": 1001,
+      "maximum": 1.5,
+      "minimum": 0.5,
+      "step": 0.0010000000000000009
+    },
+    "inference_context": "the complete image is padded to a multiple of 32 and inferred once before the frozen square scoring crop is extracted",
+    "local_alpha_grid": {
+      "count": 1001,
+      "maximum": 1.5,
+      "minimum": 0.5,
+      "step": 0.0010000000000000009
+    },
+    "privileged_gt_use": "offline diagnostic oracle only; not deployable inference and not a proposed post-processing method",
+    "regions": "16 shared observable content-aligned rectangular regions; three row and three column boundaries minimize two-observation consensus image/output/residual feature discontinuity inside frozen neighborhoods, and the central 75 percent of each side is scored without a taper",
+    "replication": "two outcome-blind haze observations nested within each clear scene",
+    "selection": "the same 1001-point alpha grid for local and global actions, two-way 8x8 macroblock checkerboard cross-selection, opposite-half evaluation, within-observation alpha agreement within 0.10, and cross-observation strength agreement within 0.10"
+  },
+  "ledger_summary": {
+    "development_counts": {
+      "HAZE4K_TRAIN": 150,
+      "ITS": 869,
+      "OTS": 801
+    },
+    "excluded_count": 3275,
+    "expected_counts_match": true,
+    "reside_pairing": {
+      "all_file_and_decoded_rgb_identities_verified": true,
+      "all_paths_resolved_within_bound_roots": true,
+      "mapping_ledger_sha256": "d3e889b3cce92c0a11f25a6a49db0e3a3854b7eb427721b2410871ad65d39c25",
+      "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+      "row_counts": {
+        "ITS": 150,
+        "OTS": 150
+      },
+      "verified_file_count": 900
+    },
+    "row_count": 21025
+  },
+  "limitations": [
+    "GT is used only by a privileged offline diagnostic oracle; S1 makes no inference-time observability claim.",
+    "The residual-strength intervention qualifies the research problem and is not a deployable method or authorized post-processing solution.",
+    "Each original clear scene contributes once; haze variants, content-aligned regions, pixels, actions, and bootstrap draws remain nested.",
+    "The shared content-aligned region partition uses only the two hazy observations and frozen official outputs; GT selects privileged alpha values but never defines region boundaries.",
+    "The global claim is limited to one scene-global residual strength on the frozen 1001-point [0.5, 1.5] grid; it is not a claim over arbitrary restoration operators.",
+    "RESIDE ITS and OTS use only the exact 300-scene, 600-observation SHA-bound pairing-v2 ledger; no runtime directory scan, filename rematching, eligibility backfill, or variant reselection is permitted.",
+    "Exact RGB and archived known-overlap controls do not prove complete capture or source-provenance disjointness.",
+    "A PASS authorizes only S2 mechanism-discovery contract authoring and never module training or protected-data access."
+  ],
+  "marker": "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_V1_COMPLETE",
+  "near_clear_fidelity": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "damage_interval": {
+          "critical_value": 2.58,
+          "estimate": 0.06060606060606061,
+          "lower": 0.01190171984554153,
+          "successes": 2,
+          "total": 33,
+          "upper": 0.25681657026652116
+        },
+        "damaged_scenes": 2,
+        "exposed_scenes": 33,
+        "mitigation_interval": {
+          "critical_value": 2.58,
+          "estimate": 1.0,
+          "lower": 0.23104292777598073,
+          "successes": 2,
+          "total": 2,
+          "upper": 1.0
+        }
+      },
+      "ITS": {
+        "damage_interval": {
+          "critical_value": 2.58,
+          "estimate": 0.9,
+          "lower": 0.49211688585063107,
+          "successes": 9,
+          "total": 10,
+          "upper": 0.9881789764005156
+        },
+        "damaged_scenes": 9,
+        "exposed_scenes": 10,
+        "mitigation_interval": {
+          "critical_value": 2.58,
+          "estimate": 1.0,
+          "lower": 0.5748447919061854,
+          "successes": 9,
+          "total": 9,
+          "upper": 1.0
+        }
+      },
+      "OTS": {
+        "damage_interval": {
+          "critical_value": 2.58,
+          "estimate": 0.6065573770491803,
+          "lower": 0.4424861377794824,
+          "successes": 37,
+          "total": 61,
+          "upper": 0.7496612422170885
+        },
+        "damaged_scenes": 37,
+        "exposed_scenes": 61,
+        "mitigation_interval": {
+          "critical_value": 2.58,
+          "estimate": 1.0,
+          "lower": 0.847527510284861,
+          "successes": 37,
+          "total": 37,
+          "upper": 1.0
+        }
+      }
+    },
+    "damage_interval": {
+      "critical_value": 2.58,
+      "estimate": 0.46153846153846156,
+      "lower": 0.34156220259961156,
+      "successes": 48,
+      "total": 104,
+      "upper": 0.5861419338082239
+    },
+    "damaged_scenes": 48,
+    "dataset_decisions": {
+      "HAZE4K_TRAIN": {
+        "basis": "insufficient_dataset_near_clear_exposure",
+        "outcome": "indeterminate"
+      },
+      "ITS": {
+        "basis": "insufficient_dataset_near_clear_exposure",
+        "outcome": "indeterminate"
+      },
+      "OTS": {
+        "basis": "material_damage_but_insufficient_conditional_precision",
+        "outcome": "indeterminate"
+      }
+    },
+    "decision_basis": "insufficient_cross_dataset_near_clear_support",
+    "definition": "exposure, repeatable baseline damage, and damage-conditional mitigation are separate scene-grouped estimands",
+    "exposed_scenes": 104,
+    "minimum_damaged_scenes_for_conditional_decision": 42,
+    "minimum_exposed_datasets": 2,
+    "minimum_exposed_scenes": 42,
+    "mitigation_interval": {
+      "critical_value": 2.58,
+      "estimate": 1.0,
+      "lower": 0.8782137133071333,
+      "successes": 48,
+      "total": 48,
+      "upper": 1.0
+    },
+    "sufficiently_exposed_dataset_count": 1
+  },
+  "nested_variant_count": 900,
+  "null_control": {
+    "absence_precision_met": false,
+    "affirmative_artifact": false,
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": 0.16387980381238157,
+        "lower": -0.12011231965487275,
+        "max_half_width": 0.28399212346725433,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.4223032957627242
+      },
+      "ITS": {
+        "estimate": 0.06994584919926122,
+        "lower": -0.20968945796269808,
+        "max_half_width": 0.2796353071619593,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.28436439188500245
+      },
+      "OTS": {
+        "estimate": -0.987312078739308,
+        "lower": -1.4947457622144842,
+        "max_half_width": 0.5074336834751761,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": -0.5337895370378121
+      }
+    },
+    "overall": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": -0.25116214190922176,
+      "lower": -0.4567337431818252,
+      "max_half_width": 0.20557160127260343,
+      "resamples": 20000,
+      "scene_count": 450,
+      "simultaneous_family": "overall_plus_three_dataset_means",
+      "upper": -0.061332329195381084
+    },
+    "selection_target": "clear target circularly shifted by half image height and width"
+  },
+  "operation_id": "DAYTIME_DEHAZING_BIDIRECTIONAL_LOCAL_ERROR_QUALIFY",
+  "prevalence": {
+    "bidirectional_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.5533333333333333,
+          "lower": 0.44856407990655334,
+          "successes": 83,
+          "total": 150,
+          "upper": 0.6535702727276194
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.38666666666666666,
+          "lower": 0.2909833214186639,
+          "successes": 58,
+          "total": 150,
+          "upper": 0.4919811792337193
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.5866666666666667,
+          "lower": 0.48141142200611725,
+          "successes": 88,
+          "total": 150,
+          "upper": 0.6845569010244131
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.5088888888888888,
+        "lower": 0.4511111111111112,
+        "max_half_width": 0.05777777777777793,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.5666666666666668
+      }
+    },
+    "direction_and_strength_stable_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.34,
+          "lower": 0.24891550596053014,
+          "successes": 51,
+          "total": 150,
+          "upper": 0.444681436136952
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.5333333333333333,
+          "lower": 0.4290704711532551,
+          "successes": 80,
+          "total": 150,
+          "upper": 0.6347634992431028
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.5266666666666666,
+          "lower": 0.42260798661218246,
+          "successes": 79,
+          "total": 150,
+          "upper": 0.6284591897049038
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.4666666666666666,
+        "lower": 0.40888888888888886,
+        "max_half_width": 0.05777777777777776,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.5244444444444444
+      }
+    },
+    "joint_useful_bidirectional_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.3,
+          "lower": 0.21365500384997071,
+          "successes": 45,
+          "total": 150,
+          "upper": 0.40334117377188194
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.26666666666666666,
+          "lower": 0.18488847330439842,
+          "successes": 40,
+          "total": 150,
+          "upper": 0.3682737339210964
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.5066666666666667,
+          "lower": 0.40332611786363926,
+          "successes": 76,
+          "total": 150,
+          "upper": 0.6094406762156325
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.35777777777777775,
+        "lower": 0.3022222222222222,
+        "max_half_width": 0.05555555555555558,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.41333333333333333
+      }
+    },
+    "keep_supported_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.0,
+          "lower": 3.469446951953614e-18,
+          "successes": 0,
+          "total": 150,
+          "upper": 0.04249044405463166
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.0,
+          "lower": 3.469446951953614e-18,
+          "successes": 0,
+          "total": 150,
+          "upper": 0.04249044405463166
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.0,
+          "lower": 3.469446951953614e-18,
+          "successes": 0,
+          "total": 150,
+          "upper": 0.04249044405463166
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.0,
+        "lower": 0.0,
+        "max_half_width": 0.0,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.0
+      }
+    },
+    "material_utility_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 1.0,
+          "lower": 0.9575095559453685,
+          "successes": 150,
+          "total": 150,
+          "upper": 1.0
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.8333333333333334,
+          "lower": 0.741054202031611,
+          "successes": 125,
+          "total": 150,
+          "upper": 0.897285501931968
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.9866666666666667,
+          "lower": 0.9345779008216059,
+          "successes": 148,
+          "total": 150,
+          "upper": 0.9973980669652195
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.9400000000000001,
+        "lower": 0.9111111111111111,
+        "max_half_width": 0.028888888888888964,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.9644444444444445
+      }
+    },
+    "negative_tail_scene": {
+      "by_dataset": {
+        "HAZE4K_TRAIN": {
+          "critical_value": 2.58,
+          "estimate": 0.4533333333333333,
+          "lower": 0.3526809046211892,
+          "successes": 68,
+          "total": 150,
+          "upper": 0.5579515368239097
+        },
+        "ITS": {
+          "critical_value": 2.58,
+          "estimate": 0.37333333333333335,
+          "lower": 0.2788663566432653,
+          "successes": 56,
+          "total": 150,
+          "upper": 0.4785645558505748
+        },
+        "OTS": {
+          "critical_value": 2.58,
+          "estimate": 0.24666666666666667,
+          "lower": 0.16792371878479515,
+          "successes": 37,
+          "total": 150,
+          "upper": 0.3469381062028849
+        }
+      },
+      "overall_equal_dataset_weight": {
+        "aggregation": "equal_weight_over_three_dataset_means",
+        "estimate": 0.35777777777777775,
+        "lower": 0.30444444444444446,
+        "max_half_width": 0.05555555555555558,
+        "resamples": 20000,
+        "scene_count": 450,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.41333333333333333
+      }
+    }
+  },
+  "primary": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": -0.0043425460371536405,
+        "lower": -0.05010071179883118,
+        "max_half_width": 0.04655423183768434,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.0422116858005307
+      },
+      "ITS": {
+        "estimate": 0.005495177516009301,
+        "lower": -0.03585681808096728,
+        "max_half_width": 0.04135199559697658,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.046563558179795135
+      },
+      "OTS": {
+        "estimate": 0.12034623674963252,
+        "lower": 0.07550509186042893,
+        "max_half_width": 0.044841144889203585,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.16089497642941208
+      }
+    },
+    "clip_db": [
+      -0.25,
+      0.25
+    ],
+    "clipping_diagnostics": {
+      "high_scene_count": 206,
+      "low_scene_count": 137
+    },
+    "minimum_meaningful_effect_db": 0.1,
+    "overall_equal_dataset_weight": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.040499622742829394,
+      "lower": 0.014810923536408126,
+      "max_half_width": 0.025688699206421268,
+      "resamples": 20000,
+      "scene_count": 450,
+      "simultaneous_family": "overall_plus_three_dataset_means",
+      "upper": 0.06605745410498702
+    },
+    "precision_target_half_width_db": 0.055
+  },
+  "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+  "run_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1-r2",
+  "schema_version": 1,
+  "scope": "development-only privileged sequence-2 bidirectional local-error qualification",
+  "selected_input_roster_digest": "ba7583541e82e1b70b2e4c043bcffd66249633a5d923a14004aa4681b27eab97",
+  "spatial_specificity_control": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": 0.25,
+        "lower": 0.25,
+        "max_half_width": 0.0,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.25
+      },
+      "ITS": {
+        "estimate": 0.23400031316852904,
+        "lower": 0.22083159682536416,
+        "max_half_width": 0.013168716343164882,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.24441666989634123
+      },
+      "OTS": {
+        "estimate": 0.24784337669790915,
+        "lower": 0.24235342006248498,
+        "max_half_width": 0.005489956635424176,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.25
+      }
+    },
+    "overall": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.24394789662214608,
+      "lower": 0.23932159326295724,
+      "max_half_width": 0.004626303359188844,
+      "resamples": 20000,
+      "scene_count": 450,
+      "simultaneous_family": "overall_plus_three_dataset_means",
+      "upper": 0.24774835886630425
+    }
+  },
+  "within_observation_utility": {
+    "by_dataset": {
+      "HAZE4K_TRAIN": {
+        "estimate": 0.24919625198431836,
+        "lower": 0.24775193535943704,
+        "max_half_width": 0.0014443166248813144,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.25
+      },
+      "ITS": {
+        "estimate": 0.20262188874812936,
+        "lower": 0.18474142124191448,
+        "max_half_width": 0.017880467506214887,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.21920130856964512
+      },
+      "OTS": {
+        "estimate": 0.2470108346093296,
+        "lower": 0.2408277578618313,
+        "max_half_width": 0.006183076747498295,
+        "resamples": 20000,
+        "scene_count": 150,
+        "simultaneous_family": "overall_plus_three_dataset_means",
+        "upper": 0.25
+      }
+    },
+    "overall": {
+      "aggregation": "equal_weight_over_three_dataset_means",
+      "estimate": 0.23294299178059244,
+      "lower": 0.2268398489921955,
+      "max_half_width": 0.006103142788396937,
+      "resamples": 20000,
+      "scene_count": 450,
+      "simultaneous_family": "overall_plus_three_dataset_means",
+      "upper": 0.23858078910984132
+    }
+  }
+}
