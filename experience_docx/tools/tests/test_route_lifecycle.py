@@ -149,6 +149,16 @@ class LifecycleTests(unittest.TestCase):
             self.assertEqual("COMPLETED_GATE_FAIL", result["state"])
             self.assertEqual("bad_side_fails", result["decision_rule_id"])
 
+    def test_schema3_lifecycle_contract_uses_the_schema3_validator(self):
+        scientific = LIFE.validate_lifecycle_scientific_contract(
+            contract_v3(), "route", "S0",
+        )
+        self.assertEqual(3, scientific["schema_version"])
+        self.assertIn("research_update_binding", scientific)
+        self.assertTrue(LIFE.typed_scientific_contract(scientific))
+        self.assertTrue(LIFE.typed_scientific_contract({"schema_version": 2}))
+        self.assertFalse(LIFE.typed_scientific_contract({"schema_version": 1}))
+
     def test_evidence_copy_rejects_existing_destination(self):
         _, runtime = self.normalized()
         with tempfile.TemporaryDirectory() as directory:

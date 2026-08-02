@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+on_error() {
+  rc=$?
+  printf 'SCHEMA3_FINALIZATION_CONTRACT_FIX_CLOUD_FAILED line=%s command=%q rc=%s\n' \
+    "$1" "$2" "$rc" >&2
+  exit "$rc"
+}
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
+
+branch=codex/schema3-finalization-contract-fix
+base=d682a1fae9f6f73944b26ca03dc8a748d7663327
+github=git@github.com:onenoober/ConvIR-B.git
+seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+work=$(/usr/bin/mktemp -d /tmp/schema3-finalization-contract-fix.XXXXXX)
+
+cleanup() {
+  case "$work" in
+    /tmp/schema3-finalization-contract-fix.*)
+      /bin/rm -rf -- "$work"
+      ;;
+    *)
+      printf 'refusing unsafe temporary cleanup: %s\n' "$work" >&2
+      ;;
+  esac
+}
+trap cleanup EXIT
+
+printf 'SCHEMA3_FINALIZATION_CONTRACT_FIX_STAGE=checkout\n'
+/usr/bin/git clone --quiet --shared --no-checkout "$seed" "$work/repo"
+/usr/bin/git -C "$work/repo" fetch --quiet --no-tags "$github" \
+  "+refs/heads/$branch:refs/validation/candidate"
+candidate=$(/usr/bin/git -C "$work/repo" rev-parse refs/validation/candidate)
+/usr/bin/git -C "$work/repo" merge-base --is-ancestor "$base" "$candidate"
+/usr/bin/git -C "$work/repo" checkout --quiet --detach "$candidate"
+test -z "$(/usr/bin/git -C "$work/repo" status --porcelain)"
+/usr/bin/git -C "$work/repo" diff --check "$base" "$candidate"
+
+expected=$'experience_docx/tools/route_lifecycle.py\nexperience_docx/tools/tests/test_route_lifecycle.py\nexperience_docx/tools/validate_schema3_finalization_contract_fix_cloud.sh'
+actual=$(/usr/bin/git -C "$work/repo" diff --name-only "$base" "$candidate")
+test "$actual" = "$expected"
+
+tools=$work/repo/experience_docx/tools
+tests=$tools/tests
+export PYTHONPATH="$tools:$tests"
+export CUDA_VISIBLE_DEVICES=""
+
+printf 'SCHEMA3_FINALIZATION_CONTRACT_FIX_STAGE=compile\n'
+"$python" -m py_compile \
+  "$tools/route_lifecycle.py" \
+  "$tests/test_route_lifecycle.py"
+
+printf 'SCHEMA3_FINALIZATION_CONTRACT_FIX_STAGE=focused_regression\n'
+"$python" -m unittest -v test_route_lifecycle
+
+printf 'SCHEMA3_FINALIZATION_CONTRACT_FIX_STAGE=full_control_plane_regression\n'
+stdout=$work/unittest.stdout
+stderr=$work/unittest.stderr
+trap - ERR
+set +e
+"$python" -m unittest discover -s "$tests" -p 'test_*.py' \
+  >"$stdout" 2>"$stderr"
+rc=$?
+set -e
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
+if [[ $rc -ne 0 ]]; then
+  /usr/bin/tail -n 200 "$stdout" >&2 || true
+  /usr/bin/tail -n 200 "$stderr" >&2 || true
+  exit "$rc"
+fi
+test_count=$(/usr/bin/sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | /usr/bin/tail -n 1)
+[[ "$test_count" =~ ^[0-9]+$ ]]
+test "$test_count" -ge 300
+
+printf 'SCHEMA3_FINALIZATION_CONTRACT_FIX_CLOUD_OK candidate=%s tests=%s gpu_access=0 dataset_access=0 protected_data_access=0 experiment_launch=0\n' \
+  "$candidate" "$test_count"

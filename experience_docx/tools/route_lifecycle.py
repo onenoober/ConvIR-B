@@ -719,12 +719,36 @@ def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]
     return value
 
 
+def validate_lifecycle_scientific_contract(
+    value: Any, route_id: str, operation_id: str,
+) -> dict[str, Any] | None:
+    """Validate the typed scientific contract used by either lifecycle path."""
+    if not isinstance(value, dict):
+        return None
+    try:
+        if value.get("schema_version") == 2:
+            return science_contract.validate_scientific_contract_v2(
+                value, route_id, operation_id,
+            )
+        if value.get("schema_version") == 3:
+            return science_contract.validate_scientific_contract_v3(
+                value, route_id, operation_id,
+            )
+    except science_contract.ScientificContractError as exc:
+        raise LifecycleError(str(exc), phase="contract") from exc
+    return None
+
+
+def typed_scientific_contract(value: Any) -> bool:
+    return isinstance(value, dict) and value.get("schema_version") in {2, 3}
+
+
 def validate_run_result(
     path: Path, spec: dict[str, Any], operation: dict[str, Any],
     scientific: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     value = load_json(path)
-    if scientific is not None and scientific.get("schema_version") in {2, 3}:
+    if typed_scientific_contract(scientific):
         expected = {
             "schema_version", "route_id", "operation_id", "phase",
             "gate_outcomes", "details",
@@ -1055,14 +1079,9 @@ def lifecycle() -> int:
     scientific = None
     scientific_path = manifest.get("scientific_contract_relpaths", {}).get(operation_id)
     if scientific_path is not None:
-        scientific_value = load_json(repo / scientific_path)
-        if scientific_value.get("schema_version") == 2:
-            try:
-                scientific = science_contract.validate_scientific_contract_v2(
-                    scientific_value, spec["route_id"], operation_id,
-                )
-            except science_contract.ScientificContractError as exc:
-                raise LifecycleError(str(exc), phase="contract") from exc
+        scientific = validate_lifecycle_scientific_contract(
+            load_json(repo / scientific_path), spec["route_id"], operation_id,
+        )
     entrypoint = repo / spec["entrypoint_relpath"]
     evidence_root = repo / "experience_docx/experiment_logs" / spec["route_id"]
     status = output / "status.txt"
@@ -1092,7 +1111,7 @@ def lifecycle() -> int:
     for item in spec["evidence_files"]:
         if (evidence_root / item["destination_filename"]).exists():
             raise LifecycleError("evidence filename already exists", phase="output_preflight")
-    if scientific is not None and scientific.get("schema_version") == 2:
+    if typed_scientific_contract(scientific):
         receipt_filename = raw_artifact_receipt_filename(
             operation["closeout_filename"]
         )
@@ -1201,7 +1220,7 @@ def lifecycle() -> int:
     result = validate_run_result(
         Path(run_context["result_path"]), spec, operation, scientific,
     )
-    if scientific is not None and scientific.get("schema_version") == 2 \
+    if typed_scientific_contract(scientific) \
             and spec["total_units"] > 0:
         ledger = load_completed_unit_ledger(load_context(run_context_path, "run"))
         if len(ledger) != spec["total_units"]:
@@ -1209,7 +1228,7 @@ def lifecycle() -> int:
                 "completed-unit ledger does not cover total_units", phase="finalize",
             )
     evidence = copy_evidence(spec, output, evidence_root)
-    if scientific is not None and scientific.get("schema_version") == 2:
+    if typed_scientific_contract(scientific):
         filename, digest = publish_raw_artifact_receipt(
             output=output, evidence_root=evidence_root, operation=operation,
             env=env, spec=spec,
@@ -1260,12 +1279,9 @@ def finalize_existing(source_commit: str) -> int:
     scientific_path = manifest.get("scientific_contract_relpaths", {}).get(operation_id)
     scientific = None
     if scientific_path is not None:
-        try:
-            scientific = science_contract.validate_scientific_contract_v2(
-                load_json(repo / scientific_path), spec["route_id"], operation_id,
-            )
-        except science_contract.ScientificContractError as exc:
-            raise LifecycleError(str(exc), phase="contract") from exc
+        scientific = validate_lifecycle_scientific_contract(
+            load_json(repo / scientific_path), spec["route_id"], operation_id,
+        )
     if git(repo, "rev-parse", "HEAD") != env["EXPECTED_ROUTE_COMMIT"]:
         raise LifecycleError("finalization repair commit mismatch", phase="identity_preflight")
     if git(repo, "rev-parse", "refs/convir-runtime/main") \
