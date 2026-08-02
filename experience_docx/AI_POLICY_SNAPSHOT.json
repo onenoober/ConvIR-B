@@ -74,8 +74,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "c17a2a3ffccfb3d713e017b6d7ebe5d29e297ff4804d3f20e7f7e73c49b9e025",
-  "rules_commit": "e74f1622ede220e64fd7e7a55f81f116bd81e8b2",
+  "rules_bundle_sha256": "1dd28247f18b612a45134cf6825ef899c7a2dc18712611bdc9fcac0fe5961d8d",
+  "rules_commit": "756fe8ad50a3e82628402309afbb592c4b6b1c83",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -127,8 +127,8 @@
   ],
   "sources": {
     "AGENTS.md": {
-      "bytes": 16132,
-      "sha256": "15ed1e278e01f7d9ebe68888e250d0b6707f86aec6bc1da02b6f1bf3d8916b2c"
+      "bytes": 16549,
+      "sha256": "632e710f0aae382fc885dbd1cacd93583c171794c5e9978de026bf67ebf00dc5"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
       "bytes": 6172,
@@ -139,16 +139,16 @@
       "sha256": "69f50f4b06e883a8f9df104eb9797e6876a5f1b4b4841abcb1d9dcf3e729f537"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 15787,
-      "sha256": "1db2d69b5ce5cfb5a5309b9ae2c9206373b17d82aee808952bc0e8cc46070017"
+      "bytes": 15801,
+      "sha256": "bd38df91c625d9c34c747af7508bcf91ccbc19fabe5d9e2f3bb8ed171101e421"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 21337,
-      "sha256": "a1cd88bf0164e333aa9780671c2e5d3c50eb8d65bd895981c81d0fb102f5f9c3"
+      "bytes": 21420,
+      "sha256": "5aa2f5dc4f090a6e5188a4a6d626c9750524725f8465d38c279703db6ea8dd13"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
-      "bytes": 11007,
-      "sha256": "a2cefde70f6cfe0b2f05aba3980e19cdb0a573adcd8081552abfb7992444016e"
+      "bytes": 11270,
+      "sha256": "709eeb2004b2d4ed975d370423f0518ec7e7a2b3af4d165362d8e3dc258613a8"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
       "bytes": 12242,
@@ -163,8 +163,8 @@
       "sha256": "f39f3aec4e76ce28b93483e54de5526082e879842ff0318050e7938f541bb4f7"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 22787,
-      "sha256": "48f7e45893651213d9cdcac907c1956a91d343c6f905412630bf891f129ab4ab"
+      "bytes": 23168,
+      "sha256": "7b1b508f9d1b25e58b5a042f1efaab3892f7cc5e7c191b650672cfb0ef3ab4ef"
     }
   },
   "workflow": [
