@@ -1,5 +1,7 @@
 """Tests for the pure scientific decision contract."""
 
+import hashlib
+import json
 import sys
 import unittest
 from copy import deepcopy
@@ -146,6 +148,70 @@ def contract():
     }
 
 
+def contract_v3(snapshot_commit="a" * 40, terminal_record_sha256="b" * 64):
+    value = contract()
+    value["schema_version"] = 3
+    value["research_update_binding"] = {
+        "snapshot_commit": snapshot_commit,
+        "trigger_terminals": [{
+            "route_id": "prior-route",
+            "terminal_record_sha256": terminal_record_sha256,
+        }],
+        "bottleneck_class": "scientific_hypothesis",
+        "bottleneck_statement": (
+            "The archived effect is valid but too small to support the current mechanism."
+        ),
+        "literature_basis": [{
+            "identifier": "doi:10.0000/example",
+            "source_status": "peer_reviewed",
+            "task": "paired image restoration",
+            "transferable_claim": (
+                "Conditional processing can separate scene-dependent restoration effects."
+            ),
+            "applicability_limit": (
+                "The published protocol does not establish an effect on this project dataset."
+            ),
+        }],
+        "hypotheses": [
+            {
+                "id": "global_capacity",
+                "statement": "The global restoration path lacks sufficient conditional capacity.",
+                "discriminating_prediction": (
+                    "A conditional multi-arm intervention improves the frozen estimand."
+                ),
+                "falsifier": (
+                    "Every conditional arm remains below the frozen worthwhile-effect margin."
+                ),
+            },
+            {
+                "id": "measurement_mismatch",
+                "statement": "The current aggregate hides a stratum-specific usable effect.",
+                "discriminating_prediction": (
+                    "Predeclared strata show opposing effects under the same intervention."
+                ),
+                "falsifier": (
+                    "All simultaneous stratum intervals remain practically equivalent."
+                ),
+            },
+        ],
+        "design_selection": {
+            "strategy": "multi_arm",
+            "decision_value": "Distinguishes both live hypotheses in one frozen comparison family.",
+            "expected_time_to_decision": "One shared inference pass plus grouped uncertainty.",
+            "shared_setup": "All arms reuse the same paired scenes and frozen preprocessing.",
+            "worst_case_stopping_cost": "Stop after the predeclared complete arm set.",
+        },
+    }
+    return value
+
+
+def terminal_index_bytes():
+    raw_line = json.dumps(
+        {"route_id": "prior-route"}, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return raw_line + b"\n", hashlib.sha256(raw_line).hexdigest()
+
+
 def precision_certificate():
     return {
         "schema_version": 2,
@@ -184,6 +250,66 @@ def precision_certificate():
 
 
 class ScientificContractTests(unittest.TestCase):
+    def test_schema3_binds_terminal_hypotheses_and_preserves_gate_semantics(self):
+        raw_index, terminal_sha = terminal_index_bytes()
+        value = SCIENCE.validate_scientific_contract_v3(
+            contract_v3(terminal_record_sha256=terminal_sha), "route", "S0",
+            expected_snapshot_commit="a" * 40,
+            read_evidence_file=lambda _: raw_index,
+        )
+        result = SCIENCE.evaluate_gate_outcomes(value, {
+            "materiality": "unfavorable", "precision": "unmet",
+        })
+        self.assertEqual("fail", result["terminal_label"])
+        self.assertEqual("multi_arm", value["research_update_binding"][
+            "design_selection"
+        ]["strategy"])
+        spec = {
+            "route_id": "route", "operation_id": "S0",
+            "precision_contract": {"mode": "formal_precision"},
+        }
+        self.assertTrue(RUNTIME.validate_precision_certificate(
+            precision_certificate(), spec, value,
+        )["feasible"])
+
+    def test_schema3_rejects_missing_or_nonfalsifiable_research_binding(self):
+        value = contract_v3()
+        del value["research_update_binding"]
+        with self.assertRaisesRegex(SCIENCE.ScientificContractError, "contain exactly"):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
+        value = contract_v3()
+        value["research_update_binding"]["hypotheses"][1]["id"] = "global_capacity"
+        with self.assertRaisesRegex(SCIENCE.ScientificContractError, "ids must be unique"):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
+        value = contract_v3()
+        value["research_update_binding"]["hypotheses"][0]["falsifier"] = "none"
+        with self.assertRaisesRegex(SCIENCE.ScientificContractError, "16-2048"):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
+        value = contract_v3()
+        value["research_update_binding"]["literature_basis"] *= 2
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "literature identifiers must be unique",
+        ):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
+    def test_schema3_rejects_wrong_snapshot_or_terminal_record_sha(self):
+        raw_index, terminal_sha = terminal_index_bytes()
+        with self.assertRaisesRegex(SCIENCE.ScientificContractError, "authoritative main"):
+            SCIENCE.validate_scientific_contract_v3(
+                contract_v3("c" * 40, terminal_sha), "route", "S0",
+                expected_snapshot_commit="a" * 40,
+                read_evidence_file=lambda _: raw_index,
+            )
+        with self.assertRaisesRegex(SCIENCE.ScientificContractError, "matching authoritative"):
+            SCIENCE.validate_scientific_contract_v3(
+                contract_v3(terminal_record_sha256="d" * 64), "route", "S0",
+                expected_snapshot_commit="a" * 40,
+                read_evidence_file=lambda _: raw_index,
+            )
+
     def test_complete_table_is_valid_and_terminal_tuples_are_derived(self):
         value = SCIENCE.validate_scientific_contract_v2(contract(), "route", "S0")
         terminals = SCIENCE.scientific_terminal_tuples(value)

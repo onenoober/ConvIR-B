@@ -19,6 +19,7 @@ MAX_TREE_BYTES = 16 * 1024 * 1024
 MAX_RESPONSE_BYTES = 32 * 1024
 MAX_PAGE_ENTRIES = 100
 MAX_TERMS = 8
+MAX_EXACT_FILTER_ITEMS = 32
 CURSOR_OPERATION = "evidence-catalog-entries"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
@@ -873,18 +874,90 @@ def entries_response(catalog, args):
         terms.append(term.casefold())
     if len(terms) > MAX_TERMS:
         raise CatalogError("at most 8 terms are accepted", state="ARGUMENTS_INVALID", exit_code=2)
+    filters = {
+        name: list(getattr(args, name, []) or [])
+        for name in (
+            "route_ids", "program_ids", "family_ids", "stage_ids",
+            "mechanism_types", "trigger_route_ids",
+            "trigger_terminal_record_sha256s", "terminal_states", "decisions",
+            "authorizes",
+        )
+    }
+    for name, values in filters.items():
+        if len(values) > MAX_EXACT_FILTER_ITEMS \
+                or any(not isinstance(value, str) or not value for value in values) \
+                or len(values) != len(set(values)):
+            raise CatalogError(
+                f"{name} must contain unique non-empty strings within the item limit",
+                state="ARGUMENTS_INVALID", exit_code=2,
+            )
+        if name == "trigger_terminal_record_sha256s" \
+                and any(not SHA256.fullmatch(value) for value in values):
+            raise CatalogError(
+                "trigger_terminal_record_sha256s must contain SHA-256 identities",
+                state="ARGUMENTS_INVALID", exit_code=2,
+            )
+
+    def selected_terminal(route):
+        operation_id = route.get("selected_operation_id")
+        matches = [
+            terminal for terminal in route.get("terminals", [])
+            if terminal.get("operation_id") == operation_id
+        ]
+        return matches[0] if len(matches) == 1 else None
+
+    def route_matches(route):
+        context = route.get("research_context", {})
+        terminal = selected_terminal(route) or {}
+        checks = {
+            "route_ids": route.get("route_id"),
+            "program_ids": context.get("program_id"),
+            "family_ids": context.get("family_id"),
+            "stage_ids": context.get("stage_id"),
+            "mechanism_types": context.get("mechanism_type"),
+            "trigger_route_ids": context.get("trigger_route_ids"),
+            "trigger_terminal_record_sha256s": context.get(
+                "trigger_terminal_record_sha256s"
+            ),
+            "terminal_states": terminal.get("state"),
+            "decisions": terminal.get("decision"),
+            "authorizes": terminal.get("authorizes"),
+        }
+        for name, observed in checks.items():
+            expected = filters[name]
+            if not expected:
+                continue
+            if isinstance(observed, list):
+                if not any(value in expected for value in observed):
+                    return False
+            elif observed not in expected:
+                return False
+        return True
+
     candidates = []
     for entry in catalog["entries"]:
         if args.coverage != "all" and entry["index_coverage"].lower() != args.coverage:
             continue
         searchable = canonical_bytes(entry).decode("utf-8").casefold()
-        if all(term in searchable for term in terms):
-            candidates.append(entry)
+        if not all(term in searchable for term in terms):
+            continue
+        if any(filters.values()):
+            matching_routes = [
+                route for route in entry.get("routes", []) if route_matches(route)
+            ]
+            if not matching_routes:
+                continue
+            entry = {**entry, "routes": matching_routes}
+        candidates.append(entry)
     query_sha256 = canonical_sha256({
         "snapshot_commit": catalog["header"]["snapshot_commit"],
         "catalog_sha256": catalog["catalog_sha256"],
+        "research_context_collection_sha256": catalog.get(
+            "research_context_collection_sha256"
+        ),
         "coverage": args.coverage,
         "terms": terms,
+        "exact_filters": filters,
     })
     offset = catalog_cursor_position(catalog, args, query_sha256)
     if offset > len(candidates) or (offset == len(candidates) and offset != 0):
@@ -911,6 +984,7 @@ def entries_response(catalog, args):
             query_sha256=query_sha256,
             coverage=args.coverage,
             terms=terms,
+            exact_filters=filters,
             offset=offset,
             returned_count=len(selected),
             total_count=len(candidates),
@@ -936,6 +1010,7 @@ def entries_response(catalog, args):
             query_sha256=query_sha256,
             coverage=args.coverage,
             terms=terms,
+            exact_filters=filters,
             offset=offset,
             returned_count=0,
             total_count=len(candidates),

@@ -20,6 +20,15 @@
 Follow `experience_docx/SCIENCE_FASTPATH.md` as the single default workflow:
 SNAPSHOT, CONTRACT, EXECUTE, DECIDE, ARCHIVE.
 
+After a terminal archive, a project-level read-only research update may bind
+the terminal and its directly relevant archived lineage, compare it with
+authoritative literature, classify the current bottleneck and rank a bounded
+set of falsifiable next-route candidates. This is an entry into a future
+CONTRACT, not a sixth experiment stage: it cannot change the archived terminal,
+authorize a route, compute new project evidence or start work. User selection
+and typed program/parent authorization remain mandatory before authoring the
+next contract.
+
 Read experience_docx/AI_POLICY_SNAPSHOT.json first as a compact deterministic
 read index. It is never policy authority: read every full rule file routed by
 the active change class, and read the full authoritative set for governance,
@@ -44,9 +53,13 @@ hash changes.
    `NO_TERMINAL_RECORD`. After authority and target binding, read the exact
    GitHub-main snapshot, direct parent closeout and only its referenced files.
    Do not read the full Markdown index or family history by default.
-2. CONTRACT: new routes use one schema-2 experiment spec compiled to manifest
+2. CONTRACT: new routes use one schema-3 experiment spec compiled to manifest
    schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
-   schema 2. Freeze every control, typed gate outcome, complete mutually
+   schema 2. The schema-3 research-update binding records the exact triggering
+   terminal evidence, stable authoritative-literature identifiers and transfer
+   limits, bottleneck, live competing hypotheses, discriminating predictions,
+   falsifiers and design-selection basis. Freeze every control,
+   typed gate outcome, complete mutually
    exclusive decision table, uncertainty rule, data role and terminal action.
    Failed identity/integrity/coverage uses `validity_veto`; precision uses
    `inconclusive_only` and cannot hide a decisive scientific FAIL.
@@ -62,8 +75,14 @@ hash changes.
    claim also freezes a machine-validated cost strategy: use a same-scale probe
    for adaptive/nonlinear work, or fixed-linear extrapolation only for an exact
    fixed-count production map with bounded shape and constant memory.
+   Choose the minimum sufficient decision experiment, optimizing expected
+   time-to-decision rather than experiment count. When hypotheses share setup,
+   prefer a predeclared multi-arm, factorial, fractional-factorial,
+   multi-fidelity or sequential design that can discriminate them in one
+   bounded contract; do not use serial low-power micro-experiments when their
+   likely outcomes leave the same next action unresolved.
    New typed asset manifests use schema 2. Historical experiment-spec,
-   scientific and asset schema 1 plus manifest schema 4/5 routes remain
+   scientific schema 1/2, asset schema 1 and manifest schema 4/5 routes remain
    immutable and supported.
    Amendment and reopen evidence is resolved directly from the exact refreshed
    current GitHub-main commit; `rules_commit` records design provenance and is
@@ -78,7 +97,7 @@ hash changes.
    receipt-bound result-blind progress refresh or terminal probe; each response
    must name its snapshot time and cached/current status. Explicit cancellation
    is allowed only through receipt-bound lifecycle control, never by PID.
-   Every new scientific schema-2 run records each completed workload unit in
+   Every new scientific schema-2/3 run records each completed workload unit in
    the generic SHA-bound ledger; finalization requires exact `total_units` coverage.
    Retry/not-before timestamps govern full sealed finish windows only. They do
    not block the bounded result-blind refresh, early terminal detection, or
@@ -94,7 +113,9 @@ hash changes.
    adapter-changed commit cannot register a new capability identity from the
    source run's engineering result.
    Schema-6 plan recompilation resolves archived authorization evidence from
-   the exact current main commit, not from the route checkout. A rules-byte
+   the frozen research snapshot after proving that snapshot remains in current
+   GitHub-main history, not from the route checkout. Unrelated later main
+   archives do not invalidate the frozen research update. A rules-byte
    change is compatible only when current main explicitly retains the same
    compatibility id and names the prior `rules_commit`; incompatible governance
    changes rotate that id and fail closed.
@@ -106,6 +127,15 @@ hash changes.
    registers a new engineering qualification when applicable, verifies,
    commits, pushes and verifies remote
    main. Stop on success; `--prepare-only` is an explicit review exception.
+
+After ARCHIVE, classify a requested research update before proposing more
+runtime work: identity/evidence blockers stop; command or engineering failures
+use finite recovery; cancellation has no scientific interpretation;
+INCONCLUSIVE may use only closeout-authorized evidence; scientific FAIL updates
+the bottleneck and competing hypotheses. `authorizes=NONE` or a stopped family
+permits only a typed orthogonal dimension, a valid evidence-backed reopen or a
+formal amendment. Diagnostic intent never substitutes for one of those
+governance types.
 
 The existing manifest/runtime-spec/asset files remain machine interfaces and
 may be generated or validated mechanically. They are not separate documentation
@@ -195,7 +225,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.8.0 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.9.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.

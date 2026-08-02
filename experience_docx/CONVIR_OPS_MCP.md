@@ -1,18 +1,22 @@
 # Convir Operations MCP
 
-Date: 2026-08-01
+Date: 2026-08-02
 
-Status: main-first snapshot server `5.8.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.9.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
-runtime schema 2 for new routes. New experiment specs, scientific contracts and
-typed asset manifests use schema 2; historical schema 1 remains readable and is
-not migrated.
+runtime schema 2 for new routes. New experiment specs and scientific contracts
+use schema 3; typed asset manifests and other supporting contracts remain schema
+2. Historical experiment/scientific schema 1/2 remains readable and is not
+migrated.
 
-Version 5.8.0 changes authority discovery and write binding only. It does not
-change any scientific contract, data role, gate, threshold, terminal action or
-runtime authorization, so the existing compatibility id is retained and the
-prior rule-source commits are named explicitly in `RULE_COMPATIBILITY.json`.
+Version 5.9.0 adds a machine-enforced research-update binding for future routes:
+the exact GitHub-main snapshot and triggering terminal records, explicit
+bottleneck, stable literature identifiers and applicability limits, competing
+falsifiable hypotheses, and the decision-value/time/cost basis for the chosen
+design. The scientific contract changed, so the
+compatibility id rotates to v3; explicitly listed prior rule-source commits stay
+supported for immutable historical and already-authored schema-2 routes.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. Its lifecycle
 tools accept only a GitHub route branch, exact commit, and operation id; its
@@ -64,7 +68,7 @@ workspace_policy, output_policy, monitor_profile, heartbeat_timeout_seconds,
 min_free_gpu_mib, max_gpu_utilization_pct
 ```
 
-For source experiment schema 2, the author does not provide
+For source experiment schema 3, the author does not provide
 `allowed_terminal_tuples`. The compiler derives exactly the three scientific
 tuples from the canonical terminal actions and adds only the generic
 `FAILED_ENGINEERING / null / NONE` tuple.
@@ -91,14 +95,21 @@ and reject any generated-file drift. Program governance distinguishes adjacent,
 orthogonal and evidence-backed reopen mechanisms; it does not impose one global
 experiment-count limit.
 
-Scientific schema 2 freezes finite typed outcomes for every gate and one
-complete mutually exclusive decision table. `validity_veto` makes failed
+Scientific schema 3 binds the route to its triggering terminal evidence and
+research update, then freezes finite typed outcomes for every gate and one
+complete mutually exclusive decision table. The update must classify the
+bottleneck, state 2-8 discriminating falsifiable hypotheses, and justify a
+single-factor, multi-arm, factorial, multi-fidelity or group-sequential design
+by decision value, expected time-to-decision, shared setup and worst-case
+stopping cost. Authoring requires the binding snapshot to equal live main;
+route-ready and planning later require it to remain an ancestor of current main
+and verify terminal records from that frozen commit. `validity_veto` makes failed
 identity, integrity or coverage invalidate all scientific outcomes;
 `inconclusive_only` precision cannot hide a decisive FAIL; descriptive gates
 cannot affect a terminal. Route code writes `gate_outcomes`; the generic lifecycle derives state, decision,
 authorization, next action and family effect. Each terminal action must be
-operationally distinct. Historical scientific schema 1 retains its typed
-terminal writer.
+operationally distinct. Historical scientific schema 2 retains these gate and
+decision-table semantics; schema 1 retains its typed terminal writer.
 
 The authoring compiler's atomic `--finalize` returns stable path/code/message
 errors across independently checkable operations and source-text hygiene, then
@@ -280,7 +291,7 @@ actual CUDA compute-capability class before reuse. New qualification evidence is
 compact and registered only by terminal archive. Every reuse result carries
 `scientific_authorization: NONE`.
 
-Every nonempty scientific schema-2 workload must finish with exact
+Every nonempty scientific schema-2/3 workload must finish with exact
 `total_units` coverage in the generic completion ledger. `complete_units`
 remains a fresh-output transition and additionally requires a hash-bound
 unrestricted run-only `completed_unit_ledger` file asset. The generic API and
@@ -300,7 +311,7 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.8.0`, source SHA-256, exactly six tools,
+restart the host and verify version `5.9.0`, source SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
 

@@ -41,6 +41,103 @@ def evidence_files(record):
     }
 
 
+def context_terminal_record(
+    trigger_route_id="prior-route", trigger_sha="f" * 64,
+    snapshot_commit="a" * 40,
+):
+    record = terminal_record()
+    prefix = "experience_docx/experiment_logs/route-a/launch_contract/A0"
+    program_source = "experience_docx/research_programs/program-a.json"
+    spec_source = "experience_docx/experiment_specs/route-a.json"
+    program_raw = json.dumps(
+        {"program_id": "program-a"}, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8") + b"\n"
+    spec_raw = json.dumps({
+        "schema_version": 3,
+        "route_id": "route-a",
+        "program_contract_relpath": program_source,
+        "operations": {
+            "A0": {
+                "program_authorization": {
+                    "program_id": "program-a",
+                    "family_id": "family-a",
+                    "stage_id": "screening",
+                    "mechanism_type": "orthogonal",
+                },
+                "scientific_contract": {
+                    "research_update_binding": {
+                        "snapshot_commit": snapshot_commit,
+                        "trigger_terminals": [{
+                            "route_id": trigger_route_id,
+                            "terminal_record_sha256": trigger_sha,
+                        }],
+                        "bottleneck_class": "scientific_hypothesis",
+                        "bottleneck_statement": (
+                            "A valid terminal left the preferred mechanism unsupported."
+                        ),
+                        "literature_basis": [{
+                            "identifier": "doi:10.0000/example",
+                            "source_status": "peer_reviewed",
+                            "task": "image restoration",
+                            "transferable_claim": (
+                                "Conditional processing may separate heterogeneous effects."
+                            ),
+                            "applicability_limit": (
+                                "The publication does not validate this project result."
+                            ),
+                        }],
+                        "hypotheses": [{"id": "conditional_capacity"}, {
+                            "id": "measurement_mismatch",
+                        }],
+                        "design_selection": {"strategy": "multi_arm"},
+                    },
+                },
+            },
+        },
+    }, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+    program_path = f"{prefix}/program_contract.json"
+    spec_path = f"{prefix}/experiment_spec.json"
+    result_raw = b"not read"
+    contract_raw = b"contract\n"
+    closeout_raw = b"not read"
+    conclusion_raw = b"not read"
+    record.update({
+        "schema_version": 2,
+        "contract_sha256": hashlib.sha256(contract_raw).hexdigest(),
+        "closeout_sha256": hashlib.sha256(closeout_raw).hexdigest(),
+        "conclusion_sha256": hashlib.sha256(conclusion_raw).hexdigest(),
+        "contract_bundle": [
+            {
+                "path": program_path, "source_path": program_source,
+                "bytes": len(program_raw),
+                "sha256": hashlib.sha256(program_raw).hexdigest(),
+            },
+            {
+                "path": spec_path, "source_path": spec_source,
+                "bytes": len(spec_raw),
+                "sha256": hashlib.sha256(spec_raw).hexdigest(),
+            },
+        ],
+        "result_files": [{
+            "path": record["result_paths"][0], "bytes": len(result_raw),
+            "sha256": hashlib.sha256(result_raw).hexdigest(),
+        }],
+        "prior_terminal_record": {
+            "prior_closeout_path": None, "prior_terminal_tuple": None,
+        },
+    })
+    files = {
+        **evidence_files(record),
+        record["contract_path"]: contract_raw,
+        record["closeout_path"]: closeout_raw,
+        record["conclusion_path"]: conclusion_raw,
+        record["result_paths"][0]: result_raw,
+        program_path: program_raw,
+        spec_path: spec_raw,
+    }
+    return record, files
+
+
 def cloud_binding(commit, catalog_sha256, *, raw_inventory_authorized=True):
     terminal_sha256 = "d" * 64
     return {
@@ -142,13 +239,20 @@ class EvidenceReviewMcpTests(unittest.TestCase):
     def commit_snapshot(
         self, record, extra_files=None, message="snapshot", *, publish_main=True
     ):
+        records = record if isinstance(record, list) else [record]
         index = self.repo / review.catalog.INDEX_PATH
         index.parent.mkdir(parents=True, exist_ok=True)
         index.write_text(
-            json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n",
+            "".join(
+                json.dumps(item, sort_keys=True, separators=(",", ":")) + "\n"
+                for item in records
+            ),
             encoding="utf-8",
         )
-        files = {**evidence_files(record), **(extra_files or {})}
+        files = {}
+        for item in records:
+            files.update(evidence_files(item))
+        files.update(extra_files or {})
         for relative, raw in files.items():
             path = self.repo / relative
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -187,7 +291,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "params": {"protocolVersion": "2024-11-05"},
         })
         self.assertEqual("convir-evidence-review", initialized["serverInfo"]["name"])
-        self.assertEqual("2.1.0", initialized["serverInfo"]["version"])
+        self.assertEqual("2.2.0", initialized["serverInfo"]["version"])
         listed = review.handle({"method": "tools/list", "params": {}})
         self.assertEqual(
             [
@@ -227,6 +331,89 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         self.assertIs(first_read, repeated)
         self.assertIs(second, other_commit)
         self.assertEqual(2, load_catalog.call_count)
+
+    def test_catalog_relationship_filters_use_terminal_bound_launch_contracts(self):
+        prior = terminal_record(route_id="prior-route", group="prior-route")
+        prior_raw = json.dumps(
+            prior, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        prior_sha = hashlib.sha256(prior_raw).hexdigest()
+        prior_commit = self.commit_snapshot(prior, message="prior terminal")
+        record, files = context_terminal_record(
+            trigger_sha=prior_sha, snapshot_commit=prior_commit,
+        )
+        commit = self.commit_snapshot([prior, record], files)
+        result = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "program_ids": ["program-a"],
+            "family_ids": ["family-a"],
+            "mechanism_types": ["orthogonal"],
+            "trigger_route_ids": ["prior-route"],
+            "trigger_terminal_record_sha256s": [prior_sha],
+        })
+        self.assertFalse(result["isError"])
+        value = result["structuredContent"]
+        self.assertEqual(1, value["total_count"])
+        context = value["entries"][0]["routes"][0]["research_context"]
+        self.assertEqual("modeled", context["relationship_status"])
+        self.assertEqual("program-a", context["program_id"])
+        self.assertEqual("family-a", context["family_id"])
+        self.assertEqual(["prior-route"], context["trigger_route_ids"])
+        self.assertEqual("multi_arm", context["design_strategy"])
+        self.assertIn("research_context_collection_sha256", value)
+
+    def test_malformed_relationship_is_a_local_identity_conflict(self):
+        prior = terminal_record(route_id="prior-route", group="prior-route")
+        prior_raw = json.dumps(
+            prior, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        prior_commit = self.commit_snapshot(prior, message="prior terminal")
+        record, files = context_terminal_record(
+            trigger_sha=hashlib.sha256(prior_raw).hexdigest(),
+            snapshot_commit=prior_commit,
+        )
+        binding = next(
+            item for item in record["contract_bundle"]
+            if item["source_path"].startswith("experience_docx/experiment_specs/")
+        )
+        spec = json.loads(files[binding["path"]])
+        spec["operations"] = []
+        raw = json.dumps(
+            spec, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8") + b"\n"
+        files[binding["path"]] = raw
+        binding["bytes"] = len(raw)
+        binding["sha256"] = hashlib.sha256(raw).hexdigest()
+        commit = self.commit_snapshot([prior, record], files)
+        result = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "route_ids": ["route-a"],
+        })
+        self.assertFalse(result["isError"])
+        context = result["structuredContent"]["entries"][0]["routes"][0][
+            "research_context"
+        ]
+        self.assertEqual("identity_conflict", context["relationship_status"])
+        self.assertIn("operations are not an object", context["reason"])
+
+    def test_legacy_relationship_is_not_guessed_from_route_or_directory_name(self):
+        record = terminal_record(route_id="program-a-family-a")
+        commit = self.commit_snapshot(record)
+        by_route = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "route_ids": ["program-a-family-a"],
+        })["structuredContent"]
+        context = by_route["entries"][0]["routes"][0]["research_context"]
+        self.assertEqual("not_modeled", context["relationship_status"])
+        by_program = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "program_ids": ["program-a"],
+        })["structuredContent"]
+        self.assertEqual(0, by_program["total_count"])
 
     def test_evidence_bundle_resolves_sha_bound_leaf_and_pages_all_files(self):
         record = terminal_record()

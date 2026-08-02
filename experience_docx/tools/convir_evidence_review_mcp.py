@@ -19,7 +19,7 @@ import legacy_backfill_registry as legacy
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "2.1.0"
+SERVER_VERSION = "2.2.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -34,6 +34,7 @@ MAX_TOOL_RESULT_BYTES = MAX_JSONRPC_RESPONSE_BYTES
 MAX_REMOTE_SCRIPT_BYTES = 256 * 1024
 MAX_REMOTE_CAPTURE_BYTES = 64 * 1024
 MAX_LEGACY_REGISTRY_BYTES = 512 * 1024
+MAX_RESEARCH_CONTEXT_FILE_BYTES = 128 * 1024
 BUNDLE_CURSOR_OPERATION = "evidence-bundle-files"
 CLOUD_TEXT_CURSOR_OPERATION = "evidence-cloud-text-read"
 REMOTE_HOST = "convir-4090"
@@ -480,6 +481,242 @@ def tool_completeness_receipt(args):
         return bounded_mcp_result(failure_value(operation, exc))
 
 
+def _bound_contract_json(repo, commit, record, source_prefix):
+    matches = [
+        item for item in record.get("contract_bundle", [])
+        if item.get("source_path", "").startswith(source_prefix)
+        and item.get("source_path", "").endswith(".json")
+    ]
+    if not matches:
+        return None, None
+    if len(matches) != 1:
+        raise ReviewError(
+            f"terminal launch bundle has ambiguous {source_prefix} binding",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    binding = matches[0]
+    raw = catalog.git_bytes(
+        repo, ["show", f"{commit}:{binding['path']}"],
+        limit=MAX_RESEARCH_CONTEXT_FILE_BYTES,
+    )
+    if len(raw) != binding["bytes"] \
+            or hashlib.sha256(raw).hexdigest() != binding["sha256"]:
+        raise ReviewError(
+            f"terminal launch contract identity differs: {binding['path']}",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    try:
+        value = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ReviewError(
+            f"terminal launch contract is invalid JSON: {binding['path']}",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        ) from exc
+    if not isinstance(value, dict):
+        raise ReviewError(
+            f"terminal launch contract is not an object: {binding['path']}",
+            state="IDENTITY_CONFLICT", exit_code=3,
+        )
+    return binding, value
+
+
+def _terminal_research_context(repo, commit, record, records_by_sha=None):
+    if record.get("schema_version") != 2:
+        return {
+            "relationship_status": "not_modeled",
+            "reason": "historical_terminal_schema_has_no_verified_launch_relationship",
+        }
+    try:
+        spec_binding, spec = _bound_contract_json(
+            repo, commit, record, "experience_docx/experiment_specs/"
+        )
+        program_binding, program = _bound_contract_json(
+            repo, commit, record, "experience_docx/research_programs/"
+        )
+        if spec is None or program is None:
+            return {
+                "relationship_status": "not_modeled",
+                "reason": "terminal_launch_bundle_has_no_program_and_spec_pair",
+            }
+        if spec.get("route_id") != record["route_id"] \
+                or spec.get("program_contract_relpath") != program_binding["source_path"]:
+            raise ReviewError(
+                "terminal launch relationship identity differs",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+        operations = spec.get("operations")
+        if not isinstance(operations, dict):
+            raise ReviewError(
+                "terminal experiment spec operations are not an object",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+        operation = operations.get(record["operation_id"])
+        claim = operation.get("program_authorization") if isinstance(operation, dict) else None
+        if not isinstance(claim, dict):
+            return {
+                "relationship_status": "not_modeled",
+                "reason": "terminal_experiment_spec_has_no_program_authorization",
+            }
+        fields = ("program_id", "family_id", "stage_id", "mechanism_type")
+        if any(not isinstance(claim.get(field), str) or not claim[field]
+               for field in fields) \
+                or program.get("program_id") != claim["program_id"]:
+            raise ReviewError(
+                "terminal program authorization relationship differs",
+                state="IDENTITY_CONFLICT", exit_code=3,
+            )
+        research_update = {}
+        if spec.get("schema_version") == 3:
+            scientific = operation.get("scientific_contract")
+            update = scientific.get("research_update_binding") \
+                if isinstance(scientific, dict) else None
+            required = {
+                "snapshot_commit", "trigger_terminals", "bottleneck_class",
+                "bottleneck_statement", "literature_basis", "hypotheses",
+                "design_selection",
+            }
+            if not isinstance(update, dict) or set(update) != required:
+                raise ReviewError(
+                    "terminal research update field contract differs",
+                    state="IDENTITY_CONFLICT", exit_code=3,
+                )
+            research_snapshot = update["snapshot_commit"]
+            if not isinstance(research_snapshot, str) \
+                    or not catalog.SHA40.fullmatch(research_snapshot):
+                raise ReviewError(
+                    "terminal research snapshot identity differs",
+                    state="IDENTITY_CONFLICT", exit_code=3,
+                )
+            catalog.git_text(
+                repo, "merge-base", "--is-ancestor", research_snapshot, commit,
+            )
+            triggers = update["trigger_terminals"]
+            if not isinstance(triggers, list) or not 1 <= len(triggers) <= 8:
+                raise ReviewError(
+                    "terminal research trigger contract differs",
+                    state="IDENTITY_CONFLICT", exit_code=3,
+                )
+            normalized_triggers = []
+            for trigger in triggers:
+                if not isinstance(trigger, dict) \
+                        or set(trigger) != {"route_id", "terminal_record_sha256"} \
+                        or not isinstance(trigger["route_id"], str) \
+                        or not trigger["route_id"] \
+                        or not isinstance(trigger["terminal_record_sha256"], str) \
+                        or not catalog.SHA256.fullmatch(
+                            trigger["terminal_record_sha256"]
+                        ):
+                    raise ReviewError(
+                        "terminal research trigger identity differs",
+                        state="IDENTITY_CONFLICT", exit_code=3,
+                    )
+                prior = (records_by_sha or {}).get(
+                    trigger["terminal_record_sha256"]
+                )
+                if records_by_sha is not None and (
+                    prior is None or prior.get("route_id") != trigger["route_id"]
+                ):
+                    raise ReviewError(
+                        "terminal research trigger is absent from the snapshot",
+                        state="IDENTITY_CONFLICT", exit_code=3,
+                    )
+                normalized_triggers.append({
+                    "route_id": trigger["route_id"],
+                    "terminal_record_sha256": trigger["terminal_record_sha256"],
+                })
+            hypotheses = update["hypotheses"]
+            literature = update["literature_basis"]
+            design = update["design_selection"]
+            if not isinstance(hypotheses, list) \
+                    or any(not isinstance(item, dict)
+                           or not isinstance(item.get("id"), str)
+                           or not item["id"] for item in hypotheses) \
+                    or not isinstance(literature, list) \
+                    or any(not isinstance(item, dict)
+                           or not isinstance(item.get("identifier"), str)
+                           or not item["identifier"] for item in literature) \
+                    or not isinstance(design, dict) \
+                    or not isinstance(design.get("strategy"), str) \
+                    or not isinstance(update["bottleneck_class"], str):
+                raise ReviewError(
+                    "terminal research update summary differs",
+                    state="IDENTITY_CONFLICT", exit_code=3,
+                )
+            research_update = {
+                "research_snapshot_commit": research_snapshot,
+                "trigger_terminals": normalized_triggers,
+                "trigger_route_ids": sorted({
+                    item["route_id"] for item in normalized_triggers
+                }),
+                "trigger_terminal_record_sha256s": sorted({
+                    item["terminal_record_sha256"] for item in normalized_triggers
+                }),
+                "bottleneck_class": update["bottleneck_class"],
+                "hypothesis_ids": [item["id"] for item in hypotheses],
+                "literature_identifiers": [
+                    item["identifier"] for item in literature
+                ],
+                "design_strategy": design["strategy"],
+            }
+        return {
+            "relationship_status": "modeled",
+            "context_scope": "terminal_bound_launch_contract",
+            **{field: claim[field] for field in fields},
+            **research_update,
+            "source_terminal_record_sha256": record["record_sha256"],
+            "source_bindings": {
+                "experiment_spec": {
+                    "source_path": spec_binding["source_path"],
+                    "archive_path": spec_binding["path"],
+                    "sha256": spec_binding["sha256"],
+                },
+                "program_contract": {
+                    "source_path": program_binding["source_path"],
+                    "archive_path": program_binding["path"],
+                    "sha256": program_binding["sha256"],
+                },
+            },
+        }
+    except (ReviewError, catalog.CatalogError) as exc:
+        return {
+            "relationship_status": "identity_conflict",
+            "reason": bounded_error(exc),
+        }
+
+
+def _catalog_with_research_context(repo, commit, loaded):
+    _, records, _ = catalog.load_terminal_records(repo, commit)
+    by_sha = {record["record_sha256"]: record for record in records}
+    entries = []
+    for entry in loaded["entries"]:
+        routes = []
+        for route in entry.get("routes", []):
+            selected = [
+                terminal for terminal in route.get("terminals", [])
+                if terminal.get("operation_id") == route.get("selected_operation_id")
+            ]
+            record = by_sha.get(selected[0]["record_sha256"]) \
+                if len(selected) == 1 else None
+            context = (
+                _terminal_research_context(repo, commit, record, by_sha)
+                if record is not None else {
+                    "relationship_status": "not_modeled",
+                    "reason": "route_has_no_unique_selected_terminal",
+                }
+            )
+            routes.append({**route, "research_context": context})
+        entries.append({**entry, "routes": routes})
+    enriched = {**loaded, "entries": entries}
+    enriched["research_context_collection_sha256"] = catalog.canonical_sha256([
+        {
+            "route_id": route["route_id"],
+            "research_context": route["research_context"],
+        }
+        for entry in entries for route in entry.get("routes", [])
+    ])
+    return enriched
+
+
 def query_arguments(args):
     coverage = args.get("coverage", "all")
     if coverage not in {"indexed", "unindexed", "all"}:
@@ -489,13 +726,35 @@ def query_arguments(args):
         raise ReviewError("terms must be an array of strings")
     if len(terms) > 8:
         raise ReviewError("terms accepts at most 8 items")
+    exact_filters = {}
+    for name in (
+        "route_ids", "program_ids", "family_ids", "stage_ids",
+        "mechanism_types", "trigger_route_ids",
+        "trigger_terminal_record_sha256s", "terminal_states", "decisions",
+        "authorizes",
+    ):
+        values = args.get(name, [])
+        if not isinstance(values, list) \
+                or any(not isinstance(value, str) or not value for value in values) \
+                or len(values) > catalog.MAX_EXACT_FILTER_ITEMS \
+                or len(values) != len(set(values)):
+            raise ReviewError(
+                f"{name} must contain at most {catalog.MAX_EXACT_FILTER_ITEMS} "
+                "unique non-empty strings"
+            )
+        if name == "trigger_terminal_record_sha256s" \
+                and any(not catalog.SHA256.fullmatch(value) for value in values):
+            raise ReviewError(
+                "trigger_terminal_record_sha256s must contain SHA-256 identities"
+            )
+        exact_filters[name] = values
     cursor = args.get("cursor")
     if cursor is not None and not isinstance(cursor, str):
         raise ReviewError("cursor must be text")
     limit = args.get("limit", 20)
     if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 100:
         raise ReviewError("limit must be an integer in [1, 100]")
-    return coverage, terms, cursor, limit
+    return coverage, terms, exact_filters, cursor, limit
 
 
 def tool_catalog_query(args):
@@ -505,9 +764,10 @@ def tool_catalog_query(args):
         commit, remote_url, tip = require_main_history_commit(
             repo, args.get("snapshot_commit")
         )
-        coverage, terms, cursor, requested_limit = query_arguments(args)
+        coverage, terms, exact_filters, cursor, requested_limit = query_arguments(args)
         registry_value = load_legacy_registry(repo, commit)
         loaded = filter_review_candidates(load_catalog_cached(repo, commit), registry_value)
+        loaded = _catalog_with_research_context(repo, commit, loaded)
         effective_limit = requested_limit
         while True:
             value = catalog.entries_response(
@@ -515,11 +775,15 @@ def tool_catalog_query(args):
                 SimpleNamespace(
                     coverage=coverage,
                     term=terms,
+                    **exact_filters,
                     cursor=cursor,
                     limit=effective_limit,
                 ),
             )
             value["legacy_backfill"] = legacy_registry_summary(registry_value)
+            value["research_context_collection_sha256"] = loaded[
+                "research_context_collection_sha256"
+            ]
             add_github_identity(value, remote_url, tip)
             result = mcp_result(value)
             if result_fits(result):
@@ -637,6 +901,10 @@ def _prepare_legacy_evidence_bundle(
         "snapshot_commit": commit, "catalog_sha256": catalog_sha256,
         "terminal_record_sha256": terminal_record_sha256,
         "lineage": lineage, "files": files,
+        "research_context": {
+            "relationship_status": "not_modeled",
+            "reason": "historical_terminal_schema_has_no_verified_launch_relationship",
+        },
     })
     binding = {
         "snapshot_commit": commit,
@@ -650,6 +918,10 @@ def _prepare_legacy_evidence_bundle(
         "repo": repo, "remote_url": remote_url, "tip": tip,
         "record": record, "resolution": "LEGACY_HASH_BOUND_REVIEWABLE",
         "lineage": lineage, "files": files, "bundle_sha256": bundle_sha256,
+        "research_context": {
+            "relationship_status": "not_modeled",
+            "reason": "historical_terminal_schema_has_no_verified_launch_relationship",
+        },
         "project_receipt": catalog.completeness_receipt(
             load_catalog_cached(repo, commit)
         ),
@@ -850,12 +1122,17 @@ def _prepare_evidence_bundle(args):
         catalog.terminal_summary(item)
         for item in sorted(route_records, key=lambda value: value["index_line"])
     ]
+    research_context = _terminal_research_context(
+        repo, commit, record,
+        {item["record_sha256"]: item for item in records},
+    )
     bundle_sha256 = catalog.canonical_sha256({
         "snapshot_commit": commit,
         "catalog_sha256": requested_catalog_sha256,
         "terminal_record_sha256": terminal_record_sha256,
         "lineage": lineage,
         "files": file_records,
+        "research_context": research_context,
     })
     project_receipt = catalog.completeness_receipt(loaded)
     return {
@@ -866,6 +1143,7 @@ def _prepare_evidence_bundle(args):
         "binding": binding,
         "resolution": resolution,
         "lineage": lineage,
+        "research_context": research_context,
         "files": file_records,
         "bundle_sha256": bundle_sha256,
         "project_receipt": project_receipt,
@@ -932,6 +1210,7 @@ def _bundle_page(prepared, args, limit):
         "project_review_completeness": receipt["review_completeness"],
         "project_unresolved_counts": receipt["unresolved_counts"],
         "lineage": prepared["lineage"],
+        "research_context": prepared["research_context"],
         "cloud_review": {
             "evidence_role": binding["evidence_role"],
             "raw_inventory_authorized": binding["raw_inventory_authorized"],
@@ -1555,6 +1834,47 @@ TOOLS = {
                     "type": "array",
                     "items": {"type": "string"},
                     "maxItems": 8,
+                },
+                "route_ids": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "program_ids": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "family_ids": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "stage_ids": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "mechanism_types": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "trigger_route_ids": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "trigger_terminal_record_sha256s": {
+                    "type": "array",
+                    "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "terminal_states": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "decisions": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
+                },
+                "authorizes": {
+                    "type": "array", "items": {"type": "string", "minLength": 1},
+                    "maxItems": catalog.MAX_EXACT_FILTER_ITEMS,
                 },
                 "cursor": {"type": "string"},
                 "limit": {

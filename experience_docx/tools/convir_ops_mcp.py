@@ -32,7 +32,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.8.0"
+SERVER_VERSION = "5.9.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -292,11 +292,16 @@ def first_operation_from_card(text):
 
 
 def validate_scientific_contract(value, route_id, operation_id, operation):
-    if isinstance(value, dict) and value.get("schema_version") == 2:
+    if isinstance(value, dict) and value.get("schema_version") in {2, 3}:
         try:
-            contract = science_contract.validate_scientific_contract_v2(
-                value, route_id, operation_id,
-            )
+            if value["schema_version"] == 2:
+                contract = science_contract.validate_scientific_contract_v2(
+                    value, route_id, operation_id,
+                )
+            else:
+                contract = science_contract.validate_scientific_contract_v3(
+                    value, route_id, operation_id,
+                )
             scientific = science_contract.scientific_terminal_tuples(contract)
         except science_contract.ScientificContractError as exc:
             raise ToolError(str(exc)) from exc
@@ -311,7 +316,7 @@ def validate_scientific_contract(value, route_id, operation_id, operation):
             canonical_digest(item) for item in expected
         }:
             raise ToolError(
-                "scientific schema 2 allowed terminal tuples must be derived exactly"
+                "scientific schema 2/3 allowed terminal tuples must be derived exactly"
             )
         return contract
     expected = {
@@ -442,8 +447,8 @@ def validate_contract_runtime_alignment(contract, spec, precision=None):
         raise ToolError("scientific/runtime protected permissions differ")
     if precision is not None:
         if precision.get("schema_version") == 2:
-            if contract.get("schema_version") != 2:
-                raise ToolError("precision schema 2 requires scientific schema 2")
+            if contract.get("schema_version") not in {2, 3}:
+                raise ToolError("precision schema 2 requires scientific schema 2 or 3")
             if precision["primary_estimand_id"] != contract["primary_estimand"]["id"]:
                 raise ToolError("scientific/precision primary estimands differ")
             if precision["independent_unit"] != contract["primary_estimand"]["unit"]:
@@ -970,9 +975,10 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
             source_spec = json.loads(spec_raw)
         except json.JSONDecodeError as exc:
             raise ToolError("experiment spec JSON is invalid") from exc
-        if not isinstance(source_spec, dict) or source_spec.get("schema_version") != 2:
+        if not isinstance(source_spec, dict) \
+                or source_spec.get("schema_version") not in {2, 3}:
             raise ToolError(
-                "runnable manifest schema 6 requires experiment spec schema 2"
+                "runnable manifest schema 6 requires experiment spec schema 2 or 3"
             )
         if hashlib.sha256(program_raw).hexdigest() != require_sha(
                 value["program_contract_sha256"], "program_contract_sha256", SHA256):
@@ -982,12 +988,30 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
             raise ToolError("experiment spec SHA-256 mismatch")
         try:
             import experiment_spec_compiler as compiler
+            research_snapshot = compiler.research_snapshot_commit(source_spec)
+            evidence_commit = research_snapshot or current_main
+            if research_snapshot is not None:
+                ancestry = subprocess.run(
+                    [
+                        "git", "-C", bare_repo, "merge-base", "--is-ancestor",
+                        research_snapshot, current_main,
+                    ],
+                    capture_output=True, timeout=30, check=False,
+                )
+                if ancestry.returncode != 0:
+                    raise ToolError(
+                        "frozen research snapshot is not in current GitHub-main history"
+                    )
             bundle = compiler.compile_bundle(
                 spec_relpath=spec_path,
                 spec_raw=spec_raw,
                 program_raw=program_raw,
                 evidence_exists=lambda relpath: git_object_exists(
-                    bare_repo, current_main, relpath,
+                    bare_repo, evidence_commit, relpath,
+                ),
+                authoritative_snapshot_commit=evidence_commit,
+                read_authoritative_file=lambda relpath: git_show_bytes(
+                    bare_repo, evidence_commit, relpath,
                 ),
             )
         except Exception as exc:

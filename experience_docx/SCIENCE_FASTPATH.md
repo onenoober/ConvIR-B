@@ -11,7 +11,9 @@ Preserve the complete scientific loop while removing repeated checks,
 duplicative documentation, post-terminal cleanup, and manual evidence
 handling. The fastpath does not reduce experimental scope, samples, folds,
 seeds, epochs, controls, uncertainty estimation, GPU budget, or protected-data
-separation.
+separation. It minimizes expected time-to-decision, not the number of
+experiments: one bounded design may discriminate several predeclared hypotheses
+when that is faster and statistically valid.
 
 ## Source-of-Truth Order
 
@@ -69,12 +71,15 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
    worktree; WORKTREE_BIND becomes mandatory before a write. Do not load the
    full Markdown index/history by default. Decide whether the stage is
    authorized, answered or conflicting.
-2. CONTRACT: new routes author one research-program contract and one schema-2
+2. CONTRACT: new routes author one research-program contract and one schema-3
    experiment spec. The deterministic compiler emits manifest schema 6, canonical scientific
    JSON, runtime/asset/capability/precision contracts and a <=8 KiB rationale
-   note. New typed asset manifests use schema 2. Historical experiment-spec,
-   scientific and asset schema 1 plus manifest schema 4/5 remain immutable and
-   readable. Freeze the question, population/grouping, evidence roles,
+   note. New typed asset manifests use schema 2. Historical experiment-spec and
+   scientific schema 1/2, asset schema 1 and manifest schema 4/5 remain
+   immutable and readable. Schema 3 additionally binds the terminal-triggered
+   research update: exact trigger evidence, bottleneck, live competing
+   hypotheses, discriminating predictions, falsifiers and the basis for
+   selecting the design. Freeze the question, population/grouping, evidence roles,
    permissions, intervention, controls, estimand, uncertainty, gates, competing
    explanation, finite typed gate outcomes, a complete mutually exclusive
    decision table and all terminal actions. Every PASS/FAIL/INCONCLUSIVE action
@@ -100,6 +105,17 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
    extrapolation is allowed only for a fixed-count exact production map with
    fixed or conservatively bounded shapes and constant memory.
 
+Select the minimum sufficient decision experiment: the least costly bounded
+design expected to change a written next action with adequate validity and
+precision. Evaluate decision value, expected time-to-decision, shared setup,
+information gained across live hypotheses and worst-case stopping cost. When
+several hypotheses can be distinguished under one evidence role and frozen
+comparison family, prefer a predeclared multi-arm, factorial,
+fractional-factorial, multi-fidelity or sequential design over serial
+low-power micro-experiments. Adaptive pruning is allowed only with frozen
+triggers, multiplicity/uncertainty handling, budgets and terminal actions; it
+must not inspect sealed data, relabel evidence or silently change the claim.
+
 `rules_commit` remains immutable design provenance. Current main owns live
 authorization evidence and one `RULE_COMPATIBILITY.json` machine decision. An
 exact rules bundle passes directly; a changed bundle passes only when current
@@ -124,7 +140,7 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    start once. Require one positive workload-progress observation. ETA remains
    a frozen cost forecast, not a prohibition on human observation. A receipt
    holder may request a bounded result-blind progress snapshot, an early
-   terminal probe, or explicit cancellation at any time. Every new scientific schema-2 run records each completed
+   terminal probe, or explicit cancellation at any time. Every new scientific schema-2/3 run records each completed
    workload unit with input/output SHA-256 and must cover exact `total_units`
    before scientific terminal derivation. Retry/not-before controls only full
    sealed finish windows; progress-only refresh bypasses it, is rate-limited,
@@ -194,6 +210,42 @@ terminal. Unconsumed pages, legacy/unindexed entries and excluded cloud or
 branch sources remain explicitly unreviewed; they cannot support a claim that
 the project evidence was complete. Any new metric or computation returns to the
 normal CONTRACT workflow instead of being performed inside the review MCP.
+
+## Post-Terminal Research Update
+
+A requested update after ARCHIVE is the default bridge from a blocked or failed
+route to candidate selection. It remains part of the read-only review entry and
+does not add a state after ARCHIVE. Perform it in this order:
+
+1. Bind current GitHub-main authority, the triggering terminal, typed closeout,
+   conclusion, program/family state and only directly referenced lineage.
+2. Classify the trigger. Identity/evidence conflict stops the review; command or
+   engineering failure returns to finite recovery; cancellation supports no
+   scientific conclusion; INCONCLUSIVE admits only predeclared evidence named
+   by the closeout; scientific FAIL updates the bottleneck and alternatives.
+3. Compare the smallest relevant route set and terminal-bound compact cloud
+   text when allowed. Distinguish resolved questions, remaining uncertainty,
+   data roles, statistical units and competing explanations. Do not recompute
+   historical metrics or infer results from local files, names or chat.
+4. Search authoritative primary methods, dataset/protocol papers and formal
+   benchmarks for the live bottleneck. Keep external facts separate from
+   archived project facts and label every synthesis as inference.
+5. Rank at most three falsifiable candidates by expected decision value,
+   expected time-to-decision, shared setup, information gain, governance
+   feasibility, cost and worst-case stopping risk. Each candidate names a
+   formal `adjacent`, `orthogonal` or `reopen` type; diagnostic purpose is not a
+   governance type.
+6. Stop for user selection and authorization. `authorizes=NONE`, a stopped
+   family or missing amendment cannot be bypassed by the review. Only the
+   selected, authorized candidate may be captured in a new schema-3 CONTRACT.
+
+The next contract binds this update through the exact GitHub-main research
+snapshot, trigger route/terminal identities, stable literature identifiers and
+transfer limits, and a finite hypothesis/design record. Later main commits do
+not invalidate that contract while the frozen snapshot remains in main history.
+The review narrative itself
+is not project evidence, does not become an authorization source and cannot
+alter the prior terminal.
 
 ## GitHub Evidence Contract
 
@@ -271,7 +323,7 @@ mismatch executes the frozen contract once and publishes compact qualification
 evidence for registration during terminal archive. Device class is verified on
 the execution host; reuse never carries scientific authorization.
 
-Every new scientific schema-2 workload uses this completion ledger.
+Every new scientific schema-2/3 workload uses this completion ledger.
 `complete_units` always starts in a fresh output and additionally may import only a
 hash-bound unrestricted run-only `completed_unit_ledger` asset whose unit,
 input, output-asset, output-path and output SHA-256 records are unique and whose

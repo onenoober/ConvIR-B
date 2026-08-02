@@ -574,8 +574,8 @@ def _validate_precision_certificate_v2(
     }
     if not isinstance(value, dict) or set(value) != expected:
         raise ContractError("precision schema 2 has an invalid top-level contract")
-    if scientific is None or scientific.get("schema_version") != 2:
-        raise ContractError("precision schema 2 requires scientific schema 2")
+    if scientific is None or scientific.get("schema_version") not in {2, 3}:
+        raise ContractError("precision schema 2 requires scientific schema 2 or 3")
     if value["route_id"] != spec["route_id"] \
             or value["operation_id"] != spec["operation_id"]:
         raise ContractError("precision certificate identity mismatch")

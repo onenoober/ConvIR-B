@@ -542,14 +542,29 @@ def validate_authoring_receipt(
     """Verify compiler identity without checking out archived main evidence."""
     route_id = manifest["route_id"]
     path = _private_receipt_path(repo, route_id)
+    spec_path = manifest["experiment_spec_relpath"]
+    spec_raw = show(repo, snapshot, spec_path)
+    try:
+        source_spec = json.loads(spec_raw)
+        research_snapshot = spec_compiler.research_snapshot_commit(source_spec)
+    except (json.JSONDecodeError, spec_compiler.ExperimentSpecError) as exc:
+        raise ReadyError(f"experiment research snapshot is invalid: {exc}") from exc
+    evidence_commit = research_snapshot or current_main
+    if research_snapshot is not None:
+        ancestry = subprocess.run(
+            [GIT, "merge-base", "--is-ancestor", research_snapshot, current_main],
+            cwd=repo, capture_output=True, timeout=30, check=False,
+        )
+        if ancestry.returncode != 0:
+            raise ReadyError(
+                "frozen research snapshot is not in current GitHub-main history"
+            )
     recovered = False
     try:
         raw = path.read_bytes()
         receipt = json.loads(raw)
     except (OSError, json.JSONDecodeError) as exc:
-        spec_path = manifest["experiment_spec_relpath"]
         program_path = manifest["program_contract_relpath"]
-        spec_raw = show(repo, snapshot, spec_path)
         program_raw = show(repo, snapshot, program_path)
         try:
             derived_bundle = spec_compiler.compile_bundle(
@@ -557,8 +572,12 @@ def validate_authoring_receipt(
                 spec_raw=spec_raw,
                 program_raw=program_raw,
                 evidence_exists=lambda relpath: show_optional(
-                    repo, current_main, relpath,
+                    repo, evidence_commit, relpath,
                 ) is not None,
+                authoritative_snapshot_commit=evidence_commit,
+                read_authoritative_file=lambda relpath: show(
+                    repo, evidence_commit, relpath,
+                ),
             )
             bundle = {
                 **derived_bundle,
@@ -583,7 +602,7 @@ def validate_authoring_receipt(
             program_relpath=program_path,
             program_raw=program_raw,
             bundle=bundle,
-            authoritative_main_commit=current_main,
+            authoritative_main_commit=evidence_commit,
         )
         spec_compiler.write_private_receipt_atomic(repo, route_id, receipt)
         raw = spec_compiler.json_bytes(receipt)
@@ -602,6 +621,9 @@ def validate_authoring_receipt(
             or not ops.SHA40.fullmatch(receipt["authoritative_main_commit"]) \
             or receipt["allowed_next_action"] != "stage_complete_bundle_then_route_ready_once":
         raise ReadyError("authoring receipt identity or phase is stale")
+    if research_snapshot is not None \
+            and receipt["authoritative_main_commit"] != research_snapshot:
+        raise ReadyError("authoring receipt research snapshot identity mismatch")
     source_pairs = (
         ("experiment_spec", "experiment_spec_relpath", "experiment_spec_sha256"),
         ("program_contract", "program_contract_relpath", "program_contract_sha256"),

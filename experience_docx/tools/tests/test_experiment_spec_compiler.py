@@ -22,7 +22,9 @@ from test_convir_ops_v5_final_slim import (  # noqa: E402
 from test_research_program_contract import claim, contract  # noqa: E402
 from test_scientific_contract import (  # noqa: E402
     contract as v2_scientific_contract,
+    contract_v3 as v3_scientific_contract,
     precision_certificate as v2_precision_certificate,
+    terminal_index_bytes,
 )
 
 
@@ -176,6 +178,22 @@ def sources_v2(rules_commit="a" * 40):
     return program, spec
 
 
+def sources_v3(rules_commit="a" * 40, terminal_record_sha256="b" * 64):
+    program, spec = sources_v2(rules_commit)
+    spec["schema_version"] = 3
+    scientific = v3_scientific_contract(
+        rules_commit, terminal_record_sha256,
+    )
+    scientific["route_id"] = "final_slim"
+    scientific["operation_id"] = "ACCEPT"
+    scientific["population"]["evidence_role"] = "engineering_debug"
+    spec["operations"]["ACCEPT"]["scientific_contract"] = {
+        key: value for key, value in scientific.items()
+        if key not in {"schema_version", "route_id", "operation_id"}
+    }
+    return program, spec
+
+
 class ExperimentSpecCompilerTests(unittest.TestCase):
     def git(self, repo, *args):
         return subprocess.run(
@@ -232,6 +250,83 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         self.assertEqual(2, precision["schema_version"])
         self.assertEqual(2, route_assets["schema_version"])
         self.assertEqual("scene_mean_error", precision["primary_estimand_id"])
+
+    def test_schema3_binds_terminal_and_keeps_supporting_contracts_at_schema2(self):
+        raw_index, terminal_sha = terminal_index_bytes()
+        program, spec = sources_v3(terminal_record_sha256=terminal_sha)
+        bundle = COMPILER.compile_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec),
+            program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            authoritative_snapshot_commit="a" * 40,
+            read_authoritative_file=lambda _: raw_index,
+        )
+        scientific = json.loads(
+            bundle["experience_docx/scientific_contracts/final_slim__ACCEPT.json"]
+        )
+        precision = json.loads(
+            bundle["experience_docx/precision_certificates/final_slim__ACCEPT.json"]
+        )
+        route_assets = json.loads(
+            bundle["experience_docx/route_assets/final_slim__ACCEPT.json"]
+        )
+        self.assertEqual(3, scientific["schema_version"])
+        self.assertEqual(terminal_sha, scientific["research_update_binding"][
+            "trigger_terminals"
+        ][0]["terminal_record_sha256"])
+        self.assertEqual(2, precision["schema_version"])
+        self.assertEqual(2, route_assets["schema_version"])
+
+    def test_schema3_lint_rejects_wrong_terminal_record_sha(self):
+        raw_index, _ = terminal_index_bytes()
+        program, spec = sources_v3(terminal_record_sha256="d" * 64)
+        lint = COMPILER.lint_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec),
+            program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            authoritative_snapshot_commit="a" * 40,
+            read_authoritative_file=lambda _: raw_index,
+        )
+        self.assertEqual("EXPERIMENT_SPEC_INVALID", lint["status"])
+        self.assertTrue(any(
+            item["code"] == "SCIENTIFIC_CONTRACT_INVALID"
+            and "matching authoritative" in item["message"]
+            for item in lint["errors"]
+        ))
+
+    def test_schema3_requires_one_exact_research_snapshot_context(self):
+        raw_index, terminal_sha = terminal_index_bytes()
+        program, spec = sources_v3(terminal_record_sha256=terminal_sha)
+        arguments = {
+            "spec_relpath": "experience_docx/experiment_specs/final_slim.json",
+            "spec_raw": COMPILER.json_bytes(spec),
+            "program_raw": COMPILER.json_bytes(program),
+            "evidence_exists": lambda _: True,
+        }
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "exact authoritative research snapshot",
+        ):
+            COMPILER.compile_bundle(**arguments)
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "exact authoritative research snapshot",
+        ):
+            COMPILER.compile_bundle(
+                **arguments,
+                authoritative_snapshot_commit="c" * 40,
+                read_authoritative_file=lambda _: raw_index,
+            )
+
+        second = copy.deepcopy(spec["operations"]["ACCEPT"])
+        second["scientific_contract"]["research_update_binding"][
+            "snapshot_commit"
+        ] = "c" * 40
+        spec["operations"]["SECOND"] = second
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "one research snapshot commit",
+        ):
+            COMPILER.research_snapshot_commit(spec)
 
     def test_schema2_mechanically_derives_capability_input_identity(self):
         program, spec = sources_v2()
@@ -428,8 +523,8 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
                         "path": "schema_version",
                         "code": "CURRENT_SCHEMA_REQUIRED",
                         "message": (
-                            "new experiment authoring requires schema_version 2; "
-                            "schema_version 1 is historical read-only compatibility"
+                            "new experiment authoring requires schema_version 3; "
+                            "schema_version 1/2 is historical read-only compatibility"
                         ),
                     },
                     report["errors"],
@@ -525,11 +620,15 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.bind_github_main(repo, current_main)
             evidence.unlink()
 
-            resolved, exists = COMPILER._authoritative_evidence_resolver(
+            resolved, exists, read = COMPILER._authoritative_evidence_resolver(
                 repo, rules_commit, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
             )
             self.assertEqual(current_main, resolved)
             self.assertTrue(exists("experience_docx/experiment_logs/closed/conclusion.json"))
+            self.assertEqual(
+                b'{"state":"COMPLETED"}\n',
+                read("experience_docx/experiment_logs/closed/conclusion.json"),
+            )
             self.assertFalse(COMPILER._repo_file_exists(
                 repo, "experience_docx/experiment_logs/closed/conclusion.json",
             ))
@@ -589,11 +688,15 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.git(repo, "config", "user.email", "test@example.com")
             (repo / "README.md").write_text("rules anchor\n", encoding="utf-8")
             self.install_runtime_bundle(repo)
+            raw_index, terminal_sha = terminal_index_bytes()
+            terminal_index = repo / COMPILER.science_contract.TERMINAL_INDEX_RELPATH
+            terminal_index.parent.mkdir(parents=True, exist_ok=True)
+            terminal_index.write_bytes(raw_index)
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "rules main")
             rules_commit = self.git(repo, "rev-parse", "HEAD")
             self.bind_github_main(repo, rules_commit)
-            program, spec = sources_v2(rules_commit)
+            program, spec = sources_v3(rules_commit, terminal_sha)
             spec_path = repo / "experience_docx/experiment_specs/final_slim.json"
             program_path = repo / "experience_docx/research_programs/final_slim.json"
             spec_path.parent.mkdir(parents=True)

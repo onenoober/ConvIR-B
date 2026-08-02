@@ -4,9 +4,10 @@
 from __future__ import annotations
 
 import itertools
+import hashlib
 import json
 import re
-from typing import Any
+from typing import Any, Callable
 
 
 class ScientificContractError(ValueError):
@@ -14,6 +15,10 @@ class ScientificContractError(ValueError):
 
 
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
+SHA40 = re.compile(r"^[0-9a-f]{40}$")
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
+TERMINAL_INDEX_RELPATH = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
+MAX_TERMINAL_INDEX_BYTES = 1024 * 1024
 TERMINAL_LABELS = ("pass", "fail", "inconclusive")
 FAMILY_EFFECTS = {
     "advance", "stop", "allow_predeclared_evidence", "record_only",
@@ -27,6 +32,18 @@ GATE_OUTCOMES = {
 }
 DECISION_ROLES = {
     "decisive", "validity_veto", "inconclusive_only", "descriptive",
+}
+BOTTLENECK_CLASSES = {
+    "scientific_hypothesis", "measurement", "precision", "data_scope",
+    "engineering_capability", "governance",
+}
+DESIGN_STRATEGIES = {
+    "single_factor", "multi_arm", "full_factorial", "fractional_factorial",
+    "multi_fidelity", "group_sequential", "other",
+}
+LITERATURE_SOURCE_STATUSES = {
+    "peer_reviewed", "author_formal_version", "official_benchmark",
+    "official_protocol",
 }
 
 
@@ -77,6 +94,178 @@ def _terminal_tuple(value: Any, name: str) -> dict[str, str]:
         "state": _token(item["state"], f"{name}.state"),
         "decision": _token(item["decision"], f"{name}.decision"),
         "authorizes": _token(item["authorizes"], f"{name}.authorizes"),
+    }
+
+
+def _validate_research_update_binding(
+    value: Any, *, expected_snapshot_commit: str | None = None,
+    read_evidence_file: Callable[[str], bytes] | None = None,
+) -> dict[str, Any]:
+    item = _object(value, {
+        "snapshot_commit", "trigger_terminals", "bottleneck_class",
+        "bottleneck_statement", "literature_basis", "hypotheses",
+        "design_selection",
+    }, "research_update_binding")
+    snapshot_commit = item["snapshot_commit"]
+    if not isinstance(snapshot_commit, str) or not SHA40.fullmatch(snapshot_commit):
+        raise ScientificContractError(
+            "research_update_binding.snapshot_commit must be a 40-character Git SHA"
+        )
+    if expected_snapshot_commit is not None and snapshot_commit != expected_snapshot_commit:
+        raise ScientificContractError(
+            "research_update_binding.snapshot_commit does not equal authoritative main"
+        )
+
+    triggers = item["trigger_terminals"]
+    if not isinstance(triggers, list) or not 1 <= len(triggers) <= 8:
+        raise ScientificContractError(
+            "research_update_binding.trigger_terminals must contain 1-8 entries"
+        )
+    terminal_records: dict[str, dict[str, Any]] = {}
+    if read_evidence_file is not None:
+        try:
+            raw_index = read_evidence_file(TERMINAL_INDEX_RELPATH)
+        except Exception as exc:
+            raise ScientificContractError(
+                "research update terminal index is unavailable"
+            ) from exc
+        if not isinstance(raw_index, bytes) or not raw_index \
+                or len(raw_index) > MAX_TERMINAL_INDEX_BYTES:
+            raise ScientificContractError(
+                "research update terminal index has an invalid byte contract"
+            )
+        for raw_line in raw_index.splitlines():
+            if not raw_line.strip():
+                continue
+            record_sha = hashlib.sha256(raw_line).hexdigest()
+            try:
+                record = json.loads(raw_line)
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise ScientificContractError(
+                    "research update terminal index contains invalid JSON"
+                ) from exc
+            if record_sha in terminal_records:
+                raise ScientificContractError(
+                    "research update terminal index contains duplicate record identity"
+                )
+            terminal_records[record_sha] = record
+
+    normalized_triggers = []
+    seen_triggers = set()
+    for index, trigger in enumerate(triggers):
+        name = f"research_update_binding.trigger_terminals[{index}]"
+        trigger = _object(trigger, {"route_id", "terminal_record_sha256"}, name)
+        route_id = _token(trigger["route_id"], f"{name}.route_id")
+        record_sha = trigger["terminal_record_sha256"]
+        if not isinstance(record_sha, str) or not SHA256.fullmatch(record_sha):
+            raise ScientificContractError(
+                f"{name}.terminal_record_sha256 must be a SHA-256"
+            )
+        identity = (route_id, record_sha)
+        if identity in seen_triggers:
+            raise ScientificContractError("research update trigger terminals must be unique")
+        seen_triggers.add(identity)
+        if read_evidence_file is not None:
+            record = terminal_records.get(record_sha)
+            if not isinstance(record, dict) or record.get("route_id") != route_id:
+                raise ScientificContractError(
+                    f"{name} does not bind a matching authoritative terminal record"
+                )
+        normalized_triggers.append({
+            "route_id": route_id, "terminal_record_sha256": record_sha,
+        })
+
+    bottleneck_class = item["bottleneck_class"]
+    if bottleneck_class not in BOTTLENECK_CLASSES:
+        raise ScientificContractError(
+            "research_update_binding.bottleneck_class is invalid"
+        )
+    literature = item["literature_basis"]
+    if not isinstance(literature, list) or not 1 <= len(literature) <= 16:
+        raise ScientificContractError(
+            "research_update_binding.literature_basis must contain 1-16 entries"
+        )
+    normalized_literature = []
+    seen_literature = set()
+    for index, source in enumerate(literature):
+        name = f"research_update_binding.literature_basis[{index}]"
+        source = _object(source, {
+            "identifier", "source_status", "task", "transferable_claim",
+            "applicability_limit",
+        }, name)
+        identifier = _text(source["identifier"], f"{name}.identifier", 4, 256)
+        normalized_identifier = identifier.casefold()
+        if normalized_identifier in seen_literature:
+            raise ScientificContractError(
+                "research update literature identifiers must be unique"
+            )
+        seen_literature.add(normalized_identifier)
+        if source["source_status"] not in LITERATURE_SOURCE_STATUSES:
+            raise ScientificContractError(f"{name}.source_status is invalid")
+        normalized_literature.append({
+            "identifier": identifier,
+            "source_status": source["source_status"],
+            "task": _text(source["task"], f"{name}.task", 4, 512),
+            "transferable_claim": _text(
+                source["transferable_claim"], f"{name}.transferable_claim", 16, 2048,
+            ),
+            "applicability_limit": _text(
+                source["applicability_limit"], f"{name}.applicability_limit", 16, 2048,
+            ),
+        })
+    hypotheses = item["hypotheses"]
+    if not isinstance(hypotheses, list) or not 2 <= len(hypotheses) <= 8:
+        raise ScientificContractError(
+            "research_update_binding.hypotheses must contain 2-8 entries"
+        )
+    normalized_hypotheses = []
+    seen_hypotheses = set()
+    for index, hypothesis in enumerate(hypotheses):
+        name = f"research_update_binding.hypotheses[{index}]"
+        hypothesis = _object(hypothesis, {
+            "id", "statement", "discriminating_prediction", "falsifier",
+        }, name)
+        identifier = _token(hypothesis["id"], f"{name}.id")
+        if identifier in seen_hypotheses:
+            raise ScientificContractError("research update hypothesis ids must be unique")
+        seen_hypotheses.add(identifier)
+        normalized_hypotheses.append({
+            "id": identifier,
+            "statement": _text(hypothesis["statement"], f"{name}.statement", 16, 2048),
+            "discriminating_prediction": _text(
+                hypothesis["discriminating_prediction"],
+                f"{name}.discriminating_prediction", 16, 2048,
+            ),
+            "falsifier": _text(hypothesis["falsifier"], f"{name}.falsifier", 16, 2048),
+        })
+
+    design = _object(item["design_selection"], {
+        "strategy", "decision_value", "expected_time_to_decision",
+        "shared_setup", "worst_case_stopping_cost",
+    }, "research_update_binding.design_selection")
+    if design["strategy"] not in DESIGN_STRATEGIES:
+        raise ScientificContractError(
+            "research_update_binding.design_selection.strategy is invalid"
+        )
+    normalized_design = {"strategy": design["strategy"]}
+    for field in (
+        "decision_value", "expected_time_to_decision", "shared_setup",
+        "worst_case_stopping_cost",
+    ):
+        normalized_design[field] = _text(
+            design[field], f"research_update_binding.design_selection.{field}", 8, 2048,
+        )
+    return {
+        "snapshot_commit": snapshot_commit,
+        "trigger_terminals": normalized_triggers,
+        "bottleneck_class": bottleneck_class,
+        "bottleneck_statement": _text(
+            item["bottleneck_statement"],
+            "research_update_binding.bottleneck_statement", 16, 4096,
+        ),
+        "literature_basis": normalized_literature,
+        "hypotheses": normalized_hypotheses,
+        "design_selection": normalized_design,
     }
 
 
@@ -527,9 +716,42 @@ def validate_scientific_contract_v2(
     }
 
 
+def validate_scientific_contract_v3(
+    value: Any, route_id: str, operation_id: str, *,
+    expected_snapshot_commit: str | None = None,
+    read_evidence_file: Callable[[str], bytes] | None = None,
+) -> dict[str, Any]:
+    expected = {
+        "schema_version", "route_id", "operation_id", "question", "population",
+        "intervention", "primary_estimand", "controls", "uncertainty", "gates",
+        "competing_explanation", "decision_table", "disabled_actions",
+        "research_update_binding",
+    }
+    item = _object(value, expected, "scientific contract")
+    if item["schema_version"] != 3:
+        raise ScientificContractError("scientific contract schema_version must equal 3")
+    legacy_value = {
+        key: field for key, field in item.items()
+        if key != "research_update_binding"
+    }
+    legacy_value["schema_version"] = 2
+    validated = validate_scientific_contract_v2(
+        legacy_value, route_id, operation_id,
+    )
+    return {
+        **validated,
+        "schema_version": 3,
+        "research_update_binding": _validate_research_update_binding(
+            item["research_update_binding"],
+            expected_snapshot_commit=expected_snapshot_commit,
+            read_evidence_file=read_evidence_file,
+        ),
+    }
+
+
 def scientific_terminal_tuples(contract: dict[str, Any]) -> list[dict[str, str]]:
-    if contract.get("schema_version") != 2:
-        raise ScientificContractError("terminal derivation requires scientific schema 2")
+    if contract.get("schema_version") not in {2, 3}:
+        raise ScientificContractError("terminal derivation requires scientific schema 2 or 3")
     return [
         dict(contract["decision_table"]["terminal_actions"][label]["terminal"])
         for label in TERMINAL_LABELS
@@ -539,8 +761,10 @@ def scientific_terminal_tuples(contract: dict[str, Any]) -> list[dict[str, str]]
 def evaluate_gate_outcomes(
     contract: dict[str, Any], gate_outcomes: Any,
 ) -> dict[str, Any]:
-    if contract.get("schema_version") != 2:
-        raise ScientificContractError("generic gate evaluation requires scientific schema 2")
+    if contract.get("schema_version") not in {2, 3}:
+        raise ScientificContractError(
+            "generic gate evaluation requires scientific schema 2 or 3"
+        )
     gates = contract["gates"]
     if not isinstance(gate_outcomes, dict) \
             or set(gate_outcomes) != {gate["id"] for gate in gates}:

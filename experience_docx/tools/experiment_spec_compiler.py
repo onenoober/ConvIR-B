@@ -67,6 +67,9 @@ SCIENTIFIC_SOURCE_FIELDS_V2 = {
     "uncertainty", "gates", "competing_explanation", "decision_table",
     "disabled_actions",
 }
+SCIENTIFIC_SOURCE_FIELDS_V3 = {
+    *SCIENTIFIC_SOURCE_FIELDS_V2, "research_update_binding",
+}
 SOURCE_OPERATION_FIELDS_V2 = {
     "runner_relpath", "mode", "require_gpu", "output_id",
     "closeout_filename", "prior_closeout_relpath", "prior_terminal_tuple",
@@ -215,7 +218,7 @@ def resolve_fresh_authoritative_main(repo: Path, authoritative_main: str) -> str
 
 def _authoritative_evidence_resolver(
     repo: Path, rules_commit: Any, authoritative_main: str,
-) -> tuple[str, Callable[[str], bool]]:
+) -> tuple[str, Callable[[str], bool], Callable[[str], bytes]]:
     """Resolve archived authorization evidence from the current GitHub main."""
     if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
         raise ExperimentSpecError("rules_commit must be an exact 40-character commit")
@@ -238,7 +241,49 @@ def _authoritative_evidence_resolver(
             )
         return cache[relpath]
 
-    return resolved, exists
+    def read(relpath: str) -> bytes:
+        relpath = _safe_repo_relpath(relpath, "authoritative evidence path")
+        completed = _git(
+            repo, "show", f"{resolved}:{relpath}", check=False,
+        )
+        if completed.returncode:
+            raise ExperimentSpecError(
+                f"authoritative evidence file is unavailable: {relpath}"
+            )
+        return completed.stdout
+
+    return resolved, exists, read
+
+
+def research_snapshot_commit(source: Any) -> str | None:
+    """Return the one frozen research snapshot used by a schema-3 source."""
+    if not isinstance(source, dict) or source.get("schema_version") != 3:
+        return None
+    operations = source.get("operations")
+    if not isinstance(operations, dict) or not operations:
+        raise ExperimentSpecError(
+            "schema-3 experiment spec must contain operations before snapshot binding"
+        )
+    snapshots = set()
+    for operation_id, operation in operations.items():
+        if not isinstance(operation, dict):
+            raise ExperimentSpecError(
+                f"operations.{operation_id} must be an object before snapshot binding"
+            )
+        scientific = operation.get("scientific_contract")
+        binding = scientific.get("research_update_binding") \
+            if isinstance(scientific, dict) else None
+        snapshot = binding.get("snapshot_commit") if isinstance(binding, dict) else None
+        if not isinstance(snapshot, str) or not SHA40.fullmatch(snapshot):
+            raise ExperimentSpecError(
+                f"operations.{operation_id} has no valid research snapshot binding"
+            )
+        snapshots.add(snapshot)
+    if len(snapshots) != 1:
+        raise ExperimentSpecError(
+            "all schema-3 operations must bind one research snapshot commit"
+        )
+    return next(iter(snapshots))
 
 
 def canonical_runtime_bundle(repo: Path, authoritative_commit: str) -> dict[str, bytes]:
@@ -386,10 +431,15 @@ def _route_card(spec: dict[str, Any]) -> bytes:
 
 
 def _scientific_source_fields(spec_schema: int) -> set[str]:
-    return (
-        SCIENTIFIC_SOURCE_FIELDS_V2
-        if spec_schema == 2 else SCIENTIFIC_SOURCE_FIELDS_V1
-    )
+    return {
+        1: SCIENTIFIC_SOURCE_FIELDS_V1,
+        2: SCIENTIFIC_SOURCE_FIELDS_V2,
+        3: SCIENTIFIC_SOURCE_FIELDS_V3,
+    }[spec_schema]
+
+
+def _supporting_contract_schema(spec_schema: int) -> int:
+    return 2 if spec_schema in {2, 3} else 1
 
 
 def _compile_operation_v2(
@@ -463,7 +513,7 @@ def _capability_with_derived_input_identity(
     value: Any, *, spec_schema: int, runtime: dict[str, Any],
 ) -> Any:
     """Fill only the mechanically determined schema-2 input identity."""
-    if spec_schema != 2 or not isinstance(value, dict):
+    if _supporting_contract_schema(spec_schema) != 2 or not isinstance(value, dict):
         return value
     identity = value.get("reuse_identity")
     if not isinstance(identity, dict) or "input_contract_sha256" in identity:
@@ -490,6 +540,8 @@ def _lint_operation_components(
     item: dict[str, Any], effective_program: dict[str, Any] | None,
     evidence_exists: Callable[[str], bool] | None,
     read_repo_file: Callable[[str], bytes] | None, spec_schema: int,
+    authoritative_snapshot_commit: str | None,
+    read_authoritative_file: Callable[[str], bytes] | None,
 ) -> None:
     """Aggregate independent component errors for one source operation."""
     prefix = f"operations.{operation_id}"
@@ -518,10 +570,17 @@ def _lint_operation_components(
             "schema_version": spec_schema, "route_id": route_id,
             "operation_id": operation_id, **scientific_source,
         }
-        if spec_schema == 2:
-            scientific = science_contract.validate_scientific_contract_v2(
-                scientific_value, route_id, operation_id,
-            )
+        if spec_schema in {2, 3}:
+            if spec_schema == 2:
+                scientific = science_contract.validate_scientific_contract_v2(
+                    scientific_value, route_id, operation_id,
+                )
+            else:
+                scientific = science_contract.validate_scientific_contract_v3(
+                    scientific_value, route_id, operation_id,
+                    expected_snapshot_commit=authoritative_snapshot_commit,
+                    read_evidence_file=read_authoritative_file,
+                )
             if operation is not None:
                 operation = _compile_operation_v2(
                     operation_source, scientific, f"{prefix}.operation",
@@ -536,7 +595,7 @@ def _lint_operation_components(
         KeyError, TypeError, ValueError,
     ) as exc:
         _append_lint(errors, f"{prefix}.scientific_contract", exc, "SCIENTIFIC_CONTRACT_INVALID")
-        if spec_schema == 2:
+        if spec_schema in {2, 3}:
             operation = None
 
     runtime_source = None
@@ -608,10 +667,11 @@ def _lint_operation_components(
             _append_lint(errors, f"{prefix}.runtime", exc, "RUNTIME_CONTRACT_INVALID")
 
     if validated_runtime is not None:
+        supporting_schema = _supporting_contract_schema(spec_schema)
         if item["assets"] is not None:
             try:
                 asset = validate_asset_manifest({
-                    "schema_version": spec_schema, "route_id": route_id,
+                    "schema_version": supporting_schema, "route_id": route_id,
                     "operation_id": operation_id, "assets": item["assets"],
                 }, validated_runtime)
                 if read_repo_file is not None:
@@ -629,7 +689,7 @@ def _lint_operation_components(
                     runtime=validated_runtime,
                 )
                 validate_model_capability(
-                    {"schema_version": spec_schema, **capability_source},
+                    {"schema_version": supporting_schema, **capability_source},
                     validated_runtime, asset,
                 )
             except (ContractError, KeyError, TypeError, ValueError) as exc:
@@ -637,7 +697,7 @@ def _lint_operation_components(
         if item["precision"] is not None:
             try:
                 precision = validate_precision_certificate(
-                    {"schema_version": spec_schema, **item["precision"]},
+                    {"schema_version": supporting_schema, **item["precision"]},
                     validated_runtime, scientific,
                 )
             except (ContractError, KeyError, TypeError, ValueError) as exc:
@@ -667,6 +727,8 @@ def _lint_operation_components(
 def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 evidence_exists: Callable[[str], bool] | None = None,
                 read_repo_file: Callable[[str], bytes] | None = None,
+                authoritative_snapshot_commit: str | None = None,
+                read_authoritative_file: Callable[[str], bytes] | None = None,
                 return_bundle: bool = False) -> dict[str, Any]:
     """Return stable, aggregate authoring diagnostics without writing files."""
     errors: list[dict[str, str]] = []
@@ -698,8 +760,8 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     if unexpected:
         errors.append(_lint_error("experiment_spec", "UNEXPECTED_FIELDS", f"unexpected fields: {unexpected}"))
     checks = (
-        ("schema_version", lambda: source.get("schema_version") in {1, 2}
-         or (_ for _ in ()).throw(ExperimentSpecError("must equal 1 or 2"))),
+        ("schema_version", lambda: source.get("schema_version") in {1, 2, 3}
+         or (_ for _ in ()).throw(ExperimentSpecError("must equal 1, 2, or 3"))),
         ("route_id", lambda: _token(source.get("route_id"), "route_id")),
         ("rules_commit", lambda: isinstance(source.get("rules_commit"), str)
          and SHA40.fullmatch(source["rules_commit"])
@@ -776,12 +838,16 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                 evidence_exists=evidence_exists,
                 read_repo_file=read_repo_file,
                 spec_schema=source["schema_version"],
+                authoritative_snapshot_commit=authoritative_snapshot_commit,
+                read_authoritative_file=read_authoritative_file,
             )
         if not errors and len(structurally_valid_operations) == len(operations):
             try:
                 compiled_bundle = compile_bundle(
                     spec_relpath=spec_relpath, spec_raw=spec_raw,
                     program_raw=program_raw, evidence_exists=evidence_exists,
+                    authoritative_snapshot_commit=authoritative_snapshot_commit,
+                    read_authoritative_file=read_authoritative_file,
                 )
             except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
                 errors.append(_lint_error("experiment_spec", _lint_code(str(exc)), exc))
@@ -799,7 +865,10 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
 
 
 def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
-                   evidence_exists: Callable[[str], bool] | None = None) -> dict[str, bytes]:
+                   evidence_exists: Callable[[str], bool] | None = None,
+                   authoritative_snapshot_commit: str | None = None,
+                   read_authoritative_file: Callable[[str], bytes] | None = None) \
+        -> dict[str, bytes]:
     """Return every generated file as repository-relative path -> exact bytes."""
     try:
         source = json.loads(spec_raw)
@@ -807,9 +876,17 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ExperimentSpecError(f"source JSON is invalid: {exc}") from exc
     spec = _object(source, SOURCE_FIELDS, "experiment spec")
-    if spec["schema_version"] not in {1, 2}:
-        raise ExperimentSpecError("experiment spec schema_version must be 1 or 2")
+    if spec["schema_version"] not in {1, 2, 3}:
+        raise ExperimentSpecError("experiment spec schema_version must be 1, 2, or 3")
     spec_schema = spec["schema_version"]
+    frozen_research_snapshot = research_snapshot_commit(spec)
+    if spec_schema == 3 and (
+        authoritative_snapshot_commit != frozen_research_snapshot
+        or read_authoritative_file is None
+    ):
+        raise ExperimentSpecError(
+            "schema-3 compilation requires its exact authoritative research snapshot"
+        )
     route_id = _token(spec["route_id"], "route_id")
     if spec_relpath != expected_spec_relpath(route_id):
         raise ExperimentSpecError("experiment spec path does not match route_id")
@@ -865,11 +942,18 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             "operation_id": operation_id,
             **scientific_source,
         }
-        if spec_schema == 2:
+        if spec_schema in {2, 3}:
             try:
-                scientific = science_contract.validate_scientific_contract_v2(
-                    scientific, route_id, operation_id,
-                )
+                if spec_schema == 2:
+                    scientific = science_contract.validate_scientific_contract_v2(
+                        scientific, route_id, operation_id,
+                    )
+                else:
+                    scientific = science_contract.validate_scientific_contract_v3(
+                        scientific, route_id, operation_id,
+                        expected_snapshot_commit=authoritative_snapshot_commit,
+                        read_evidence_file=read_authoritative_file,
+                    )
             except science_contract.ScientificContractError as exc:
                 raise ExperimentSpecError(
                     f"operations.{operation_id} scientific contract is invalid: {exc}"
@@ -915,10 +999,11 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         manifest_preview = {"route_id": route_id, "operations": manifest_operations}
         try:
             validated_runtime = validate_runtime_spec(runtime, manifest_preview, operation_id)
+            supporting_schema = _supporting_contract_schema(spec_schema)
             asset = None
             if item["assets"] is not None:
                 asset = validate_asset_manifest({
-                    "schema_version": spec_schema, "route_id": route_id,
+                    "schema_version": supporting_schema, "route_id": route_id,
                     "operation_id": operation_id, "assets": item["assets"],
                 }, validated_runtime)
                 generated[asset_path] = json_bytes(asset)
@@ -928,14 +1013,14 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                     runtime=validated_runtime,
                 )
                 capability = validate_model_capability(
-                    {"schema_version": spec_schema, **capability_source},
+                    {"schema_version": supporting_schema, **capability_source},
                     validated_runtime, asset,
                 )
                 generated[capability_path] = json_bytes(capability)
             precision = None
             if item["precision"] is not None:
                 precision = validate_precision_certificate(
-                    {"schema_version": spec_schema, **item["precision"]},
+                    {"schema_version": supporting_schema, **item["precision"]},
                     validated_runtime, scientific,
                 )
                 generated[precision_path] = json_bytes({
@@ -994,7 +1079,9 @@ def compare_bundle(bundle: dict[str, bytes], read_bytes: Callable[[str], bytes])
 
 def _source_inputs_from_repo(
     repo: Path, spec_relpath: str, authoritative_main: str,
-) -> tuple[str, bytes, str, bytes, str, Callable[[str], bool]]:
+) -> tuple[
+    str, bytes, str, bytes, str, Callable[[str], bool], Callable[[str], bytes],
+]:
     repo = repo.resolve(strict=True)
     spec_relpath = _relpath(spec_relpath, "experiment spec", SPEC_DIRECTORY)
     spec_raw = _repo_read_bytes(repo, spec_relpath, "experiment spec")
@@ -1005,13 +1092,14 @@ def _source_inputs_from_repo(
     program_relpath = _relpath(
         program_relpath, "program_contract_relpath", PROGRAM_DIRECTORY,
     )
-    authoritative_commit, evidence_exists = _authoritative_evidence_resolver(
+    authoritative_commit, evidence_exists, read_authoritative_file = \
+        _authoritative_evidence_resolver(
         repo, source.get("rules_commit"), authoritative_main,
     )
     return (
         spec_relpath, spec_raw, program_relpath,
         _repo_read_bytes(repo, program_relpath, "program contract"),
-        authoritative_commit, evidence_exists,
+        authoritative_commit, evidence_exists, read_authoritative_file,
     )
 
 
@@ -1019,14 +1107,17 @@ def compile_from_repo(
     repo: Path, spec_relpath: str,
     authoritative_main: str = DEFAULT_AUTHORITATIVE_MAIN,
 ) -> dict[str, bytes]:
-    spec_relpath, spec_raw, _, program_raw, _, evidence_exists = _source_inputs_from_repo(
-        repo, spec_relpath, authoritative_main,
-    )
+    (
+        spec_relpath, spec_raw, _, program_raw, authoritative_commit,
+        evidence_exists, read_authoritative_file,
+    ) = _source_inputs_from_repo(repo, spec_relpath, authoritative_main)
     return compile_bundle(
         spec_relpath=spec_relpath,
         spec_raw=spec_raw,
         program_raw=program_raw,
         evidence_exists=evidence_exists,
+        authoritative_snapshot_commit=authoritative_commit,
+        read_authoritative_file=read_authoritative_file,
     )
 
 
@@ -1066,7 +1157,8 @@ def lint_from_repo(
                 "errors": [_lint_error("program_contract_relpath", "READ_FAILED", exc)],
             }
     try:
-        authoritative_commit, evidence_exists = _authoritative_evidence_resolver(
+        authoritative_commit, evidence_exists, read_authoritative_file = \
+            _authoritative_evidence_resolver(
             repo, source.get("rules_commit"), authoritative_main,
         )
         result = lint_bundle(
@@ -1075,6 +1167,8 @@ def lint_from_repo(
             read_repo_file=lambda relpath: _repo_read_bytes(
                 repo, relpath, "route repository asset",
             ),
+            authoritative_snapshot_commit=authoritative_commit,
+            read_authoritative_file=read_authoritative_file,
             return_bundle=return_bundle,
         )
         if return_bundle and not result["errors"]:
@@ -1093,14 +1187,14 @@ def lint_from_repo(
             )],
         }
     if require_current_schema and (
-        not isinstance(source, dict) or source.get("schema_version") != 2
+        not isinstance(source, dict) or source.get("schema_version") != 3
     ):
         errors = [
             *result["errors"],
             _lint_error(
                 "schema_version", "CURRENT_SCHEMA_REQUIRED",
-                "new experiment authoring requires schema_version 2; "
-                "schema_version 1 is historical read-only compatibility",
+                "new experiment authoring requires schema_version 3; "
+                "schema_version 1/2 is historical read-only compatibility",
             ),
         ]
         result = {

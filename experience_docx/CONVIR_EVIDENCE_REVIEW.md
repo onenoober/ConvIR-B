@@ -1,12 +1,20 @@
 # Convir Evidence Review
 
-Date: 2026-08-01
+Date: 2026-08-02
 
-Status: current server version `2.1.0` exposes exactly six read-only tools. The
+Status: current server version `2.2.0` exposes exactly six read-only tools. The
 redundant catalog-summary tool was removed because the completeness receipt
 already returns the same catalog identity. Immutable catalogs are cached by
 exact repository and commit in one bounded eight-entry process-local LRU;
 mutable cloud inventories are always rescanned. Historical phase status follows.
+Version 2.2.0 adds exact route, program, family, stage, mechanism, triggering
+route/terminal, terminal-state, decision and authorization filters. Program/family relationships are derived
+only from SHA-bound launch copies of the experiment spec and program contract;
+legacy evidence without these fields is `not_modeled`, and one malformed
+historical binding is a route-local `identity_conflict` rather than a catalog-
+wide failure. Schema-3 context also returns the frozen research snapshot,
+bottleneck class, hypothesis ids, design strategy and literature identifiers;
+the research context is included in cursor and evidence-bundle identity.
 Version 2.1.0 additionally accepts schema-3 conclusions and validates
 finalization-only provenance: terminal identity remains bound to the
 finalization commit while cloud session/lifecycle identity remains bound to the
@@ -77,8 +85,10 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   query requires an exact 40-character commit and rejects commits outside that
   main history.
 - Query coverage defaults to `all`; `indexed` and `unindexed` are explicit
-  narrowing options. Cursor identity binds the commit, catalog hash, filters,
-  position and experiment-log tree.
+  narrowing options. Exact relationship/terminal filters never infer values
+  from route ids or directory names. Cursor identity binds the commit, catalog
+  hash, terminal-bound research-context collection, filters, position and
+  experiment-log tree.
 - Each tool page is identical in MCP text and structured content. Complete
   JSON-RPC response lines, including request ID and newline, are capped at 32
   KiB. Oversized pages shrink only at complete-entry boundaries.
@@ -100,7 +110,7 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
-- `convir-ops` remains a separate six-tool lifecycle server at version `5.8.0`
+- `convir-ops` remains a separate six-tool lifecycle server at version `5.9.0`
   with protocol schema 4.
 
 ## P0 Project Completeness Receipt
@@ -240,5 +250,5 @@ Register this server from the same clean dedicated GitHub-main MCP worktree as
 `convir-ops`, under a short host key such as `convir_review`. Never point the
 host at a historical adoption or route worktree. After each accepted main
 update, fast-forward the dedicated worktree and restart the host; a fresh task
-must report version `2.1.0`, exactly six tools and source SHA-256 equal to that
+must report version `2.2.0`, exactly six tools and source SHA-256 equal to that
 GitHub-main commit. The process-local catalog cache begins empty after restart.

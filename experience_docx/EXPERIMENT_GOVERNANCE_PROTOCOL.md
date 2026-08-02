@@ -14,6 +14,15 @@ explanation, cheapest discriminating observation, matched baseline/budget,
 data roles, locked-test policy, and the exact actions for pass, inconclusive and
 fail.
 
+For a new schema-3 route, bind the read-only research update that selected the
+question: exact triggering terminal evidence, the current bottleneck, a finite
+set of live competing hypotheses, discriminating predictions, explicit
+falsifiers, stable DOI/arXiv/official-source identifiers with transferable
+claims and applicability limits, and the design-selection basis. A hypothesis without an observation
+that can count against it is not contract-ready. This binding preserves the
+reason for the next experiment; it does not inherit authorization from review
+prose or change the triggering terminal.
+
 For new routes, enumerate finite typed outcomes for every gate and freeze one
 complete, mutually exclusive decision table over their Cartesian product.
 `inconclusive_only` precision evidence may turn a provisional PASS into
@@ -24,8 +33,12 @@ Descriptive gates cannot change the terminal. Each terminal maps to a distinct
 authorization, next action, or family effect; changing only the label has no
 decision value.
 
-Choose the smallest experiment that can change a written next action. Do not
-run an experiment whose failure would leave the same choices unresolved.
+Choose the minimum sufficient decision experiment: the bounded design with
+adequate validity and precision that minimizes expected time-to-decision among
+the feasible options. Account for decision value, shared setup, information
+gained across live hypotheses, expected and worst-case cost, and early stopping.
+Do not run a low-power micro-experiment whose likely outcomes leave the same
+choices unresolved merely because its individual launch is cheap.
 
 ## Evidence Roles
 
@@ -55,9 +68,36 @@ untouched until scoring. Locked/sealed data is never debugging evidence.
 - Predeclare adaptive triggers, budgets and evidence reuse before results.
 - Respect natural groups with grouped splits/resampling when the claim
   generalizes across them.
+- When several live hypotheses share data preparation, inference or training
+  setup, prefer one predeclared multi-arm, factorial, fractional-factorial,
+  multi-fidelity or group-sequential contract if it distinguishes more of them
+  sooner without weakening evidence roles or multiplicity control.
+- Use multi-fidelity screening only when low-fidelity outcomes have a frozen
+  relation to the target estimand and cannot themselves authorize promotion.
+- Optimize expected time-to-decision, not optimistic runtime: include setup,
+  confirmation, invalidation, retry-prohibited failure and worst-case stopping
+  cost in the design comparison.
 
 Pair seeds, folds, samples and operators where possible. Missing cells,
 exclusions and failed units remain visible under a predeclared policy.
+
+## Research Update Boundary
+
+After an archived terminal, a read-only project-level update may identify the
+bottleneck, compare directly relevant route evidence with authoritative
+literature and rank no more than three next-route candidates. It must separate
+archived project facts, external facts, inference and missing evidence. It may
+not compute a new metric, revise a historical threshold or verdict, inspect an
+unauthorized data role, or authorize runtime work.
+
+Classify the terminal before route selection. Identity/evidence blockers stop;
+engineering failure uses the bounded repair policy; cancellation supports no
+scientific conclusion; INCONCLUSIVE permits only typed-closeout-authorized new
+evidence; scientific FAIL may motivate a changed hypothesis. A candidate must
+still be typed `adjacent`, `orthogonal` or `reopen`. `authorizes=NONE` and a
+stopped family require a permitted orthogonal dimension, verifiable reopen
+evidence or a formal amendment. User selection plus typed authorization is the
+boundary between read-only update and the next CONTRACT.
 
 ## Fairness And Precision
 

@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 import convir_evidence_catalog as catalog
 
@@ -66,6 +67,18 @@ def evidence_files(*records):
 
 
 class EvidenceCatalogTests(unittest.TestCase):
+    @staticmethod
+    def query_args(**overrides):
+        value = {
+            "coverage": "all", "term": [], "cursor": None, "limit": 100,
+            "route_ids": [], "program_ids": [], "family_ids": [],
+            "stage_ids": [], "mechanism_types": [], "trigger_route_ids": [],
+            "trigger_terminal_record_sha256s": [], "terminal_states": [],
+            "decisions": [], "authorizes": [],
+        }
+        value.update(overrides)
+        return SimpleNamespace(**value)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="convir evidence catalog ")
         self.repo = Path(self.temp.name) / "repo"
@@ -177,6 +190,54 @@ class EvidenceCatalogTests(unittest.TestCase):
         unhashed = dict(receipt)
         del unhashed["receipt_sha256"]
         self.assertEqual(receipt["receipt_sha256"], catalog.canonical_sha256(unhashed))
+
+    def test_relation_filters_are_exact_and_part_of_cursor_identity(self):
+        first = common_record("route-a", "A0", "run-a", "route-a", "a")
+        second = common_record("route-b", "B0", "run-b", "route-b", "b")
+        commit = self.commit_snapshot(
+            [first, second], evidence_files(first, second)
+        )
+        loaded = catalog.load_catalog(self.repo, commit)
+        for entry in loaded["entries"]:
+            for route in entry["routes"]:
+                suffix = route["route_id"][-1]
+                route["research_context"] = {
+                    "relationship_status": "modeled",
+                    "program_id": "program-1",
+                    "family_id": f"family-{suffix}",
+                    "stage_id": "screening",
+                    "mechanism_type": "adjacent" if suffix == "a" else "orthogonal",
+                    "trigger_route_ids": [f"prior-{suffix}"],
+                    "trigger_terminal_record_sha256s": [suffix * 64],
+                }
+        loaded["research_context_collection_sha256"] = catalog.canonical_sha256(
+            [route["research_context"] for entry in loaded["entries"]
+             for route in entry["routes"]]
+        )
+        selected = catalog.entries_response(
+            loaded, self.query_args(
+                program_ids=["program-1"], family_ids=["family-a"],
+                trigger_route_ids=["prior-a"],
+                trigger_terminal_record_sha256s=["a" * 64],
+            ),
+        )
+        self.assertEqual(1, selected["total_count"])
+        self.assertEqual("route-a", selected["entries"][0]["routes"][0]["route_id"])
+
+        first_page = catalog.entries_response(
+            loaded, self.query_args(
+                route_ids=["route-a", "route-b"], limit=1,
+            ),
+        )
+        self.assertTrue(first_page["has_more"])
+        with self.assertRaisesRegex(catalog.CatalogError, "cursor"):
+            catalog.entries_response(
+                loaded, self.query_args(
+                    route_ids=["route-a", "route-b"],
+                    family_ids=["family-a"], cursor=first_page["next_cursor"],
+                    limit=1,
+                ),
+            )
 
     def test_terminal_resolution_preserves_valid_chain_and_legacy_ambiguity(self):
         root = schema2_record("route-chain", "A0", "run-a0", "route-chain", "a")
