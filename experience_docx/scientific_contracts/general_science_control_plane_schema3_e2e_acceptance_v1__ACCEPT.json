@@ -1,0 +1,215 @@
+{
+  "competing_explanation": "A route-specific shortcut could appear successful without exercising the current compiler, generic lifecycle, evidence, and archive boundaries.",
+  "controls": [
+    "generic runner identity",
+    "write-once completion ledger",
+    "zero data, checkpoint, asset, and model access counters"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "integrity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "integrity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "unsafe_lifecycle_fails",
+        "terminal": "fail",
+        "when": {
+          "integrity": [
+            "pass"
+          ],
+          "lifecycle_safety": [
+            "unsafe"
+          ]
+        }
+      },
+      {
+        "id": "safe_lifecycle_passes",
+        "terminal": "pass",
+        "when": {
+          "integrity": [
+            "pass"
+          ],
+          "lifecycle_safety": [
+            "safe"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_lifecycle_is_inconclusive",
+        "terminal": "inconclusive",
+        "when": {
+          "integrity": [
+            "pass"
+          ],
+          "lifecycle_safety": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_schema3_control_plane_acceptance",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "inspect_schema3_control_plane_acceptance",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "archive_schema3_control_plane_acceptance",
+        "terminal": {
+          "authorizes": "ARCHIVE_ONLY",
+          "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "dataset access",
+    "checkpoint access",
+    "model execution",
+    "scientific performance claim",
+    "result-adaptive extension"
+  ],
+  "gates": [
+    {
+      "comparison_family": "schema3_no_data_lifecycle",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "lifecycle_completion_ratio",
+      "id": "integrity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "frozen identity, output, ledger, and protected-data controls",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_control_validation"
+    },
+    {
+      "comparison_family": "schema3_no_data_lifecycle",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "lifecycle_completion_ratio",
+      "id": "lifecycle_safety",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "metadata-only operation reports no model, data, checkpoint, or protected access",
+      "threshold": true,
+      "type": "safety",
+      "uncertainty_id": "deterministic_control_validation"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "no external assets",
+      "no protected data",
+      "no model execution",
+      "one completed control unit"
+    ],
+    "matched_budget": "one metadata-only lifecycle operation",
+    "primary_variable": "schema3_generic_control_plane_lifecycle",
+    "reference": "frozen schema-3 no-data acceptance contract"
+  },
+  "operation_id": "ACCEPT",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "engineering_debug",
+    "grouping_unit": "control_record",
+    "independent_group_count": 0,
+    "strata": [
+      {
+        "id": "no_data",
+        "independent_group_count": 0
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "completed frozen control units divided by required control units",
+    "direction": "higher",
+    "id": "lifecycle_completion_ratio",
+    "metric_id": "control_plane_terminal_integrity",
+    "strata": [
+      "no_data"
+    ],
+    "unit": "control_record"
+  },
+  "question": "Does the current schema-3 control plane complete the frozen no-data lifecycle while preserving every identity and protected-data boundary?",
+  "research_update_binding": {
+    "bottleneck_class": "engineering_capability",
+    "bottleneck_statement": "The schema-3 rules and MCP implementation pass isolated tests but have no archived terminal proving the current full no-data lifecycle and archive handoff.",
+    "design_selection": {
+      "decision_value": "One finite phase-gated route tests both the authoring closure and receipt-bound lifecycle while localizing any failure to a typed boundary.",
+      "expected_time_to_decision": "One metadata contract, one no-data workload unit, one evidence read, and one archive operation.",
+      "shared_setup": "All phases reuse the same route, rules snapshot, generated closure, and identity-bound no-data summary.",
+      "strategy": "group_sequential",
+      "worst_case_stopping_cost": "Stop at the first failed compiler, route-ready, plan, lifecycle, evidence, or archive boundary without retrying scientific work."
+    },
+    "hypotheses": [
+      {
+        "discriminating_prediction": "Finalize, route-ready, and plan accept one exact generated bundle without hand-authored derived files.",
+        "falsifier": "Any unchanged source or generated identity is rejected before launch or requires a route-specific lifecycle artifact.",
+        "id": "schema3_contract_closure",
+        "statement": "The current compiler and route-ready gate can produce and verify one complete schema-3 runnable closure from the frozen sources."
+      },
+      {
+        "discriminating_prediction": "One positive workload milestone, typed terminal, SHA-bound evidence page, conclusion contract, and terminal archive complete under the same route identity.",
+        "falsifier": "The lifecycle, evidence, conclusion, or archive boundary fails despite the frozen no-data contract and exact identities.",
+        "id": "receipt_lifecycle_archive",
+        "statement": "The registered MCP and generic lifecycle can carry one data-free unit through receipt-bound terminal evidence and archive handoff."
+      }
+    ],
+    "literature_basis": [
+      {
+        "applicability_limit": "The protocol specification does not prove this repository's Git, cloud lifecycle, evidence, or archive invariants.",
+        "identifier": "https://www.jsonrpc.org/specification",
+        "source_status": "official_protocol",
+        "task": "bounded JSON-RPC control-plane interoperability",
+        "transferable_claim": "A request-response control plane can bind method calls and typed results through stable protocol objects."
+      }
+    ],
+    "snapshot_commit": "b9d777d2b1f4f68d1a4089f5c4c8260bce62f9e8",
+    "trigger_terminals": [],
+    "trigger_type": "program_foundation"
+  },
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v1",
+  "schema_version": 3,
+  "uncertainty": {
+    "comparison_family": "schema3_no_data_lifecycle",
+    "confidence_level": 0.95,
+    "id": "deterministic_control_validation",
+    "independent_unit": "control_record",
+    "method_id": "frozen_boolean_control_checks"
+  }
+}

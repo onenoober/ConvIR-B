@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/general_science_control_plane_schema3_e2e_acceptance_v1.json",
+  "experiment_spec_sha256": "e405a885170bfb2567d5b564a5e3a68877f9d1f10d41b6207f3d9123aaff34e6",
+  "operations": {
+    "ACCEPT": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "ARCHIVE_ONLY",
+          "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "general_science_control_plane_schema3_e2e_acceptance_v1_closeout.json",
+      "heartbeat_timeout_seconds": 180,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "schema3_e2e_acceptance",
+      "monitor_profile": "short",
+      "output_id": "general-science-control-plane-schema3-e2e-acceptance-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/general_science_control_plane_schema3_e2e_acceptance_v1.json",
+  "program_contract_sha256": "3b332b4a838e9191e92c898873c0417ff91bff368bcf5ce76d41927e35133257",
+  "route_card_relpath": "experience_docx/experiment_cards/general_science_control_plane_schema3_e2e_acceptance_v1.md",
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v1",
+  "rules_commit": "8ba199104a54ea82374d545ac3545fa9405ba8de",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "ACCEPT": "experience_docx/scientific_contracts/general_science_control_plane_schema3_e2e_acceptance_v1__ACCEPT.json"
+  }
+}

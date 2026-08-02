@@ -1,0 +1,296 @@
+{
+  "schema_version": 3,
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v1",
+  "rules_commit": "8ba199104a54ea82374d545ac3545fa9405ba8de",
+  "title": "General Science Control Plane Schema-3 E2E Acceptance v1",
+  "rationale": "Exercise the current schema-3 contract, schema-6 manifest, generic lifecycle, receipt-bound evidence, conclusion, and archive path with zero external assets, no data access, no model call, and no scientific performance claim.",
+  "first_operation": "ACCEPT",
+  "program_contract_relpath": "experience_docx/research_programs/general_science_control_plane_schema3_e2e_acceptance_v1.json",
+  "operations": {
+    "ACCEPT": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "schema3_e2e_acceptance",
+        "require_gpu": false,
+        "output_id": "general-science-control-plane-schema3-e2e-acceptance-v1-r1",
+        "closeout_filename": "general_science_control_plane_schema3_e2e_acceptance_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "short",
+        "heartbeat_timeout_seconds": 180,
+        "min_free_gpu_mib": 0,
+        "max_gpu_utilization_pct": 100
+      },
+      "program_authorization": {
+        "program_id": "general_science_control_plane_schema3_acceptance",
+        "stage_id": "acceptance",
+        "family_id": "schema3_lifecycle_acceptance",
+        "mechanism_type": "adjacent",
+        "evidence_role": "engineering_debug",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [],
+        "adjacent_sequence": 1,
+        "orthogonal_changes": [],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Does the current schema-3 control plane complete the frozen no-data lifecycle while preserving every identity and protected-data boundary?",
+        "research_update_binding": {
+          "snapshot_commit": "b9d777d2b1f4f68d1a4089f5c4c8260bce62f9e8",
+          "trigger_type": "program_foundation",
+          "trigger_terminals": [],
+          "bottleneck_class": "engineering_capability",
+          "bottleneck_statement": "The schema-3 rules and MCP implementation pass isolated tests but have no archived terminal proving the current full no-data lifecycle and archive handoff.",
+          "literature_basis": [
+            {
+              "identifier": "https://www.jsonrpc.org/specification",
+              "source_status": "official_protocol",
+              "task": "bounded JSON-RPC control-plane interoperability",
+              "transferable_claim": "A request-response control plane can bind method calls and typed results through stable protocol objects.",
+              "applicability_limit": "The protocol specification does not prove this repository's Git, cloud lifecycle, evidence, or archive invariants."
+            }
+          ],
+          "hypotheses": [
+            {
+              "id": "schema3_contract_closure",
+              "statement": "The current compiler and route-ready gate can produce and verify one complete schema-3 runnable closure from the frozen sources.",
+              "discriminating_prediction": "Finalize, route-ready, and plan accept one exact generated bundle without hand-authored derived files.",
+              "falsifier": "Any unchanged source or generated identity is rejected before launch or requires a route-specific lifecycle artifact."
+            },
+            {
+              "id": "receipt_lifecycle_archive",
+              "statement": "The registered MCP and generic lifecycle can carry one data-free unit through receipt-bound terminal evidence and archive handoff.",
+              "discriminating_prediction": "One positive workload milestone, typed terminal, SHA-bound evidence page, conclusion contract, and terminal archive complete under the same route identity.",
+              "falsifier": "The lifecycle, evidence, conclusion, or archive boundary fails despite the frozen no-data contract and exact identities."
+            }
+          ],
+          "design_selection": {
+            "strategy": "group_sequential",
+            "decision_value": "One finite phase-gated route tests both the authoring closure and receipt-bound lifecycle while localizing any failure to a typed boundary.",
+            "expected_time_to_decision": "One metadata contract, one no-data workload unit, one evidence read, and one archive operation.",
+            "shared_setup": "All phases reuse the same route, rules snapshot, generated closure, and identity-bound no-data summary.",
+            "worst_case_stopping_cost": "Stop at the first failed compiler, route-ready, plan, lifecycle, evidence, or archive boundary without retrying scientific work."
+          }
+        },
+        "population": {
+          "evidence_role": "engineering_debug",
+          "grouping_unit": "control_record",
+          "independent_group_count": 0,
+          "strata": [
+            {
+              "id": "no_data",
+              "independent_group_count": 0
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "schema3_generic_control_plane_lifecycle",
+          "reference": "frozen schema-3 no-data acceptance contract",
+          "matched_budget": "one metadata-only lifecycle operation",
+          "fixed_factors": [
+            "no external assets",
+            "no protected data",
+            "no model execution",
+            "one completed control unit"
+          ]
+        },
+        "primary_estimand": {
+          "id": "lifecycle_completion_ratio",
+          "metric_id": "control_plane_terminal_integrity",
+          "direction": "higher",
+          "aggregation": "completed frozen control units divided by required control units",
+          "unit": "control_record",
+          "strata": [
+            "no_data"
+          ]
+        },
+        "controls": [
+          "generic runner identity",
+          "write-once completion ledger",
+          "zero data, checkpoint, asset, and model access counters"
+        ],
+        "uncertainty": {
+          "id": "deterministic_control_validation",
+          "method_id": "frozen_boolean_control_checks",
+          "confidence_level": 0.95,
+          "independent_unit": "control_record",
+          "comparison_family": "schema3_no_data_lifecycle"
+        },
+        "gates": [
+          {
+            "id": "integrity",
+            "type": "integrity",
+            "estimand_id": "lifecycle_completion_ratio",
+            "reference": "frozen identity, output, ledger, and protected-data controls",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "deterministic_control_validation",
+            "comparison_family": "schema3_no_data_lifecycle",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "lifecycle_safety",
+            "type": "safety",
+            "estimand_id": "lifecycle_completion_ratio",
+            "reference": "metadata-only operation reports no model, data, checkpoint, or protected access",
+            "direction": "min",
+            "threshold": true,
+            "uncertainty_id": "deterministic_control_validation",
+            "comparison_family": "schema3_no_data_lifecycle",
+            "decision_role": "decisive",
+            "outcomes": [
+              "safe",
+              "unsafe",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "safe"
+          }
+        ],
+        "competing_explanation": "A route-specific shortcut could appear successful without exercising the current compiler, generic lifecycle, evidence, and archive boundaries.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+                "authorizes": "ARCHIVE_ONLY"
+              },
+              "next_action_id": "archive_schema3_control_plane_acceptance",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "stop_schema3_control_plane_acceptance",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_INCONCLUSIVE",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "inspect_schema3_control_plane_acceptance",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "integrity_veto",
+              "when": {
+                "integrity": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "unsafe_lifecycle_fails",
+              "when": {
+                "integrity": [
+                  "pass"
+                ],
+                "lifecycle_safety": [
+                  "unsafe"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "safe_lifecycle_passes",
+              "when": {
+                "integrity": [
+                  "pass"
+                ],
+                "lifecycle_safety": [
+                  "safe"
+                ]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "unresolved_lifecycle_is_inconclusive",
+              "when": {
+                "integrity": [
+                  "pass"
+                ],
+                "lifecycle_safety": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "dataset access",
+          "checkpoint access",
+          "model execution",
+          "scientific performance claim",
+          "result-adaptive extension"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/run_general_science_control_plane_schema3_e2e_acceptance.py",
+        "timeout_seconds": 240,
+        "expected_wall_seconds": 65,
+        "total_units": 1,
+        "evidence_role": "engineering_debug",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/acceptance_summary.json",
+            "destination_filename": "general_science_control_plane_schema3_e2e_acceptance_v1_summary.json",
+            "required": true,
+            "max_bytes": 65536
+          },
+          {
+            "source_relpath": "workload/general_science_control_plane_schema3_e2e_acceptance_v1_review_facts.json",
+            "destination_filename": "general_science_control_plane_schema3_e2e_acceptance_v1_review_facts.json",
+            "required": true,
+            "max_bytes": 65536
+          }
+        ],
+        "engineering_contract": {
+          "mode": "metadata_only",
+          "max_seconds": 30,
+          "cost_contract": null
+        },
+        "precision_contract": {
+          "mode": "not_applicable",
+          "rationale": "Zero-data engineering acceptance has no sampling uncertainty."
+        }
+      },
+      "assets": null,
+      "capability": null,
+      "precision": null
+    }
+  }
+}
