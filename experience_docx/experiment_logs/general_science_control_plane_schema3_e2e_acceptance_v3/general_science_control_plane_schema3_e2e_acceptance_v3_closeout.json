@@ -1,0 +1,35 @@
+{
+  "authorizes": "ARCHIVE_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+  "decision_rule_id": "safe_lifecycle_passes",
+  "details": {
+    "acceptance_kind": "schema3_generic_control_plane_no_data",
+    "scientific_authorization": "NONE"
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "general_science_control_plane_schema3_e2e_acceptance_v3_raw_artifact_receipt.json": "282a524b0064bfdd31954537a140aaec64a3ad35f3a3c2eef087b409ad4ff47a",
+    "general_science_control_plane_schema3_e2e_acceptance_v3_review_facts.json": "d09f7d07450e86f26a389fd68f7f6b2478ac13666a876a5aa0a652f382b32f8c",
+    "general_science_control_plane_schema3_e2e_acceptance_v3_summary.json": "ea7aff5e8ffaefd87d6cdae61445fdc7ad0c4baae520bf3eec8329be170047dc"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "integrity": "pass",
+    "lifecycle_safety": "safe"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "archive_schema3_control_plane_acceptance",
+  "operation_id": "ACCEPT",
+  "returncode": 0,
+  "route_commit": "331e8922ae7b415bedf0e85f377cc74048465198",
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v3",
+  "run_id": "general-science-control-plane-schema3-e2e-acceptance-v3-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": []
+}

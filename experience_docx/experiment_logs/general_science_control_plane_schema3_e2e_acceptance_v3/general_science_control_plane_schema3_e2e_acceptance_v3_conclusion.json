@@ -1,0 +1,26 @@
+{
+  "schema_version": 3,
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v3",
+  "operation_id": "ACCEPT",
+  "run_id": "general-science-control-plane-schema3-e2e-acceptance-v3-r1",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "SCHEMA3_CONTROL_PLANE_E2E_ACCEPTANCE_PASS",
+  "authorizes": "ARCHIVE_ONLY",
+  "primary_result": "The frozen no-data schema-3 lifecycle completed 1 of 1 required control units, with a completion ratio of 1.0 against the required 1.0, and produced the predeclared typed PASS terminal.",
+  "gate_reasons": [
+    "integrity=pass: lifecycle_completion_ratio was 1.0 and equaled the frozen threshold of 1.0.",
+    "lifecycle_safety=safe: protected_data_access_count was 0 and equaled its limit of 0; dataset, checkpoint, external-asset, and model access counts were also 0."
+  ],
+  "competing_explanation": "A route-specific control-plane shortcut was not observed: the result passed through the canonical compiler bundle, generic runner and lifecycle, completed-unit ledger, raw-artifact receipt, typed closeout, and receipt-bound evidence interface.",
+  "limitations": [
+    "The evidence role is engineering_debug and authorizes archive only; it makes no scientific-performance, promotion, deployment, or protected-data claim.",
+    "The acceptance covers one metadata-only control unit and intentionally does not exercise datasets, checkpoints, models, GPUs, or protected evidence roles."
+  ],
+  "primary_fact_ids": [
+    "lifecycle_completion_ratio"
+  ],
+  "gate_fact_ids": [
+    "lifecycle_completion_ratio",
+    "protected_data_access_count"
+  ]
+}

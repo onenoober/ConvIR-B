@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 4
+  },
+  "entry_count": 5,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "af57e5df6176d2a6b5b8bb7ce8a58b4f09fe339b1fbdedefa5814e4d0e155655",
+  "operation_id": "ACCEPT",
+  "route_commit": "331e8922ae7b415bedf0e85f377cc74048465198",
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v3",
+  "run_id": "general-science-control-plane-schema3-e2e-acceptance-v3-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 4286
+}

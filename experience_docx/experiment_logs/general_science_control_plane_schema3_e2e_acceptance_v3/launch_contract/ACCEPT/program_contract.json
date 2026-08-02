@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "program_id": "general_science_control_plane_schema3_acceptance",
+  "objective": "Verify the current schema-3 experiment workflow and registered control-plane lifecycle with one data-free engineering acceptance route.",
+  "source_anchors": [
+    {
+      "id": "current_control_plane",
+      "reference": "GitHub main control-plane commit 37a32bb7182e62ef1656c6f9bf6b0b11d451762d.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "control_plane": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "acceptance": {
+      "evidence_roles": [
+        "engineering_debug"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "schema3_lifecycle_acceptance"
+      ]
+    }
+  },
+  "route_families": {
+    "schema3_lifecycle_acceptance": {
+      "core_assumption": "The schema-3 compiler, generic lifecycle, evidence handoff, and terminal archive can complete one data-free route without route-specific infrastructure.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the predeclared schema-3 no-data lifecycle acceptance reaches a typed terminal.",
+      "reopen_evidence_types": [
+        "new_control_plane_revision"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "control_plane_semantics"
+  ],
+  "amendments": []
+}

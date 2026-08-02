@@ -1,0 +1,22 @@
+{
+  "acceptance_kind": "schema3_generic_control_plane_no_data",
+  "checkpoint_access": 0,
+  "completed_control_units": 1,
+  "dataset_access": 0,
+  "external_assets_read": 0,
+  "gate_outcomes": {
+    "integrity": "pass",
+    "lifecycle_safety": "safe"
+  },
+  "lifecycle_completion_ratio": 1.0,
+  "model_calls": 0,
+  "operation_id": "ACCEPT",
+  "protected_data_access_count": 0,
+  "protected_data_access_limit": 0,
+  "protected_data_touched": false,
+  "required_completion_ratio": 1.0,
+  "required_control_units": 1,
+  "route_id": "general_science_control_plane_schema3_e2e_acceptance_v3",
+  "run_id": "general-science-control-plane-schema3-e2e-acceptance-v3-r1",
+  "schema_version": 1
+}
