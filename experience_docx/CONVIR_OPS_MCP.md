@@ -104,7 +104,10 @@ single-factor, multi-arm, factorial, multi-fidelity or group-sequential design
 by decision value, expected time-to-decision, shared setup and worst-case
 stopping cost. Authoring requires the binding snapshot to equal live main;
 route-ready and planning later require it to remain an ancestor of current main
-and verify terminal records from that frozen commit. `validity_veto` makes failed
+and verify terminal records from that frozen commit. Every operation shares the
+same update. `program_foundation` additionally proves an archive-absent program
+id, zero used attempts across its families and a first adjacent claim.
+`validity_veto` makes failed
 identity, integrity or coverage invalidate all scientific outcomes;
 `inconclusive_only` precision cannot hide a decisive FAIL; descriptive gates
 cannot affect a terminal. Route code writes `gate_outcomes`; the generic lifecycle derives state, decision,

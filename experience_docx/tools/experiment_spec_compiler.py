@@ -882,7 +882,7 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     frozen_research_snapshot = research_snapshot_commit(spec)
     if spec_schema == 3 and (
         authoritative_snapshot_commit != frozen_research_snapshot
-        or read_authoritative_file is None
+        or read_authoritative_file is None or evidence_exists is None
     ):
         raise ExperimentSpecError(
             "schema-3 compilation requires its exact authoritative research snapshot"
@@ -913,6 +913,8 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
     scientific_paths = {}
     generated: dict[str, bytes] = {}
     route_invariant = None
+    route_research_update = None
+    archived_program_ids = None
     for operation_id, source_operation in operations.items():
         _token(operation_id, "operation_id")
         item = _object(source_operation, OPERATION_SOURCE_FIELDS, f"operations.{operation_id}")
@@ -921,7 +923,7 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             raise ExperimentSpecError(f"operations.{operation_id}.operation must be an object")
         claim = item["program_authorization"]
         try:
-            program_contract.validate_route_authorization(
+            validated_claim = program_contract.validate_route_authorization(
                 effective_program, claim, evidence_exists=evidence_exists,
             )
         except program_contract.ProgramContractError as exc:
@@ -963,6 +965,36 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             )
         else:
             operation = operation_source
+        if spec_schema == 3:
+            research_update = scientific["research_update_binding"]
+            if route_research_update is None:
+                route_research_update = research_update
+            elif research_update != route_research_update:
+                raise ExperimentSpecError(
+                    "all schema-3 operations must share one research update binding"
+                )
+            if research_update["trigger_type"] == "program_foundation":
+                if validated_claim["mechanism_type"] != "adjacent" \
+                        or any(
+                            family["attempts_used"] != 0
+                            for family in effective_program["route_families"].values()
+                        ):
+                    raise ExperimentSpecError(
+                        "program_foundation requires the first adjacent route of an unused program"
+                    )
+                if archived_program_ids is None:
+                    if evidence_exists(science_contract.TERMINAL_INDEX_RELPATH):
+                        archived_program_ids = set(
+                            science_contract.archived_terminal_program_ids(
+                                read_authoritative_file,
+                            ).values()
+                        )
+                    else:
+                        archived_program_ids = set()
+                if effective_program["program_id"] in archived_program_ids:
+                    raise ExperimentSpecError(
+                        "program_foundation program_id already exists in archived terminal evidence"
+                    )
         manifest_operations[operation_id] = operation
         scientific_path = _scientific_path(route_id, operation_id)
         scientific_paths[operation_id] = scientific_path

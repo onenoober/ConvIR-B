@@ -296,6 +296,15 @@ class ScientificContractTests(unittest.TestCase):
         ):
             SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
 
+        value = contract_v3()
+        value["research_update_binding"]["literature_basis"][0][
+            "identifier"
+        ] = "unverifiable citation label"
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "DOI, arXiv id, or official HTTPS",
+        ):
+            SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
     def test_schema3_rejects_wrong_snapshot_or_terminal_record_sha(self):
         raw_index, terminal_sha = terminal_index_bytes()
         with self.assertRaisesRegex(SCIENCE.ScientificContractError, "authoritative main"):

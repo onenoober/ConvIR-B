@@ -16,6 +16,7 @@ import convir_evidence_catalog as catalog
 import convir_evidence_cloud_inventory as inventory
 import convirctl
 import legacy_backfill_registry as legacy
+import scientific_contract as science_contract
 
 
 SERVER_NAME = "convir-evidence-review"
@@ -520,7 +521,26 @@ def _bound_contract_json(repo, commit, record, source_prefix):
     return binding, value
 
 
-def _terminal_research_context(repo, commit, record, records_by_sha=None):
+def _snapshot_file_exists(repo, commit, relpath):
+    completed = subprocess.run(
+        ["/usr/bin/git", "-C", str(repo), "cat-file", "-e", f"{commit}:{relpath}"],
+        capture_output=True, timeout=30, check=False,
+    )
+    return completed.returncode == 0
+
+
+def _snapshot_research_file(repo, commit, relpath):
+    limit = (
+        science_contract.MAX_TERMINAL_INDEX_BYTES
+        if relpath == science_contract.TERMINAL_INDEX_RELPATH
+        else MAX_RESEARCH_CONTEXT_FILE_BYTES
+    )
+    return catalog.git_bytes(
+        repo, ["show", f"{commit}:{relpath}"], limit=limit,
+    )
+
+
+def _terminal_research_context(repo, commit, record, snapshot_cache=None):
     if record.get("schema_version") != 2:
         return {
             "relationship_status": "not_modeled",
@@ -591,6 +611,7 @@ def _terminal_research_context(repo, commit, record, records_by_sha=None):
             catalog.git_text(
                 repo, "merge-base", "--is-ancestor", research_snapshot, commit,
             )
+            cache = snapshot_cache if snapshot_cache is not None else {}
             triggers = update["trigger_terminals"]
             trigger_type = update["trigger_type"]
             valid_triggers = (
@@ -605,6 +626,36 @@ def _terminal_research_context(repo, commit, record, records_by_sha=None):
                     "terminal research trigger contract differs",
                     state="IDENTITY_CONFLICT", exit_code=3,
                 )
+            route_updates = []
+            for route_operation in operations.values():
+                route_scientific = route_operation.get("scientific_contract") \
+                    if isinstance(route_operation, dict) else None
+                route_update = route_scientific.get("research_update_binding") \
+                    if isinstance(route_scientific, dict) else None
+                route_updates.append(route_update)
+            if any(route_update != update for route_update in route_updates):
+                raise ReviewError(
+                    "terminal route operations do not share one research update",
+                    state="IDENTITY_CONFLICT", exit_code=3,
+                )
+            snapshot_records = {}
+            if trigger_type == "post_terminal":
+                records_key = ("terminal_records", research_snapshot)
+                if records_key not in cache:
+                    if not _snapshot_file_exists(
+                            repo, research_snapshot,
+                            science_contract.TERMINAL_INDEX_RELPATH):
+                        raise ReviewError(
+                            "frozen research snapshot has no terminal index",
+                            state="IDENTITY_CONFLICT", exit_code=3,
+                        )
+                    _, frozen_records, _ = catalog.load_terminal_records(
+                        repo, research_snapshot,
+                    )
+                    cache[records_key] = {
+                        item["record_sha256"]: item for item in frozen_records
+                    }
+                snapshot_records = cache[records_key]
             normalized_triggers = []
             for trigger in triggers:
                 if not isinstance(trigger, dict) \
@@ -619,20 +670,52 @@ def _terminal_research_context(repo, commit, record, records_by_sha=None):
                         "terminal research trigger identity differs",
                         state="IDENTITY_CONFLICT", exit_code=3,
                     )
-                prior = (records_by_sha or {}).get(
-                    trigger["terminal_record_sha256"]
-                )
-                if records_by_sha is not None and (
+                prior = snapshot_records.get(trigger["terminal_record_sha256"])
+                if trigger_type == "post_terminal" and (
                     prior is None or prior.get("route_id") != trigger["route_id"]
                 ):
                     raise ReviewError(
-                        "terminal research trigger is absent from the snapshot",
+                        "terminal research trigger is absent from the frozen snapshot",
                         state="IDENTITY_CONFLICT", exit_code=3,
                     )
                 normalized_triggers.append({
                     "route_id": trigger["route_id"],
                     "terminal_record_sha256": trigger["terminal_record_sha256"],
                 })
+            if trigger_type == "program_foundation":
+                program_key = ("program_ids", research_snapshot)
+                if program_key not in cache:
+                    if _snapshot_file_exists(
+                            repo, research_snapshot,
+                            science_contract.TERMINAL_INDEX_RELPATH):
+                        cache[program_key] = set(
+                            science_contract.archived_terminal_program_ids(
+                                lambda relpath: _snapshot_research_file(
+                                    repo, research_snapshot, relpath,
+                                )
+                            ).values()
+                        )
+                    else:
+                        cache[program_key] = set()
+                families = program.get("route_families")
+                selected_family = families.get(claim["family_id"]) \
+                    if isinstance(families, dict) else None
+                family_values = families.values() \
+                    if isinstance(families, dict) else [None]
+                if claim["program_id"] in cache[program_key] \
+                        or claim["mechanism_type"] != "adjacent" \
+                        or claim.get("adjacent_sequence") != 1 \
+                        or not isinstance(selected_family, dict) \
+                        or selected_family.get("state") != "open" \
+                        or any(
+                            not isinstance(family, dict)
+                            or family.get("attempts_used") != 0
+                            for family in family_values
+                        ):
+                    raise ReviewError(
+                        "terminal program_foundation is not a first-route program binding",
+                        state="IDENTITY_CONFLICT", exit_code=3,
+                    )
             hypotheses = update["hypotheses"]
             literature = update["literature_basis"]
             design = update["design_selection"]
@@ -698,6 +781,7 @@ def _catalog_with_research_context(repo, commit, loaded):
     _, records, _ = catalog.load_terminal_records(repo, commit)
     by_sha = {record["record_sha256"]: record for record in records}
     entries = []
+    snapshot_cache = {}
     for entry in loaded["entries"]:
         routes = []
         for route in entry.get("routes", []):
@@ -708,7 +792,9 @@ def _catalog_with_research_context(repo, commit, loaded):
             record = by_sha.get(selected[0]["record_sha256"]) \
                 if len(selected) == 1 else None
             context = (
-                _terminal_research_context(repo, commit, record, by_sha)
+                _terminal_research_context(
+                    repo, commit, record, snapshot_cache,
+                )
                 if record is not None else {
                     "relationship_status": "not_modeled",
                     "reason": "route_has_no_unique_selected_terminal",
@@ -1132,10 +1218,7 @@ def _prepare_evidence_bundle(args):
         catalog.terminal_summary(item)
         for item in sorted(route_records, key=lambda value: value["index_line"])
     ]
-    research_context = _terminal_research_context(
-        repo, commit, record,
-        {item["record_sha256"]: item for item in records},
-    )
+    research_context = _terminal_research_context(repo, commit, record)
     bundle_sha256 = catalog.canonical_sha256({
         "snapshot_commit": commit,
         "catalog_sha256": requested_catalog_sha256,

@@ -343,18 +343,28 @@ def _sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def _compiler_research_evidence(repo: Path, source: dict[str, Any]) -> dict[str, Any]:
+def _compiler_evidence_context(
+    repo: Path, source: dict[str, Any], fallback_commit: str,
+) -> dict[str, Any]:
     try:
         research_snapshot = compiler.research_snapshot_commit(source)
     except compiler.ExperimentSpecError as exc:
         raise RepairError(f"research snapshot binding is invalid: {exc}") from exc
-    if research_snapshot is None:
-        return {}
-    git(repo, "cat-file", "-e", f"{research_snapshot}^{{commit}}")
-    return {
-        "authoritative_snapshot_commit": research_snapshot,
-        "read_authoritative_file": lambda path: show(repo, research_snapshot, path),
+    evidence_commit = research_snapshot or fallback_commit
+    git(repo, "cat-file", "-e", f"{evidence_commit}^{{commit}}")
+    result = {
+        "evidence_exists": lambda path: show_optional(
+            repo, evidence_commit, path,
+        ) is not None,
     }
+    if research_snapshot is not None:
+        result.update({
+            "authoritative_snapshot_commit": research_snapshot,
+            "read_authoritative_file": lambda path: show(
+                repo, research_snapshot, path,
+            ),
+        })
+    return result
 
 
 def _entrypoint_asset(operation: dict[str, Any], entrypoint: str) -> dict[str, Any]:
@@ -433,8 +443,7 @@ def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: 
         raise RepairError("schema-6 experiment spec identity is not synchronized")
     bundle = compiler.compile_bundle(
         spec_relpath=spec_path, spec_raw=new_spec_raw, program_raw=program_raw,
-        evidence_exists=lambda path: show_optional(repo, snapshot, path) is not None,
-        **_compiler_research_evidence(repo, new_source),
+        **_compiler_evidence_context(repo, new_source, snapshot),
     )
     mismatches = compiler.compare_bundle(
         bundle, lambda path: show(repo, snapshot, path),
@@ -518,10 +527,9 @@ def validate_finalization_repair(
         raise RepairError("finalization experiment spec identity is not synchronized")
     bundle = compiler.compile_bundle(
         spec_relpath=spec_path, spec_raw=new_spec_raw, program_raw=program_raw,
-        evidence_exists=lambda path: show_optional(
-            repo, authoritative_commit or snapshot, path,
-        ) is not None,
-        **_compiler_research_evidence(repo, new_source),
+        **_compiler_evidence_context(
+            repo, new_source, authoritative_commit or snapshot,
+        ),
     )
     mismatches = compiler.compare_bundle(
         bundle, lambda path: show(repo, snapshot, path),

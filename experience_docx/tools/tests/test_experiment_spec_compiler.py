@@ -194,6 +194,30 @@ def sources_v3(rules_commit="a" * 40, terminal_record_sha256="b" * 64):
     return program, spec
 
 
+def archived_program_snapshot(program_id="restoration_program"):
+    program_path = (
+        "experience_docx/experiment_logs/prior/launch_contract/A0/program.json"
+    )
+    program_raw = COMPILER.json_bytes({"program_id": program_id})
+    record = {
+        "schema_version": 2,
+        "route_id": "prior-route",
+        "contract_bundle": [{
+            "source_path": "experience_docx/research_programs/prior.json",
+            "path": program_path,
+            "bytes": len(program_raw),
+            "sha256": hashlib.sha256(program_raw).hexdigest(),
+        }],
+    }
+    raw_line = json.dumps(
+        record, sort_keys=True, separators=(",", ":"),
+    ).encode("utf-8")
+    return {
+        COMPILER.science_contract.TERMINAL_INDEX_RELPATH: raw_line + b"\n",
+        program_path: program_raw,
+    }
+
+
 class ExperimentSpecCompilerTests(unittest.TestCase):
     def git(self, repo, *args):
         return subprocess.run(
@@ -328,8 +352,30 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         ):
             COMPILER.research_snapshot_commit(spec)
 
+        program, spec = sources_v3(terminal_record_sha256=terminal_sha)
+        second = copy.deepcopy(spec["operations"]["ACCEPT"])
+        second["scientific_contract"]["research_update_binding"][
+            "bottleneck_statement"
+        ] = "A different route-level update must not be hidden in another operation."
+        spec["operations"]["SECOND"] = second
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "share one research update binding",
+        ):
+            COMPILER.compile_bundle(
+                spec_relpath="experience_docx/experiment_specs/final_slim.json",
+                spec_raw=COMPILER.json_bytes(spec),
+                program_raw=COMPILER.json_bytes(program),
+                evidence_exists=lambda _: True,
+                authoritative_snapshot_commit="a" * 40,
+                read_authoritative_file=lambda _: raw_index,
+            )
+
     def test_schema3_program_foundation_compiles_without_terminal_index(self):
         program, spec = sources_v3()
+        program["route_families"]["selector_family"]["attempts_used"] = 0
+        spec["operations"]["ACCEPT"]["program_authorization"][
+            "adjacent_sequence"
+        ] = 1
         binding = spec["operations"]["ACCEPT"]["scientific_contract"][
             "research_update_binding"
         ]
@@ -339,7 +385,9 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             spec_relpath="experience_docx/experiment_specs/final_slim.json",
             spec_raw=COMPILER.json_bytes(spec),
             program_raw=COMPILER.json_bytes(program),
-            evidence_exists=lambda _: True,
+            evidence_exists=lambda path: (
+                path != COMPILER.science_contract.TERMINAL_INDEX_RELPATH
+            ),
             authoritative_snapshot_commit="a" * 40,
             read_authoritative_file=lambda _: (_ for _ in ()).throw(
                 AssertionError("foundation must not read a terminal index")
@@ -352,6 +400,44 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             "program_foundation",
             scientific["research_update_binding"]["trigger_type"],
         )
+
+    def test_schema3_program_foundation_rejects_existing_or_noninitial_program(self):
+        program, spec = sources_v3()
+        program["route_families"]["selector_family"]["attempts_used"] = 0
+        authorization = spec["operations"]["ACCEPT"]["program_authorization"]
+        authorization["adjacent_sequence"] = 1
+        binding = spec["operations"]["ACCEPT"]["scientific_contract"][
+            "research_update_binding"
+        ]
+        binding["trigger_type"] = "program_foundation"
+        binding["trigger_terminals"] = []
+        files = archived_program_snapshot()
+        arguments = {
+            "spec_relpath": "experience_docx/experiment_specs/final_slim.json",
+            "spec_raw": COMPILER.json_bytes(spec),
+            "program_raw": COMPILER.json_bytes(program),
+            "evidence_exists": lambda path: path in files,
+            "authoritative_snapshot_commit": "a" * 40,
+            "read_authoritative_file": lambda path: files[path],
+        }
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "already exists in archived terminal",
+        ):
+            COMPILER.compile_bundle(**arguments)
+
+        authorization["mechanism_type"] = "orthogonal"
+        authorization["adjacent_sequence"] = None
+        authorization["orthogonal_changes"] = [{
+            "dimension": "measurement_target",
+            "reason": "This declares a different target but is not a foundation mechanism.",
+        }]
+        arguments["spec_raw"] = COMPILER.json_bytes(spec)
+        arguments["evidence_exists"] = lambda path: False
+        arguments["read_authoritative_file"] = lambda _: b""
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "first adjacent route",
+        ):
+            COMPILER.compile_bundle(**arguments)
 
     def test_schema2_mechanically_derives_capability_input_identity(self):
         program, spec = sources_v2()

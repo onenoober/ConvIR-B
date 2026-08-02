@@ -17,8 +17,16 @@ class ScientificContractError(ValueError):
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+DOI_IDENTIFIER = re.compile(r"^doi:10\.\d{4,9}/\S{2,}$", re.IGNORECASE)
+ARXIV_IDENTIFIER = re.compile(
+    r"^arxiv:(?:\d{4}\.\d{4,5}|[a-z][a-z.-]*/\d{7})(?:v\d+)?$",
+    re.IGNORECASE,
+)
+OFFICIAL_URL_IDENTIFIER = re.compile(r"^https://[^\s]+$", re.IGNORECASE)
 TERMINAL_INDEX_RELPATH = "experience_docx/EXPERIMENT_TERMINAL_INDEX.jsonl"
 MAX_TERMINAL_INDEX_BYTES = 1024 * 1024
+PROGRAM_SOURCE_PREFIX = "experience_docx/research_programs/"
+MAX_BOUND_PROGRAM_BYTES = 128 * 1024
 TERMINAL_LABELS = ("pass", "fail", "inconclusive")
 FAMILY_EFFECTS = {
     "advance", "stop", "allow_predeclared_evidence", "record_only",
@@ -96,6 +104,92 @@ def _terminal_tuple(value: Any, name: str) -> dict[str, str]:
         "decision": _token(item["decision"], f"{name}.decision"),
         "authorizes": _token(item["authorizes"], f"{name}.authorizes"),
     }
+
+
+def archived_terminal_program_ids(
+    read_evidence_file: Callable[[str], bytes],
+) -> dict[str, str]:
+    """Return terminal-record SHA -> typed program id from one frozen snapshot."""
+    try:
+        raw_index = read_evidence_file(TERMINAL_INDEX_RELPATH)
+    except Exception as exc:
+        raise ScientificContractError(
+            "research update terminal index is unavailable"
+        ) from exc
+    if not isinstance(raw_index, bytes) or not raw_index \
+            or len(raw_index) > MAX_TERMINAL_INDEX_BYTES:
+        raise ScientificContractError(
+            "research update terminal index has an invalid byte contract"
+        )
+    result: dict[str, str] = {}
+    for raw_line in raw_index.splitlines():
+        if not raw_line.strip():
+            continue
+        record_sha = hashlib.sha256(raw_line).hexdigest()
+        try:
+            record = json.loads(raw_line)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ScientificContractError(
+                "research update terminal index contains invalid JSON"
+            ) from exc
+        if not isinstance(record, dict) or record.get("schema_version") != 2:
+            continue
+        bundle = record.get("contract_bundle")
+        if not isinstance(bundle, list):
+            raise ScientificContractError(
+                "typed terminal launch bundle is unavailable for program identity"
+            )
+        matches = [
+            item for item in bundle
+            if isinstance(item, dict)
+            and isinstance(item.get("source_path"), str)
+            and item["source_path"].startswith(PROGRAM_SOURCE_PREFIX)
+            and item["source_path"].endswith(".json")
+        ]
+        if not matches:
+            continue
+        if len(matches) != 1:
+            raise ScientificContractError(
+                "typed terminal launch bundle has ambiguous program identity"
+            )
+        binding = matches[0]
+        path = binding.get("path")
+        size = binding.get("bytes")
+        digest = binding.get("sha256")
+        if not isinstance(path, str) or not path.startswith(
+                "experience_docx/experiment_logs/") \
+                or ".." in path.split("/") \
+                or isinstance(size, bool) or not isinstance(size, int) \
+                or not 1 <= size <= MAX_BOUND_PROGRAM_BYTES \
+                or not isinstance(digest, str) or not SHA256.fullmatch(digest):
+            raise ScientificContractError(
+                "typed terminal program binding has an invalid identity contract"
+            )
+        try:
+            raw_program = read_evidence_file(path)
+        except Exception as exc:
+            raise ScientificContractError(
+                "typed terminal program contract is unavailable"
+            ) from exc
+        if not isinstance(raw_program, bytes) or len(raw_program) != size \
+                or hashlib.sha256(raw_program).hexdigest() != digest:
+            raise ScientificContractError(
+                "typed terminal program contract identity differs"
+            )
+        try:
+            program = json.loads(raw_program)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ScientificContractError(
+                "typed terminal program contract is invalid JSON"
+            ) from exc
+        if not isinstance(program, dict):
+            raise ScientificContractError(
+                "typed terminal program contract is not an object"
+            )
+        result[record_sha] = _token(
+            program.get("program_id"), "typed terminal program_id",
+        )
+    return result
 
 
 def _validate_research_update_binding(
@@ -208,6 +302,12 @@ def _validate_research_update_binding(
             "applicability_limit",
         }, name)
         identifier = _text(source["identifier"], f"{name}.identifier", 4, 256)
+        if not any(pattern.fullmatch(identifier) for pattern in (
+            DOI_IDENTIFIER, ARXIV_IDENTIFIER, OFFICIAL_URL_IDENTIFIER,
+        )):
+            raise ScientificContractError(
+                f"{name}.identifier must be a DOI, arXiv id, or official HTTPS source"
+            )
         normalized_identifier = identifier.casefold()
         if normalized_identifier in seen_literature:
             raise ScientificContractError(

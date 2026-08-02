@@ -142,7 +142,13 @@ governance types.
 `program_foundation` is only the zero-terminal bootstrap for a genuinely new
 program. It still requires the live-main snapshot, competing hypotheses,
 literature transfer limits, design basis and typed program authorization; it is
-not a way to bypass a failed, stopped or unauthorized existing family.
+not a way to bypass a failed, stopped or unauthorized existing family. The
+compiler proves that the program id is absent from terminal-bound program
+contracts at the frozen snapshot, every declared family has zero used attempts,
+and the claim is the first adjacent route; evidence review independently
+rechecks that proof. Every operation in one route shares the exact same research
+update, and every post-terminal trigger must already exist at the frozen
+snapshot rather than merely appearing on a later main.
 
 The existing manifest/runtime-spec/asset files remain machine interfaces and
 may be generated or validated mechanically. They are not separate documentation

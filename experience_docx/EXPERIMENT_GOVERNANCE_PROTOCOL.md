@@ -26,7 +26,11 @@ reason for the next experiment; it does not inherit authorization from review
 prose or change the triggering terminal.
 
 The zero-terminal foundation form still requires typed program authorization
-and cannot reopen or escape an existing stopped family.
+and cannot reopen or escape an existing stopped family. It is machine-valid
+only when no terminal-bound program contract at the frozen snapshot has that
+program id, every declared family has zero used attempts, and the route is the
+first adjacent claim. All operations in the route must bind the same update;
+post-terminal records must exist in the frozen snapshot itself.
 
 For new routes, enumerate finite typed outcomes for every gate and freeze one
 complete, mutually exclusive decision table over their Cartesian product.

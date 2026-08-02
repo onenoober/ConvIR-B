@@ -43,23 +43,23 @@ def evidence_files(record):
 
 def context_terminal_record(
     trigger_route_id="prior-route", trigger_sha="f" * 64,
-    snapshot_commit="a" * 40,
+    snapshot_commit="a" * 40, route_id="route-a", program_id="program-a",
 ):
-    record = terminal_record()
-    prefix = "experience_docx/experiment_logs/route-a/launch_contract/A0"
-    program_source = "experience_docx/research_programs/program-a.json"
-    spec_source = "experience_docx/experiment_specs/route-a.json"
+    record = terminal_record(route_id=route_id, group=route_id)
+    prefix = f"experience_docx/experiment_logs/{route_id}/launch_contract/A0"
+    program_source = f"experience_docx/research_programs/{program_id}.json"
+    spec_source = f"experience_docx/experiment_specs/{route_id}.json"
     program_raw = json.dumps(
-        {"program_id": "program-a"}, sort_keys=True, separators=(",", ":")
+        {"program_id": program_id}, sort_keys=True, separators=(",", ":")
     ).encode("utf-8") + b"\n"
     spec_raw = json.dumps({
         "schema_version": 3,
-        "route_id": "route-a",
+        "route_id": route_id,
         "program_contract_relpath": program_source,
         "operations": {
             "A0": {
                 "program_authorization": {
-                    "program_id": "program-a",
+                    "program_id": program_id,
                     "family_id": "family-a",
                     "stage_id": "screening",
                     "mechanism_type": "orthogonal",
@@ -365,6 +365,32 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         self.assertEqual("multi_arm", context["design_strategy"])
         self.assertIn("research_context_collection_sha256", value)
 
+    def test_research_trigger_must_exist_in_the_frozen_snapshot(self):
+        frozen = terminal_record(route_id="frozen-route", group="frozen-route")
+        frozen["receipt"] = "b" * 64
+        frozen_commit = self.commit_snapshot(frozen, message="frozen research snapshot")
+        prior = terminal_record(route_id="prior-route", group="prior-route")
+        prior["receipt"] = "c" * 64
+        prior_raw = json.dumps(
+            prior, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        record, files = context_terminal_record(
+            trigger_sha=hashlib.sha256(prior_raw).hexdigest(),
+            snapshot_commit=frozen_commit,
+        )
+        commit = self.commit_snapshot([frozen, prior, record], files)
+        result = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "route_ids": ["route-a"],
+        })
+        self.assertFalse(result["isError"])
+        context = result["structuredContent"]["entries"][0]["routes"][0][
+            "research_context"
+        ]
+        self.assertEqual("identity_conflict", context["relationship_status"])
+        self.assertIn("absent from the frozen snapshot", context["reason"])
+
     def test_malformed_relationship_is_a_local_identity_conflict(self):
         prior = terminal_record(route_id="prior-route", group="prior-route")
         prior["receipt"] = "c" * 64
@@ -411,6 +437,9 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             if item["source_path"].startswith("experience_docx/experiment_specs/")
         )
         spec = json.loads(files[binding["path"]])
+        claim = spec["operations"]["A0"]["program_authorization"]
+        claim["mechanism_type"] = "adjacent"
+        claim["adjacent_sequence"] = 1
         update = spec["operations"]["A0"]["scientific_contract"][
             "research_update_binding"
         ]
@@ -422,6 +451,22 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         files[binding["path"]] = raw
         binding["bytes"] = len(raw)
         binding["sha256"] = hashlib.sha256(raw).hexdigest()
+        program_binding = next(
+            item for item in record["contract_bundle"]
+            if item["source_path"].startswith("experience_docx/research_programs/")
+        )
+        program = {
+            "program_id": "program-a",
+            "route_families": {
+                "family-a": {"state": "open", "attempts_used": 0},
+            },
+        }
+        program_raw = json.dumps(
+            program, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8") + b"\n"
+        files[program_binding["path"]] = program_raw
+        program_binding["bytes"] = len(program_raw)
+        program_binding["sha256"] = hashlib.sha256(program_raw).hexdigest()
         commit = self.commit_snapshot(record, files, message="foundation terminal")
         result = self.call("convir_evidence_catalog_query", {
             "local_repo": str(self.repo),
@@ -434,6 +479,70 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         ]
         self.assertEqual("program_foundation", context["research_trigger_type"])
         self.assertEqual([], context["trigger_route_ids"])
+
+    def test_program_foundation_rejects_an_already_archived_program(self):
+        prior = terminal_record(route_id="prior-route", group="prior-route")
+        prior["receipt"] = "c" * 64
+        prior_raw = json.dumps(
+            prior, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        prior_sha = hashlib.sha256(prior_raw).hexdigest()
+        prior_commit = self.commit_snapshot(prior, message="prior terminal")
+        previous, previous_files = context_terminal_record(
+            trigger_sha=prior_sha, snapshot_commit=prior_commit,
+            route_id="previous-route",
+        )
+        previous_commit = self.commit_snapshot(
+            [prior, previous], previous_files, message="existing program terminal",
+        )
+        foundation, files = context_terminal_record(
+            snapshot_commit=previous_commit,
+        )
+        spec_binding = next(
+            item for item in foundation["contract_bundle"]
+            if item["source_path"].startswith("experience_docx/experiment_specs/")
+        )
+        spec = json.loads(files[spec_binding["path"]])
+        claim = spec["operations"]["A0"]["program_authorization"]
+        claim["mechanism_type"] = "adjacent"
+        claim["adjacent_sequence"] = 1
+        update = spec["operations"]["A0"]["scientific_contract"][
+            "research_update_binding"
+        ]
+        update["trigger_type"] = "program_foundation"
+        update["trigger_terminals"] = []
+        spec_raw = json.dumps(
+            spec, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8") + b"\n"
+        files[spec_binding["path"]] = spec_raw
+        spec_binding["bytes"] = len(spec_raw)
+        spec_binding["sha256"] = hashlib.sha256(spec_raw).hexdigest()
+        program_binding = next(
+            item for item in foundation["contract_bundle"]
+            if item["source_path"].startswith("experience_docx/research_programs/")
+        )
+        program_raw = json.dumps({
+            "program_id": "program-a",
+            "route_families": {
+                "family-a": {"state": "open", "attempts_used": 0},
+            },
+        }, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+        files[program_binding["path"]] = program_raw
+        program_binding["bytes"] = len(program_raw)
+        program_binding["sha256"] = hashlib.sha256(program_raw).hexdigest()
+        commit = self.commit_snapshot(
+            [prior, previous, foundation], files, message="invalid foundation terminal",
+        )
+        result = self.call("convir_evidence_catalog_query", {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+            "route_ids": ["route-a"],
+        })
+        context = result["structuredContent"]["entries"][0]["routes"][0][
+            "research_context"
+        ]
+        self.assertEqual("identity_conflict", context["relationship_status"])
+        self.assertIn("not a first-route program binding", context["reason"])
 
     def test_legacy_relationship_is_not_guessed_from_route_or_directory_name(self):
         record = terminal_record(route_id="program-a-family-a")

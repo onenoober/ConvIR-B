@@ -15,6 +15,10 @@ historical binding is a route-local `identity_conflict` rather than a catalog-
 wide failure. Schema-3 context also returns the trigger type, frozen research
 snapshot, bottleneck class, hypothesis ids, design strategy and literature identifiers;
 the research context is included in cursor and evidence-bundle identity.
+For schema-3 terminals it also resolves every trigger against the frozen
+research snapshot, requires one route-wide update, and independently rejects a
+`program_foundation` whose program id was already archived or whose typed claim
+is not the first adjacent route of a zero-attempt program.
 Version 2.1.0 additionally accepts schema-3 conclusions and validates
 finalization-only provenance: terminal identity remains bound to the
 finalization commit while cloud session/lifecycle identity remains bound to the

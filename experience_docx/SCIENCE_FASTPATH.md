@@ -252,6 +252,11 @@ For the first route of a genuinely new program only, schema 3 uses
 still binds live main, literature transfer limits, competing hypotheses, design
 basis and typed program authorization. Existing blocked or stopped work must
 use `post_terminal`; foundation cannot bypass its lineage or governance state.
+The compiler and evidence review prove that the program id is absent from
+terminal-bound program contracts at that snapshot, all program families have
+zero used attempts and the route is the first adjacent claim. All operations in
+one route share one exact research update. A post-terminal trigger is resolved
+from the frozen snapshot's terminal index, never from a later main.
 
 ## GitHub Evidence Contract
 
