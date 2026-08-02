@@ -124,6 +124,7 @@ import sys
 import convir_evidence_review_mcp as review
 import convir_ops_mcp as ops
 import route_runtime_contract as runtime
+import scientific_contract as science
 
 assert ops.SERVER_VERSION == "5.9.0"
 assert ops.SCHEMA_VERSION == 4
@@ -154,6 +155,7 @@ for name, tool in review.TOOLS.items():
 assert runtime.SPEC_SCHEMA_VERSION == 2
 assert runtime.ASSET_SCHEMA_VERSION == 2
 assert runtime.SUPPORTED_ASSET_SCHEMA_VERSIONS == {1, 2}
+assert science.RESEARCH_TRIGGER_TYPES == {"post_terminal", "program_foundation"}
 with open(sys.argv[1], encoding="utf-8") as handle:
     compatibility = json.load(handle)
 assert compatibility["compatibility_id"] == "science-fastpath-contract-v3"
