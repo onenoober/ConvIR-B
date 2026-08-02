@@ -823,9 +823,15 @@ def prepare_seeded_bare(path):
 
 
 def fetch_verified_refs(repo, branch_ref, expected_branch, expected_main):
+    unshallow = run_local(
+        ["git", "-C", repo, "rev-parse", "--is-shallow-repository"],
+        timeout=30,
+        phase="local_git_verify",
+    ) == "true"
     run_local(
         [
-            "git", "-C", repo, "fetch", "--quiet", "--no-tags", GITHUB_URL,
+            "git", "-C", repo, "fetch", "--quiet", "--no-tags",
+            *(["--unshallow"] if unshallow else []), GITHUB_URL,
             f"+{branch_ref}:refs/convir-verify/route",
             "+refs/heads/main:refs/convir-verify/main",
         ],
@@ -1585,7 +1591,9 @@ def atomic_start_body(context, gpu_index):
         '  git -C "$REMOTE_REPO" fetch --quiet github "+refs/heads/$BRANCH:refs/remotes/github/$BRANCH"',
         '  git -C "$REMOTE_REPO" merge --quiet --ff-only "$EXPECTED_COMMIT"',
         'fi',
-        'git -C "$REMOTE_REPO" fetch --quiet --no-tags github "+refs/heads/main:refs/convir-runtime/main"',
+        'MAIN_FETCH_ARGS=(--quiet --no-tags)',
+        'if test "$(git -C "$REMOTE_REPO" rev-parse --is-shallow-repository)" = true; then MAIN_FETCH_ARGS+=(--unshallow); fi',
+        'git -C "$REMOTE_REPO" fetch "${MAIN_FETCH_ARGS[@]}" github "+refs/heads/main:refs/convir-runtime/main"',
         'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$EXPECTED_MAIN"',
         'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
         'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
@@ -2153,7 +2161,9 @@ def finalization_repair_body(
         'tmux has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
         'test -f "$CLOSEOUT"',
         'test "$(sha256sum "$CLOSEOUT" | awk \'{print $1}\')" = "$CLOSEOUT_SHA"',
-        'git -C "$REMOTE_REPO" fetch --quiet --no-tags github "+refs/heads/main:refs/convir-runtime/main"',
+        'MAIN_FETCH_ARGS=(--quiet --no-tags)',
+        'if test "$(git -C "$REMOTE_REPO" rev-parse --is-shallow-repository)" = true; then MAIN_FETCH_ARGS+=(--unshallow); fi',
+        'git -C "$REMOTE_REPO" fetch "${MAIN_FETCH_ARGS[@]}" github "+refs/heads/main:refs/convir-runtime/main"',
         'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$MAIN_COMMIT"',
         'test ! -e "$CONTROL_REPO"',
         'git -C "$REMOTE_REPO" worktree add --quiet --detach "$CONTROL_REPO" "$MAIN_COMMIT"',

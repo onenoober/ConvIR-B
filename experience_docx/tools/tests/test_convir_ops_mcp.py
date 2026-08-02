@@ -324,6 +324,8 @@ class ConvirOpsV4Tests(unittest.TestCase):
             '"+refs/heads/main:refs/convir-runtime/main"',
             body,
         )
+        self.assertIn("rev-parse --is-shallow-repository", body)
+        self.assertIn("MAIN_FETCH_ARGS+=(--unshallow)", body)
 
     def test_first_operation_requires_exact_card_field(self):
         self.assertEqual("S0", OPS.first_operation_from_card("- First operation: S0\n"))
@@ -337,6 +339,8 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
         def fake_run(command, **_kwargs):
             observed.append(command)
+            if command[-1] == "--is-shallow-repository":
+                return "false"
             if command[-1] == "refs/convir-verify/route":
                 return branch
             if command[-1] == "refs/convir-verify/main":
@@ -352,6 +356,28 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertNotIn("--depth=1", fetches[0])
         self.assertIn("+refs/heads/codex/a1x:refs/convir-verify/route", fetches[0])
         self.assertIn("+refs/heads/main:refs/convir-verify/main", fetches[0])
+
+    def test_verified_ref_fetch_unshallows_for_schema3_ancestry(self):
+        observed = []
+
+        def fake_run(command, **_kwargs):
+            observed.append(command)
+            if command[-1] == "--is-shallow-repository":
+                return "true"
+            if command[-1] == "refs/convir-verify/route":
+                return "a" * 40
+            if command[-1] == "refs/convir-verify/main":
+                return "b" * 40
+            return ""
+
+        with patch.object(OPS, "run_local", side_effect=fake_run):
+            OPS.fetch_verified_refs(
+                "/tmp/repo.git", "refs/heads/codex/a1x",
+                "a" * 40, "b" * 40,
+            )
+        fetches = [command for command in observed if "fetch" in command]
+        self.assertEqual(1, len(fetches))
+        self.assertIn("--unshallow", fetches[0])
 
     def test_remote_transport_uses_fixed_argv_and_complete_stdin(self):
         with tempfile.TemporaryDirectory() as root:
@@ -1108,6 +1134,8 @@ class ConvirOpsV4Tests(unittest.TestCase):
         )
         self.assertIn('PYTHONDONTWRITEBYTECODE=1', body)
         self.assertNotIn("--depth=1", body)
+        self.assertIn("rev-parse --is-shallow-repository", body)
+        self.assertIn("MAIN_FETCH_ARGS+=(--unshallow)", body)
         self.assertIn('worktree remove "$CONTROL_REPO"', body)
 
     def test_finalization_candidate_rejection_does_not_consume_execution_slot(self):
