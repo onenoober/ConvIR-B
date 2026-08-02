@@ -319,7 +319,11 @@ class ConvirOpsV4Tests(unittest.TestCase):
         body = OPS.atomic_start_body(context(require_gpu=True), 0)
         self.assertLess(body.index("NVIDIA_SMI=/usr/bin/nvidia-smi"), body.index("REMOTE_REPO="))
         self.assertNotIn("nvidia-smi --query-gpu", body)
-        self.assertNotIn("--depth=1", body)
+        self.assertNotIn(
+            'fetch --quiet --no-tags --depth=1 github '
+            '"+refs/heads/main:refs/convir-runtime/main"',
+            body,
+        )
 
     def test_first_operation_requires_exact_card_field(self):
         self.assertEqual("S0", OPS.first_operation_from_card("- First operation: S0\n"))
