@@ -725,7 +725,7 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
             source_commit, binding["expected_lifecycle_identity"]["route_commit"],
         )
         self.assertEqual(
-            inventory.convir_ops_mcp.derive_session(
+            inventory.derive_session(
                 self.fixture.route_id, "synthetic", source_commit,
                 self.fixture.run_id,
             ),

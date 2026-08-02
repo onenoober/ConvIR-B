@@ -1274,6 +1274,17 @@ def read_record(kind, token):
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
+def receipt_context(record):
+    """Return the active context without mutating the receipt's signed payload."""
+    context = record.get("finalization_context")
+    if context is None:
+        payload = record.get("payload")
+        context = payload.get("context") if isinstance(payload, dict) else None
+    if not isinstance(context, dict):
+        raise ToolError("receipt context is invalid", failure_class="command_infra")
+    return context
+
+
 def tool_plan_manifest(args):
     try:
         manifest, operation_id, context = load_operation(args)
@@ -1897,16 +1908,16 @@ def evidence_context(args):
                 failure_phase="evidence_manifest", failure_class="contract",
             )
         terminal_closeout = record.get("terminal_closeout")
+        context = receipt_context(record)
         if not isinstance(terminal_closeout, dict) \
                 or terminal_closeout.get("closeout_filename") \
-                != record["payload"]["context"]["closeout_filename"] \
+                != context["closeout_filename"] \
                 or not isinstance(terminal_closeout.get("closeout_sha256"), str) \
                 or not SHA256.fullmatch(terminal_closeout["closeout_sha256"]):
             raise ToolError(
                 "receipt lacks an exact validated closeout binding",
                 failure_phase="evidence_manifest", failure_class="evidence",
             )
-        context = record["payload"]["context"]
         archive_contract = scientific_archive_contract(
             context, terminal_closeout, closed,
         )
@@ -1944,7 +1955,7 @@ def begin_finish(token):
         record["finish_not_before_unix"] = 0
         record["pending_finish_response"] = None
         record["operator_terminal_detected"] = False
-        context = dict(record["payload"]["context"])
+        context = dict(receipt_context(record))
         context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
         context["_monitor_stale_count"] = int(record.get("monitor_stale_count", 0))
         return context, None
@@ -1970,7 +1981,7 @@ def close_scientific_finish(token, closeout):
 def validated_scientific_result(token, closeout, observed, *, manifest=None):
     close_scientific_finish(token, closeout)
     with locked_record("receipt", token) as record:
-        context = record["payload"]["context"]
+        context = receipt_context(record)
         archive_contract = scientific_archive_contract(
             context, closeout, "CLOSEOUT_VALIDATED",
         )
@@ -2230,7 +2241,7 @@ def resolve_finalization_repair(token, repair_commit):
             failure_phase="finalization_repair", failure_class="evidence",
         )
     with locked_record("receipt", token) as record:
-        record["payload"]["context"] = final_context
+        record["finalization_context"] = final_context
     observed = {
         "classification": classification,
         "source_commit": source_context["route_branch_commit"],
@@ -2300,7 +2311,7 @@ def resolve_engineering_failure(token, resolution):
                     "discard requires verified absence of scientific and protected data access",
                     failure_phase="engineering_discard", failure_class="evidence",
                 )
-            context = record["payload"]["context"]
+            context = receipt_context(record)
             validate_discard_context(context)
             output = run_remote(
                 engineering_discard_body(context, closeout), timeout=60,
@@ -2732,7 +2743,7 @@ def begin_operator_observation(token):
                 failure_phase="operator_observation", failure_class="contract",
             )
         record["operator_observation_calls"] = calls + 1
-        context = dict(record["payload"]["context"])
+        context = dict(receipt_context(record))
         context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
         return context, None
 
@@ -3176,7 +3187,7 @@ def begin_operator_cancel(token):
             raise ToolError("operator cancellation request identity is invalid", failure_class="command_infra")
         record["operator_cancel_attempts"] = attempts + 1
         record["operator_cancel_state"] = "REQUESTED"
-        context = dict(record["payload"]["context"])
+        context = dict(receipt_context(record))
         context["_receipt_issued_at"] = int(record["payload"]["issued_at"])
         return context, None, request_id
 

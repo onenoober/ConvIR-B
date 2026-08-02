@@ -1023,6 +1023,15 @@ class ConvirOpsV4Tests(unittest.TestCase):
             }))
         self.assertEqual("CLOSEOUT_VALIDATED", result["operation_state"])
         self.assertFalse(result["observed"]["workload_reexecuted"])
+        with OPS.locked_record("receipt", receipt) as record:
+            self.assertEqual(
+                source["route_branch_commit"],
+                record["payload"]["context"]["route_branch_commit"],
+            )
+            self.assertEqual(
+                final["route_branch_commit"],
+                record["finalization_context"]["route_branch_commit"],
+            )
         repeated = payload(OPS.tool_finish({
             "receipt": receipt,
             "engineering_failure_resolution": "finalize",
@@ -1045,7 +1054,11 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def test_finalization_body_restores_original_evidence_without_new_closeout(self):
         source = context()
-        final = {**source, "route_branch_commit": "f" * 40}
+        final = {
+            **source,
+            "route_branch_commit": "f" * 40,
+            "route_manifest_schema_version": 6,
+        }
         spec = {
             "evidence_files": [{
                 "destination_filename": "s0_review_facts.json",

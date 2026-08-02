@@ -428,6 +428,7 @@ class TerminalArchiveTests(unittest.TestCase):
             "records": {},
             "closeout_filename": closeout_file.name,
             "closeout_sha256": hashlib.sha256(closeout_file.read_bytes()).hexdigest(),
+            "conclusion_schema_version": None,
         }
 
     def test_complete_bundle_is_staged_once(self):
@@ -919,6 +920,7 @@ class TerminalArchiveTests(unittest.TestCase):
                     "records": {},
                     "closeout_filename": closeout_file.name,
                     "closeout_sha256": hashlib.sha256(closeout_file.read_bytes()).hexdigest(),
+                    "conclusion_schema_version": None,
                 }
 
             arguments = [
