@@ -770,7 +770,10 @@ def _terminal_research_context(repo, commit, record, snapshot_cache=None):
                 },
             },
         }
-    except (ReviewError, catalog.CatalogError) as exc:
+    except (
+        ReviewError, catalog.CatalogError,
+        science_contract.ScientificContractError,
+    ) as exc:
         return {
             "relationship_status": "identity_conflict",
             "reason": bounded_error(exc),

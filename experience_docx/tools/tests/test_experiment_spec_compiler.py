@@ -1,6 +1,7 @@
 """Tests for one-source deterministic experiment route compilation."""
 
 import copy
+import hashlib
 import json
 import subprocess
 import sys
