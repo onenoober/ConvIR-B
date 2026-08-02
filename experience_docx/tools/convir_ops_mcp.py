@@ -825,7 +825,7 @@ def prepare_seeded_bare(path):
 def fetch_verified_refs(repo, branch_ref, expected_branch, expected_main):
     run_local(
         [
-            "git", "-C", repo, "fetch", "--quiet", "--no-tags", "--depth=1", GITHUB_URL,
+            "git", "-C", repo, "fetch", "--quiet", "--no-tags", GITHUB_URL,
             f"+{branch_ref}:refs/convir-verify/route",
             "+refs/heads/main:refs/convir-verify/main",
         ],
@@ -1585,7 +1585,7 @@ def atomic_start_body(context, gpu_index):
         '  git -C "$REMOTE_REPO" fetch --quiet github "+refs/heads/$BRANCH:refs/remotes/github/$BRANCH"',
         '  git -C "$REMOTE_REPO" merge --quiet --ff-only "$EXPECTED_COMMIT"',
         'fi',
-        'git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/main:refs/convir-runtime/main"',
+        'git -C "$REMOTE_REPO" fetch --quiet --no-tags github "+refs/heads/main:refs/convir-runtime/main"',
         'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$EXPECTED_MAIN"',
         'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
         'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
@@ -2153,13 +2153,13 @@ def finalization_repair_body(
         'tmux has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
         'test -f "$CLOSEOUT"',
         'test "$(sha256sum "$CLOSEOUT" | awk \'{print $1}\')" = "$CLOSEOUT_SHA"',
-        'git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/main:refs/convir-runtime/main"',
+        'git -C "$REMOTE_REPO" fetch --quiet --no-tags github "+refs/heads/main:refs/convir-runtime/main"',
         'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$MAIN_COMMIT"',
         'test ! -e "$CONTROL_REPO"',
         'git -C "$REMOTE_REPO" worktree add --quiet --detach "$CONTROL_REPO" "$MAIN_COMMIT"',
         'LIFECYCLE="$CONTROL_REPO/experience_docx/tools/route_lifecycle.py"',
         'if test "$FINAL_COMMIT" != "$SOURCE_COMMIT"; then',
-        '  git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/$BRANCH:refs/convir-runtime/finalization"',
+        '  git -C "$REMOTE_REPO" fetch --quiet --no-tags github "+refs/heads/$BRANCH:refs/convir-runtime/finalization"',
         '  test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/finalization)" = "$FINAL_COMMIT"',
         'fi',
         'if test -e "$FAILED_COPY"; then test -f "$FAILED_COPY"; test "$(sha256sum "$FAILED_COPY" | awk \'{print $1}\')" = "$CLOSEOUT_SHA"; else cp -- "$CLOSEOUT" "$FAILED_COPY"; fi',

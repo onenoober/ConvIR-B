@@ -319,6 +319,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         body = OPS.atomic_start_body(context(require_gpu=True), 0)
         self.assertLess(body.index("NVIDIA_SMI=/usr/bin/nvidia-smi"), body.index("REMOTE_REPO="))
         self.assertNotIn("nvidia-smi --query-gpu", body)
+        self.assertNotIn("--depth=1", body)
 
     def test_first_operation_requires_exact_card_field(self):
         self.assertEqual("S0", OPS.first_operation_from_card("- First operation: S0\n"))
@@ -344,6 +345,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             )
         fetches = [command for command in observed if "fetch" in command]
         self.assertEqual(1, len(fetches))
+        self.assertNotIn("--depth=1", fetches[0])
         self.assertIn("+refs/heads/codex/a1x:refs/convir-verify/route", fetches[0])
         self.assertIn("+refs/heads/main:refs/convir-verify/main", fetches[0])
 
@@ -1101,6 +1103,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             body,
         )
         self.assertIn('PYTHONDONTWRITEBYTECODE=1', body)
+        self.assertNotIn("--depth=1", body)
         self.assertIn('worktree remove "$CONTROL_REPO"', body)
 
     def test_finalization_candidate_rejection_does_not_consume_execution_slot(self):
