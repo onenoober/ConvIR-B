@@ -334,6 +334,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
 
     def test_catalog_relationship_filters_use_terminal_bound_launch_contracts(self):
         prior = terminal_record(route_id="prior-route", group="prior-route")
+        prior["receipt"] = "c" * 64
         prior_raw = json.dumps(
             prior, sort_keys=True, separators=(",", ":")
         ).encode("utf-8")
@@ -365,6 +366,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
 
     def test_malformed_relationship_is_a_local_identity_conflict(self):
         prior = terminal_record(route_id="prior-route", group="prior-route")
+        prior["receipt"] = "c" * 64
         prior_raw = json.dumps(
             prior, sort_keys=True, separators=(",", ":")
         ).encode("utf-8")
