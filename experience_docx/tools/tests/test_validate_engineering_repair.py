@@ -92,7 +92,9 @@ class EngineeringRepairTests(unittest.TestCase):
         return repo, base, candidate
 
     def _make_schema6_fixture(
-        self, root: Path, *, change_run: bool = False, commit_candidate: bool = True,
+        self, root: Path, *, change_run: bool = False,
+        change_adapter: bool = False, same_output: bool = False,
+        commit_candidate: bool = True,
     ) -> tuple[Path, str, str | None, list[str]]:
         repo = root / "schema6-repo"
         repo.mkdir()
@@ -108,6 +110,8 @@ class EngineeringRepairTests(unittest.TestCase):
             "    return payload\n"
             "def run(context_path):\n"
             "    return 1\n"
+            "def finalize_existing(context_path):\n"
+            "    return 'old-facts'\n"
         ).encode()
         old_sha = hashlib.sha256(before).hexdigest()
         operation["operation"]["output_id"] = "final-slim-r1"
@@ -139,12 +143,16 @@ class EngineeringRepairTests(unittest.TestCase):
 
         candidate_spec = copy.deepcopy(spec)
         candidate_operation = candidate_spec["operations"]["ACCEPT"]
-        candidate_operation["operation"]["output_id"] = "final-slim-r2"
+        candidate_operation["operation"]["output_id"] = (
+            "final-slim-r1" if same_output else "final-slim-r2"
+        )
         after = (
             "def contract(context_path):\n"
             "    return {}\n"
             "def run(context_path):\n"
             f"    return {2 if change_run else 1}\n"
+            "def finalize_existing(context_path):\n"
+            f"    return {repr('new-facts' if change_adapter else 'old-facts')}\n"
         ).encode()
         new_sha = hashlib.sha256(after).hexdigest()
         next(
@@ -294,8 +302,59 @@ def run(value):
             repo, base, candidate, _ = self._make_schema6_fixture(
                 Path(temporary), change_run=True,
             )
-            with self.assertRaisesRegex(REPAIR.RepairError, "algorithm/control-flow/constants"):
+            with self.assertRaisesRegex(REPAIR.RepairError, "scientific kernel/control/constants"):
                 REPAIR.validate(repo, base, candidate, "ACCEPT")
+
+    def test_terminal_adapter_change_is_separate_from_scientific_kernel(self):
+        before = (
+            b"LIMIT=3\ndef run(x):\n return min(x, LIMIT)\n"
+            b"def finalize_existing(path):\n return 'old'\n"
+        )
+        after = (
+            b"LIMIT=3\ndef run(x):\n return min(x, LIMIT)\n"
+            b"def finalize_existing(path):\n return 'new'\n"
+        )
+        classification = REPAIR.classify_entrypoint_change(before, after)
+        self.assertTrue(classification["terminal_adapter_only"])
+        self.assertTrue(classification["scientific_kernel_unchanged"])
+
+    def test_terminal_adapter_cannot_be_shared_with_scientific_kernel(self):
+        before = (
+            b"def build_review_facts(x):\n return x\n"
+            b"def run(x):\n return build_review_facts(x)\n"
+            b"def finalize_existing(path):\n return 'old'\n"
+        )
+        after = before.replace(b"return x", b"return x + 1")
+        with self.assertRaisesRegex(REPAIR.RepairError, "referenced"):
+            REPAIR.classify_entrypoint_change(before, after)
+
+    def test_nested_adapter_name_remains_part_of_scientific_kernel(self):
+        before = (
+            b"def run(x):\n"
+            b" def finalize_existing(path):\n  return 'old'\n"
+            b" return finalize_existing(x)\n"
+        )
+        after = before.replace(b"return 'old'", b"return 'new'")
+        with self.assertRaises(REPAIR.RepairError):
+            REPAIR.classify_entrypoint_change(before, after)
+
+    def test_adapter_change_requires_one_synchronous_finalizer(self):
+        before = b"def run(x):\n return x\n"
+        after = before + b"async def finalize_existing(path):\n return path\n"
+        with self.assertRaisesRegex(REPAIR.RepairError, "synchronous"):
+            REPAIR.classify_entrypoint_change(before, after)
+
+    def test_same_output_finalization_repair_requires_adapter_only_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate, _ = self._make_schema6_fixture(
+                Path(temporary), change_adapter=True, same_output=True,
+            )
+            report = REPAIR.validate_finalization_repair(
+                repo, base, candidate, "ACCEPT",
+            )
+        self.assertEqual("FINALIZATION_REPAIR_ELIGIBLE", report["status"])
+        self.assertTrue(report["terminal_adapter_only"])
+        self.assertTrue(report["output_identity_unchanged"])
 
     def test_worktree_candidate_uses_temporary_index_only(self):
         with tempfile.TemporaryDirectory() as temporary:

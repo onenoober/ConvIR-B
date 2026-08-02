@@ -40,7 +40,7 @@ REMOTE_PYTHON = Path("/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python"
 REMOTE_GIT = Path("/usr/bin/git")
 REQUIRED_ENV = {
     "EXPECTED_ROUTE_COMMIT", "RUNNER_SHA256", "MODE", "REMOTE_REPO", "RUN_ROOT",
-    "OUTPUT_PATH", "RUN_ID", "OUTPUT_ID", "GPU",
+    "OUTPUT_PATH", "RUN_ID", "OUTPUT_ID", "GPU", "AUTHORITATIVE_MAIN_COMMIT",
 }
 MAX_CLOSEOUT_BYTES = 64 * 1024
 RAW_ARTIFACT_MANIFEST_RELPATH = "control/raw_artifact_manifest.jsonl"
@@ -251,9 +251,80 @@ def build_raw_artifact_manifest(output: Path) -> tuple[bytes, list[dict[str, Any
     )
     manifest_path = output / RAW_ARTIFACT_MANIFEST_RELPATH
     if manifest_path.exists():
-        raise LifecycleError("raw artifact manifest already exists", phase="evidence")
-    _atomic_bytes(manifest_path, raw)
+        if manifest_path.is_symlink() or not manifest_path.is_file() \
+                or manifest_path.read_bytes() != raw:
+            raise LifecycleError(
+                "existing raw artifact manifest differs from stable outputs",
+                phase="evidence",
+            )
+    else:
+        _atomic_bytes(manifest_path, raw)
     return raw, records
+
+
+def stable_scope_inventory(output: Path) -> dict[str, str]:
+    """Hash the bounded contract/workload scope for terminal-adapter isolation."""
+    inventory: dict[str, str] = {}
+    path_bytes = 0
+    for root_name in RAW_ARTIFACT_SCOPE_ROOTS:
+        root = output / root_name
+        if not root.exists():
+            continue
+        if root.is_symlink() or not root.is_dir():
+            raise LifecycleError(
+                f"stable output scope is invalid: {root_name}", phase="finalize",
+            )
+        for path in sorted(root.rglob("*")):
+            relative = path.relative_to(output).as_posix()
+            path_bytes += len(relative.encode("utf-8", errors="strict"))
+            if path_bytes > MAX_RAW_ARTIFACT_PATH_BYTES:
+                raise LifecycleError(
+                    "stable output inventory exceeds its path bound", phase="finalize",
+                )
+            if path.is_symlink():
+                raise LifecycleError(
+                    f"stable output cannot be a symlink: {relative}", phase="finalize",
+                )
+            if path.is_dir():
+                continue
+            if not path.is_file():
+                raise LifecycleError(
+                    f"stable output must be a regular file: {relative}", phase="finalize",
+                )
+            if len(inventory) >= MAX_RAW_ARTIFACT_FILES:
+                raise LifecycleError(
+                    "stable output inventory exceeds its file bound", phase="finalize",
+                )
+            inventory[relative] = sha256(path)
+    return inventory
+
+
+def run_terminal_adapter(
+    repo: Path, entrypoint: Path, run_context_path: Path, log_path: Path,
+) -> None:
+    """Invoke only the explicit adapter hook in an isolated Python process."""
+    program = (
+        "import importlib.util,sys;"
+        "s=importlib.util.spec_from_file_location('convir_terminal_adapter',sys.argv[1]);"
+        "m=importlib.util.module_from_spec(s);s.loader.exec_module(m);"
+        "f=getattr(m,'finalize_existing',None);"
+        "assert callable(f),'finalize_existing adapter is unavailable';"
+        "f(sys.argv[2])"
+    )
+    environment = os.environ.copy()
+    environment["CONVIR_FINALIZATION_ONLY"] = "1"
+    with log_path.open("ab") as log:
+        completed = subprocess.run(
+            [str(REMOTE_PYTHON), "-c", program, str(entrypoint), str(run_context_path)],
+            cwd=repo, env=environment, stdout=log, stderr=subprocess.STDOUT,
+            timeout=300, check=False,
+        )
+    if completed.returncode:
+        tail = diagnostic_log_tail(log_path)
+        detail = f"; program_tail={tail}" if tail else ""
+        raise LifecycleError(
+            f"terminal adapter failed rc={completed.returncode}{detail}", phase="finalize",
+        )
 
 
 def publish_raw_artifact_receipt(
@@ -311,7 +382,12 @@ def require_environment() -> dict[str, str]:
     missing = sorted(key for key in REQUIRED_ENV if key not in os.environ)
     if missing:
         raise LifecycleError(f"missing lifecycle environment: {missing}", phase="environment")
-    return {key: os.environ[key] for key in REQUIRED_ENV}
+    result = {key: os.environ[key] for key in REQUIRED_ENV}
+    if not capability_registry.SHA40.fullmatch(result["AUTHORITATIVE_MAIN_COMMIT"]):
+        raise LifecycleError(
+            "AUTHORITATIVE_MAIN_COMMIT is invalid", phase="environment",
+        )
+    return result
 
 
 def validate_lifecycle_paths(env: dict[str, str]) -> tuple[Path, Path, Path]:
@@ -860,20 +936,35 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
 
 
 def resolve_capability_reuse(
-    repo: Path, capability: dict[str, Any] | None,
+    repo: Path, capability: dict[str, Any] | None, authoritative_commit: str,
 ) -> dict[str, Any] | None:
     if not isinstance(capability, dict) or capability.get("schema_version") != 2:
         return None
-    registry_path = repo / capability_registry.REGISTRY_RELPATH
-    if not registry_path.is_file() or registry_path.is_symlink():
-        raise LifecycleError("capability registry is unavailable", phase="contract")
-    try:
-        records = capability_registry.load_records(
-            registry_path.read_text(encoding="utf-8").splitlines(),
-            evidence_exists=lambda relpath: (repo / relpath).is_file(),
-            read_evidence=lambda relpath: (repo / relpath).read_bytes(),
+    def snapshot_blob(relpath: str, *, required: bool = True) -> bytes | None:
+        completed = subprocess.run(
+            [
+                str(REMOTE_GIT), "-C", str(repo), "show",
+                f"{authoritative_commit}:{relpath}",
+            ],
+            capture_output=True, timeout=30, check=False,
         )
-        return capability_registry.lookup(records, capability["reuse_identity"])
+        if completed.returncode:
+            if required:
+                raise LifecycleError(
+                    f"authoritative main is missing {relpath}", phase="contract",
+                )
+            return None
+        return completed.stdout
+    try:
+        registry_raw = snapshot_blob(capability_registry.REGISTRY_RELPATH)
+        return capability_registry.lookup_lines(
+            registry_raw.decode("utf-8").splitlines(),
+            capability["reuse_identity"],
+            evidence_exists=lambda relpath: snapshot_blob(
+                relpath, required=False,
+            ) is not None,
+            read_evidence=lambda relpath: snapshot_blob(relpath),
+        )
     except (OSError, UnicodeDecodeError, capability_registry.CapabilityRegistryError) as exc:
         raise LifecycleError(
             f"capability registry is invalid: {exc}", phase="contract",
@@ -979,6 +1070,11 @@ def lifecycle() -> int:
     runtime_log = output / "runtime.log"
     if git(repo, "rev-parse", "HEAD") != env["EXPECTED_ROUTE_COMMIT"]:
         raise LifecycleError("route commit mismatch", phase="identity_preflight")
+    if git(repo, "rev-parse", "refs/convir-runtime/main") \
+            != env["AUTHORITATIVE_MAIN_COMMIT"]:
+        raise LifecycleError(
+            "authoritative main runtime ref mismatch", phase="identity_preflight",
+        )
     if git(repo, "status", "--porcelain"):
         raise LifecycleError("route workspace is dirty before launch", phase="identity_preflight")
     runner = repo / GENERIC_RUNNER_RELPATH
@@ -1026,7 +1122,9 @@ def lifecycle() -> int:
         capability = spec["_validated_capability_profile"]
         if capability.get("schema_version") == 2:
             observed_device_class(env, capability)
-            capability_reuse = resolve_capability_reuse(repo, capability)
+            capability_reuse = resolve_capability_reuse(
+                repo, capability, env["AUTHORITATIVE_MAIN_COMMIT"],
+            )
             qualification_filename = operation["closeout_filename"].replace(
                 "_closeout.json", "_capability_qualification.json",
             )
@@ -1141,6 +1239,186 @@ def lifecycle() -> int:
         verified_assets=assets, capability_reuse=capability_reuse,
         capability_qualification=capability_qualification,
     )
+    return 0
+
+
+def finalize_existing(source_commit: str) -> int:
+    """Publish a completed run without rerunning its scientific workload."""
+    global WORKLOAD_STARTED
+    WORKLOAD_STARTED = True
+    env = require_environment()
+    if not capability_registry.SHA40.fullmatch(source_commit):
+        raise LifecycleError("finalization source commit is invalid", phase="environment")
+    repo, _, output = validate_lifecycle_paths(env)
+    manifest = load_json(repo / "experience_docx/route_operations.json")
+    operation_id, operation = infer_operation(manifest, env)
+    env["ROUTE_ID"] = manifest["route_id"]
+    spec = validate_runtime_spec(
+        load_json(repo / RUNTIME_SPEC_DIRECTORY / f"{operation_id}.json"),
+        manifest, operation_id,
+    )
+    scientific_path = manifest.get("scientific_contract_relpaths", {}).get(operation_id)
+    scientific = None
+    if scientific_path is not None:
+        try:
+            scientific = science_contract.validate_scientific_contract_v2(
+                load_json(repo / scientific_path), spec["route_id"], operation_id,
+            )
+        except science_contract.ScientificContractError as exc:
+            raise LifecycleError(str(exc), phase="contract") from exc
+    if git(repo, "rev-parse", "HEAD") != env["EXPECTED_ROUTE_COMMIT"]:
+        raise LifecycleError("finalization repair commit mismatch", phase="identity_preflight")
+    if git(repo, "rev-parse", "refs/convir-runtime/main") \
+            != env["AUTHORITATIVE_MAIN_COMMIT"]:
+        raise LifecycleError(
+            "authoritative main runtime ref mismatch", phase="identity_preflight",
+        )
+    runner = repo / GENERIC_RUNNER_RELPATH
+    if not runner.is_file() or runner.is_symlink():
+        raise LifecycleError("generic runner is unavailable", phase="identity_preflight")
+    identity_path = output / "control/lifecycle_identity.json"
+    identity = load_json(identity_path)
+    expected_source_identity = {
+        "schema_version": 1,
+        "route_id": spec["route_id"],
+        "operation_id": spec["operation_id"],
+        "run_id": env["RUN_ID"],
+        "route_commit": source_commit,
+        "runner_sha256": env["RUNNER_SHA256"],
+    }
+    if identity != expected_source_identity:
+        raise LifecycleError(
+            "completed output is not bound to the finalization source commit",
+            phase="identity_preflight",
+        )
+    run_context_path = output / "control/run_context.json"
+    run_context = load_context(run_context_path, "run")
+    if run_context.route_commit != source_commit \
+            or run_context.route_id != spec["route_id"] \
+            or run_context.operation_id != operation_id \
+            or run_context.run_id != env["RUN_ID"]:
+        raise LifecycleError("run context source identity mismatch", phase="finalize")
+    result_path = Path(run_context.result_path)
+    result = validate_run_result(result_path, spec, operation, scientific)
+    if scientific is not None and spec["total_units"] > 0:
+        ledger = load_completed_unit_ledger(run_context)
+        if len(ledger) != spec["total_units"]:
+            raise LifecycleError(
+                "completed-unit ledger does not cover total_units", phase="finalize",
+            )
+    raw_manifest = output / RAW_ARTIFACT_MANIFEST_RELPATH
+    if raw_manifest.exists():
+        build_raw_artifact_manifest(output)
+    before = stable_scope_inventory(output)
+    review_fact_sources = {
+        item["source_relpath"] for item in spec["evidence_files"]
+        if item["destination_filename"].endswith("_review_facts.json")
+    }
+    adapter_used = env["EXPECTED_ROUTE_COMMIT"] != source_commit
+    if adapter_used:
+        if not review_fact_sources:
+            raise LifecycleError(
+                "finalization repair has no declared review-facts output",
+                phase="finalize",
+            )
+        run_terminal_adapter(
+            repo, repo / spec["entrypoint_relpath"], run_context_path,
+            output / "runtime.log",
+        )
+    after = stable_scope_inventory(output)
+    unexpected_paths = sorted(
+        path for path in set(before) | set(after)
+        if path not in review_fact_sources and before.get(path) != after.get(path)
+    )
+    created_outside_adapter = sorted(set(after) - set(before) - review_fact_sources)
+    removed_outside_adapter = sorted(set(before) - set(after) - review_fact_sources)
+    if unexpected_paths or created_outside_adapter or removed_outside_adapter:
+        raise LifecycleError(
+            "terminal adapter changed stable scientific outputs outside review facts",
+            phase="finalize",
+            control_diagnostic={
+                "failed_contract_checks": ["terminal_adapter_output_isolation"],
+            },
+        )
+    if adapter_used and raw_manifest.exists():
+        raw_manifest.unlink()
+    # Revalidate the frozen result and every ledger-bound output after the adapter.
+    result = validate_run_result(result_path, spec, operation, scientific)
+    if scientific is not None and spec["total_units"] > 0:
+        ledger = load_completed_unit_ledger(run_context)
+        if len(ledger) != spec["total_units"]:
+            raise LifecycleError(
+                "completed-unit ledger changed during finalization", phase="finalize",
+            )
+    evidence_root = repo / "experience_docx/experiment_logs" / spec["route_id"]
+    evidence_root.mkdir(parents=True, exist_ok=True)
+    if evidence_root.is_symlink():
+        raise LifecycleError("evidence root cannot be a symlink", phase="evidence")
+    closeout_path = evidence_root / operation["closeout_filename"]
+    if closeout_path.exists():
+        raise LifecycleError("finalization closeout destination exists", phase="evidence")
+    evidence = copy_evidence(spec, output, evidence_root)
+    if scientific is not None:
+        filename, digest = publish_raw_artifact_receipt(
+            output=output, evidence_root=evidence_root, operation=operation,
+            env=env, spec=spec,
+        )
+        evidence[filename] = digest
+    capability_reuse = None
+    capability_qualification = None
+    capability_path = spec["engineering_contract"]["capability_profile_relpath"]
+    if capability_path is not None and not adapter_used:
+        asset_manifest = None
+        if spec["asset_manifest_relpath"] is not None:
+            asset_manifest = validate_asset_manifest(
+                load_json(repo / spec["asset_manifest_relpath"]), spec,
+            )
+        capability = validate_model_capability(
+            load_json(repo / capability_path), spec, asset_manifest,
+        )
+        if capability.get("schema_version") == 2:
+            capability_reuse = resolve_capability_reuse(
+                repo, capability, env["AUTHORITATIVE_MAIN_COMMIT"],
+            )
+            if capability_reuse["engineering_reuse_authorized"] is False:
+                contract_context_path = output / "control/contract_context.json"
+                contract_context = load_context(contract_context_path, "contract")
+                contract_result = validate_contract_result(
+                    Path(contract_context.result_path), spec,
+                )
+                capability_qualification, filename, digest = (
+                    publish_capability_qualification(
+                        evidence_root=evidence_root, operation=operation, env=env,
+                        spec=spec, capability=capability,
+                        contract_result=contract_result,
+                    )
+                )
+                evidence[filename] = digest
+    result = json.loads(json.dumps(result))
+    result["details"] = {
+        **result.get("details", {}),
+        "finalization_recovery": {
+            "source_commit": source_commit,
+            "finalization_commit": env["EXPECTED_ROUTE_COMMIT"],
+            "adapter_used": adapter_used,
+            "workload_reexecuted": False,
+            "stable_output_isolation_verified": True,
+            "new_capability_registration_authorized": not adapter_used,
+        },
+    }
+    failed_closeout = output / "control/failed_engineering_closeout.json"
+    verified_assets = []
+    if failed_closeout.is_file():
+        prior = load_json(failed_closeout)
+        if isinstance(prior, dict) and isinstance(prior.get("verified_assets"), list):
+            verified_assets = prior["verified_assets"]
+    write_closeout(
+        env=env, spec=spec, operation=operation, output=output,
+        evidence_root=evidence_root, result=result, evidence_sha256=evidence,
+        verified_assets=verified_assets, capability_reuse=capability_reuse,
+        capability_qualification=capability_qualification,
+    )
+    print("GENERIC_ROUTE_FINALIZATION_REPAIR_OK", flush=True)
     return 0
 
 
@@ -1266,8 +1544,19 @@ def finalize_operator_cancellation(exc: OperatorCancelled) -> None:
 def main() -> None:
     signal.signal(signal.SIGTERM, operator_cancel_signal)
     signal.signal(signal.SIGINT, operator_cancel_signal)
+    if sys.argv[1:] and (
+            len(sys.argv) != 3 or sys.argv[1] != "--finalize-existing"):
+        print(
+            "usage: route_lifecycle.py [--finalize-existing SOURCE_COMMIT]",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+    operation = (
+        (lambda: finalize_existing(sys.argv[2]))
+        if sys.argv[1:] else lifecycle
+    )
     try:
-        raise SystemExit(lifecycle())
+        raise SystemExit(operation())
     except SystemExit:
         raise
     except OperatorCancelled as exc:

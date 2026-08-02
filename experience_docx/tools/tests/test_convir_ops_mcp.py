@@ -964,6 +964,121 @@ class ConvirOpsV4Tests(unittest.TestCase):
             evidence = OPS.tool_evidence_manifest({"receipt": receipt})["structuredContent"]
         self.assertEqual("README.md", evidence["files"][0]["name"])
 
+    def test_finalization_repair_is_single_use_and_never_reexecutes_workload(self):
+        source = context()
+        closeout = {
+            "identity": {
+                "route_id": source["route_id"], "run_id": source["output_id"],
+                "route_commit": source["route_branch_commit"],
+                "runner_sha256": source["runner_sha256"],
+            },
+            "terminal_tuple": engineering_terminal(),
+            "closeout_sha256": "1" * 64,
+            "closeout_filename": source["closeout_filename"],
+            "engineering_diagnostic": {
+                "failure_phase": "evidence", "workload_started": True,
+            },
+        }
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": source, "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_calls": 1,
+                "finish_closed": "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+                "terminal_closeout": closeout,
+                "engineering_failure_resolution": "repair",
+                "finalization_repair_attempted": False,
+            },
+        )
+        final = {**source, "route_branch_commit": "f" * 40}
+        raw = json.dumps({
+            "route_id": source["route_id"], "run_id": source["output_id"],
+            "route_commit": "f" * 40, "runner_sha256": source["runner_sha256"],
+            **terminal(),
+        }, separators=(",", ":")).encode()
+        output = (
+            "CONVIR_OPS_FINALIZATION_REPAIR rc=0\n"
+            "CONVIR_OPS_CLOSEOUT_SHA256="
+            + OPS.hashlib.sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n" + raw.decode()
+            + "\nCONVIR_OPS_CLOSEOUT_END\n"
+        )
+        classification = {
+            "status": "FINALIZATION_REPAIR_ELIGIBLE",
+            "scientific_kernel_unchanged": True,
+            "terminal_adapter_only": True,
+        }
+        with patch.object(
+            OPS, "prepare_finalization_repair",
+            return_value=(final, {"evidence_files": []}, classification),
+        ), patch.object(OPS, "finalization_repair_body", return_value="body"), \
+                patch.object(OPS, "run_remote", return_value=output):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "finalize",
+                "finalization_repair_commit": "f" * 40,
+            }))
+        self.assertEqual("CLOSEOUT_VALIDATED", result["operation_state"])
+        self.assertFalse(result["observed"]["workload_reexecuted"])
+        repeated = payload(OPS.tool_finish({
+            "receipt": receipt,
+            "engineering_failure_resolution": "finalize",
+            "finalization_repair_commit": "f" * 40,
+        }))
+        self.assertEqual("FINISH_REJECTED", repeated["operation_state"])
+
+    def test_finalization_repair_rejects_nonfinalization_failure(self):
+        receipt = self.discardable_receipt(
+            failure_phase="workload", workload_started=True,
+        )
+        with patch.object(OPS, "prepare_finalization_repair") as prepare:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "finalize",
+                "finalization_repair_commit": "f" * 40,
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        prepare.assert_not_called()
+
+    def test_finalization_body_restores_original_evidence_without_new_closeout(self):
+        source = context()
+        final = {**source, "route_branch_commit": "f" * 40}
+        spec = {
+            "evidence_files": [{
+                "destination_filename": "s0_review_facts.json",
+            }],
+            "engineering_contract": {"capability_profile_relpath": None},
+        }
+        body = OPS.finalization_repair_body(
+            source, final, spec,
+            {"closeout_sha256": "1" * 64},
+            {"status": "FINALIZATION_REPAIR_ELIGIBLE"},
+        )
+        self.assertIn("finalization_repair_backup", body)
+        self.assertIn("CONVIR_OPS_FINALIZATION_ORIGINAL_EVIDENCE_RESTORED", body)
+        self.assertIn('test ! -f "$CLOSEOUT"', body)
+
+    def test_finalization_candidate_rejection_does_not_consume_execution_slot(self):
+        receipt = self.discardable_receipt(
+            failure_phase="finalize", workload_started=True,
+        )
+        with patch.object(
+            OPS, "prepare_finalization_repair",
+            side_effect=OPS.ToolError("candidate rejected"),
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "finalize",
+                "finalization_repair_commit": "f" * 40,
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        with OPS.locked_record("receipt", receipt) as record:
+            self.assertIsNot(record.get("finalization_repair_attempted"), True)
+            self.assertIsNone(record.get("engineering_failure_resolution"))
+
     def discardable_receipt(self, **diagnostic_overrides):
         ctx = context()
         ctx.update({
@@ -1335,7 +1450,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             "experience_docx/experiment_logs/a1x/s0_conclusion.json",
             contract["conclusion_path"],
         )
-        self.assertEqual(2, contract["conclusion_schema_version"])
+        self.assertEqual(3, contract["conclusion_schema_version"])
         self.assertIn("primary_result", contract["required_conclusion_fields"])
         self.assertIn("gate_fact_ids", contract["required_conclusion_fields"])
 
@@ -1465,6 +1580,112 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIn('test ! -L "$VALIDATED_CLOSEOUT"', body)
         self.assertIn("1" * 64, body)
 
+    def test_inline_evidence_delivery_has_no_local_filesystem_side_effect(self):
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_closed": "CLOSEOUT_VALIDATED",
+                "terminal_closeout": closeout_binding(),
+            },
+        )
+        raw = b"review data\n"
+        digest = OPS.hashlib.sha256(raw).hexdigest()
+        manifest = (
+            f"README.md\t{len(raw)}\t{digest}\n"
+            "CONVIR_OPS_EVIDENCE_MANIFEST_OK\n"
+        )
+        page = json.dumps({
+            "name": "README.md", "content": raw.decode(), "offset": 0,
+            "next_offset": len(raw), "size_bytes": len(raw),
+            "file_sha256": digest, "content_sha256": digest, "complete": True,
+        }, separators=(",", ":"))
+        inline = (
+            "CONVIR_OPS_EVIDENCE_INLINE_BEGIN\n" + page
+            + "\nCONVIR_OPS_EVIDENCE_INLINE_END\n"
+        )
+        receipt_path = OPS.record_path("receipt", receipt)
+        receipt_before = receipt_path.read_bytes()
+        with patch.object(OPS, "run_remote", side_effect=[manifest, inline]), \
+                patch.object(OPS, "validate_local_repo") as local_repo:
+            result = OPS.tool_evidence_fetch({
+                "receipt": receipt, "files": ["README.md"],
+                "delivery": "inline",
+            })["structuredContent"]
+        local_repo.assert_not_called()
+        self.assertEqual("review data\n", result["files"][0]["content"])
+        self.assertTrue(result["complete"])
+        self.assertFalse(result["filesystem_mutations_performed"])
+        self.assertEqual(receipt_before, receipt_path.read_bytes())
+        self.assertEqual([], list(OPS.STATE_DIR.glob("evidence-cursor-*.json")))
+
+    def test_inline_continuation_is_stateless_and_idempotent(self):
+        receipt = OPS.write_new_record(
+            "receipt",
+            {
+                "context": context(), "gpu_index": None,
+                "launch_digest": "f" * 64, "issued_at": 1,
+            },
+            {
+                "launched": True, "finish_closed": "CLOSEOUT_VALIDATED",
+                "terminal_closeout": closeout_binding(),
+            },
+        )
+        raw = b"abc"
+        digest = OPS.hashlib.sha256(raw).hexdigest()
+        manifest = (
+            f"README.md\t{len(raw)}\t{digest}\n"
+            "CONVIR_OPS_EVIDENCE_MANIFEST_OK\n"
+        )
+
+        def page(content, offset, complete):
+            encoded = content.encode()
+            value = json.dumps({
+                "name": "README.md", "content": content, "offset": offset,
+                "next_offset": offset + len(encoded), "size_bytes": len(raw),
+                "file_sha256": digest,
+                "content_sha256": OPS.hashlib.sha256(encoded).hexdigest(),
+                "complete": complete,
+            }, separators=(",", ":"))
+            return (
+                "CONVIR_OPS_EVIDENCE_INLINE_BEGIN\n" + value
+                + "\nCONVIR_OPS_EVIDENCE_INLINE_END\n"
+            )
+
+        with patch.object(
+            OPS, "run_remote",
+            side_effect=[
+                manifest, page("a", 0, False),
+                manifest, page("bc", 1, True),
+                manifest, page("bc", 1, True),
+            ],
+        ):
+            first = OPS.tool_evidence_fetch({
+                "receipt": receipt, "files": ["README.md"], "delivery": "inline",
+            })["structuredContent"]
+            request = {
+                "receipt": receipt, "files": ["README.md"], "delivery": "inline",
+                "continuation": first["continuation"],
+            }
+            second = OPS.tool_evidence_fetch(request)["structuredContent"]
+            replay = OPS.tool_evidence_fetch(request)["structuredContent"]
+        self.assertFalse(first["complete"])
+        self.assertEqual(second, replay)
+        self.assertEqual("bc", second["files"][0]["content"])
+        self.assertTrue(second["complete"])
+        self.assertEqual([], list(OPS.STATE_DIR.glob("evidence-cursor-*.json")))
+
+    def test_inline_evidence_rejects_ambiguous_marker_framing(self):
+        with self.assertRaisesRegex(OPS.ToolError, "framing"):
+            OPS.parse_inline_evidence(
+                "CONVIR_OPS_EVIDENCE_INLINE_BEGIN\n{}\n"
+                "CONVIR_OPS_EVIDENCE_INLINE_END\n"
+                "CONVIR_OPS_EVIDENCE_INLINE_END\n"
+            )
+
     def test_local_evidence_destination_rejects_symlink_chain(self):
         with tempfile.TemporaryDirectory() as root:
             repo = Path(root) / "repo"
@@ -1487,7 +1708,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.6.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.7.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
@@ -1496,7 +1717,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual(4, plan["inputSchema"]["properties"]["schema_version"]["const"])
         finish = next(item for item in tools if item["name"] == "convir_route_finish")
         self.assertEqual(
-            ["repair", "archive", "discard"],
+            ["repair", "archive", "discard", "finalize"],
             finish["inputSchema"]["properties"]["engineering_failure_resolution"]["enum"],
         )
         self.assertEqual(
@@ -1508,6 +1729,12 @@ class ConvirOpsV4Tests(unittest.TestCase):
             finish["inputSchema"]["properties"]["observation_mode"]["enum"],
         )
         self.assertNotIn("pid", finish["inputSchema"]["properties"])
+        fetch = next(item for item in tools if item["name"] == "convir_evidence_fetch")
+        self.assertEqual(["receipt", "files"], fetch["inputSchema"]["required"])
+        self.assertEqual(
+            ["inline", "materialize"],
+            fetch["inputSchema"]["properties"]["delivery"]["enum"],
+        )
 
 
 if __name__ == "__main__":

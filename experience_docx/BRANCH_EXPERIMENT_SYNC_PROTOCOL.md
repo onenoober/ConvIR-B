@@ -32,6 +32,15 @@ evidence fetch. Partial result files remain non-interpretable and non-reusable.
 A later run requires a new declared run identity and normal authorization; the
 cancellation itself never authorizes relaunch.
 
+A completed workload with an `evidence`/`finalize` engineering closeout may use
+one receipt-bound finalization-only repair instead of a new output. The repair
+gate permits only a compiler-synchronized explicit terminal adapter; lifecycle
+revalidates the full unit ledger and stable output identities and allows only a
+declared review-facts file to change. The resulting archive records both source
+and finalization commits. Classification rejection does not consume the
+execution slot; once remote execution is reserved, failure or unknown state
+cannot be retried under the same receipt.
+
 Never silently auto-repair population/data roles, protected-data permissions,
 model structure or initialization, checkpoint/asset identity, metrics,
 thresholds, seed, optimizer, epoch/budget, scientific question, or algorithmic
@@ -74,6 +83,9 @@ large tables and unrelated paths.
 For future review-facts routes, archive verifies every declared point, interval,
 threshold and gate against its closeout-bound JSON source before accepting the
 terminal. Historical terminals remain readable as legacy unbound evidence.
+New receipt-bound archives require a schema-3 conclusion with a source-bound
+numeric primary point. Evidence review uses inline pages by default; the archive
+tool is the explicit materialization consumer and keeps its transfer ephemeral.
 
 After a successful terminal push, stop. Heartbeat deletion, branch deletion,
 worktree deletion, output cleanup and evidence reorganization are separate

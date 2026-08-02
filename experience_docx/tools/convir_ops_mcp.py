@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Restricted six-tool MCP bridge for ConvIR-B cloud route operations."""
 
+import base64
 import fcntl
 import hashlib
 import hmac
@@ -31,7 +32,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.6.0"
+SERVER_VERSION = "5.7.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -84,7 +85,7 @@ MAX_CLOSEOUT_BYTES = 64 * 1024
 MAX_DIAGNOSTIC_TEXT_BYTES = 4096
 GPU_SUMMARY_LIMIT = 8
 GPU_PROBE_RETRY_DELAY_SECONDS = 2
-CONCLUSION_SCHEMA_VERSION = 2
+CONCLUSION_SCHEMA_VERSION = 3
 CONCLUSION_REQUIRED_FIELDS = (
     "schema_version", "route_id", "operation_id", "run_id", "state",
     "decision", "authorizes", "primary_result", "gate_reasons",
@@ -472,19 +473,18 @@ def validate_committed_operation_bundle(bare_repo, route_commit, manifest,
             )
             if capability.get("schema_version") == 2:
                 try:
-                    records = capability_registry.load_records(
+                    registry_commit = context["current_rules_commit"]
+                    capability_reuse = capability_registry.lookup_lines(
                         git_show(
-                            bare_repo, route_commit, capability_registry.REGISTRY_RELPATH,
+                            bare_repo, registry_commit, capability_registry.REGISTRY_RELPATH,
                         ).splitlines(),
+                        capability["reuse_identity"],
                         evidence_exists=lambda relpath: bool(
-                            git_show_bytes(bare_repo, route_commit, relpath)
+                            git_show_bytes(bare_repo, registry_commit, relpath)
                         ),
                         read_evidence=lambda relpath: git_show_bytes(
-                            bare_repo, route_commit, relpath,
+                            bare_repo, registry_commit, relpath,
                         ),
-                    )
-                    capability_reuse = capability_registry.lookup(
-                        records, capability["reuse_identity"],
                     )
                 except capability_registry.CapabilityRegistryError as exc:
                     raise ToolError(f"capability registry is invalid: {exc}") from exc
@@ -1254,6 +1254,26 @@ def locked_record(kind, token):
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
+@contextmanager
+def read_record(kind, token):
+    """Validate an immutable record view without rewriting control state."""
+    path = record_path(kind, token)
+    try:
+        descriptor = secure_state_file_descriptor(path, os.O_RDONLY, f"{kind} record")
+    except ToolError as exc:
+        raise ToolError(f"{kind} is unknown, expired, or insecure") from exc
+    with os.fdopen(descriptor, "r", encoding="utf-8") as handle:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_SH)
+        try:
+            value = json.load(handle)
+            if not hmac.compare_digest(token, sign(value.get("payload"))):
+                raise ToolError(f"{kind} integrity check failed")
+            verify_or_migrate_record(value)
+            yield value
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
 def tool_plan_manifest(args):
     try:
         manifest, operation_id, context = load_operation(args)
@@ -1496,6 +1516,7 @@ def atomic_start_body(context, gpu_index):
         f"GIT_SEED={q(CLOUD_GIT_SEED)}",
         f"BRANCH={q(context['branch'])}",
         f"EXPECTED_COMMIT={q(context['route_branch_commit'])}",
+        f"EXPECTED_MAIN={q(context['current_rules_commit'])}",
         f"RUNNER={q(context['runner_relpath'])}",
         f"EXPECTED_RUNNER_SHA={q(context['runner_sha256'])}",
         f"RUN_ROOT={q(context['run_root'])}",
@@ -1510,6 +1531,7 @@ def atomic_start_body(context, gpu_index):
         'cleanup_fresh() { rc=$?; if test "$FRESH_CREATED" = 1; then rm -rf -- "$REMOTE_REPO"; echo CONVIR_OPS_FRESH_WORKSPACE_CLEANED; fi; exit "$rc"; }',
         'trap cleanup_fresh ERR',
         'test "$(git ls-remote "$GITHUB_URL" "refs/heads/$BRANCH" | awk \'NR==1 {print $1}\')" = "$EXPECTED_COMMIT"',
+        'test "$(git ls-remote "$GITHUB_URL" refs/heads/main | awk \'NR==1 {print $1}\')" = "$EXPECTED_MAIN"',
         'if test "$WORKSPACE_POLICY" = fresh_route; then',
         '  test ! -e "$REMOTE_REPO"',
         '  FRESH_CREATED=1',
@@ -1526,6 +1548,8 @@ def atomic_start_body(context, gpu_index):
         '  git -C "$REMOTE_REPO" fetch --quiet github "+refs/heads/$BRANCH:refs/remotes/github/$BRANCH"',
         '  git -C "$REMOTE_REPO" merge --quiet --ff-only "$EXPECTED_COMMIT"',
         'fi',
+        'git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/main:refs/convir-runtime/main"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$EXPECTED_MAIN"',
         'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$EXPECTED_COMMIT"',
         'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
         f'test -x {q(REMOTE_PYTHON)}',
@@ -1542,7 +1566,7 @@ def atomic_start_body(context, gpu_index):
         'fi',
     ])
     lines.extend([
-        f'"$TMUX" new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
+        f'"$TMUX" new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$EXPECTED_MAIN" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
         'trap - ERR',
         'echo "CONVIR_OPS_LAUNCH_OK session=$SESSION gpu=\${GPU_INDEX:-none}"',
     ])
@@ -1672,6 +1696,7 @@ def issue_receipt(context, gpu_index, launch_output):
             "operator_cancel_attempts": 0,
             "operator_cancel_request_id": None,
             "operator_cancel_state": None,
+            "finalization_repair_attempted": False,
         },
     )
 
@@ -1852,7 +1877,7 @@ def scientific_archive_contract(context, terminal_closeout, finish_closed):
 
 def evidence_context(args):
     token = args.get("receipt")
-    with locked_record("receipt", token) as record:
+    with read_record("receipt", token) as record:
         if not record.get("launched"):
             raise ToolError("receipt has no successful launch")
         closed = record.get("finish_closed")
@@ -1976,6 +2001,265 @@ def authorize_engineering_auto_repair(token, closeout):
         record["terminal_closeout"] = closeout
         record["engineering_failure_resolution"] = "repair"
         record["finish_closed"] = "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
+
+
+def prepare_finalization_repair(context, repair_commit):
+    repair_commit = require_sha(
+        repair_commit, "finalization_repair_commit", SHA40,
+    )
+    branch_ref = f"refs/heads/{context['branch']}"
+    refs = github_refs([branch_ref, "refs/heads/main"])
+    if repair_commit != context["route_branch_commit"] \
+            and refs[branch_ref] != repair_commit:
+        raise ToolError(
+            "finalization repair commit must be the exact route branch head",
+            failure_phase="finalization_repair", failure_class="contract",
+        )
+    with tempfile.TemporaryDirectory(prefix="convir-finalization-repair-") as temporary:
+        bare_repo = str(Path(temporary) / "repo.git")
+        prepare_seeded_bare(bare_repo)
+        fetch_verified_refs(
+            bare_repo, branch_ref, refs[branch_ref], refs["refs/heads/main"],
+        )
+        ensure_commit(bare_repo, context["route_branch_commit"])
+        ensure_commit(bare_repo, repair_commit)
+        classification = {
+            "status": "FINALIZATION_PUBLICATION_RETRY_ELIGIBLE",
+            "scientific_kernel_unchanged": True,
+            "terminal_adapter_only": False,
+        }
+        if repair_commit != context["route_branch_commit"]:
+            import validate_engineering_repair as repair_validator
+            try:
+                classification = repair_validator.validate_finalization_repair(
+                    Path(bare_repo), context["route_branch_commit"], repair_commit,
+                    context["operation_id"], refs["refs/heads/main"],
+                )
+            except repair_validator.RepairError as exc:
+                raise ToolError(
+                    f"finalization repair classifier rejected the candidate: {exc}",
+                    failure_phase="finalization_repair", failure_class="contract",
+                ) from exc
+        manifest = json.loads(git_show(
+            bare_repo, repair_commit, ROUTE_OPERATIONS_RELPATH,
+        ))
+        new_context = parse_manifest(
+            manifest, context["branch"], repair_commit,
+            refs["refs/heads/main"], bare_repo, context["operation_id"],
+        )
+        spec = validate_committed_operation_bundle(
+            bare_repo, repair_commit, manifest, context["operation_id"], new_context,
+        )
+    stable = (
+        "route_id", "operation_id", "mode", "output_id", "output_path",
+        "closeout_filename", "remote_repo", "run_root",
+    )
+    if any(new_context[key] != context[key] for key in stable):
+        raise ToolError(
+            "finalization repair changed receipt-bound route/output identity",
+            failure_phase="finalization_repair", failure_class="contract",
+        )
+    # The generic runner was used only by the source workload. Finalization is
+    # direct and preserves that runner identity in the recovered closeout.
+    new_context["runner_sha256"] = context["runner_sha256"]
+    new_context["session"] = context["session"]
+    return new_context, spec, classification
+
+
+def finalization_repair_body(
+    source_context, final_context, spec, closeout, classification,
+):
+    evidence_root = (
+        f"{source_context['remote_repo']}/experience_docx/experiment_logs/"
+        f"{source_context['route_id']}"
+    )
+    cleanup_names = {
+        source_context["closeout_filename"],
+        *(item["destination_filename"] for item in spec["evidence_files"]),
+    }
+    if final_context["route_manifest_schema_version"] >= 6:
+        suffix = "_closeout.json"
+        cleanup_names.add(
+            source_context["closeout_filename"][:-len(suffix)]
+            + "_raw_artifact_receipt.json"
+        )
+    if spec["engineering_contract"]["capability_profile_relpath"] is not None:
+        cleanup_names.add(
+            source_context["closeout_filename"].replace(
+                "_closeout.json", "_capability_qualification.json",
+            )
+        )
+    for name in cleanup_names:
+        validate_evidence_name(name)
+    failed_copy = f"{source_context['output_path']}/control/failed_engineering_closeout.json"
+    backup_root = f"{source_context['output_path']}/control/finalization_repair_backup"
+    lifecycle = f"{source_context['remote_repo']}/experience_docx/tools/route_lifecycle.py"
+    lines = [
+        f"REMOTE_REPO={q(source_context['remote_repo'])}",
+        f"OUTPUT_PATH={q(source_context['output_path'])}",
+        f"RUN_ROOT={q(source_context['run_root'])}",
+        f"SOURCE_COMMIT={q(source_context['route_branch_commit'])}",
+        f"FINAL_COMMIT={q(final_context['route_branch_commit'])}",
+        f"MAIN_COMMIT={q(final_context['current_rules_commit'])}",
+        f"BRANCH={q(source_context['branch'])}",
+        f"GITHUB_URL={q(GITHUB_URL)}",
+        f"SESSION={q(source_context['session'])}",
+        f"CLOSEOUT={q(source_context['closeout_path'])}",
+        f"CLOSEOUT_SHA={q(closeout['closeout_sha256'])}",
+        f"FAILED_COPY={q(failed_copy)}",
+        f"BACKUP_ROOT={q(backup_root)}",
+        f"EVIDENCE_ROOT={q(evidence_root)}",
+        f"LIFECYCLE={q(lifecycle)}",
+        f"PYTHON={q(REMOTE_PYTHON)}",
+        'test -d "$REMOTE_REPO/.git"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse HEAD)" = "$SOURCE_COMMIT"',
+        'tmux has-session -t "$SESSION" 2>/dev/null && exit 92 || true',
+        'test -f "$CLOSEOUT"',
+        'test "$(sha256sum "$CLOSEOUT" | awk \'{print $1}\')" = "$CLOSEOUT_SHA"',
+        'git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/main:refs/convir-runtime/main"',
+        'test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/main)" = "$MAIN_COMMIT"',
+        'if test "$FINAL_COMMIT" != "$SOURCE_COMMIT"; then',
+        '  git -C "$REMOTE_REPO" fetch --quiet --no-tags --depth=1 github "+refs/heads/$BRANCH:refs/convir-runtime/finalization"',
+        '  test "$(git -C "$REMOTE_REPO" rev-parse refs/convir-runtime/finalization)" = "$FINAL_COMMIT"',
+        'fi',
+        'if test -e "$FAILED_COPY"; then test -f "$FAILED_COPY"; test "$(sha256sum "$FAILED_COPY" | awk \'{print $1}\')" = "$CLOSEOUT_SHA"; else cp -- "$CLOSEOUT" "$FAILED_COPY"; fi',
+        'test ! -e "$BACKUP_ROOT"',
+        'mkdir -- "$BACKUP_ROOT"',
+    ]
+    for name in sorted(cleanup_names):
+        target = f"{evidence_root}/{name}"
+        backup = f"{backup_root}/{name}"
+        lines.extend([
+            f"TARGET={q(target)}",
+            f"BACKUP={q(backup)}",
+            'if test -e "$TARGET" || test -L "$TARGET"; then test -f "$TARGET"; test ! -L "$TARGET"; cp -- "$TARGET" "$BACKUP"; test "$(sha256sum "$TARGET" | awk \'{print $1}\')" = "$(sha256sum "$BACKUP" | awk \'{print $1}\')"; rm -- "$TARGET"; fi',
+        ])
+    lines.extend([
+        'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
+        'if test "$FINAL_COMMIT" != "$SOURCE_COMMIT"; then',
+        '  git -C "$REMOTE_REPO" checkout --quiet --detach "$FINAL_COMMIT"',
+        'fi',
+        'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
+        f'RC=0; env EXPECTED_ROUTE_COMMIT="$FINAL_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$MAIN_COMMIT" RUNNER_SHA256={q(source_context["runner_sha256"])} MODE={q(source_context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(source_context["output_id"])} OUTPUT_ID={q(source_context["output_id"])} GPU={q("")} "$PYTHON" "$LIFECYCLE" --finalize-existing "$SOURCE_COMMIT" || RC=$?',
+        'if test ! -f "$CLOSEOUT"; then',
+        '  RC=97',
+    ])
+    for name in sorted(cleanup_names):
+        target = f"{evidence_root}/{name}"
+        backup = f"{backup_root}/{name}"
+        lines.extend([
+            f"  TARGET={q(target)}",
+            f"  BACKUP={q(backup)}",
+            '  if test -e "$BACKUP"; then test ! -e "$TARGET"; cp -- "$BACKUP" "$TARGET"; test "$(sha256sum "$TARGET" | awk \'{print $1}\')" = "$(sha256sum "$BACKUP" | awk \'{print $1}\')"; fi',
+        ])
+    lines.extend([
+        '  echo CONVIR_OPS_FINALIZATION_ORIGINAL_EVIDENCE_RESTORED',
+        'fi',
+        'test -f "$CLOSEOUT"',
+    ])
+    for name in sorted(cleanup_names):
+        backup = f"{backup_root}/{name}"
+        lines.extend([
+            f"BACKUP={q(backup)}",
+            'if test -e "$BACKUP" || test -L "$BACKUP"; then test -f "$BACKUP"; test ! -L "$BACKUP"; rm -- "$BACKUP"; fi',
+        ])
+    lines.extend([
+        'rmdir -- "$BACKUP_ROOT"',
+        'echo "CONVIR_OPS_FINALIZATION_REPAIR rc=$RC"',
+        'echo CONVIR_OPS_CLOSEOUT_BEGIN',
+        'cat "$CLOSEOUT"',
+        'echo CONVIR_OPS_CLOSEOUT_END',
+        'printf "CONVIR_OPS_CLOSEOUT_SHA256=%s\\n" "$(sha256sum "$CLOSEOUT" | awk \'{print $1}\')"',
+    ])
+    return "\n".join(lines)
+
+
+def resolve_finalization_repair(token, repair_commit):
+    with locked_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        if record.get("finish_closed") not in {
+            "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+        }:
+            raise ToolError("receipt is not awaiting an engineering failure decision")
+        if record.get("finalization_repair_attempted") is True:
+            raise ToolError(
+                "the receipt-bound finalization repair was already attempted",
+                failure_phase="finalization_repair", failure_class="contract",
+            )
+        closeout = record.get("terminal_closeout")
+        diagnostic = closeout.get("engineering_diagnostic") \
+            if isinstance(closeout, dict) else None
+        if not isinstance(diagnostic, dict) \
+                or diagnostic.get("failure_phase") not in {"evidence", "finalize"} \
+                or diagnostic.get("workload_started") is not True:
+            raise ToolError(
+                "finalization repair requires a post-workload evidence/finalize failure",
+                failure_phase="finalization_repair", failure_class="contract",
+            )
+        source_context = dict(record["payload"]["context"])
+    final_context, spec, classification = prepare_finalization_repair(
+        source_context, repair_commit,
+    )
+    with locked_record("receipt", token) as record:
+        if record.get("finalization_repair_attempted") is True:
+            raise ToolError(
+                "the receipt-bound finalization repair was already attempted",
+                failure_phase="finalization_repair", failure_class="contract",
+            )
+        if record.get("finish_closed") not in {
+            "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+        } or record.get("terminal_closeout") != closeout \
+                or record["payload"].get("context") != source_context:
+            raise ToolError(
+                "engineering failure state changed during finalization classification",
+                failure_phase="finalization_repair", failure_class="contract",
+            )
+        record["finalization_repair_attempted"] = True
+        record["engineering_failure_resolution"] = "finalize"
+    output = run_remote(
+        finalization_repair_body(
+            source_context, final_context, spec, closeout, classification,
+        ),
+        timeout=420, phase="finalization_repair",
+    )
+    repaired_closeout = parse_closeout(final_context, output)
+    if repaired_closeout is None:
+        raise ToolError(
+            "finalization repair produced no closeout",
+            failure_phase="finalization_repair", failure_class="evidence",
+        )
+    with locked_record("receipt", token) as record:
+        record["payload"]["context"] = final_context
+    observed = {
+        "classification": classification,
+        "source_commit": source_context["route_branch_commit"],
+        "finalization_commit": final_context["route_branch_commit"],
+        "workload_reexecuted": False,
+        "closeout": repaired_closeout,
+    }
+    if repaired_closeout["terminal_tuple"]["state"] == "FAILED_ENGINEERING":
+        with locked_record("receipt", token) as record:
+            record["terminal_closeout"] = repaired_closeout
+            record["finish_closed"] = "ENGINEERING_REVIEW_REQUIRED"
+        return typed_failure(
+            "FINALIZATION_REPAIR_FAILED",
+            engineering_failure_class(
+                repaired_closeout["engineering_diagnostic"]["failure_phase"],
+            ),
+            "the single receipt-bound finalization repair failed",
+            observed=observed,
+            next_actions=["engineering_review_once", "archive_compact_failure_evidence"],
+            failure_phase=repaired_closeout["engineering_diagnostic"]["failure_phase"],
+            archive_authorized=False, relaunch_authorized=False, receipt=token,
+        )
+    return validated_scientific_result(
+        token, repaired_closeout, observed,
+        manifest={
+            "closeout_filename": repaired_closeout["closeout_filename"],
+            "closeout_sha256": repaired_closeout["closeout_sha256"],
+        },
+    )
 
 
 def resolve_engineering_failure(token, resolution):
@@ -3006,7 +3290,19 @@ def tool_finish(args):
                 "engineering failure resolution cannot be combined with operator control"
             )
         if resolution is not None:
+            if resolution == "finalize":
+                return resolve_finalization_repair(
+                    token, args.get("finalization_repair_commit"),
+                )
+            if args.get("finalization_repair_commit") is not None:
+                raise ToolError(
+                    "finalization_repair_commit requires resolution=finalize"
+                )
             return resolve_engineering_failure(token, resolution)
+        if args.get("finalization_repair_commit") is not None:
+            raise ToolError(
+                "finalization_repair_commit requires an engineering resolution"
+            )
         if operator_action == "cancel":
             if observation_mode != "sealed":
                 raise ToolError("cancellation cannot be combined with progress_only")
@@ -3429,10 +3725,205 @@ def authoritative_snapshot(repo, route_id, ref, *, route_id_confirmed=False):
     }
 
 
+INLINE_EVIDENCE_PAGE_BYTES = 24 * 1024
+
+
+def evidence_inline_body(context, name, record, offset):
+    path = f"{context['evidence_dir']}/{name}"
+    return "\n".join([
+        f"PYTHON={q(REMOTE_PYTHON)}",
+        f"PATH_VALUE={q(path)}",
+        f"NAME_VALUE={q(name)}",
+        f"EXPECTED_SHA={q(record['sha256'])}",
+        f"EXPECTED_SIZE={int(record['bytes'])}",
+        f"OFFSET={int(offset)}",
+        f"PAGE_BYTES={INLINE_EVIDENCE_PAGE_BYTES}",
+        '"$PYTHON" - "$PATH_VALUE" "$NAME_VALUE" "$EXPECTED_SHA" "$EXPECTED_SIZE" "$OFFSET" "$PAGE_BYTES" <<\'PY\'',
+        'import hashlib, json, os, pathlib, stat, sys',
+        'path, name, expected_sha, expected_size, offset, page = sys.argv[1:]',
+        'candidate = pathlib.Path(path)',
+        'observed = candidate.lstat()',
+        'assert stat.S_ISREG(observed.st_mode) and not stat.S_ISLNK(observed.st_mode)',
+        'raw = candidate.read_bytes()',
+        'assert len(raw) == int(expected_size)',
+        'assert hashlib.sha256(raw).hexdigest() == expected_sha',
+        'raw.decode("utf-8")',
+        'start = int(offset); limit = int(page)',
+        'assert 0 <= start <= len(raw)',
+        'end = min(len(raw), start + limit)',
+        'while end > start:',
+        '    try:',
+        '        content = raw[start:end].decode("utf-8")',
+        '        break',
+        '    except UnicodeDecodeError as exc:',
+        '        if exc.end != len(raw[start:end]): raise',
+        '        end = start + exc.start',
+        'else:',
+        '    content = ""',
+        'value = {"name": name, "content": content, "offset": start, "next_offset": end, "size_bytes": len(raw), "file_sha256": expected_sha, "content_sha256": hashlib.sha256(raw[start:end]).hexdigest(), "complete": end == len(raw)}',
+        'print("CONVIR_OPS_EVIDENCE_INLINE_BEGIN")',
+        'print(json.dumps(value, ensure_ascii=False, separators=(",", ":")))',
+        'print("CONVIR_OPS_EVIDENCE_INLINE_END")',
+        'PY',
+    ])
+
+
+def parse_inline_evidence(output):
+    lines = output.splitlines()
+    begin = [
+        index for index, line in enumerate(lines)
+        if line == "CONVIR_OPS_EVIDENCE_INLINE_BEGIN"
+    ]
+    end = [
+        index for index, line in enumerate(lines)
+        if line == "CONVIR_OPS_EVIDENCE_INLINE_END"
+    ]
+    if len(begin) != 1 or len(end) != 1 or end[0] != begin[0] + 2:
+        raise ToolError(
+            "inline evidence framing is missing or ambiguous",
+            failure_phase="evidence_transfer", failure_class="command_infra",
+        )
+    try:
+        value = json.loads(lines[begin[0] + 1])
+    except json.JSONDecodeError as exc:
+        raise ToolError(
+            "inline evidence payload is invalid JSON",
+            failure_phase="evidence_transfer", failure_class="command_infra",
+        ) from exc
+    required = {
+        "name", "content", "offset", "next_offset", "size_bytes",
+        "file_sha256", "content_sha256", "complete",
+    }
+    if not isinstance(value, dict) or set(value) != required \
+            or not isinstance(value["content"], str) \
+            or not isinstance(value["complete"], bool) \
+            or not SHA256.fullmatch(value["file_sha256"]) \
+            or not SHA256.fullmatch(value["content_sha256"]):
+        raise ToolError(
+            "inline evidence page is malformed",
+            failure_phase="evidence_transfer", failure_class="command_infra",
+        )
+    raw = value["content"].encode("utf-8")
+    numeric = (value["offset"], value["next_offset"], value["size_bytes"])
+    if any(not isinstance(item, int) or isinstance(item, bool) for item in numeric) \
+            or not 0 <= value["offset"] <= value["next_offset"] <= value["size_bytes"] \
+            or value["complete"] != (value["next_offset"] == value["size_bytes"]) \
+            or (not value["complete"] and value["next_offset"] == value["offset"]) \
+            or hashlib.sha256(raw).hexdigest() != value["content_sha256"] \
+            or value["next_offset"] - value["offset"] != len(raw):
+        raise ToolError(
+            "inline evidence page hash or boundary mismatch",
+            failure_phase="evidence_transfer", failure_class="command_infra",
+        )
+    return value
+
+
+def evidence_continuation_identity(receipt, names, records):
+    value = {
+        "receipt": receipt,
+        "files": names,
+        "records": records,
+    }
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def encode_evidence_continuation(receipt, names, records, index, offset):
+    payload = {
+        "schema_version": 1,
+        "request_sha256": evidence_continuation_identity(receipt, names, records),
+        "index": index,
+        "offset": offset,
+    }
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    signature = hmac.new(
+        state_secret(), b"convir-evidence-continuation-v1\0" + raw, hashlib.sha256,
+    ).digest()
+    return base64.urlsafe_b64encode(raw + signature).decode("ascii").rstrip("=")
+
+
+def decode_evidence_continuation(token, receipt, names, records):
+    if not isinstance(token, str) or not 1 <= len(token) <= 1024 \
+            or not re.fullmatch(r"[A-Za-z0-9_-]+", token):
+        raise ToolError("evidence continuation is invalid")
+    try:
+        packed = base64.urlsafe_b64decode(token + "=" * (-len(token) % 4))
+    except (ValueError, TypeError) as exc:
+        raise ToolError("evidence continuation is invalid") from exc
+    if len(packed) <= hashlib.sha256().digest_size:
+        raise ToolError("evidence continuation is invalid")
+    raw, observed = packed[:-hashlib.sha256().digest_size], packed[-hashlib.sha256().digest_size:]
+    expected = hmac.new(
+        state_secret(), b"convir-evidence-continuation-v1\0" + raw, hashlib.sha256,
+    ).digest()
+    if not hmac.compare_digest(observed, expected):
+        raise ToolError("evidence continuation integrity check failed")
+    try:
+        payload = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ToolError("evidence continuation payload is invalid") from exc
+    if not isinstance(payload, dict) or set(payload) != {
+        "schema_version", "request_sha256", "index", "offset",
+    } or payload["schema_version"] != 1 \
+            or payload["request_sha256"] \
+            != evidence_continuation_identity(receipt, names, records):
+        raise ToolError(
+            "evidence continuation identity mismatch",
+            failure_phase="evidence_transfer", failure_class="contract",
+        )
+    return payload["index"], payload["offset"]
+
+
+def inline_evidence_page(args, context, names, records):
+    continuation = args.get("continuation")
+    if continuation is None:
+        index, offset = 0, 0
+    else:
+        index, offset = decode_evidence_continuation(
+            continuation, args.get("receipt"), names, records,
+        )
+    if not isinstance(index, int) or not 0 <= index < len(names) \
+            or not isinstance(offset, int) or offset < 0:
+        raise ToolError("evidence continuation position is invalid")
+    name = names[index]
+    page = parse_inline_evidence(run_remote(
+        evidence_inline_body(context, name, records[name], offset),
+        timeout=60, phase="evidence_transfer",
+    ))
+    if page["name"] != name or page["file_sha256"] != records[name]["sha256"] \
+            or page["size_bytes"] != records[name]["bytes"] \
+            or page["offset"] != offset:
+        raise ToolError(
+            "inline evidence page identity mismatch",
+            failure_phase="evidence_transfer", failure_class="evidence",
+        )
+    next_cursor = None
+    next_index = index
+    next_offset = page["next_offset"]
+    if page["complete"]:
+        next_index += 1
+        next_offset = 0
+    if next_index < len(names):
+        next_cursor = encode_evidence_continuation(
+            args.get("receipt"), names, records, next_index, next_offset,
+        )
+    value = {
+        "delivery": "inline",
+        "files": [page],
+        "continuation": next_cursor,
+        "complete": next_cursor is None,
+        "git_mutations_performed": False,
+        "filesystem_mutations_performed": False,
+    }
+    if "archive_contract" in context:
+        value["archive_contract"] = context["archive_contract"]
+    return text_result(json.dumps(value, indent=2), structured=value)
+
+
 def tool_evidence_fetch(args):
     try:
         context = evidence_context(args)
-        local_repo = validate_local_repo(args.get("local_repo"))
         files = args.get("files")
         if not isinstance(files, list) or not 1 <= len(files) <= 32:
             raise ToolError("files must contain 1-32 names")
@@ -3444,6 +3935,18 @@ def tool_evidence_fetch(args):
         )
         if set(records) != set(names):
             raise ToolError("evidence allowlist did not match exactly", failure_class="command_infra")
+        delivery = args.get("delivery")
+        if delivery is None:
+            delivery = "materialize" if args.get("local_repo") is not None else "inline"
+        if delivery not in {"inline", "materialize"}:
+            raise ToolError("delivery must be inline or materialize")
+        if delivery == "inline":
+            if args.get("local_repo") is not None:
+                raise ToolError("inline delivery does not accept local_repo")
+            return inline_evidence_page(args, context, names, records)
+        if args.get("continuation") is not None:
+            raise ToolError("materialize delivery does not accept continuation")
+        local_repo = validate_local_repo(args.get("local_repo"))
         destination_dir = ensure_real_directory_chain(
             local_repo,
             Path("experience_docx") / "experiment_logs" / context["route_id"],
@@ -3480,6 +3983,7 @@ def tool_evidence_fetch(args):
                         raise ToolError(f"refusing concurrent overwrite: {name}") from exc
                     fetched.append(name)
         value = {
+            "delivery": "materialize",
             "fetched": fetched, "already_verified": verified,
             "destination": str(destination_dir), "git_mutations_performed": False,
         }
@@ -3543,14 +4047,24 @@ def tool_git_evidence_status(args):
         route_changed = [line for line in changed_all if route_prefix in line]
 
         route_identity = worktree_route_identity(repo, route_id, head)
-        snapshot = authoritative_snapshot(
-            repo, route_id, "github/main",
-            route_id_confirmed=route_identity["route_id_confirmed"],
+        main_fresh = local_main == remote[0]
+        snapshot = (
+            authoritative_snapshot(
+                repo, route_id, remote[0],
+                route_id_confirmed=route_identity["route_id_confirmed"],
+            )
+            if main_fresh else {
+                "status": "AUTHORITATIVE_MAIN_STALE",
+                "route_id": route_id,
+                "route_id_confirmed": route_identity["route_id_confirmed"],
+                "local_main_commit": local_main,
+                "remote_main_commit": remote[0],
+            }
         )
         value = {
             "local_repo": str(repo), "branch": branch, "head": head,
             "github_main_local": local_main, "github_main_remote": remote[0],
-            "github_main_ref_fresh": local_main == remote[0],
+            "github_main_ref_fresh": main_fresh,
             "worktree_clean": not status,
             "changed_path_count": len(changed_all),
             "route_evidence_change_count": len(route_changed),
@@ -3599,7 +4113,12 @@ TOOLS = {
             "type": "object", "required": ["receipt"],
             "properties": {
                 "receipt": {"type": "string"},
-                "engineering_failure_resolution": {"enum": ["repair", "archive", "discard"]},
+                "engineering_failure_resolution": {
+                    "enum": ["repair", "archive", "discard", "finalize"],
+                },
+                "finalization_repair_commit": {
+                    "type": "string", "pattern": "^[0-9a-f]{40}$",
+                },
                 "operator_action": {
                     "enum": ["observe", "cancel"], "default": "observe",
                 },
@@ -3620,12 +4139,16 @@ TOOLS = {
         "handler": tool_evidence_manifest,
     },
     "convir_evidence_fetch": {
-        "description": "Fetch a compact evidence allowlist from the receipt-bound workspace with SHA-256 verification; never stage or push Git.",
+        "description": "Read compact receipt-bound evidence inline without filesystem changes, or explicitly materialize it with SHA-256 verification; never stage or push Git.",
         "inputSchema": {
-            "type": "object", "required": ["receipt", "local_repo", "files"],
+            "type": "object", "required": ["receipt", "files"],
             "properties": {
                 "receipt": {"type": "string"}, "local_repo": {"type": "string"},
                 "files": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 32},
+                "delivery": {
+                    "enum": ["inline", "materialize"], "default": "inline",
+                },
+                "continuation": {"type": "string"},
             },
             "additionalProperties": False,
         },

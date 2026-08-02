@@ -39,6 +39,10 @@ all writes must be explicitly bound to the local_repo path. The repo-show,
 repo-list, and repo-search readers resolve a safe commit/ref and use literal
 argv. repo-search accepts literal terms only; zero matches are a successful
 empty result, not a command failure.
+Snapshot, compiler and route-ready compare the local remote-tracking main to the
+live remote SHA. A mismatch returns a stale-main state without terminal
+pointers or authoring output; refresh the fixed ref once, then repeat the same
+bounded operation.
 
 ## Finite Recovery
 
@@ -73,6 +77,17 @@ This lets independent mechanical defects be corrected together instead of
 requiring one user round trip per field. The same tuple cannot recur, and the
 batch cannot include cloud, transport, runtime, protected-data, scientific-
 authorization, engineering-repair or unknown-state failures.
+
+A finalization-repair candidate is classified before its one execution slot is
+reserved. Rejected identity, commit or adapter candidates remain command/
+contract errors and do not consume that slot. Once reserved, remote timeout is
+unknown state and the receipt cannot launch or retry the finalizer blindly.
+
+Receipt-bound compact evidence is read inline by default. Its opaque
+continuation is a stateless HMAC binding of receipt, allowlist identities and
+byte offset, so replay returns the same immutable page without cursor files.
+Filesystem materialization must be explicitly requested and remains limited to
+the canonical unstaged evidence directory.
 
 ### 2026-07-19 evidence-sync staging audit boundary
 

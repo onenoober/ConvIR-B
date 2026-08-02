@@ -585,6 +585,40 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
                 f"closeout {key} differs from terminal record",
                 state="IDENTITY_CONFLICT",
             )
+    workload_source_commit = route_commit
+    details = closeout.get("details")
+    finalization_recovery = (
+        details.get("finalization_recovery") if isinstance(details, dict) else None
+    )
+    if finalization_recovery is not None:
+        required_recovery = {
+            "source_commit", "finalization_commit", "adapter_used",
+            "workload_reexecuted", "stable_output_isolation_verified",
+            "new_capability_registration_authorized",
+        }
+        if not isinstance(finalization_recovery, dict) \
+                or set(finalization_recovery) != required_recovery:
+            raise InventoryError(
+                "finalization recovery provenance is invalid",
+                state="IDENTITY_CONFLICT",
+            )
+        workload_source_commit = _require_sha(
+            finalization_recovery["source_commit"], SHA40,
+            "finalization_recovery.source_commit", state="IDENTITY_CONFLICT",
+            exit_code=3,
+        )
+        adapter_used = finalization_recovery["adapter_used"]
+        if finalization_recovery["finalization_commit"] != route_commit \
+                or not isinstance(adapter_used, bool) \
+                or finalization_recovery["workload_reexecuted"] is not False \
+                or finalization_recovery["stable_output_isolation_verified"] is not True \
+                or finalization_recovery["new_capability_registration_authorized"] \
+                is not (not adapter_used) \
+                or (workload_source_commit != route_commit) is not adapter_used:
+            raise InventoryError(
+                "finalization recovery identity or isolation differs",
+                state="IDENTITY_CONFLICT",
+            )
     try:
         prepare_terminal_archive.validate_conclusion(
             conclusion_raw, conclusion_path, closeout
@@ -597,7 +631,7 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
     conclusion_schema_version = conclusion.get("schema_version")
     if conclusion_schema_version is not None and (
         type(conclusion_schema_version) is not int
-        or conclusion_schema_version not in {1, 2}
+        or conclusion_schema_version not in {1, 2, 3}
     ):
         raise InventoryError(
             "conclusion schema is unsupported", state="IDENTITY_CONFLICT"
@@ -605,7 +639,8 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
     conclusion_schema_state = {
         None: "LEGACY_UNVERSIONED",
         1: "LEGACY_V1",
-        2: "CURRENT_V2",
+        2: "HISTORICAL_V2",
+        3: "CURRENT_V3",
     }[conclusion_schema_version]
     runner_sha256 = _require_sha(
         closeout.get("runner_sha256"), SHA256, "closeout.runner_sha256",
@@ -807,9 +842,10 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
         "output_id": output_id,
         "mode": mode,
         "session": convir_ops_mcp.derive_session(
-            route_id, mode, route_commit, output_id
+            route_id, mode, workload_source_commit, output_id
         ),
         "route_commit": route_commit,
+        "workload_source_commit": workload_source_commit,
         "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
         "runtime_spec_sha256": hashlib.sha256(runtime_raw).hexdigest(),
         "closeout_sha256": record["closeout_sha256"],
@@ -846,7 +882,7 @@ def prepare_terminal_binding(repo_value: str | Path, snapshot_commit: str,
             "route_id": route_id,
             "operation_id": operation_id,
             "run_id": run_id,
-            "route_commit": route_commit,
+            "route_commit": workload_source_commit,
             "runner_sha256": runner_sha256,
         },
         "expected_evidence": sorted(
@@ -1364,7 +1400,8 @@ def _inventory(binding: dict[str, Any], *, state: str,
         key: binding.get(key) for key in (
             "snapshot_commit", "catalog_sha256", "terminal_index_sha256",
             "terminal_record_sha256", "route_id", "operation_id", "run_id",
-            "output_id", "mode", "session", "route_commit", "manifest_sha256",
+            "output_id", "mode", "session", "route_commit",
+            "workload_source_commit", "manifest_sha256",
             "runtime_spec_sha256", "closeout_sha256", "runner_sha256",
             "raw_artifact_receipt_sha256",
         )

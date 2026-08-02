@@ -533,7 +533,7 @@ def _expected_compiler_paths(
                 raise ReadyError(f"runtime compiler relpath is invalid: {operation_id}")
             if isinstance(relpath, str):
                 expected.add(relpath)
-    return expected
+    return expected | set(RUNTIME_BUNDLE_RELPATHS)
 
 
 def validate_authoring_receipt(
@@ -552,7 +552,7 @@ def validate_authoring_receipt(
         spec_raw = show(repo, snapshot, spec_path)
         program_raw = show(repo, snapshot, program_path)
         try:
-            bundle = spec_compiler.compile_bundle(
+            derived_bundle = spec_compiler.compile_bundle(
                 spec_relpath=spec_path,
                 spec_raw=spec_raw,
                 program_raw=program_raw,
@@ -560,6 +560,10 @@ def validate_authoring_receipt(
                     repo, current_main, relpath,
                 ) is not None,
             )
+            bundle = {
+                **derived_bundle,
+                **spec_compiler.canonical_runtime_bundle(repo, current_main),
+            }
         except (spec_compiler.ExperimentSpecError, KeyError, TypeError, ValueError) as rebuild_exc:
             raise ReadyError(
                 "schema-6 authoring receipt is missing and deterministic recovery failed: "
@@ -769,18 +773,16 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 ).hexdigest()
                 if capability.get("schema_version") == 2:
                     registry_raw = show(
-                        repo, snapshot, capability_registry.REGISTRY_RELPATH,
+                        repo, current_main, capability_registry.REGISTRY_RELPATH,
                     )
                     try:
-                        records = capability_registry.load_records(
+                        capability_reuse = capability_registry.lookup_lines(
                             registry_raw.decode("utf-8").splitlines(),
+                            capability["reuse_identity"],
                             evidence_exists=lambda relpath: (
-                                show_optional(repo, snapshot, relpath) is not None
+                                show_optional(repo, current_main, relpath) is not None
                             ),
-                            read_evidence=lambda relpath: show(repo, snapshot, relpath),
-                        )
-                        capability_reuse = capability_registry.lookup(
-                            records, capability["reuse_identity"],
+                            read_evidence=lambda relpath: show(repo, current_main, relpath),
                         )
                     except (
                         UnicodeDecodeError, capability_registry.CapabilityRegistryError,
@@ -942,14 +944,19 @@ def main() -> None:
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument("--operation", action="append", dest="operations")
     parser.add_argument("--snapshot", choices=("staged", "HEAD"), default="staged")
-    parser.add_argument("--current-main", default="refs/remotes/github/main")
+    parser.add_argument(
+        "--current-main", default=spec_compiler.DEFAULT_AUTHORITATIVE_MAIN,
+        choices=(spec_compiler.DEFAULT_AUTHORITATIVE_MAIN,),
+    )
     parser.add_argument("--bootstrap-runtime-bundle", action="store_true")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     repo = args.repo.resolve()
     try:
         snapshot = staged_snapshot(repo) if args.snapshot == "staged" else clean_head(repo)
-        current_main = command(repo, GIT, "rev-parse", args.current_main)
+        current_main = spec_compiler.resolve_fresh_authoritative_main(
+            repo, args.current_main,
+        )
         identity, identity_sha = route_ready_request_identity(
             repo, snapshot, current_main, args.operations,
         )
@@ -963,6 +970,7 @@ def main() -> None:
             write_route_ready_receipt_atomic(repo, identity, identity_sha, report)
     except (
         OSError, ReadyError, ops.ToolError, ContractError, json.JSONDecodeError,
+        spec_compiler.ExperimentSpecError,
     ) as exc:
         print(f"ROUTE_READY_ERROR {exc}")
         raise SystemExit(1)

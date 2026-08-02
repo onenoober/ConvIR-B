@@ -44,8 +44,12 @@ hash changes.
    Formal precision needs a primary-estimand and stratum-bound pre-run
    feasibility certificate using a frozen planning-SD upper bound; a changed production path needs one
    identity-bound capability profile and matching device-aware synthetic contract.
-   Use the compiler's atomic `--finalize`: it runs one aggregate lint and writes
-   the complete derived bundle only when the source is clean. Any cost/termination
+   Use the compiler's atomic `--finalize`: it first proves that the local
+   remote-tracking main equals the live GitHub main SHA, then runs one aggregate
+   lint and atomically writes the complete derived bundle plus the canonical
+   nine-file runtime closure from that exact main commit. Route-ready only
+   verifies this closure; it must not be the first place missing runtime files
+   are discovered. Any cost/termination
    claim also freezes a machine-validated cost strategy: use a same-scale probe
    for adaptive/nonlinear work, or fixed-linear extrapolation only for an exact
    fixed-count production map with bounded shape and constant memory.
@@ -71,6 +75,15 @@ hash changes.
    not block the bounded result-blind refresh, early terminal detection, or
    operator cancellation. Do not turn refresh into a watcher.
    Never repeat checks owned by the validator/lifecycle or create a watcher.
+   A post-workload `evidence`/`finalize` failure may use one receipt-bound
+   finalization repair instead of recomputing the experiment. It requires full
+   ledger/output verification, no active session, an unchanged scientific
+   kernel/contract/data/gates/thresholds and either the same commit for a pure
+   publication retry or one classifier-approved terminal-adapter-only commit.
+   Runtime isolation permits only declared review-facts serialization to
+   change; it never reruns the workload or changes aggregate/result files. An
+   adapter-changed commit cannot register a new capability identity from the
+   source run's engineering result.
    Schema-6 plan recompilation resolves archived authorization evidence from
    the exact current main commit, not from the route checkout. A rules-byte
    change is compatible only when current main explicitly retains the same
@@ -153,6 +166,10 @@ repair policy below and is not a scientific terminal archive.
   path that unlocks failure evidence.
   The repair gate's tool-owned temporary Git index is an isolated classifier
   input and is not real staging; it must leave the worktree index unchanged.
+- Finalization repair is a distinct single-use engineering resolution. It is
+  unavailable for workload, data, metric, threshold, integrity or precision
+  failures, and a failed finalization repair cannot be retried under the same
+  receipt.
 - `complete_units` recovery uses the generic fsync'd unit ledger with unique
   unit/input/output identities, one hash-bound `completed_unit_ledger` asset,
   and verified output files. A completed count without that exact evidence is
@@ -169,7 +186,7 @@ GitHub evidence.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.6.0 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.7.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.
@@ -181,6 +198,9 @@ GitHub evidence.
   show` pipelines.
 - Use explicit binaries, JSON/status/closeout markers, and SHA-256 identity. A
   remote timeout is unknown state with one inspection and no blind retry.
+- Compact evidence reads default to receipt-bound inline UTF-8 pages with SHA-256
+  and opaque continuation tokens, causing no worktree mutation. Materialization
+  is an explicit delivery mode used by archive workflows and remains unstaged.
 
 ## Documentation Ownership
 

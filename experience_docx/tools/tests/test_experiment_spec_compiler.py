@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 TOOLS = Path(__file__).parents[1]
 TESTS = Path(__file__).parent
+SOURCE_REPO = TOOLS.parents[1]
 sys.path[:0] = [str(TOOLS), str(TESTS)]
 import convir_ops_mcp as OPS  # noqa: E402
 import experiment_spec_compiler as COMPILER  # noqa: E402
@@ -180,6 +181,22 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         return subprocess.run(
             ["git", *args], cwd=repo, text=True, capture_output=True, check=True,
         ).stdout.strip()
+
+    def bind_github_main(self, repo, commit):
+        remote = repo.parent / f"{repo.name}-github.git"
+        subprocess.run(["git", "init", "--bare", "-q", str(remote)], check=True)
+        self.git(repo, "remote", "add", "github", str(remote))
+        self.git(repo, "push", "-q", "github", f"{commit}:refs/heads/main")
+        self.git(
+            repo, "fetch", "-q", "github",
+            "+refs/heads/main:refs/remotes/github/main",
+        )
+
+    def install_runtime_bundle(self, repo):
+        for relpath in COMPILER.RUNTIME_BUNDLE_RELPATHS:
+            destination = repo / relpath
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes((SOURCE_REPO / relpath).read_bytes())
 
     def test_compilation_is_deterministic_and_schema6_is_identity_bound(self):
         program, spec = sources()
@@ -505,7 +522,7 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "archive evidence")
             current_main = self.git(repo, "rev-parse", "HEAD")
-            self.git(repo, "update-ref", "refs/remotes/github/main", current_main)
+            self.bind_github_main(repo, current_main)
             evidence.unlink()
 
             resolved, exists = COMPILER._authoritative_evidence_resolver(
@@ -521,6 +538,18 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             ):
                 COMPILER._authoritative_evidence_resolver(
                     repo, "0" * 40, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
+                )
+
+            (repo / "README.md").write_text("stale local main\n", encoding="utf-8")
+            self.git(repo, "add", "README.md")
+            self.git(repo, "commit", "-qm", "stale local tracking commit")
+            stale = self.git(repo, "rev-parse", "HEAD")
+            self.git(repo, "update-ref", "refs/remotes/github/main", stale)
+            with self.assertRaisesRegex(
+                COMPILER.ExperimentSpecError, "remote-tracking main is stale",
+            ):
+                COMPILER.resolve_fresh_authoritative_main(
+                    repo, COMPILER.DEFAULT_AUTHORITATIVE_MAIN,
                 )
 
     def test_finalize_receipt_is_private_and_identity_bound(self):
@@ -559,10 +588,11 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.git(repo, "config", "user.name", "test")
             self.git(repo, "config", "user.email", "test@example.com")
             (repo / "README.md").write_text("rules anchor\n", encoding="utf-8")
+            self.install_runtime_bundle(repo)
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "rules main")
             rules_commit = self.git(repo, "rev-parse", "HEAD")
-            self.git(repo, "update-ref", "refs/remotes/github/main", rules_commit)
+            self.bind_github_main(repo, rules_commit)
             program, spec = sources_v2(rules_commit)
             spec_path = repo / "experience_docx/experiment_specs/final_slim.json"
             program_path = repo / "experience_docx/research_programs/final_slim.json"
@@ -583,6 +613,10 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             receipt_path = COMPILER._authoring_receipt_path(repo, "final_slim")
             self.assertEqual(report["receipt"], json.loads(receipt_path.read_bytes()))
             self.assertTrue((repo / COMPILER.MANIFEST_RELPATH).is_file())
+            generated = {
+                item["relpath"] for item in report["receipt"]["generated_files"]
+            }
+            self.assertTrue(set(COMPILER.RUNTIME_BUNDLE_RELPATHS) <= generated)
 
     def test_compiler_rejects_adjacent_budget_overrun_but_allows_orthogonal_escape(self):
         program, spec = sources()

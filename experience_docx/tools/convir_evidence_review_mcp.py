@@ -19,7 +19,7 @@ import legacy_backfill_registry as legacy
 
 
 SERVER_NAME = "convir-evidence-review"
-SERVER_VERSION = "2.0.1"
+SERVER_VERSION = "2.1.0"
 WORKSPACE_ROOT_ENV = "CONVIR_EVIDENCE_LOCAL_WORKSPACE_ROOT"
 DEFAULT_WORKSPACE_ROOT = "/home/ubuntu/workspace"
 TRUSTED_REMOTE_NAME = "github"
@@ -1145,7 +1145,8 @@ def _binding_identity(binding):
         key: binding.get(key) for key in (
             "snapshot_commit", "catalog_sha256", "terminal_index_sha256",
             "terminal_record_sha256", "route_id", "operation_id", "run_id",
-            "output_id", "mode", "session", "route_commit", "manifest_sha256",
+            "output_id", "mode", "session", "route_commit",
+            "workload_source_commit", "manifest_sha256",
             "runtime_spec_sha256", "closeout_sha256", "runner_sha256",
             "raw_artifact_receipt_sha256",
         )

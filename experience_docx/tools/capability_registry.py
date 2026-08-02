@@ -135,6 +135,44 @@ def lookup(records: Iterable[dict], identity: dict) -> dict:
     }
 
 
+def lookup_lines(
+    lines: Iterable[str], identity: dict, *,
+    evidence_exists: Callable[[str], bool] | None = None,
+    read_evidence: Callable[[str], bytes] | None = None,
+) -> dict:
+    """Validate only the unique record matching one requested identity.
+
+    Route readiness and lifecycle reuse are point queries. Unrelated historical
+    records are maintained by registry CI/archive validation and must not make a
+    reuse miss fail. A matching record remains fail-closed, including duplicate
+    matches and its exact evidence binding.
+    """
+    digest = identity_digest(identity)
+    matches = []
+    for raw in lines:
+        if not raw.strip():
+            continue
+        try:
+            value = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict) and value.get("identity_sha256") == digest:
+            matches.append(value)
+    if not matches:
+        return {
+            "status": "CAPABILITY_REUSE_MISS",
+            "identity_sha256": digest,
+            "engineering_reuse_authorized": False,
+            "scientific_authorization": "NONE",
+        }
+    if len(matches) != 1:
+        raise CapabilityRegistryError("duplicate matching capability identity")
+    record = validate_record(
+        matches[0], evidence_exists=evidence_exists, read_evidence=read_evidence,
+    )
+    return lookup([record], identity)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path.cwd())

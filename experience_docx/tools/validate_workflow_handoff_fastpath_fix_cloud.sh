@@ -101,7 +101,7 @@ completed = subprocess.run(
 assert completed.stderr.strip() == "", completed.stderr
 responses = {item["id"]: item for item in map(json.loads, completed.stdout.splitlines())}
 assert set(responses) == {1, 2}
-assert responses[1]["result"]["serverInfo"]["version"] == "5.6.0"
+assert responses[1]["result"]["serverInfo"]["version"] == "5.7.0"
 expected = {
     "convir_route_plan", "convir_route_start", "convir_route_finish",
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
@@ -112,5 +112,5 @@ assert {item["name"] for item in tools} == expected
 PY
 
 source_sha=$(sha256sum "$tools/convir_ops_mcp.py" | cut -d' ' -f1)
-printf 'WORKFLOW_HANDOFF_FASTPATH_FIX_CLOUD_OK candidate=%s tests=%s source_sha256=%s version=5.6.0 tools=6 model_calls=0 gpu_access=0 protected_data_access=0 experiment_launches=0\n' \
+printf 'WORKFLOW_HANDOFF_FASTPATH_FIX_CLOUD_OK candidate=%s tests=%s source_sha256=%s version=5.7.0 tools=6 model_calls=0 gpu_access=0 protected_data_access=0 experiment_launches=0\n' \
   "$candidate" "$test_count" "$source_sha"

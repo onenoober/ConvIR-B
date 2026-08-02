@@ -25,6 +25,7 @@ from route_runtime_contract import (
     ContractError,
     MODEL_CAPABILITY_DIRECTORY,
     PRECISION_CERTIFICATE_DIRECTORY,
+    RUNTIME_BUNDLE_RELPATHS,
     RUNTIME_SPEC_DIRECTORY,
     capability_input_contract_sha256,
     repository_asset_identity_errors,
@@ -185,17 +186,40 @@ def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProc
     return completed
 
 
+def resolve_fresh_authoritative_main(repo: Path, authoritative_main: str) -> str:
+    """Resolve a remote-tracking ref only when it equals the live remote head."""
+    match = __import__("re").fullmatch(
+        r"refs/remotes/([A-Za-z0-9][A-Za-z0-9_.-]*)/([A-Za-z0-9][A-Za-z0-9_./-]*)",
+        authoritative_main if isinstance(authoritative_main, str) else "",
+    )
+    if match is None or ".." in match.group(2).split("/"):
+        raise ExperimentSpecError(
+            "authoritative main must be an exact remote-tracking ref"
+        )
+    resolved = _git(
+        repo, "rev-parse", "--verify", f"{authoritative_main}^{{commit}}",
+    ).stdout.decode("ascii").strip()
+    remote, branch = match.groups()
+    observed = _git(
+        repo, "ls-remote", "--exit-code", remote, f"refs/heads/{branch}",
+    ).stdout.decode("ascii", errors="replace").split()
+    if len(observed) != 2 or not SHA40.fullmatch(observed[0]) \
+            or observed[1] != f"refs/heads/{branch}":
+        raise ExperimentSpecError("authoritative remote main identity is malformed")
+    if resolved != observed[0]:
+        raise ExperimentSpecError(
+            "authoritative remote-tracking main is stale; refresh it once before authoring"
+        )
+    return resolved
+
+
 def _authoritative_evidence_resolver(
     repo: Path, rules_commit: Any, authoritative_main: str,
 ) -> tuple[str, Callable[[str], bool]]:
     """Resolve archived authorization evidence from the current GitHub main."""
     if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
         raise ExperimentSpecError("rules_commit must be an exact 40-character commit")
-    if not isinstance(authoritative_main, str) or not authoritative_main:
-        raise ExperimentSpecError("authoritative main ref must be non-empty")
-    resolved = _git(
-        repo, "rev-parse", "--verify", f"{authoritative_main}^{{commit}}",
-    ).stdout.decode("ascii").strip()
+    resolved = resolve_fresh_authoritative_main(repo, authoritative_main)
     _git(repo, "cat-file", "-e", f"{rules_commit}^{{commit}}")
     cache: dict[str, bool] = {}
 
@@ -215,6 +239,24 @@ def _authoritative_evidence_resolver(
         return cache[relpath]
 
     return resolved, exists
+
+
+def canonical_runtime_bundle(repo: Path, authoritative_commit: str) -> dict[str, bytes]:
+    """Read the complete runnable closure from one exact authoritative commit."""
+    if not isinstance(authoritative_commit, str) or not SHA40.fullmatch(authoritative_commit):
+        raise ExperimentSpecError("authoritative runtime commit is invalid")
+    result = {}
+    for relpath in RUNTIME_BUNDLE_RELPATHS:
+        relpath = _safe_repo_relpath(relpath, "canonical runtime path")
+        completed = _git(
+            repo, "show", f"{authoritative_commit}:{relpath}", check=False,
+        )
+        if completed.returncode:
+            raise ExperimentSpecError(
+                f"authoritative main is missing canonical runtime file: {relpath}"
+            )
+        result[relpath] = completed.stdout
+    return result
 
 
 def _authoring_receipt_path(repo: Path, route_id: str) -> Path:
@@ -1153,14 +1195,23 @@ def main() -> None:
             raise SystemExit("; ".join(mismatches))
         print(json.dumps({"status": "EXPERIMENT_SPEC_BUNDLE_OK", "files": len(bundle)}))
         return
-    write_bundle_atomic(args.repo, bundle)
+    installed_bundle = bundle
+    if args.finalize:
+        installed_bundle = {
+            **bundle,
+            **canonical_runtime_bundle(
+                args.repo.resolve(strict=True),
+                inputs["authoritative_main_commit"],
+            ),
+        }
+    write_bundle_atomic(args.repo, installed_bundle)
     status = (
         "EXPERIMENT_SPEC_BUNDLE_FINALIZED"
         if args.finalize else "EXPERIMENT_SPEC_BUNDLE_WRITTEN"
     )
-    report: dict[str, Any] = {"status": status, "files": len(bundle)}
+    report: dict[str, Any] = {"status": status, "files": len(installed_bundle)}
     if args.finalize:
-        receipt = build_authoring_receipt(bundle=bundle, **inputs)
+        receipt = build_authoring_receipt(bundle=installed_bundle, **inputs)
         write_private_receipt_atomic(args.repo.resolve(strict=True), receipt["route_id"], receipt)
         report["receipt"] = receipt
         report["receipt_sha256"] = sha256(json_bytes(receipt))

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import copy
 import hashlib
 import json
 import os
@@ -206,6 +207,83 @@ def normalized_entrypoint(raw: bytes) -> str:
     return ast.dump(normalized, include_attributes=False)
 
 
+TERMINAL_ADAPTER_FUNCTIONS = {
+    "finalize_existing",
+    "build_review_facts",
+    "serialize_review_facts",
+    "write_terminal_evidence",
+}
+
+
+def entrypoint_partitions(raw: bytes) -> tuple[str, str, set[str]]:
+    """Return normalized scientific-kernel and explicit terminal-adapter ASTs."""
+    try:
+        decoded = raw.decode("utf-8")
+        tree = ast.parse(decoded)
+    except (UnicodeDecodeError, SyntaxError) as exc:
+        raise RepairError(f"entrypoint is not valid UTF-8 Python: {exc}") from exc
+    adapter_nodes = [
+        copy.deepcopy(node) for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name in TERMINAL_ADAPTER_FUNCTIONS
+    ]
+    kernel_nodes = [
+        copy.deepcopy(node) for node in tree.body
+        if not (
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name in TERMINAL_ADAPTER_FUNCTIONS
+        )
+    ]
+    kernel = SafeRepairAst().visit(ast.Module(body=kernel_nodes, type_ignores=[]))
+    adapter = SafeRepairAst().visit(ast.Module(body=adapter_nodes, type_ignores=[]))
+    referenced = sorted({
+        node.id for node in ast.walk(kernel)
+        if isinstance(node, ast.Name) and node.id in TERMINAL_ADAPTER_FUNCTIONS
+    })
+    ast.fix_missing_locations(kernel)
+    ast.fix_missing_locations(adapter)
+    return (
+        ast.dump(kernel, include_attributes=False),
+        ast.dump(adapter, include_attributes=False),
+        set(referenced),
+    )
+
+
+def classify_entrypoint_change(old_raw: bytes, new_raw: bytes) -> dict[str, bool]:
+    old_kernel, old_adapter, old_references = entrypoint_partitions(old_raw)
+    new_kernel, new_adapter, new_references = entrypoint_partitions(new_raw)
+    try:
+        new_tree = ast.parse(new_raw.decode("utf-8"))
+    except (UnicodeDecodeError, SyntaxError) as exc:
+        raise RepairError(f"entrypoint is not valid UTF-8 Python: {exc}") from exc
+    finalizers = [
+        node for node in new_tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "finalize_existing"
+    ]
+    whole_equal = normalized_entrypoint(old_raw) == normalized_entrypoint(new_raw)
+    adapter_only = (
+        old_kernel == new_kernel
+        and old_adapter != new_adapter
+        and new_adapter != ast.dump(ast.Module(body=[], type_ignores=[]), include_attributes=False)
+    )
+    if adapter_only and (old_references or new_references):
+        raise RepairError(
+            "terminal adapter is referenced by the scientific kernel: "
+            + ", ".join(sorted(old_references | new_references))
+        )
+    if not whole_equal and not adapter_only:
+        raise RepairError("entrypoint scientific kernel/control/constants changed")
+    if adapter_only and len(finalizers) != 1:
+        raise RepairError(
+            "terminal-adapter repair requires exactly one synchronous finalize_existing"
+        )
+    return {
+        "entrypoint_symbol_binding_only": whole_equal,
+        "terminal_adapter_only": adapter_only,
+        "scientific_kernel_unchanged": True,
+    }
+
+
 def normalize_card(raw: bytes, old_output: str, new_output: str) -> str:
     try:
         lines = raw.decode("utf-8").splitlines()
@@ -328,8 +406,9 @@ def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: 
     new_entrypoint_raw = show(repo, snapshot, new_entrypoint)
     if old_entrypoint_raw == new_entrypoint_raw:
         raise RepairError("schema-6 repair did not change the entrypoint binding")
-    if normalized_entrypoint(old_entrypoint_raw) != normalized_entrypoint(new_entrypoint_raw):
-        raise RepairError("entrypoint algorithm/control-flow/constants changed")
+    entrypoint_class = classify_entrypoint_change(
+        old_entrypoint_raw, new_entrypoint_raw,
+    )
     old_sha, new_sha = _sha256(old_entrypoint_raw), _sha256(new_entrypoint_raw)
     if _normalize_schema6_source(old_source, operation_id, old_output, old_sha) != \
             _normalize_schema6_source(new_source, operation_id, old_output, old_sha):
@@ -354,8 +433,105 @@ def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: 
         raise RepairError(f"unexpected schema-6 repair paths: {unexpected}")
     return {
         "asset_path_repairs": [],
-        "entrypoint_symbol_binding_only": True,
+        **entrypoint_class,
         "schema6_compiler_regeneration_verified": True,
+    }
+
+
+def validate_finalization_repair(
+    repo: Path, base: str, snapshot: str, operation_id: str,
+    authoritative_commit: str | None = None,
+) -> dict[str, Any]:
+    """Classify a same-output schema-6 terminal-adapter repair.
+
+    This classifier deliberately excludes workload, data, metric, threshold and
+    scientific-contract changes. Runtime enforcement separately verifies the
+    completed ledger and that only declared review-facts serialization changes.
+    """
+    base = git(repo, "rev-parse", f"{base}^{{commit}}")
+    snapshot = git(repo, "rev-parse", f"{snapshot}^{{commit}}")
+    manifest_path = ops.ROUTE_OPERATIONS_RELPATH
+    old_manifest = load_json(repo, base, manifest_path)
+    new_manifest = load_json(repo, snapshot, manifest_path)
+    if old_manifest.get("schema_version") != 6 or new_manifest.get("schema_version") != 6:
+        raise RepairError("finalization repair requires manifest schema 6")
+    if set(old_manifest) != set(new_manifest) or set(old_manifest["operations"]) != \
+            set(new_manifest["operations"]) or operation_id not in old_manifest["operations"]:
+        raise RepairError("finalization repair changed route or operation identity")
+    stable_manifest_fields = {
+        "schema_version", "route_id", "rules_commit", "route_card_relpath",
+        "scientific_contract_relpaths", "program_contract_relpath",
+        "program_contract_sha256", "experiment_spec_relpath",
+    }
+    if {key: old_manifest.get(key) for key in stable_manifest_fields} != \
+            {key: new_manifest.get(key) for key in stable_manifest_fields}:
+        raise RepairError("finalization repair changed scientific/program identity")
+    if old_manifest["operations"] != new_manifest["operations"]:
+        raise RepairError("finalization repair changed the operation contract or output")
+    for path in old_manifest["scientific_contract_relpaths"].values():
+        if show(repo, base, path) != show(repo, snapshot, path):
+            raise RepairError("finalization repair changed a scientific contract")
+    program_path = old_manifest["program_contract_relpath"]
+    program_raw = show(repo, base, program_path)
+    if program_raw != show(repo, snapshot, program_path):
+        raise RepairError("finalization repair changed the research program contract")
+    spec_path = old_manifest["experiment_spec_relpath"]
+    old_spec_raw = show(repo, base, spec_path)
+    new_spec_raw = show(repo, snapshot, spec_path)
+    old_source = json.loads(old_spec_raw)
+    new_source = json.loads(new_spec_raw)
+    old_entrypoint = old_source["operations"][operation_id]["runtime"]["entrypoint_relpath"]
+    new_entrypoint = new_source["operations"][operation_id]["runtime"]["entrypoint_relpath"]
+    if old_entrypoint != new_entrypoint:
+        raise RepairError("finalization repair changed the entrypoint path")
+    old_entrypoint_raw = show(repo, base, old_entrypoint)
+    new_entrypoint_raw = show(repo, snapshot, new_entrypoint)
+    if old_entrypoint_raw == new_entrypoint_raw:
+        raise RepairError("finalization repair did not change the entrypoint")
+    entrypoint_class = classify_entrypoint_change(
+        old_entrypoint_raw, new_entrypoint_raw,
+    )
+    if entrypoint_class["terminal_adapter_only"] is not True:
+        raise RepairError("finalization repair must change only an explicit terminal adapter")
+    old_sha = _sha256(old_entrypoint_raw)
+    if _normalize_schema6_source(old_source, operation_id, "", old_sha) != \
+            _normalize_schema6_source(new_source, operation_id, "", old_sha):
+        raise RepairError(
+            "finalization experiment spec changed beyond synchronized adapter identity"
+        )
+    if new_manifest.get("experiment_spec_sha256") != _sha256(new_spec_raw):
+        raise RepairError("finalization experiment spec identity is not synchronized")
+    bundle = compiler.compile_bundle(
+        spec_relpath=spec_path, spec_raw=new_spec_raw, program_raw=program_raw,
+        evidence_exists=lambda path: show_optional(
+            repo, authoritative_commit or snapshot, path,
+        ) is not None,
+    )
+    mismatches = compiler.compare_bundle(
+        bundle, lambda path: show(repo, snapshot, path),
+    )
+    if mismatches:
+        raise RepairError(
+            "finalization generated bundle is not deterministic: " + "; ".join(mismatches)
+        )
+    changed_paths = set(filter(None, git(
+        repo, "diff", "--name-only", base, snapshot,
+    ).splitlines()))
+    allowed = set(bundle) | {spec_path, old_entrypoint}
+    unexpected = sorted(changed_paths - allowed)
+    if unexpected:
+        raise RepairError(f"unexpected finalization repair paths: {unexpected}")
+    return {
+        "schema_version": 1,
+        "status": "FINALIZATION_REPAIR_ELIGIBLE",
+        "base_commit": base,
+        "snapshot_commit": snapshot,
+        "operation_id": operation_id,
+        **entrypoint_class,
+        "scientific_contract_unchanged": True,
+        "operation_contract_unchanged": True,
+        "output_identity_unchanged": True,
+        "sensitive_review_required": False,
     }
 
 
@@ -412,9 +588,13 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
 
     old_entrypoint = show(repo, base, entrypoint)
     new_entrypoint = show(repo, snapshot, entrypoint)
-    symbol_binding_only = old_entrypoint != new_entrypoint
-    if symbol_binding_only and normalized_entrypoint(old_entrypoint) != normalized_entrypoint(new_entrypoint):
-        raise RepairError("entrypoint algorithm/control-flow/constants changed")
+    entrypoint_class = {
+        "entrypoint_symbol_binding_only": False,
+        "terminal_adapter_only": False,
+        "scientific_kernel_unchanged": True,
+    }
+    if old_entrypoint != new_entrypoint:
+        entrypoint_class = classify_entrypoint_change(old_entrypoint, new_entrypoint)
 
     card_path = new_manifest["route_card_relpath"]
     if normalize_card(show(repo, base, card_path), old_output, old_output) != \
@@ -437,7 +617,7 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
         "old_output_id": old_output,
         "new_output_id": new_output,
         "asset_path_repairs": asset_changes,
-        "entrypoint_symbol_binding_only": symbol_binding_only,
+        **entrypoint_class,
         "scientific_contract_unchanged": True,
         "sensitive_review_required": False,
     }

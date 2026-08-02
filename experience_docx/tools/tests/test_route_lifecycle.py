@@ -1,6 +1,7 @@
 """Focused tests for lifecycle result, asset, and evidence guards."""
 
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -536,11 +537,25 @@ class LifecycleTests(unittest.TestCase):
             registry = repo / REGISTRY.REGISTRY_RELPATH
             registry.parent.mkdir(parents=True, exist_ok=True)
             registry.write_text(json.dumps(record) + "\n", encoding="utf-8")
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(
+                ["git", "-c", "user.name=test", "-c", "user.email=test@example.com",
+                 "add", "."], cwd=repo, check=True,
+            )
+            subprocess.run(
+                ["git", "-c", "user.name=test", "-c", "user.email=test@example.com",
+                 "commit", "-qm", "registry"], cwd=repo, check=True,
+            )
+            commit = subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=repo, text=True,
+                capture_output=True, check=True,
+            ).stdout.strip()
             result = LIFE.resolve_capability_reuse(
                 repo, {
                     "schema_version": 2,
                     "reuse_identity": identity,
                 },
+                commit,
             )
             self.assertTrue(result["engineering_reuse_authorized"])
             self.assertEqual("NONE", result["scientific_authorization"])

@@ -189,7 +189,8 @@ class SyntheticTerminal:
         review_facts_filename = terminal_archive.review_facts_filename(
             closeout_filename
         )
-        if include_review_facts_recovery:
+        include_review_facts = include_review_facts_recovery or conclusion_schema == 3
+        if include_review_facts:
             runtime["evidence_files"].append({
                 "source_relpath": f"workload/{review_facts_filename}",
                 "destination_filename": review_facts_filename,
@@ -211,7 +212,8 @@ class SyntheticTerminal:
             extra_files[unmapped_path] = unmapped_raw
         review_facts_path = f"{prefix}/{review_facts_filename}"
         review_facts_raw = None
-        if include_review_facts_recovery:
+        if include_review_facts:
+            numeric_fact = conclusion_schema == 3 and not include_review_facts_recovery
             review_facts_raw = raw_json({
                 "schema_version": 2,
                 "route_id": self.route_id,
@@ -224,17 +226,17 @@ class SyntheticTerminal:
                     "unit": "typed outcome",
                     "population": "synthetic identity fixture",
                     "grouping": "one synthetic unit",
-                    "point": None,
+                    "point": 1 if numeric_fact else None,
                     "ci_lower": None,
                     "ci_upper": None,
-                    "confidence_level": 0.95,
+                    "confidence_level": None if numeric_fact else 0.95,
                     "threshold": None,
                     "threshold_operator": None,
                     "gate_outcome": "pass",
                     "source_filename": Path(result_path).name,
                     "source_sha256": hashlib.sha256(self.result_raw).hexdigest(),
                     "json_pointers": {
-                        "point": None,
+                        "point": "/metric" if numeric_fact else None,
                         "ci_lower": None,
                         "ci_upper": None,
                         "confidence_level": None,
@@ -276,7 +278,7 @@ class SyntheticTerminal:
             "competing_explanation": "synthetic identity-only fixture",
             "limitations": ["synthetic evidence only"],
         }
-        if include_review_facts_recovery:
+        if include_review_facts:
             conclusion.update({
                 "primary_fact_ids": ["synthetic_gate"],
                 "gate_fact_ids": ["synthetic_gate"],
@@ -466,7 +468,7 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
         self.assertEqual(2, binding["terminal_schema_version"])
         self.assertEqual(2, binding["closeout_schema_version"])
         self.assertEqual(2, binding["conclusion_schema_version"])
-        self.assertEqual("CURRENT_V2", binding["conclusion_schema_state"])
+        self.assertEqual("HISTORICAL_V2", binding["conclusion_schema_state"])
 
         loaded = catalog.load_catalog(self.fixture.repo, snapshot["commit"])
         public = loaded["entries"][0]["routes"][0]["terminals"][0]
@@ -698,9 +700,60 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
                         expected_state, binding["conclusion_schema_state"]
                     )
 
+    def test_schema_three_conclusion_and_finalization_source_identity_are_bound(self):
+        source_commit = "a" * 40
+        snapshot = self.fixture.build(
+            conclusion_schema=3,
+            closeout_overrides={
+                "details": {
+                    "finalization_recovery": {
+                        "source_commit": source_commit,
+                        "finalization_commit": self.fixture.route_commit,
+                        "adapter_used": True,
+                        "workload_reexecuted": False,
+                        "stable_output_isolation_verified": True,
+                        "new_capability_registration_authorized": False,
+                    },
+                },
+            },
+        )
+        binding = self.fixture.prepare(snapshot)
+        self.assertEqual(3, binding["conclusion_schema_version"])
+        self.assertEqual("CURRENT_V3", binding["conclusion_schema_state"])
+        self.assertEqual(source_commit, binding["workload_source_commit"])
+        self.assertEqual(
+            source_commit, binding["expected_lifecycle_identity"]["route_commit"],
+        )
+        self.assertEqual(
+            inventory.convir_ops_mcp.derive_session(
+                self.fixture.route_id, "synthetic", source_commit,
+                self.fixture.run_id,
+            ),
+            binding["session"],
+        )
+
+    def test_finalization_provenance_rejects_workload_reexecution_claim(self):
+        snapshot = self.fixture.build(
+            conclusion_schema=3,
+            closeout_overrides={
+                "details": {
+                    "finalization_recovery": {
+                        "source_commit": "a" * 40,
+                        "finalization_commit": self.fixture.route_commit,
+                        "adapter_used": True,
+                        "workload_reexecuted": True,
+                        "stable_output_isolation_verified": True,
+                        "new_capability_registration_authorized": False,
+                    },
+                },
+            },
+        )
+        with self.assertRaisesRegex(inventory.InventoryError, "isolation"):
+            self.fixture.prepare(snapshot)
+
     def test_conclusion_contract_and_unknown_schema_fail_closed(self):
         cases = (
-            {"conclusion_schema": 3},
+            {"conclusion_schema": 4},
             {"conclusion_overrides": {"gate_reasons": []}},
             {"conclusion_overrides": {"competing_explanation": ""}},
             {"conclusion_overrides": {"limitations": []}},

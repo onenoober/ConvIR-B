@@ -299,15 +299,21 @@ def launch_contract_bundle(
 
 def validate_conclusion(
     raw: bytes, relpath: str, closeout: dict[str, Any], *,
-    required_schema_version: int | None = None,
+    required_schema_version: int | tuple[int, ...] | None = None,
 ) -> dict[str, Any]:
     value = inspect_structured(raw, relpath)
+    allowed_schema_versions = (
+        required_schema_version
+        if isinstance(required_schema_version, tuple)
+        else (required_schema_version,)
+    )
     if required_schema_version is not None and (
         not isinstance(value, dict)
-        or value.get("schema_version") != required_schema_version
+        or value.get("schema_version") not in allowed_schema_versions
     ):
         raise TerminalArchiveError(
-            f"scientific conclusion schema_version must equal {required_schema_version}"
+            "scientific conclusion schema_version must be one of "
+            f"{allowed_schema_versions}"
         )
     required = {
         "route_id", "operation_id", "run_id", "state", "decision", "authorizes",
@@ -327,6 +333,15 @@ def validate_conclusion(
         if not isinstance(value[key], list) or not value[key] \
                 or any(not isinstance(item, str) or not item.strip() for item in value[key]):
             raise TerminalArchiveError(f"scientific conclusion {key} is empty")
+    if value.get("schema_version") == 3:
+        for key in ("primary_fact_ids", "gate_fact_ids"):
+            selected = value.get(key)
+            if not isinstance(selected, list) or not selected \
+                    or len(selected) != len(set(selected)) \
+                    or any(not isinstance(item, str) or not TOKEN.fullmatch(item) for item in selected):
+                raise TerminalArchiveError(
+                    f"schema-3 scientific conclusion {key} is invalid"
+                )
     return value
 
 
@@ -517,6 +532,16 @@ def validate_review_facts(
             raise TerminalArchiveError(f"scientific conclusion {key} is invalid")
     if any(by_id[item]["gate_outcome"] is None for item in conclusion["gate_fact_ids"]):
         raise TerminalArchiveError("conclusion gate facts lack gate outcomes")
+    if conclusion.get("schema_version") == 3:
+        primary_facts = [by_id[item] for item in conclusion["primary_fact_ids"]]
+        if not any(
+            fact["point"] is not None
+            and fact["json_pointers"]["point"] is not None
+            for fact in primary_facts
+        ):
+            raise TerminalArchiveError(
+                "schema-3 conclusion requires a source-bound primary point estimate"
+            )
     return value
 
 
@@ -1037,6 +1062,7 @@ def audit_source(
     conclusion_dir_override: Path | None = None,
     expected_closeout_filename: str | None = None,
     expected_closeout_sha256: str | None = None,
+    required_conclusion_schema_version: int | None = None,
     raw_artifact_manifest_summary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     source_repo = source_repo.resolve()
@@ -1154,7 +1180,11 @@ def audit_source(
         conclusion_raw = conclusion_file.read_bytes()
         conclusion_value = validate_conclusion(
             conclusion_raw, conclusion_relpath, closeout,
-            required_schema_version=2 if contract_bundle else None,
+            required_schema_version=(
+                required_conclusion_schema_version
+                if required_conclusion_schema_version is not None
+                else ((2, 3) if contract_bundle else None)
+            ),
         )
         payloads[conclusion_relpath] = conclusion_raw
     else:
@@ -1344,6 +1374,15 @@ def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, Any]:
         )
         if not records:
             raise TerminalArchiveError("receipt has no compact evidence")
+        archive_contract = context.get("archive_contract")
+        conclusion_schema_version = None
+        if context.get("route_manifest_schema_version") == 6:
+            if not isinstance(archive_contract, dict) \
+                    or archive_contract.get("conclusion_schema_version") != 3:
+                raise TerminalArchiveError(
+                    "receipt lacks the current scientific conclusion contract"
+                )
+            conclusion_schema_version = archive_contract["conclusion_schema_version"]
         sources = [
             f"{ops.REMOTE_HOST}:{context['evidence_dir']}/{name}"
             for name in sorted(records)
@@ -1391,6 +1430,7 @@ def fetch_receipt_evidence(receipt: str, destination: Path) -> dict[str, Any]:
             "records": records,
             "closeout_filename": context["validated_closeout_filename"],
             "closeout_sha256": context["validated_closeout_sha256"],
+            "conclusion_schema_version": conclusion_schema_version,
             "raw_artifact_manifest_summary": raw_artifact_manifest_summary,
         }
     except ops.ToolError as exc:
@@ -1747,6 +1787,10 @@ def main() -> None:
                 ),
                 expected_closeout_sha256=(
                     receipt_binding["closeout_sha256"] if receipt_binding else None
+                ),
+                required_conclusion_schema_version=(
+                    receipt_binding["conclusion_schema_version"]
+                    if receipt_binding else None
                 ),
                 raw_artifact_manifest_summary=(
                     receipt_binding.get("raw_artifact_manifest_summary")

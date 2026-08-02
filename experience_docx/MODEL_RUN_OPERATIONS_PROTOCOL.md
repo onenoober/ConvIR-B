@@ -16,6 +16,10 @@ runner/assets, prior closeout, data role, locked-test policy, GPU floor, new
 output/recovery identity, status/log/closeout paths and protected-data
 permissions. Never substitute a commit, data, split, checkpoint, threshold,
 output or stage silently. Do not manually repeat these machine-owned checks.
+Compiler, route-ready, plan and launch each bind the exact live GitHub-main
+commit. A stale remote-tracking ref fails closed, and launch fetches that exact
+main into a dedicated runtime ref before the lifecycle reads canonical runtime
+or capability-registry bytes.
 
 For the default path, `validate_route_ready.py` performs the complete static
 check once before commit. MCP plan/start and the generic contract phase own the
@@ -161,6 +165,19 @@ only compact failure evidence. A repeated same-root failure stops for review.
 Before classification, `worktree-candidate` uses only an isolated temporary Git
 index and exact path allowlist; the real index must remain clean.
 
+A post-workload failure whose typed phase is only `evidence` or `finalize` has
+one narrower resolution: receipt-bound finalization repair. Candidate
+classification must succeed before the single execution opportunity is
+consumed. The original session must be inactive; the original result, complete
+unit ledger and every ledger-bound output are verified before and after. A
+changed route commit may alter only an explicit terminal-adapter function and
+its compiler-synchronized identity. Runtime then invokes only
+`finalize_existing`, permits byte changes only in declared review-facts output,
+and writes provenance for source and finalization commits without rerunning the
+workload. An adapter-changed commit cannot register a new capability identity
+from the source contract result. Any workload/data/model/metric/gate/threshold change, incomplete
+ledger, output drift, or repeated finalization failure stops for review.
+
 Failure closeouts must retain the identities of assets successfully verified
 before the failure. An empty list means verification did not complete, not
 merely that the workload failed later. Contract failures also retain bounded
@@ -172,6 +189,12 @@ the cloud run root. GitHub retains the complete compact text evidence needed to
 reproduce the terminal decision, as defined by `SCIENCE_FASTPATH.md`. After a
 validated typed closeout, do not call finish again or perform heartbeat/status,
 branch, worktree or output cleanup as part of experiment completion.
+Receipt-bound evidence review defaults to stateless, HMAC-bound inline UTF-8
+pages. Repeating the same continuation is idempotent and performs no worktree
+write. Explicit materialization is reserved for archive workflows. New
+schema-6 archive receipts require a schema-3 conclusion with at least one
+source-bound numeric primary fact; historical schema-2 conclusions remain
+readable but cannot satisfy that new receipt contract.
 For future schema-2 scientific terminals, the generic lifecycle seals regular
 files below `contract/` and `workload/` in
 `control/raw_artifact_manifest.jsonl`; the closeout binds a compact GitHub

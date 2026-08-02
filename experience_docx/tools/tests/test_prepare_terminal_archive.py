@@ -251,6 +251,14 @@ class TerminalArchiveTests(unittest.TestCase):
         self.assertEqual(1, len(proof["changes"]))
         self.assertTrue(proof_relpath.endswith(ARCHIVE.REVIEW_FACTS_RECOVERY_SUFFIX))
         self.assertEqual(proof, json.loads(proof_raw))
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "source-bound primary point estimate",
+        ):
+            ARCHIVE.validate_review_facts(
+                json.dumps(recovered).encode(), relpath, closeout,
+                {**conclusion, "schema_version": 3}, payloads,
+                evidence_sha, "a1_closeout.json",
+            )
 
         not_pure = json.loads(facts_raw)
         not_pure["facts"][0]["point"] = 1
@@ -627,7 +635,7 @@ class TerminalArchiveTests(unittest.TestCase):
                     repo, commit, "route", closeout, card, None, "1" * 64,
                 )
 
-    def test_schema6_new_conclusion_requires_schema_version_two(self):
+    def test_schema6_conclusion_requires_schema_two_or_complete_schema_three(self):
         for schema_version in (None, 1, 3):
             with self.subTest(schema_version=schema_version):
                 with tempfile.TemporaryDirectory() as directory:
@@ -637,6 +645,25 @@ class TerminalArchiveTests(unittest.TestCase):
                     )
                     with self.assertRaises(ARCHIVE.TerminalArchiveError):
                         self.audit(source)
+
+    def test_receipt_bound_schema6_archive_requires_schema_three(self):
+        closeout = {
+            "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+            "state": "COMPLETED_GATE_PASS", "decision": "A1_PASS",
+            "authorizes": "NONE",
+        }
+        raw = json.dumps({
+            "schema_version": 2, **closeout,
+            "primary_result": "gain", "gate_reasons": ["pass"],
+            "competing_explanation": "control", "limitations": ["limited"],
+        }).encode()
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "schema_version",
+        ):
+            ARCHIVE.validate_conclusion(
+                raw, "a1_conclusion.json", closeout,
+                required_schema_version=3,
+            )
 
     def test_schema6_closeout_requires_schema_version_two(self):
         for schema_version in (None, 1, 3):

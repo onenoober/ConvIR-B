@@ -121,6 +121,15 @@ family. Cancellation has `CANCELLED_BY_OPERATOR / null / NONE`, cannot be
 interpreted scientifically and does not authorize reuse or relaunch.
 Engineering failure has `decision:null` and is not scientific evidence.
 
+When all workload units and their exact outputs are complete, a failure limited
+to evidence serialization or closeout finalization is not evidence that the
+scientific hypothesis failed and does not justify recomputation. One bounded
+finalization-only repair may preserve the frozen scientific/data contract and
+verified outputs while changing only a typed terminal serializer. The repaired
+facts remain source-bound and the original/finalization commit identities stay
+visible. Any ambiguity in completed coverage, output identity or scientific
+kernel makes the result non-finalizable rather than reusable.
+
 A feasibility claim must be identified by the method used to decide it. If a
 heuristic search, greedy assignment, approximate solver, or local optimizer
 fails to find a valid solution, the allowed conclusion is only that the frozen
@@ -143,3 +152,7 @@ reproduce the decision; a verdict-only archive is invalid. Do not duplicate the
 same interpretation across README, family summary, route card and Markdown
 index. Do not delete unique formal artifacts until a separate retention decision
 is written.
+A new schema-3 conclusion must select at least one primary fact whose numeric
+point estimate and JSON Pointer agree with a closeout-bound formal result. A
+binary gate-only fact may explain a decision but cannot stand in for the
+primary measured result.

@@ -2,7 +2,7 @@
 
 Date: 2026-08-01
 
-Status: governance-fastpath server `5.6.0` retains exactly six tools and stable control
+Status: governance-fastpath server `5.7.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4 and uses
 immutable historical manifest schema 5 plus compiled manifest schema 6 and
 runtime schema 2 for new routes. New experiment specs, scientific contracts and
@@ -95,7 +95,8 @@ terminal writer.
 
 The authoring compiler's atomic `--finalize` returns stable path/code/message
 errors across independently checkable operations and source-text hygiene, then
-writes the complete derived bundle only after a clean result. It mechanically
+writes the complete derived bundle and canonical nine-file runtime closure only
+after proving the remote-tracking main equals live GitHub main. It mechanically
 derives the capability input-contract SHA-256 while rejecting an explicit
 mismatch. New
 non-metadata authoring must also declare one machine-validated cost strategy.
@@ -188,6 +189,18 @@ the failure immediately. Evidence list/fetch remain locked. The external
 repairs from sensitive scientific/data/model changes before commit/push/start.
 Explicit `archive` still unlocks compact failure evidence but no relaunch.
 
+If the failure occurred after workload completion and its typed phase is only
+`evidence` or `finalize`, finish also accepts one finalization-only resolution.
+It validates the candidate before atomically consuming the receipt's single
+execution slot. The same commit may retry pure publication; a new commit must
+pass the schema-6 terminal-adapter classifier with unchanged scientific,
+program, operation, output and runtime identities. Cloud requires an inactive
+session, revalidates the full unit ledger and every stable output before and
+after, invokes only `finalize_existing`, and allows only declared review-facts
+bytes to change. It never reruns workload. Failure or unknown state after slot
+reservation cannot be retried under that receipt. An adapter-changed commit
+cannot register a new capability identity from the source contract result.
+
 Engineering diagnostics are bounded, redacted and control-only. Explicit
 discard remains inside convir_route_finish and requires a validated receipt-
 bound engineering closeout, verified no scientific/protected data touch, an
@@ -201,9 +214,15 @@ receipt before listing or fetching any file.
 They require a scientific validated closeout or an explicit engineering
 `archive` resolution and never stage, commit, or push. A cancellation receipt
 does not unlock evidence tools.
+Fetch defaults to stateless HMAC-bound inline UTF-8 pages. The continuation
+binds receipt, ordered allowlist, file identities and byte offset; replay is
+idempotent and creates no cursor file. `materialize` is explicit, requires a
+bound local worktree, writes only canonical unstaged evidence destinations and
+is used by archive workflows.
 For a schema-6 scientific terminal, both evidence responses also return a compact
 receipt-bound `archive_contract` naming the canonical closeout and conclusion
-paths, conclusion schema version and required fields. This is a contract hint,
+paths, schema-3 conclusion version and required fields. At least one selected
+primary review fact must have a source-bound numeric point. This is a contract hint,
 not a generated conclusion: the operator must author the JSON, and archive
 derives the same canonical path when `--conclusion` is omitted. Engineering
 archive responses do not expose a scientific conclusion contract.
@@ -234,9 +253,11 @@ resolve route identity/snapshot. It is a control receipt, not evidence.
 
 A schema-2 capability profile binds source commit, production-code SHA-256,
 checkpoint SHA-256, runtime-environment SHA-256, device class and a mechanically
-derived input-contract SHA-256 to committed asset identities. Route-ready and
-plan query `capability_registry.jsonl`. One unique exact match skips contract
-execution; any mismatch executes the frozen contract once. Cloud verifies the
+derived input-contract SHA-256 to committed asset identities. Route-ready,
+plan and lifecycle query `capability_registry.jsonl` at the exact authoritative
+main commit and validate only records matching the requested identity. Unrelated
+historical corruption remains a registry-maintenance failure, not a route miss.
+One unique exact match skips contract execution; any mismatch executes the frozen contract once. Cloud verifies the
 actual CUDA compute-capability class before reuse. New qualification evidence is
 compact and registered only by terminal archive. Every reuse result carries
 `scientific_authorization: NONE`.
@@ -261,7 +282,7 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.6.0`, source SHA-256, exactly six tools,
+restart the host and verify version `5.7.0`, source SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
 

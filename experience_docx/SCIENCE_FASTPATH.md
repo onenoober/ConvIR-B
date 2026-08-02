@@ -34,6 +34,9 @@ details, or the read-only `convir-evidence-review` MCP for a bounded
 cross-route review. Neither local files nor chat can replace those sources.
 Do not begin scientific interpretation or authorization decisions from local
 files before this GitHub-main read completes.
+If the local remote-tracking main differs from live GitHub main, the status tool
+returns `AUTHORITATIVE_MAIN_STALE` and no terminal pointer. Refresh once and
+repeat SNAPSHOT; stale bytes are never a degraded authoritative snapshot.
 
 ## Continuous Operator Authorization
 
@@ -73,7 +76,8 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
    returns independent schema, authorization, role, precision, engineering and
    source-text errors together, derives the capability input-contract identity
    mechanically, resolves amendment/reopen evidence only from the exact fresh
-   current GitHub-main commit, and writes the complete bundle
+   current GitHub-main commit, and writes the complete derived bundle plus the
+   canonical nine-file runnable closure from that same commit
    only after a clean result. It emits one machine receipt into the Git-private
    control directory; the receipt binds source SHA-256, generated paths, bundle
    SHA-256 and the sole next phase, and is never committed as experiment
@@ -127,14 +131,21 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    `contract/` and `workload/` file set into one cloud JSONL manifest and adds
    one compact receipt to the closeout evidence. Mutable control, heartbeat,
    status and runtime-log files are outside this terminal seal.
+   A completed workload that fails only in `evidence` or `finalize` may use one
+   receipt-bound finalization repair. The lifecycle verifies an inactive
+   session, exact full ledger coverage and every stable output SHA before and
+   after the call. A changed commit must pass the terminal-adapter-only repair
+   classifier; runtime permits changes only to declared review-facts
+   serialization. It does not rerun workload units or alter results,
+   aggregates, metrics, gates, thresholds, data or scientific contracts.
 4. DECIDE: after all planned units finish, route code publishes typed gate
    outcomes only and the generic lifecycle resolves the frozen decision table once.
    Require complete folds/seeds/cells/controls, valid uncertainty, and matching
    protected-data access. Publish one typed closeout plus one scientific
    conclusion. For a schema-6 scientific terminal, start/finish returns the
    canonical `archive_contract`, `archive_ready=false` and the ordered DECIDE
-   handoff. List compact evidence once, fetch the necessary allowlist once,
-   interpret it once and author the schema-2 conclusion at the exact returned
+   handoff. List compact evidence once, read the necessary allowlist inline once,
+   interpret it once and author the schema-3 conclusion at the exact returned
    path before calling archive. Do not use archive as a missing-conclusion
    probe. Scientific FAIL is terminal, never an engineering retry.
 5. ARCHIVE: run `prepare_terminal_archive.py` once. The default receipt-bound
@@ -152,7 +163,11 @@ decisive FAIL; `descriptive` cannot affect the terminal.
 
 Before archive, `convir_evidence_list` and `convir_evidence_fetch` expose the
 receipt-bound archive contract for schema-6 scientific terminals, including the
-canonical `*_conclusion.json` path and required schema-2 fields. The archive
+canonical `*_conclusion.json` path and required schema-3 fields. At least one
+selected primary fact must carry a source-bound point estimate; any present
+interval or threshold remains JSON-Pointer-bound. Inline UTF-8 paging is the
+default review delivery and mutates no filesystem; explicit `materialize`
+delivery is reserved for archive workflows. The archive
 tool derives that path from the validated `*_closeout.json` when `--conclusion`
 is omitted; it never writes or infers scientific content. Engineering archive
 contracts intentionally omit this scientific conclusion requirement.

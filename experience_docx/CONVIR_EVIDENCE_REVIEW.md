@@ -2,12 +2,16 @@
 
 Date: 2026-08-01
 
-Status: current server version `2.0.1` exposes exactly six read-only tools. The
+Status: current server version `2.1.0` exposes exactly six read-only tools. The
 redundant catalog-summary tool was removed because the completeness receipt
 already returns the same catalog identity. Immutable catalogs are cached by
 exact repository and commit in one bounded eight-entry process-local LRU;
 mutable cloud inventories are always rescanned. Historical phase status follows.
-Version 2.0.1 accepts one archive-time review-facts recovery proof outside the
+Version 2.1.0 additionally accepts schema-3 conclusions and validates
+finalization-only provenance: terminal identity remains bound to the
+finalization commit while cloud session/lifecycle identity remains bound to the
+verified workload source commit. Version 2.0.1 first accepted one archive-time
+review-facts recovery proof outside the
 run-time closeout hash manifest only when the terminal record declares its exact
 path, size and SHA-256 and the verifier deterministically rebuilds identical
 proof bytes from the closeout-bound original facts and sources. Every other
@@ -95,7 +99,7 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
-- `convir-ops` remains a separate six-tool lifecycle server at version `5.6.0`
+- `convir-ops` remains a separate six-tool lifecycle server at version `5.7.0`
   with protocol schema 4.
 
 ## P0 Project Completeness Receipt
@@ -133,8 +137,8 @@ formal results and their SHA/byte identities, including:
   validator and is complete for required formal files.
 
 Terminal-record and closeout schema versions are both exactly 2. A current
-synthetic conclusion uses schema 2, while immutable historical conclusions with
-schema 1 or no version remain explicitly labeled `LEGACY_V1` or
+conclusion uses schema 3, schema 2 is `HISTORICAL_V2`, and immutable historical
+conclusions with schema 1 or no version remain explicitly labeled `LEGACY_V1` or
 `LEGACY_UNVERSIONED`. Conclusion completeness and terminal identity are checked
 through the authoritative terminal-archive validator; a legacy label never
 upgrades or rewrites the archived bytes.
@@ -235,5 +239,5 @@ Register this server from the same clean dedicated GitHub-main MCP worktree as
 `convir-ops`, under a short host key such as `convir_review`. Never point the
 host at a historical adoption or route worktree. After each accepted main
 update, fast-forward the dedicated worktree and restart the host; a fresh task
-must report version `2.0.1`, exactly six tools and source SHA-256 equal to that
+must report version `2.1.0`, exactly six tools and source SHA-256 equal to that
 GitHub-main commit. The process-local catalog cache begins empty after restart.

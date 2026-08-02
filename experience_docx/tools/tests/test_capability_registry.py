@@ -98,6 +98,27 @@ class CapabilityRegistryTests(unittest.TestCase):
         with self.assertRaises(REGISTRY.CapabilityRegistryError):
             REGISTRY.load_records([json.dumps(record()), json.dumps(duplicate)])
 
+    def test_point_lookup_ignores_unrelated_history_but_validates_match(self):
+        unrelated = {"identity_sha256": "0" * 64, "historical": "malformed"}
+        result = REGISTRY.lookup_lines(
+            ["not-json", json.dumps(unrelated), json.dumps(record())],
+            identity(), evidence_exists=lambda _: True,
+        )
+        self.assertEqual("CAPABILITY_REUSE_EXACT_MATCH", result["status"])
+        broken_match = record()
+        broken_match["evidence_sha256"] = "invalid"
+        with self.assertRaises(REGISTRY.CapabilityRegistryError):
+            REGISTRY.lookup_lines([json.dumps(broken_match)], identity())
+
+    def test_point_lookup_miss_does_not_validate_unrelated_evidence(self):
+        candidate = identity()
+        candidate["device_class"] = "cuda_sm80"
+        result = REGISTRY.lookup_lines(
+            ["not-json", json.dumps(record())], candidate,
+            evidence_exists=lambda _: (_ for _ in ()).throw(AssertionError()),
+        )
+        self.assertEqual("CAPABILITY_REUSE_MISS", result["status"])
+
 
 if __name__ == "__main__":
     unittest.main()

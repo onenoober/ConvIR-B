@@ -268,12 +268,19 @@ def main():
             scientific_relpath: b'{"schema_version":2}\n',
             runtime_relpath: runtime_raw,
         }
+        canonical_runtime = {
+            relpath: f"canonical runtime: {relpath}\n".encode("utf-8")
+            for relpath in READY.RUNTIME_BUNDLE_RELPATHS
+        }
+        complete_bundle = {**generated, **canonical_runtime}
         receipt = COMPILER.build_authoring_receipt(
             spec_relpath=spec_relpath, spec_raw=spec_raw,
             program_relpath=program_relpath, program_raw=program_raw,
-            bundle=generated, authoritative_main_commit="a" * 40,
+            bundle=complete_bundle, authoritative_main_commit="a" * 40,
         )
-        files = {spec_relpath: spec_raw, program_relpath: program_raw, **generated}
+        files = {
+            spec_relpath: spec_raw, program_relpath: program_raw, **complete_bundle,
+        }
         with tempfile.TemporaryDirectory() as directory:
             receipt_path = Path(directory) / "receipt.json"
             receipt_path.write_bytes(COMPILER.json_bytes(receipt))
@@ -299,6 +306,9 @@ def main():
                 receipt_path.unlink()
                 with patch.object(
                     READY.spec_compiler, "compile_bundle", return_value=generated,
+                ), patch.object(
+                    READY.spec_compiler, "canonical_runtime_bundle",
+                    return_value=canonical_runtime,
                 ), patch.object(
                     READY.spec_compiler, "compare_bundle", return_value=[],
                 ), patch.object(

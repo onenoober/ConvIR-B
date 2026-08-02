@@ -25,7 +25,8 @@ returns all independently detectable errors as stable path/code/message JSON,
 including source-text hygiene, and writes nothing on a failed aggregate lint.
 After a clean result it atomically installs the schema-v6 route manifest,
 canonical scientific JSON, short rationale note, runtime schema-v2 spec and any
-declared asset/capability/precision contracts. The capability input-contract
+declared asset/capability/precision contracts, together with all nine canonical
+runtime files read from the exact live GitHub-main commit. The capability input-contract
 SHA-256 is derived from the normalized runtime cost contract; an omitted value
 is filled and an explicitly wrong value is rejected.
 Archived amendment and reopen evidence is verified directly at the exact fresh
@@ -71,7 +72,7 @@ python3 experience_docx/tools/validate_route_ready.py \
 
 The gate rejects unstaged or untracked input. It invokes the exact MCP
 `parse_manifest`, validates every operation and canonical contract, checks the
-short route note, compares the generic runtime bundle byte-for-byte
+short route note, verifies the compiler-materialized runtime bundle byte-for-byte
 with current GitHub main, compiles Python/Bash syntax, validates runtime/asset
 schemas, checks the entrypoint interface, and proves that all published
 evidence and closeout filenames are route-wide unique.
@@ -112,7 +113,11 @@ Repeat that same sealed start once: its built-in metadata-only recovery either
 returns the original launch receipt, proves a clean unchanged retry, or stops
 as ambiguous.
 
-Route-ready and plan report capability-registry lookup. One unique exact match
+Route-ready, plan and lifecycle query the capability registry at the exact
+authoritative-main commit and validate only the unique record matching the
+requested identity plus that record's evidence. Unrelated historical registry
+damage is a main-CI/archive concern and cannot turn a reuse miss into a route
+failure. One unique exact match
 of source commit, production-code SHA-256, checkpoint SHA-256, runtime-
 environment SHA-256, device class and mechanically derived input-contract
 SHA-256 makes contract execution unnecessary. The contract entrypoint remains
@@ -143,7 +148,10 @@ closeout-derived `*_review_facts.json` evidence destination; route-ready rejects
 its absence or any published-name collision.
 The typed gate-fact writer keeps point, interval, confidence and threshold null
 unless each value has a matching JSON Pointer; a gate outcome always carries its
-own source-bound pointer. Lifecycle evidence publication validates this contract
+own source-bound pointer. A schema-3 conclusion must select at least one primary fact with a
+source-bound numeric point estimate; a pure gate fact cannot be the entire
+primary result.
+Lifecycle evidence publication validates this contract
 before copying any file, so malformed review facts cannot create partial evidence.
 Paths are delivered through `RouteContext`; entrypoints never infer positional
 paths or derive cloud workspaces.

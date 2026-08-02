@@ -187,7 +187,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             "params": {"protocolVersion": "2024-11-05"},
         })
         self.assertEqual("convir-evidence-review", initialized["serverInfo"]["name"])
-        self.assertEqual("2.0.1", initialized["serverInfo"]["version"])
+        self.assertEqual("2.1.0", initialized["serverInfo"]["version"])
         listed = review.handle({"method": "tools/list", "params": {}})
         self.assertEqual(
             [
