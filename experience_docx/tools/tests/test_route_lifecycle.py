@@ -15,7 +15,11 @@ import route_lifecycle as LIFE  # noqa: E402
 import scientific_contract as SCIENCE  # noqa: E402
 import capability_registry as REGISTRY  # noqa: E402
 from test_route_runtime_contract import manifest, spec  # noqa: E402
-from test_scientific_contract import contract as scientific_contract  # noqa: E402
+from test_scientific_contract import (  # noqa: E402
+    contract as scientific_contract,
+    contract_v3,
+    terminal_index_bytes,
+)
 import route_runtime_contract as CONTRACT  # noqa: E402
 
 
@@ -88,6 +92,38 @@ class LifecycleTests(unittest.TestCase):
         _, runtime = self.normalized()
         scientific = SCIENCE.validate_scientific_contract_v2(
             scientific_contract(), "route", "S0",
+        )
+        operation = {
+            "allowed_terminal_tuples": [
+                *SCIENCE.scientific_terminal_tuples(scientific),
+                {"state": "FAILED_ENGINEERING", "decision": None, "authorizes": "NONE"},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "result.json"
+            path.write_text(json.dumps({
+                "schema_version": 2, "route_id": "route", "operation_id": "S0",
+                "phase": "run",
+                "gate_outcomes": {
+                    "materiality": "unfavorable", "precision": "unmet",
+                },
+                "details": {},
+                "confirmation_images_targets_outcomes_touched": False,
+                "canary_touched": False, "locked_test_touched": False,
+            }))
+            result = LIFE.validate_run_result(
+                path, runtime, operation, scientific,
+            )
+            self.assertEqual("COMPLETED_GATE_FAIL", result["state"])
+            self.assertEqual("bad_side_fails", result["decision_rule_id"])
+
+    def test_schema3_lifecycle_derives_fail_from_gate_outcomes(self):
+        _, runtime = self.normalized()
+        terminal_index, terminal_sha256 = terminal_index_bytes()
+        scientific = SCIENCE.validate_scientific_contract_v3(
+            contract_v3(terminal_record_sha256=terminal_sha256), "route", "S0",
+            expected_snapshot_commit="a" * 40,
+            read_evidence_file=lambda _: terminal_index,
         )
         operation = {
             "allowed_terminal_tuples": [

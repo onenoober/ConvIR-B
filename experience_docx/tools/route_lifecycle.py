@@ -724,7 +724,7 @@ def validate_run_result(
     scientific: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     value = load_json(path)
-    if scientific is not None and scientific.get("schema_version") == 2:
+    if scientific is not None and scientific.get("schema_version") in {2, 3}:
         expected = {
             "schema_version", "route_id", "operation_id", "phase",
             "gate_outcomes", "details",
@@ -733,7 +733,7 @@ def validate_run_result(
         }
         if not isinstance(value, dict) or set(value) != expected:
             raise LifecycleError(
-                "schema-2 gate result has an invalid field contract", phase="finalize",
+                "schema-2/3 gate result has an invalid field contract", phase="finalize",
             )
         if value["schema_version"] != 2 or value["route_id"] != spec["route_id"] \
                 or value["operation_id"] != spec["operation_id"] \
