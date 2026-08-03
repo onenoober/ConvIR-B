@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-observable-signal-domain-factorial-v1.json",
-  "experiment_spec_sha256": "3fca79451a9f434c30dcc9927ed209a347d20680b55f5f6950c5ace40dc2477a",
+  "experiment_spec_sha256": "1cd07ec509db6ef39e37877d8c60a408a5041485fc2d6bccae12fa430ed28faa",
   "operations": {
     "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -28,7 +28,7 @@
       "closeout_filename": "daytime_dehazing_observable_signal_domain_factorial_v1_closeout.json",
       "heartbeat_timeout_seconds": 900,
       "max_gpu_utilization_pct": 10,
-      "min_free_gpu_mib": 16000,
+      "min_free_gpu_mib": 14000,
       "mode": "daytime_dehazing_observable_signal_domain_factorial",
       "monitor_profile": "standard",
       "output_id": "daytime-dehazing-observable-signal-domain-factorial-v1-r1",

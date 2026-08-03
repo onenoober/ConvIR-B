@@ -511,6 +511,7 @@
       "all adapters use z times one plus 0.1 tanh gamma plus 0.1 tanh beta, with a 4-to-16 3-by-3 convolution, GELU, and 16-to-64 1-by-1 convolution whose final layer is zero initialized",
       "A1 receives spatially constant global means of A2 dark-channel, saturation, local-contrast, and gradient maps; A2 receives the aligned maps; A3 receives raw RGB plus luminance through the same four-channel adapter",
       "all adapters use AdamW learning rate 0.0002, betas 0.9 and 0.999, zero weight decay, batch two, 256 crops, seed 20260803, and exactly 2000 optimization steps",
+      "GPU admission uses 14000 MiB as the capability-bound runnable floor and 16000 MiB as the preferred smooth-running target; the synthetic same-scale contract must pass before scientific data access",
       "training loss is Charbonnier reconstruction plus 0.1 edge fidelity plus 0.01 modulation regularization",
       "spatial shuffle is an inference-only within-scene mechanism control and never receives a separate training budget",
       "scene-level PSNR differences are clipped to [-0.25, 0.25] dB before equal-domain aggregation",

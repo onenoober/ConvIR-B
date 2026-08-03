@@ -3,7 +3,7 @@
   "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
   "rules_commit": "4cf78e400a5adfb839ff09dc7a8ac38cfd3a0b75",
   "title": "Daytime Dehazing Observable Signal Domain Factorial v1",
-  "rationale": "Follow the identity-valid sequence-2 scientific FAIL with the user-authorized evidence-bound C1 orthogonal route. The failed privileged operationalization established that same-observation spatial opportunity does not transfer reliably across observations or datasets. C1 therefore changes the signal class from privileged GT-selected local residual actions to inference-observable conditioning and broadens the development scope using only role-ledger-authorized scenes. One frozen four-arm comparison shares the official ConvIR-B backbone, final-decoder integration point, equal-capacity adapters, Haze4K training roster, optimizer, loss, step budget, seed, evaluation geometry, uncertainty, and stopping rules. A global-pooled physics sham separates spatial information from adapter capacity; aligned-versus-shuffled evaluation tests spatial specificity without another trained arm. Two primary spatial-signal contrasts are controlled simultaneously across four strata and three group-sequential looks. Identity, integrity, and coverage are validity vetoes; materiality and safety are decisive; precision is inconclusive-only and cannot mask a decisive FAIL. Confirmation, sealed-final, promotion, deployment, post-processing, unequal tuning, result-adaptive extension, and publication of images or per-scene tables remain prohibited.",
+  "rationale": "Follow the identity-valid sequence-2 scientific FAIL with the user-authorized evidence-bound C1 orthogonal route. The failed privileged operationalization established that same-observation spatial opportunity does not transfer reliably across observations or datasets. C1 therefore changes the signal class from privileged GT-selected local residual actions to inference-observable conditioning and broadens the development scope using only role-ledger-authorized scenes. One frozen four-arm comparison shares the official ConvIR-B backbone, final-decoder integration point, equal-capacity adapters, Haze4K training roster, optimizer, loss, step budget, seed, evaluation geometry, uncertainty, and stopping rules. A global-pooled physics sham separates spatial information from adapter capacity; aligned-versus-shuffled evaluation tests spatial specificity without another trained arm. Two primary spatial-signal contrasts are controlled simultaneously across four strata and three group-sequential looks. Identity, integrity, and coverage are validity vetoes; materiality and safety are decisive; precision is inconclusive-only and cannot mask a decisive FAIL. GPU admission now uses the capability-bound 14000 MiB hard floor as the runnable end of a 14000-16000 MiB operating range; 16000 MiB remains the preferred smooth-running target, and the protected-data-free same-scale probe must measure a compliant peak before any scientific data access. Confirmation, sealed-final, promotion, deployment, post-processing, unequal tuning, result-adaptive extension, and publication of images or per-scene tables remain prohibited.",
   "first_operation": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
   "operations": {
@@ -20,7 +20,7 @@
         "output_policy": "new",
         "monitor_profile": "standard",
         "heartbeat_timeout_seconds": 900,
-        "min_free_gpu_mib": 16000,
+        "min_free_gpu_mib": 14000,
         "max_gpu_utilization_pct": 10
       },
       "program_authorization": {
@@ -297,6 +297,7 @@
             "all adapters use z times one plus 0.1 tanh gamma plus 0.1 tanh beta, with a 4-to-16 3-by-3 convolution, GELU, and 16-to-64 1-by-1 convolution whose final layer is zero initialized",
             "A1 receives spatially constant global means of A2 dark-channel, saturation, local-contrast, and gradient maps; A2 receives the aligned maps; A3 receives raw RGB plus luminance through the same four-channel adapter",
             "all adapters use AdamW learning rate 0.0002, betas 0.9 and 0.999, zero weight decay, batch two, 256 crops, seed 20260803, and exactly 2000 optimization steps",
+            "GPU admission uses 14000 MiB as the capability-bound runnable floor and 16000 MiB as the preferred smooth-running target; the synthetic same-scale contract must pass before scientific data access",
             "training loss is Charbonnier reconstruction plus 0.1 edge fidelity plus 0.01 modulation regularization",
             "spatial shuffle is an inference-only within-scene mechanism control and never receives a separate training budget",
             "scene-level PSNR differences are clipped to [-0.25, 0.25] dB before equal-domain aggregation",
