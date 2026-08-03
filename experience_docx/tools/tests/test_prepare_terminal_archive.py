@@ -274,6 +274,146 @@ class TerminalArchiveTests(unittest.TestCase):
                 closeout_filename="a1_closeout.json", closeout_sha256="b" * 64,
             )
 
+    def test_primary_fact_recovery_is_source_bound_and_fail_closed(self):
+        result = {
+            "summaries": {"primary": {"a2_minus_a1": {
+                "overall_equal_domain": {"estimate": -0.0010467},
+            }}},
+            "design": {"minimum_meaningful_effect_db": 0.1},
+            "gate_outcomes": {
+                "primary_observable_utility": "fail",
+                "coverage": "pass",
+            },
+        }
+        result_raw = json.dumps(result, sort_keys=True).encode()
+        result_sha = hashlib.sha256(result_raw).hexdigest()
+        closeout = {
+            "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+            "route_commit": "a" * 40,
+        }
+        source_name = "summary.json"
+        fact = {
+            "fact_id": "coverage", "claim_id": "coverage",
+            "metric": "coverage typed gate outcome", "unit": "typed outcome",
+            "population": "planned scenes", "grouping": "scene",
+            "point": None, "ci_lower": None, "ci_upper": None,
+            "confidence_level": None, "threshold": None,
+            "threshold_operator": None, "gate_outcome": "pass",
+            "source_filename": source_name, "source_sha256": result_sha,
+            "json_pointers": {
+                "point": None, "ci_lower": None, "ci_upper": None,
+                "confidence_level": None, "threshold": None,
+                "gate_outcome": "/gate_outcomes/coverage",
+            },
+        }
+        facts = {
+            "schema_version": 2, "route_id": "route", "operation_id": "A1",
+            "run_id": "a1-r1", "facts": [fact],
+        }
+        facts_raw = json.dumps(facts, sort_keys=True).encode()
+        facts_sha = hashlib.sha256(facts_raw).hexdigest()
+        parent = "experience_docx/experiment_logs/route"
+        relpath = f"{parent}/a1_review_facts.json"
+        payloads = {f"{parent}/{source_name}": result_raw}
+        evidence_sha = {
+            source_name: result_sha, "a1_review_facts.json": facts_sha,
+        }
+        recovery_spec = {
+            "fact_id": "selected_primary_a2_minus_a1",
+            "claim_id": "primary_observable_utility",
+            "metric": "a2 minus a1 PSNR", "unit": "dB",
+            "population": "overall equal-domain scenes", "grouping": "scene",
+            "source_filename": source_name, "threshold_operator": ">=",
+            "json_pointers": {
+                "point": (
+                    "/summaries/primary/a2_minus_a1/"
+                    "overall_equal_domain/estimate"
+                ),
+                "ci_lower": None, "ci_upper": None,
+                "confidence_level": None,
+                "threshold": "/design/minimum_meaningful_effect_db",
+                "gate_outcome": "/gate_outcomes/primary_observable_utility",
+            },
+        }
+        conclusion = {
+            "schema_version": 3,
+            "primary_fact_ids": ["selected_primary_a2_minus_a1"],
+            "gate_fact_ids": ["coverage"],
+            ARCHIVE.PRIMARY_FACT_RECOVERY_FIELD: recovery_spec,
+        }
+        recovered, proof, _, _ = ARCHIVE.build_review_facts_recovery(
+            raw=facts_raw, relpath=relpath, closeout=closeout,
+            conclusion=conclusion, payloads=payloads,
+            evidence_sha256=evidence_sha, closeout_filename="a1_closeout.json",
+            closeout_sha256="b" * 64,
+        )
+        recovered_primary = recovered["facts"][1]
+        self.assertEqual(-0.0010467, recovered_primary["point"])
+        self.assertEqual(0.1, recovered_primary["threshold"])
+        self.assertEqual(
+            ARCHIVE.REVIEW_FACTS_PRIMARY_RECOVERY_TYPE, proof["recovery_type"],
+        )
+        self.assertEqual(1, len(proof["changes"]))
+
+        injected = json.loads(json.dumps(conclusion))
+        injected[ARCHIVE.PRIMARY_FACT_RECOVERY_FIELD]["point"] = 2.0
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "recovery spec is invalid",
+        ):
+            ARCHIVE.build_review_facts_recovery(
+                raw=facts_raw, relpath=relpath, closeout=closeout,
+                conclusion=injected, payloads=payloads,
+                evidence_sha256=evidence_sha, closeout_filename="a1_closeout.json",
+                closeout_sha256="b" * 64,
+            )
+
+        unbound = json.loads(json.dumps(conclusion))
+        unbound[ARCHIVE.PRIMARY_FACT_RECOVERY_FIELD][
+            "source_filename"
+        ] = "unbound.json"
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "source is not closeout-bound",
+        ):
+            ARCHIVE.build_review_facts_recovery(
+                raw=facts_raw, relpath=relpath, closeout=closeout,
+                conclusion=unbound, payloads=payloads,
+                evidence_sha256=evidence_sha, closeout_filename="a1_closeout.json",
+                closeout_sha256="b" * 64,
+            )
+
+        already_numeric = json.loads(json.dumps(facts))
+        already_numeric["facts"][0]["point"] = 0.1
+        already_numeric["facts"][0]["json_pointers"][
+            "point"
+        ] = "/design/minimum_meaningful_effect_db"
+        already_raw = json.dumps(already_numeric, sort_keys=True).encode()
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "already contain a source-bound point",
+        ):
+            ARCHIVE.build_review_facts_recovery(
+                raw=already_raw, relpath=relpath, closeout=closeout,
+                conclusion=conclusion, payloads=payloads,
+                evidence_sha256={
+                    **evidence_sha,
+                    "a1_review_facts.json": hashlib.sha256(already_raw).hexdigest(),
+                },
+                closeout_filename="a1_closeout.json", closeout_sha256="b" * 64,
+            )
+
+        wrong_pointer = json.loads(json.dumps(conclusion))
+        wrong_pointer[ARCHIVE.PRIMARY_FACT_RECOVERY_FIELD]["json_pointers"][
+            "point"
+        ] = "/summaries/primary/missing"
+        with self.assertRaisesRegex(
+            ARCHIVE.TerminalArchiveError, "JSON Pointer is absent",
+        ):
+            ARCHIVE.build_review_facts_recovery(
+                raw=facts_raw, relpath=relpath, closeout=closeout,
+                conclusion=wrong_pointer, payloads=payloads,
+                evidence_sha256=evidence_sha, closeout_filename="a1_closeout.json",
+                closeout_sha256="b" * 64,
+            )
+
     def git(self, repo: Path, *args: str) -> str:
         return subprocess.run(
             ["git", *args], cwd=repo, text=True, capture_output=True, check=True,
@@ -892,6 +1032,83 @@ class TerminalArchiveTests(unittest.TestCase):
             self.assertIn(
                 recovery["path"], [item["path"] for item in record["result_files"]],
             )
+
+    def test_archive_rejects_unused_primary_fact_recovery_declaration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.source(root, canonical=True, conclusion_schema=3)
+            repo, commit, closeout_rel, card, conclusion_rel = source
+            evidence = repo / Path(closeout_rel).parent
+            summary_name = "summary.json"
+            summary_raw = json.dumps({
+                "metric": 0.2, "threshold": 0.1, "gate": "pass",
+            }).encode()
+            (evidence / summary_name).write_bytes(summary_raw)
+            summary_sha = hashlib.sha256(summary_raw).hexdigest()
+            facts_name = "a1_review_facts.json"
+            facts = {
+                "schema_version": 2,
+                "route_id": "route", "operation_id": "A1", "run_id": "a1-r1",
+                "facts": [{
+                    "fact_id": "existing_primary", "claim_id": "utility",
+                    "metric": "existing primary", "unit": "dB",
+                    "population": "planned scenes", "grouping": "scene",
+                    "point": 0.2, "ci_lower": None, "ci_upper": None,
+                    "confidence_level": None, "threshold": 0.1,
+                    "threshold_operator": ">=", "gate_outcome": "pass",
+                    "source_filename": summary_name, "source_sha256": summary_sha,
+                    "json_pointers": {
+                        "point": "/metric", "ci_lower": None, "ci_upper": None,
+                        "confidence_level": None, "threshold": "/threshold",
+                        "gate_outcome": "/gate",
+                    },
+                }],
+            }
+            facts_raw = json.dumps(facts, sort_keys=True).encode()
+            (evidence / facts_name).write_bytes(facts_raw)
+            conclusion_path = repo / conclusion_rel
+            conclusion = json.loads(conclusion_path.read_text(encoding="utf-8"))
+            conclusion.update({
+                "primary_fact_ids": ["existing_primary"],
+                "gate_fact_ids": ["existing_primary"],
+                ARCHIVE.PRIMARY_FACT_RECOVERY_FIELD: {
+                    "fact_id": "unused_primary", "claim_id": "utility",
+                    "metric": "unused primary", "unit": "dB",
+                    "population": "planned scenes", "grouping": "scene",
+                    "source_filename": summary_name, "threshold_operator": ">=",
+                    "json_pointers": {
+                        "point": "/metric", "ci_lower": None, "ci_upper": None,
+                        "confidence_level": None, "threshold": "/threshold",
+                        "gate_outcome": "/gate",
+                    },
+                },
+            })
+            conclusion_path.write_text(json.dumps(conclusion), encoding="utf-8")
+            closeout_path = repo / closeout_rel
+            closeout = json.loads(closeout_path.read_text(encoding="utf-8"))
+            closeout["evidence_sha256"].update({
+                summary_name: summary_sha,
+                facts_name: hashlib.sha256(facts_raw).hexdigest(),
+            })
+            closeout_path.write_text(json.dumps(closeout), encoding="utf-8")
+            closeout_sha = hashlib.sha256(closeout_path.read_bytes()).hexdigest()
+            trusted = root / "receipt"
+            trusted.mkdir()
+            for filename in (
+                Path(closeout_rel).name, "formal_results.csv", summary_name, facts_name,
+            ):
+                shutil.copyfile(evidence / filename, trusted / filename)
+            with self.assertRaisesRegex(
+                ARCHIVE.TerminalArchiveError,
+                "primary fact recovery declaration is unused",
+            ):
+                ARCHIVE.audit_source(
+                    repo, commit, "route", closeout_rel, card, conclusion_rel,
+                    "1" * 64, evidence_dir_override=trusted,
+                    conclusion_dir_override=evidence,
+                    expected_closeout_filename=Path(closeout_rel).name,
+                    expected_closeout_sha256=closeout_sha,
+                )
 
     def test_default_cli_fetches_receipt_evidence_when_local_evidence_exists(self):
         with tempfile.TemporaryDirectory() as directory:

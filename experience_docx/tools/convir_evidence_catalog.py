@@ -43,6 +43,11 @@ REVIEW_FACTS_RECOVERY_FIELDS = {
     "original_path", "original_sha256", "recovered_review_facts_sha256",
 }
 REVIEW_FACTS_RECOVERY_TYPE = "legacy_unbound_gate_confidence_metadata_v1"
+REVIEW_FACTS_PRIMARY_RECOVERY_TYPE = "missing_source_bound_primary_fact_v1"
+REVIEW_FACTS_RECOVERY_TYPES = {
+    REVIEW_FACTS_RECOVERY_TYPE,
+    REVIEW_FACTS_PRIMARY_RECOVERY_TYPE,
+}
 
 
 class CatalogError(RuntimeError):
@@ -165,7 +170,8 @@ def validate_review_facts_recovery(value, result_files):
     if not isinstance(value, dict) or set(value) != REVIEW_FACTS_RECOVERY_FIELDS:
         raise CatalogError("review_facts_recovery has an invalid field contract")
     if value["status"] != "REVIEW_FACTS_RECOVERED" \
-            or value["recovery_type"] != REVIEW_FACTS_RECOVERY_TYPE:
+            or not isinstance(value["recovery_type"], str) \
+            or value["recovery_type"] not in REVIEW_FACTS_RECOVERY_TYPES:
         raise CatalogError("review_facts_recovery type is invalid")
     proof_path = require_relpath(
         value["proof_path"], "review_facts_recovery.proof_path"

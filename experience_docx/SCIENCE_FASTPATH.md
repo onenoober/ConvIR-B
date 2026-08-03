@@ -312,6 +312,19 @@ recovered facts, source identities and exact field changes, and the terminal
 index records that proof. Any other defect fails closed; route-, run-, commit-
 or SHA-specific allowlists are forbidden.
 
+The same proof channel may recover a missing source-bound primary fact only for
+a schema-3 conclusion and only when the original closeout-bound facts contain
+no source-bound numeric point. The conclusion may declare exactly one fact's
+labels, one closeout-bound top-level JSON source and JSON Pointers; it may not
+declare any measured value. Archive reads every value from that SHA-verified
+source, requires a finite numeric point, appends only the declared fact, reruns
+the unchanged facts validator, and rejects an absent or changed source, an
+invalid pointer, a duplicate/unselected fact, an existing source-bound point,
+an unused declaration or any injected value. The proof and terminal index bind
+the original facts, recovered facts, source identities, pointers and exact
+append operation. No result, gate, threshold, terminal, authorization or
+workload identity changes.
+
 The typed closeout remains the machine terminal authority. The conclusion is
 the single human/scientific interpretation and cannot change its terminal
 identity or authorization.

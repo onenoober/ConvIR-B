@@ -51,6 +51,8 @@ RAW_ARTIFACT_RECOVERY_MARKER = "CONVIR_RAW_ARTIFACT_RECOVERY_OK"
 REVIEW_FACTS_SUFFIX = "_review_facts.json"
 REVIEW_FACTS_RECOVERY_SUFFIX = "_review_facts_recovery.json"
 REVIEW_FACTS_RECOVERY_TYPE = "legacy_unbound_gate_confidence_metadata_v1"
+REVIEW_FACTS_PRIMARY_RECOVERY_TYPE = "missing_source_bound_primary_fact_v1"
+PRIMARY_FACT_RECOVERY_FIELD = "primary_fact_recovery"
 MAX_REVIEW_FACTS = 128
 REVIEW_FACTS_RULES_FLOOR = "ef1f746859fba84bd76ae74525b05f918994909f"
 ARCHIVE_REMOTE = "github"
@@ -545,7 +547,7 @@ def validate_review_facts(
     return value
 
 
-def build_review_facts_recovery(
+def _build_gate_confidence_review_facts_recovery(
     *, raw: bytes, relpath: str, closeout: dict[str, Any],
     conclusion: dict[str, Any], payloads: dict[str, bytes],
     evidence_sha256: dict[str, str], closeout_filename: str,
@@ -654,6 +656,196 @@ def build_review_facts_recovery(
     proof_filename = review_facts_recovery_filename(closeout_filename)
     proof_relpath = f"{PurePosixPath(relpath).parent.as_posix()}/{proof_filename}"
     return validated, proof, proof_relpath, proof_raw
+
+
+def _primary_fact_from_recovery_spec(
+    spec: Any, *, relpath: str, payloads: dict[str, bytes],
+    evidence_sha256: dict[str, str],
+) -> dict[str, Any]:
+    expected = {
+        "fact_id", "claim_id", "metric", "unit", "population", "grouping",
+        "source_filename", "threshold_operator", "json_pointers",
+    }
+    pointer_fields = {
+        "point", "ci_lower", "ci_upper", "confidence_level", "threshold",
+        "gate_outcome",
+    }
+    if not isinstance(spec, dict) or set(spec) != expected:
+        raise TerminalArchiveError("primary fact recovery spec is invalid")
+    for key in ("fact_id", "claim_id"):
+        if not isinstance(spec[key], str) or not TOKEN.fullmatch(spec[key]):
+            raise TerminalArchiveError(f"primary fact recovery {key} is invalid")
+    for key in ("metric", "unit", "population", "grouping"):
+        if not isinstance(spec[key], str) or not 1 <= len(spec[key].strip()) <= 256:
+            raise TerminalArchiveError(f"primary fact recovery {key} is invalid")
+    pointers = spec["json_pointers"]
+    if not isinstance(pointers, dict) or set(pointers) != pointer_fields \
+            or pointers["point"] is None:
+        raise TerminalArchiveError("primary fact recovery pointers are invalid")
+    for key, pointer in pointers.items():
+        if pointer is not None and (
+            not isinstance(pointer, str) or not pointer.startswith("/")
+            or len(pointer) > 512
+        ):
+            raise TerminalArchiveError(f"primary fact recovery {key} pointer is invalid")
+    source_name = spec["source_filename"]
+    if not isinstance(source_name, str) or Path(source_name).name != source_name \
+            or Path(source_name).suffix.lower() != ".json":
+        raise TerminalArchiveError("primary fact recovery source is not closeout-bound")
+    source_sha = evidence_sha256.get(source_name)
+    if not isinstance(source_sha, str) or not SHA256.fullmatch(source_sha):
+        raise TerminalArchiveError("primary fact recovery source is not closeout-bound")
+    source_relpath = f"{PurePosixPath(relpath).parent.as_posix()}/{source_name}"
+    source_raw = payloads.get(source_relpath)
+    if source_raw is None or hashlib.sha256(source_raw).hexdigest() != source_sha:
+        raise TerminalArchiveError("primary fact recovery source payload is absent or changed")
+    source = inspect_structured(source_raw, source_relpath)
+    values = {
+        key: (
+            None if pointer is None
+            else _json_primitive(_json_pointer(source, pointer, key), key)
+        )
+        for key, pointer in pointers.items()
+    }
+    if not isinstance(values["point"], (int, float)) \
+            or isinstance(values["point"], bool):
+        raise TerminalArchiveError("primary fact recovery point is not numeric")
+    return {
+        "fact_id": spec["fact_id"],
+        "claim_id": spec["claim_id"],
+        "metric": spec["metric"],
+        "unit": spec["unit"],
+        "population": spec["population"],
+        "grouping": spec["grouping"],
+        **values,
+        "threshold_operator": spec["threshold_operator"],
+        "source_filename": source_name,
+        "source_sha256": source_sha,
+        "json_pointers": pointers,
+    }
+
+
+def _build_primary_fact_review_facts_recovery(
+    *, raw: bytes, relpath: str, closeout: dict[str, Any],
+    conclusion: dict[str, Any], payloads: dict[str, bytes],
+    evidence_sha256: dict[str, str], closeout_filename: str,
+    closeout_sha256: str,
+) -> tuple[dict[str, Any], dict[str, Any], str, bytes]:
+    """Append one declared fact whose values are read only from bound JSON."""
+    if conclusion.get("schema_version") != 3:
+        raise TerminalArchiveError("primary fact recovery requires schema-3 conclusion")
+    if not isinstance(closeout_sha256, str) or not SHA256.fullmatch(closeout_sha256):
+        raise TerminalArchiveError("review facts recovery closeout identity is invalid")
+    original_filename = PurePosixPath(relpath).name
+    if original_filename != review_facts_filename(closeout_filename):
+        raise TerminalArchiveError("review facts recovery source filename is not canonical")
+    original_sha256 = hashlib.sha256(raw).hexdigest()
+    if evidence_sha256.get(original_filename) != original_sha256:
+        raise TerminalArchiveError("review facts recovery source is not closeout-bound")
+    original = inspect_structured(raw, relpath)
+    if not isinstance(original, dict) or not isinstance(original.get("facts"), list):
+        raise TerminalArchiveError("review facts are not eligible for recovery")
+    if any(
+        isinstance(fact, dict)
+        and fact.get("point") is not None
+        and isinstance(fact.get("json_pointers"), dict)
+        and fact["json_pointers"].get("point") is not None
+        for fact in original["facts"]
+    ):
+        raise TerminalArchiveError("review facts already contain a source-bound point")
+
+    spec = conclusion.get(PRIMARY_FACT_RECOVERY_FIELD)
+    recovered_fact = _primary_fact_from_recovery_spec(
+        spec, relpath=relpath, payloads=payloads,
+        evidence_sha256=evidence_sha256,
+    )
+    existing_ids = {
+        fact.get("fact_id") for fact in original["facts"] if isinstance(fact, dict)
+    }
+    if recovered_fact["fact_id"] in existing_ids \
+            or recovered_fact["fact_id"] not in conclusion.get("primary_fact_ids", []):
+        raise TerminalArchiveError("recovered primary fact identity is invalid")
+
+    recovered = copy.deepcopy(original)
+    recovered["facts"].append(recovered_fact)
+    recovered_raw = (
+        json.dumps(recovered, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    validated = validate_review_facts(
+        recovered_raw, relpath, closeout, conclusion, payloads,
+        evidence_sha256, closeout_filename,
+    )
+    source_bindings = sorted(
+        {
+            (fact["source_filename"], fact["source_sha256"])
+            for fact in validated["facts"]
+        }
+    )
+    proof = {
+        "schema_version": 1,
+        "status": "REVIEW_FACTS_RECOVERED",
+        "recovery_type": REVIEW_FACTS_PRIMARY_RECOVERY_TYPE,
+        "route_id": closeout["route_id"],
+        "operation_id": closeout["operation_id"],
+        "run_id": closeout["run_id"],
+        "route_commit": closeout["route_commit"],
+        "closeout_filename": closeout_filename,
+        "closeout_sha256": closeout_sha256,
+        "original_review_facts_filename": original_filename,
+        "original_review_facts_sha256": original_sha256,
+        "recovered_review_facts_sha256": hashlib.sha256(recovered_raw).hexdigest(),
+        "recovered_serialization": "canonical_json_sort_keys_compact_newline_v1",
+        "source_bindings": [
+            {"filename": filename, "sha256": sha256}
+            for filename, sha256 in source_bindings
+        ],
+        "changes": [{
+            "operation": "append_source_bound_primary_fact",
+            "fact_id": recovered_fact["fact_id"],
+            "source_filename": recovered_fact["source_filename"],
+            "json_pointers": recovered_fact["json_pointers"],
+        }],
+        "recovered_review_facts": validated,
+        "checks": {
+            "closeout_receipt_bound": True,
+            "original_review_facts_closeout_bound": True,
+            "original_has_no_source_bound_point": True,
+            "recovery_spec_contains_no_numeric_values": True,
+            "only_declared_source_bound_primary_fact_appended": True,
+            "recovered_review_facts_strictly_valid": True,
+            "source_bindings_unchanged": True,
+            "terminal_identity_unchanged": True,
+        },
+    }
+    proof_raw = (
+        json.dumps(proof, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    proof_filename = review_facts_recovery_filename(closeout_filename)
+    proof_relpath = f"{PurePosixPath(relpath).parent.as_posix()}/{proof_filename}"
+    return validated, proof, proof_relpath, proof_raw
+
+
+def build_review_facts_recovery(
+    *, raw: bytes, relpath: str, closeout: dict[str, Any],
+    conclusion: dict[str, Any], payloads: dict[str, bytes],
+    evidence_sha256: dict[str, str], closeout_filename: str,
+    closeout_sha256: str,
+) -> tuple[dict[str, Any], dict[str, Any], str, bytes]:
+    if PRIMARY_FACT_RECOVERY_FIELD in conclusion:
+        return _build_primary_fact_review_facts_recovery(
+            raw=raw, relpath=relpath, closeout=closeout,
+            conclusion=conclusion, payloads=payloads,
+            evidence_sha256=evidence_sha256,
+            closeout_filename=closeout_filename,
+            closeout_sha256=closeout_sha256,
+        )
+    return _build_gate_confidence_review_facts_recovery(
+        raw=raw, relpath=relpath, closeout=closeout,
+        conclusion=conclusion, payloads=payloads,
+        evidence_sha256=evidence_sha256,
+        closeout_filename=closeout_filename,
+        closeout_sha256=closeout_sha256,
+    )
 
 
 def parse_raw_artifact_receipt(
@@ -1303,6 +1495,11 @@ def audit_source(
             files.append({
                 key: review_facts_recovery[key] for key in ("path", "bytes", "sha256")
             })
+        if review_facts_recovery is None \
+                and PRIMARY_FACT_RECOVERY_FIELD in conclusion_value:
+            raise TerminalArchiveError(
+                "primary fact recovery declaration is unused"
+            )
     elif review_facts_required:
         raise TerminalArchiveError("schema-2 terminal requires review facts")
     elif isinstance(conclusion_value, dict) and any(

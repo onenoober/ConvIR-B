@@ -66,6 +66,7 @@ class SyntheticTerminal:
               invalid_runtime_source=False,
               shared_source_mapping=False,
               include_review_facts_recovery=False,
+              include_primary_fact_recovery=False,
               tamper_review_facts_recovery=False,
               noncanonical_manifest_archive=False,
               noncanonical_result=False,
@@ -190,7 +191,11 @@ class SyntheticTerminal:
         review_facts_filename = terminal_archive.review_facts_filename(
             closeout_filename
         )
-        include_review_facts = include_review_facts_recovery or conclusion_schema == 3
+        include_review_facts = (
+            include_review_facts_recovery
+            or include_primary_fact_recovery
+            or conclusion_schema == 3
+        )
         if include_review_facts:
             runtime["evidence_files"].append({
                 "source_relpath": f"workload/{review_facts_filename}",
@@ -214,7 +219,11 @@ class SyntheticTerminal:
         review_facts_path = f"{prefix}/{review_facts_filename}"
         review_facts_raw = None
         if include_review_facts:
-            numeric_fact = conclusion_schema == 3 and not include_review_facts_recovery
+            numeric_fact = (
+                conclusion_schema == 3
+                and not include_review_facts_recovery
+                and not include_primary_fact_recovery
+            )
             review_facts_raw = raw_json({
                 "schema_version": 2,
                 "route_id": self.route_id,
@@ -230,7 +239,9 @@ class SyntheticTerminal:
                     "point": 1 if numeric_fact else None,
                     "ci_lower": None,
                     "ci_upper": None,
-                    "confidence_level": None if numeric_fact else 0.95,
+                    "confidence_level": (
+                        0.95 if include_review_facts_recovery else None
+                    ),
                     "threshold": None,
                     "threshold_operator": None,
                     "gate_outcome": "pass",
@@ -279,7 +290,27 @@ class SyntheticTerminal:
             "competing_explanation": "synthetic identity-only fixture",
             "limitations": ["synthetic evidence only"],
         }
-        if include_review_facts:
+        if include_primary_fact_recovery:
+            conclusion.update({
+                "primary_fact_ids": ["recovered_metric"],
+                "gate_fact_ids": ["synthetic_gate"],
+                terminal_archive.PRIMARY_FACT_RECOVERY_FIELD: {
+                    "fact_id": "recovered_metric",
+                    "claim_id": "synthetic_metric",
+                    "metric": "synthetic recovered metric",
+                    "unit": "synthetic unit",
+                    "population": "synthetic identity fixture",
+                    "grouping": "one synthetic unit",
+                    "source_filename": Path(result_path).name,
+                    "threshold_operator": None,
+                    "json_pointers": {
+                        "point": "/metric", "ci_lower": None,
+                        "ci_upper": None, "confidence_level": None,
+                        "threshold": None, "gate_outcome": "/gate",
+                    },
+                },
+            })
+        elif include_review_facts:
             conclusion.update({
                 "primary_fact_ids": ["synthetic_gate"],
                 "gate_fact_ids": ["synthetic_gate"],
@@ -289,7 +320,7 @@ class SyntheticTerminal:
         conclusion.update(conclusion_overrides or {})
         conclusion_raw = raw_json(conclusion)
         review_facts_recovery = None
-        if include_review_facts_recovery:
+        if include_review_facts_recovery or include_primary_fact_recovery:
             _, proof, proof_path, proof_raw = (
                 terminal_archive.build_review_facts_recovery(
                     raw=review_facts_raw,
@@ -313,7 +344,7 @@ class SyntheticTerminal:
             extra_files[proof_path] = proof_raw
             review_facts_recovery = {
                 "status": "REVIEW_FACTS_RECOVERED",
-                "recovery_type": terminal_archive.REVIEW_FACTS_RECOVERY_TYPE,
+                "recovery_type": proof["recovery_type"],
                 "proof_path": proof_path,
                 "proof_bytes": proof_record["bytes"],
                 "proof_sha256": proof_record["sha256"],
@@ -858,6 +889,18 @@ class EvidenceCloudInventoryTests(unittest.TestCase):
             binding["unmapped_results"][0]["destination_filename"].endswith(
                 "_review_facts_recovery.json"
             )
+        )
+
+    def test_primary_fact_recovery_proof_is_rebuilt_from_bound_source(self):
+        snapshot = self.fixture.build(
+            include_primary_fact_recovery=True, conclusion_schema=3,
+        )
+        binding = self.fixture.prepare(snapshot)
+        self.assertEqual("TERMINAL_BINDING_VERIFIED", binding["state"])
+        self.assertEqual(3, binding["github_result_count"])
+        self.assertEqual(
+            terminal_archive.REVIEW_FACTS_PRIMARY_RECOVERY_TYPE,
+            snapshot["record"]["review_facts_recovery"]["recovery_type"],
         )
 
     def test_review_facts_recovery_proof_tamper_fails_closed(self):

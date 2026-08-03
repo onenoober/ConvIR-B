@@ -351,11 +351,30 @@ class EvidenceCatalogTests(unittest.TestCase):
             catalog.terminal_summary(parsed[0])["review_facts_recovery_status"],
         )
 
+        primary = json.loads(json.dumps(record))
+        primary["review_facts_recovery"]["recovery_type"] = (
+            catalog.REVIEW_FACTS_PRIMARY_RECOVERY_TYPE
+        )
+        parsed_primary = catalog.parse_terminal_index(
+            (json.dumps(primary, sort_keys=True, separators=(",", ":")) + "\n").encode()
+        )
+        self.assertEqual(
+            catalog.REVIEW_FACTS_PRIMARY_RECOVERY_TYPE,
+            parsed_primary[0]["review_facts_recovery"]["recovery_type"],
+        )
+
         changed = json.loads(json.dumps(record))
         changed["review_facts_recovery"]["proof_sha256"] = "e" * 64
         with self.assertRaisesRegex(catalog.CatalogError, "result identity differs"):
             catalog.parse_terminal_index(
                 (json.dumps(changed, sort_keys=True, separators=(",", ":")) + "\n").encode()
+            )
+
+        unknown = json.loads(json.dumps(record))
+        unknown["review_facts_recovery"]["recovery_type"] = "unknown_recovery_v1"
+        with self.assertRaisesRegex(catalog.CatalogError, "type is invalid"):
+            catalog.parse_terminal_index(
+                (json.dumps(unknown, sort_keys=True, separators=(",", ":")) + "\n").encode()
             )
 
     def test_completeness_receipt_rejects_partition_drift(self):
