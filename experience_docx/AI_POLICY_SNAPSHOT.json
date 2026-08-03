@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "a55cc701152aca40f980e1a5dedc28f285377a80a871a70f689968cc508adacb",
-  "rules_commit": "f99beb0d1c45aa5704e7d3273210e9d0a541b9b8",
+  "rules_bundle_sha256": "d235a79e55cf2a0a0ea1095bf8eda6559df73f19ca6fb9310a3d6defbbec57cf",
+  "rules_commit": "867a584792530ce68a55d78fda9c6facc9a77e86",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -136,24 +136,24 @@
       "sha256": "63d5088ac73e7ce586d23265e2f85e9a2dd99a8d4ce2f54d6ca868a88e2b1a78"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
-      "bytes": 14394,
-      "sha256": "69f50f4b06e883a8f9df104eb9797e6876a5f1b4b4841abcb1d9dcf3e729f537"
+      "bytes": 14781,
+      "sha256": "b59c7999d1caf7b1e65655eff990811b805aadbf7058d9d093ad8623ca8b9ce3"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 16545,
-      "sha256": "346d03408170a6b6ce37ba580a6b2d5f0216cc315ff9794f0078d2e278bac04d"
+      "bytes": 17646,
+      "sha256": "ef23e6e9ed585182fd9a32584c9c10c9623e100c82d9ec93ce9828d8f14b744d"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 21627,
-      "sha256": "6795ed0a1740b4ee45e8ae2e7e4fb695703efd4f8550499743ea9237a825b30b"
+      "bytes": 22398,
+      "sha256": "b1a528bac4afac9bccdcb7ca04492013dca163437f2e9d01490657780d0aecb7"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 12205,
       "sha256": "dd8e0e3f09fc34e8779c424b7aa02cd781e9e022f3af0b7e713260748aa1a48d"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
-      "bytes": 12818,
-      "sha256": "aec00751cf29d8970ed64de794e48990408cd62ea169cf925cc8ec3f00543715"
+      "bytes": 13273,
+      "sha256": "8ff7c64492366bb871f5a683a698052ad57d4bb3598e45b819adc817c2eb5c5e"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
       "bytes": 16320,
