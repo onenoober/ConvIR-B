@@ -863,6 +863,10 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             runner = repo / "experience_docx/tools/run_route_operation.sh"
             runner.parent.mkdir(parents=True, exist_ok=True)
             runner.write_text("#!/bin/bash\nset -euo pipefail\n", encoding="utf-8")
+            raw_index, terminal_sha = terminal_index_bytes()
+            terminal_index = repo / COMPILER.science_contract.TERMINAL_INDEX_RELPATH
+            terminal_index.parent.mkdir(parents=True, exist_ok=True)
+            terminal_index.write_bytes(raw_index)
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "rules")
             rules_commit = self.git(repo, "rev-parse", "HEAD")
@@ -881,8 +885,21 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "compatible rules update")
             current_main = self.git(repo, "rev-parse", "HEAD")
-            program, spec = sources_v2(rules_commit)
-            spec_raw, program_raw, bundle = compile_sources(program, spec)
+            program, spec = sources_v3(rules_commit, terminal_sha)
+            spec_raw = COMPILER.json_bytes(spec)
+            program_raw = COMPILER.json_bytes(program)
+            bundle = COMPILER.compile_bundle(
+                spec_relpath="experience_docx/experiment_specs/final_slim.json",
+                spec_raw=spec_raw,
+                program_raw=program_raw,
+                evidence_exists=lambda _: True,
+                authoritative_snapshot_commit=rules_commit,
+                read_authoritative_file=lambda path: (
+                    raw_index
+                    if path == COMPILER.science_contract.TERMINAL_INDEX_RELPATH
+                    else (_ for _ in ()).throw(AssertionError(path))
+                ),
+            )
             sources_by_path = {
                 "experience_docx/research_programs/final_slim.json": program_raw,
                 "experience_docx/experiment_specs/final_slim.json": spec_raw,

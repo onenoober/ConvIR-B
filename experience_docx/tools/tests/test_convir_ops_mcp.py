@@ -162,7 +162,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         ):
             result = payload(OPS.tool_plan_manifest({}))
         self.assertFalse(result["ok"])
-        self.assertEqual("PLAN_REJECTED", result["state"])
+        self.assertEqual("PLAN_REJECTED", result["operation_state"])
         self.assertIn("read-only", result["error"]["message"])
 
     def test_start_rejects_historical_unused_plan_without_remote_access(self):
