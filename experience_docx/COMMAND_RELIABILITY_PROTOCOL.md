@@ -47,6 +47,11 @@ Snapshot, compiler and route-ready compare the local remote-tracking main to the
 live remote SHA. A mismatch returns a stale-main state without terminal
 pointers or authoring output; refresh the fixed ref once, then repeat the same
 bounded operation.
+Plan is also immutable across main movement: start requires a fresh plan rather
+than applying compatibility logic to the signed context. Ordinary structured
+MCP responses expose their loaded server version/source SHA-256; evidence review
+also exposes catalog, inventory and transport source SHA-256, making a stale
+long-lived process an identity mismatch rather than a functional guess.
 
 ## Finite Recovery
 

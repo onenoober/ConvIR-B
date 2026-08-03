@@ -122,11 +122,17 @@ def emit(value):
 
 def text_result(text, *, is_error=False, structured=None):
     if structured is not None:
+        structured = dict(structured)
+        structured["runtime_identity"] = {
+            "server_name": SERVER_NAME,
+            "server_version": SERVER_VERSION,
+            "server_source_sha256": SERVER_SOURCE_SHA256,
+        }
         keys = (
             "operation_state", "status", "state", "marker", "route_id",
             "operation_id", "run_id", "decision", "authorizes", "ok",
             "failure_class", "failure_phase", "audit_digest",
-            "plan_token", "receipt", "retry_after_seconds",
+            "plan_token", "receipt", "retry_after_seconds", "runtime_identity",
         )
         summary = {key: structured[key] for key in keys if key in structured}
         summary["structured_content_available"] = True
@@ -1365,26 +1371,10 @@ def verify_live_context(context):
     if refs[f"refs/heads/{context['branch']}"] != context["route_branch_commit"]:
         raise ToolError("route branch advanced after planning")
     current = refs["refs/heads/main"]
-    if current == context["current_rules_commit"]:
-        return
-    with tempfile.TemporaryDirectory(prefix="convir-ops-live-rules-") as temporary:
-        repo = str(Path(temporary) / "repo.git")
-        prepare_seeded_bare(repo)
-        ensure_commit(repo, current)
-        current_digest = rule_bundle_digest(repo, current)
-        try:
-            require_rule_compatibility(
-                repo,
-                context["current_rules_commit"],
-                current,
-                context["rules_bundle_digest"],
-                current_digest,
-                expected_compatibility_id=context.get("rules_compatibility_id"),
-            )
-        except ToolError as exc:
-            raise ToolError(
-                "canonical rules changed after planning; create one fresh plan"
-            ) from exc
+    if current != context["current_rules_commit"]:
+        raise ToolError(
+            "GitHub main changed after planning; create one fresh plan"
+        )
 
 
 def gpu_probe_body(context, gpu_index=None):
@@ -1431,13 +1421,22 @@ def gpu_probe_body(context, gpu_index=None):
         '        if (seen[idx]++ || util + 0 > 100 || (target != "" && idx != target)) { bad=1; next }',
         '        total++',
         '        if (shown < limit) {',
-        '          summary = summary (shown ? ";" : "") idx ":" (free + 0) ":" (util + 0)',
+        '          summary_idx[shown]=idx; summary_free[shown]=free + 0; summary_util[shown]=util + 0',
         '          shown++',
         '        }',
-        '        if (selected == "" && free + 0 >= min && util + 0 <= max) selected=idx',
+        '        if (free + 0 >= min && util + 0 <= max && (selected == "" || free + 0 > selected_free || (free + 0 == selected_free && util + 0 < selected_util) || (free + 0 == selected_free && util + 0 == selected_util && idx + 0 < selected + 0))) {',
+        '          selected=idx; selected_free=free + 0; selected_util=util + 0',
+        '        }',
         '      }',
         '      END {',
         '        if (bad || total == 0) exit 65',
+        '        selected_shown=0',
+        '        for (i=0; i<shown; i++) if (summary_idx[i] == selected) selected_shown=1',
+        '        if (selected != "" && !selected_shown && shown > 0) {',
+        '          summary_idx[shown - 1]=selected; summary_free[shown - 1]=selected_free; summary_util[shown - 1]=selected_util',
+        '        }',
+        '        summary=""',
+        '        for (i=0; i<shown; i++) summary = summary (i ? ";" : "") summary_idx[i] ":" summary_free[i] ":" summary_util[i]',
         '        printf "CONVIR_OPS_GPU_SUMMARY rows=%d total=%d data=%s\\n", shown, total, summary',
         '        if (selected != "") printf "CONVIR_OPS_GPU_OK index=%s\\n", selected',
         '        else print "CONVIR_OPS_RESOURCE_WAIT_REQUIRED"',
@@ -1556,8 +1555,6 @@ def gpu_probe_failure(exc):
 
 def atomic_start_body(context, gpu_index):
     lines = []
-    if gpu_index is not None:
-        lines.extend(gpu_probe_body(context, gpu_index).splitlines())
     lines.extend([
         f"REMOTE_REPO={q(context['remote_repo'])}",
         f"GITHUB_URL={q(GITHUB_URL)}",
@@ -1576,7 +1573,7 @@ def atomic_start_body(context, gpu_index):
         f"OUTPUT_POLICY={q(context['output_policy'])}",
         f"GPU_INDEX={q(gpu_index if gpu_index is not None else '')}",
         'FRESH_CREATED=0',
-        'cleanup_fresh() { rc=$?; if test "$FRESH_CREATED" = 1; then rm -rf -- "$REMOTE_REPO"; echo CONVIR_OPS_FRESH_WORKSPACE_CLEANED; fi; exit "$rc"; }',
+        'cleanup_fresh() { rc="${1:-$?}"; if test "$FRESH_CREATED" = 1; then rm -rf -- "$REMOTE_REPO"; echo CONVIR_OPS_FRESH_WORKSPACE_CLEANED; fi; exit "$rc"; }',
         'trap cleanup_fresh ERR',
         'test "$(git ls-remote "$GITHUB_URL" "refs/heads/$BRANCH" | awk \'NR==1 {print $1}\')" = "$EXPECTED_COMMIT"',
         'test "$(git ls-remote "$GITHUB_URL" refs/heads/main | awk \'NR==1 {print $1}\')" = "$EXPECTED_MAIN"',
@@ -1615,6 +1612,20 @@ def atomic_start_body(context, gpu_index):
         '  test ! -e "$CLOSEOUT"',
         'fi',
     ])
+    if gpu_index is not None:
+        lines.extend([
+            'GPU_RECHECK_RC=0',
+            'trap - ERR',
+            'set +e',
+            '(',
+            'set -e',
+            *gpu_probe_body(context, gpu_index).splitlines(),
+            ')',
+            'GPU_RECHECK_RC=$?',
+            'set -e',
+            'trap cleanup_fresh ERR',
+            'if test "$GPU_RECHECK_RC" -ne 0; then cleanup_fresh "$GPU_RECHECK_RC"; fi',
+        ])
     lines.extend([
         f'"$TMUX" new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$EXPECTED_MAIN" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
         'trap - ERR',

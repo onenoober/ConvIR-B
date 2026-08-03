@@ -9,6 +9,8 @@ runtime schema 2. New experiment specs and scientific contracts
 use schema 3; typed asset manifests and other supporting contracts remain schema
 2. Historical experiment/scientific schema 1/2 remains readable, is not
 migrated and cannot pass route-ready, plan or start.
+Every ordinary structured response exposes the loaded server version and exact
+server source SHA-256, so a stale long-lived stdio process is visible directly.
 
 Version 5.9.0 adds a machine-enforced research-update binding for future routes:
 the exact GitHub-main snapshot; either 1-8 `post_terminal` records or a zero-
@@ -136,8 +138,14 @@ valid.
 
 ## Finite State
 
-Start checks resources before creating a fresh workspace and again immediately
-before launch. Fresh workspaces use the immutable cloud anchor as a local shared
+Start requires the planned route branch and GitHub main to remain exact; any
+main movement after plan requires one fresh plan, even when the rules remain
+compatible for contract provenance. It checks resources before creating a
+fresh workspace and again immediately before the tmux launch boundary. A GPU is
+eligible when it meets the frozen minimum free-memory and maximum-utilization
+gates. Among eligible devices, selection is deterministic by most free memory,
+then lowest utilization, then lowest index; this scheduling preference adds no
+second memory threshold. Fresh workspaces use the immutable cloud anchor as a local shared
 object seed and fetch only the exact route branch tip, avoiding a full GitHub
 history clone on every route. Resource wait may reuse the unchanged plan. Any timeout after
 the launch boundary becomes `START_STATE_UNKNOWN` and forbids a second launch.
@@ -318,6 +326,8 @@ After an update, fast-forward that dedicated worktree to verified GitHub main,
 restart the host and verify version `5.9.0`, source SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
+The same version and source SHA-256 must appear in ordinary structured
+responses after restart, not only in MCP initialization metadata.
 
 The stdio server is a long-lived process and never hot-updates from Git. A
 running task may continue on its already loaded source. Normal host restart or a

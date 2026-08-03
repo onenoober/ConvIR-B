@@ -20,6 +20,8 @@ Compiler, route-ready, plan and launch each bind the exact live GitHub-main
 commit. A stale remote-tracking ref fails closed, and launch fetches that exact
 main into a dedicated runtime ref before the lifecycle reads canonical runtime
 or capability-registry bytes.
+If live main moves after plan, start requires one fresh plan; compatibility may
+preserve prior contract provenance but never mutates or extends a signed plan.
 
 `min_free_gpu_mib` is the evidence-bound minimum free memory required for the
 exact capability and cost contract to attempt execution, not a comfortable or
@@ -29,6 +31,10 @@ or preferred free-memory range may guide scheduling preference only; it must
 not create a second blocking threshold. The protected-data-free synthetic
 contract and existing peak-memory and cost bounds still determine whether the
 execution path is qualified to continue.
+When several devices are eligible, scheduling chooses the device with most free
+memory, then lowest utilization, then lowest index. The selected device is
+rechecked immediately before the tmux launch boundary; this narrows but cannot
+eliminate races from external, non-cooperating GPU processes.
 
 For the default path, `validate_route_ready.py` performs the complete static
 check once before commit. MCP plan/start and the generic contract phase own the

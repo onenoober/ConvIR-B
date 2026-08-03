@@ -7,6 +7,10 @@ redundant catalog-summary tool was removed because the completeness receipt
 already returns the same catalog identity. Immutable catalogs are cached by
 exact repository and commit in one bounded eight-entry process-local LRU;
 mutable cloud inventories are always rescanned. Historical phase status follows.
+Every ordinary structured response reports the loaded server version and exact
+server, catalog, inventory and transport source SHA-256 identities, so host
+restart/registration drift is directly observable without relying on an
+initialization transcript.
 Version 2.2.0 adds exact route, program, family, stage, mechanism, triggering
 route/terminal, terminal-state, decision and authorization filters. Program/family relationships are derived
 only from SHA-bound launch copies of the experiment spec and program contract;
@@ -54,7 +58,7 @@ compact, identity-bound discovery records rather than bulk experiment data.
 
 | Tool | Purpose |
 | --- | --- |
-| `convir_evidence_completeness_receipt` | return one schema-2 project GitHub receipt with exact indexed, unindexed, legacy and unresolved partitions for the current or an exact main-history commit |
+| `convir_evidence_completeness_receipt` | return one schema-2 project GitHub receipt with a current-terminal review scope plus an exact registry-bound historical nonblocking partition for the current or an exact main-history commit |
 | `convir_evidence_catalog_query` | query that exact GitHub-main-history commit with bounded filters and an identity-bound cursor |
 | `convir_evidence_bundle` | verify one selected schema-2 terminal leaf and page the complete SHA-bound GitHub evidence-file manifest |
 | `convir_evidence_cloud_inventory_summary` | reconcile one exact eligible schema-2 terminal with its fixed inactive cloud run root |
@@ -104,8 +108,11 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
 - Each tool page is identical in MCP text and structured content. Complete
   JSON-RPC response lines, including request ID and newline, are capped at 32
   KiB. Oversized pages shrink only at complete-entry boundaries.
-- Unindexed directories and loose files remain `NOT_ASSESSED`. Filename markers
-  never become PASS, FAIL, terminal, or scientific-completeness claims.
+- Unindexed directories and loose files remain `NOT_ASSESSED`. A path that is
+  exactly frozen by the verified legacy registry and unchanged since its
+  registry snapshot is historical nonblocking for current-terminal review;
+  changed or new paths remain unresolved. Filename markers never become PASS,
+  FAIL, terminal, or scientific-completeness claims.
 - Evidence bundles are available only for a unique selected schema-2 terminal
   leaf whose GitHub blobs and terminal semantics verify. They return file
   identities and roles, not contents.
@@ -130,9 +137,16 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
 The adopted P0 layer historically added one compact fifth tool at server version `1.2.0`.
 It mechanically verifies that every catalog entry belongs to exactly one
 indexed or unindexed partition, then reports terminal schema, binding and chain
-resolution counts. Unindexed entries remain unclassified; schema-1 path-only
-records remain legacy; ambiguous or invalid chains remain unresolved. Any such
-count makes `review_completeness=incomplete`.
+resolution counts. Current version `2.2.0` additionally partitions the receipt
+into `current_terminal_catalog_v1` and registry-bound history. An unindexed
+directory or loose file is historical nonblocking only while its exact path is
+registered and Git shows no content change from the frozen registry snapshot.
+A path-only terminal is historical nonblocking only through one unique frozen
+terminal-record SHA-256; an ambiguous legacy route is nonblocking only when all
+of its unique records are in that partition. These counts are reported under
+`historical_nonblocking_counts`, while new, changed, duplicated, invalid or
+otherwise unresolved content remains in `unresolved_counts` and makes
+`review_completeness=incomplete`.
 
 The receipt schema is exactly 2 and binds the snapshot commit, catalog and entry
 collection hashes, terminal-index blob/SHA-256 and experiment-log tree/path
@@ -261,6 +275,8 @@ interpretation, unbounded scans, protected-data access or experiment mutation.
 Register this server from the same clean dedicated GitHub-main MCP worktree as
 `convir-ops`, under a short host key such as `convir_review`. Never point the
 host at a historical adoption or route worktree. After each accepted main
-update, fast-forward the dedicated worktree and restart the host; a fresh task
-must report version `2.2.0`, exactly six tools and source SHA-256 equal to that
-GitHub-main commit. The process-local catalog cache begins empty after restart.
+update, first fast-forward the dedicated worktree, then restart the host. A
+fresh task must report version `2.2.0`, exactly six tools, and ordinary-response
+server/catalog/inventory/transport SHA-256 values equal to those four files at
+that GitHub-main commit. The process-local catalog cache begins empty after
+restart.

@@ -2,7 +2,7 @@
 """Read-only MCP facade for the commit-bound experiment evidence catalog."""
 
 import base64
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 import hashlib
 import json
 import os
@@ -381,30 +381,180 @@ def legacy_registry_summary(registry_value):
     }
 
 
-def filter_review_candidates(loaded, registry_value):
+def _changed_registry_paths(repo, commit, registry_value):
+    """Return exact registry paths changed since the frozen legacy snapshot."""
+    if registry_value is None or commit == registry_value["snapshot_commit"]:
+        return set()
+    registered_paths = [
+        *(item["directory_path"] for item in registry_value["directories"]),
+        *(item["path"] for item in registry_value["loose_files"]),
+    ]
+    prefix = catalog.LOG_ROOT + "/"
+    if any(
+            catalog.require_relpath(path, "legacy registry path") != path
+            or not path.startswith(prefix)
+            or "/" in path[len(prefix):]
+            for path in registered_paths):
+        raise ReviewError(
+            "legacy registry contains an invalid top-level history path",
+            state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+        )
+    if not registered_paths:
+        return set()
+    raw = catalog.git_bytes(
+        repo,
+        ["--literal-pathspecs", "diff", "--no-renames", "--name-only", "-z",
+         registry_value["snapshot_commit"], commit, "--", *registered_paths],
+        limit=catalog.MAX_TREE_BYTES,
+    )
+    if raw and not raw.endswith(b"\0"):
+        raise ReviewError(
+            "legacy registry change listing is incomplete",
+            state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+        )
+    try:
+        paths = {
+            item.decode("utf-8") for item in raw.split(b"\0") if item
+        }
+    except UnicodeDecodeError as exc:
+        raise ReviewError(
+            "legacy registry change path is not UTF-8",
+            state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+        ) from exc
+    return paths
+
+
+def scoped_completeness_receipt(repo, commit, loaded, registry_value):
+    """Exclude only exact registry-bound history from current review blockers."""
+    value = catalog.completeness_receipt(loaded)
+    directory_records = {}
+    loose_paths = set()
+    legacy_terminal_records = set()
+    changed_paths = set()
+    if registry_value is not None:
+        directory_records = {
+            item["directory_path"]: item for item in registry_value["directories"]
+        }
+        loose_paths = {item["path"] for item in registry_value["loose_files"]}
+        legacy_terminal_records = {
+            item["terminal_record_sha256"]
+            for item in registry_value["legacy_terminals"]
+        }
+        changed_paths = _changed_registry_paths(repo, commit, registry_value)
+
+    registry_bound_unindexed = 0
+    routes = []
+    for entry in loaded["entries"]:
+        if entry.get("index_coverage") == "UNINDEXED":
+            if entry.get("record_kind") == "evidence_directory":
+                registered = directory_records.get(entry.get("directory_path"))
+                if registered is not None and registered.get(
+                        "tracked_file_count") == entry.get("tracked_file_count") \
+                        and not any(
+                            path.startswith(entry["directory_path"] + "/")
+                            for path in changed_paths
+                        ):
+                    registry_bound_unindexed += 1
+            elif entry.get("file_path") in loose_paths \
+                    and entry.get("file_path") not in changed_paths:
+                registry_bound_unindexed += 1
+        routes.extend(entry.get("routes", []))
+
+    terminals = [
+        terminal for route in routes for terminal in route.get("terminals", [])
+    ]
+    terminal_record_counts = Counter(
+        terminal.get("record_sha256") for terminal in terminals
+    )
+    registry_bound_path_only = sum(
+        terminal_record_counts[record_sha] == 1
+        and next(
+            terminal for terminal in terminals
+            if terminal.get("record_sha256") == record_sha
+        ).get("binding_level") == "path_only_legacy"
+        for record_sha in legacy_terminal_records
+    )
+    registry_bound_ambiguous = sum(
+        route.get("terminal_resolution") == "AMBIGUOUS_LEGACY"
+        and bool(route.get("terminals"))
+        and len(route["terminals"]) == len({
+            terminal.get("record_sha256") for terminal in route["terminals"]
+        })
+        and all(
+            terminal.get("record_sha256") in legacy_terminal_records
+            and terminal_record_counts[terminal.get("record_sha256")] == 1
+            for terminal in route["terminals"]
+        )
+        for route in routes
+    )
+
+    historical = {
+        "registry_bound_unindexed_entries": registry_bound_unindexed,
+        "registry_bound_path_only_terminal_records": registry_bound_path_only,
+        "registry_bound_ambiguous_legacy_routes": registry_bound_ambiguous,
+    }
+    blockers = dict(value["unresolved_counts"])
+    for blocker, historical_key in (
+        ("unclassified_unindexed_entries", "registry_bound_unindexed_entries"),
+        ("path_only_legacy_terminal_records", "registry_bound_path_only_terminal_records"),
+        ("ambiguous_legacy_routes", "registry_bound_ambiguous_legacy_routes"),
+    ):
+        blockers[blocker] -= historical[historical_key]
+        if blockers[blocker] < 0:
+            raise ReviewError(
+                "legacy registry exceeds the catalog unresolved partition",
+                state="LEGACY_REGISTRY_IDENTITY_MISMATCH", exit_code=3,
+            )
+
+    value["unresolved_counts"] = blockers
+    value["historical_nonblocking_counts"] = historical
+    value["review_scope"] = {
+        "scope_id": "current_terminal_catalog_v1",
+        "legacy_registry_applied": registry_value is not None,
+        "legacy_registry_sha256": (
+            None if registry_value is None else registry_value["registry_sha256"]
+        ),
+    }
+    value["review_completeness"] = (
+        "incomplete" if any(blockers.values()) else "complete"
+    )
+    value.pop("receipt_sha256", None)
+    value["receipt_sha256"] = catalog.canonical_sha256(value)
+    return value
+
+
+def filter_review_candidates(repo, commit, loaded, registry_value):
     if registry_value is None:
         return loaded
     directory_records = {
         item["directory_path"]: item for item in registry_value["directories"]
     }
     loose_records = {item["path"]: item for item in registry_value["loose_files"]}
+    changed_paths = _changed_registry_paths(repo, commit, registry_value)
     entries = []
     changed = False
     for item in loaded["entries"]:
         path = item.get("directory_path") or item.get("file_path")
         legacy_record = directory_records.get(path)
         if item.get("record_kind") == "loose_file":
-            if loose_records.get(path, {}).get("default_access") == "DO_NOT_READ":
+            if loose_records.get(path, {}).get("default_access") == "DO_NOT_READ" \
+                    and path not in changed_paths:
                 changed = True
                 continue
             entries.append(item)
             continue
+        path_changed = any(
+            changed_path.startswith(path + "/") for changed_path in changed_paths
+        )
         if legacy_record is not None and \
                 legacy_record.get("tracked_file_count") == item.get("tracked_file_count") \
+                and not path_changed \
                 and legacy_record.get("default_access") == "DO_NOT_READ":
             changed = True
             continue
-        if legacy_record is None or legacy_record.get("tracked_file_count") != item.get("tracked_file_count"):
+        if legacy_record is None \
+                or legacy_record.get("tracked_file_count") != item.get("tracked_file_count") \
+                or path_changed:
             entries.append(item)
             continue
         annotated = dict(item)
@@ -425,6 +575,14 @@ def filter_review_candidates(loaded, registry_value):
 def mcp_result(value):
     value = dict(value)
     value["schema_version"] = 2
+    value["runtime_identity"] = {
+        "server_name": SERVER_NAME,
+        "server_version": SERVER_VERSION,
+        "server_source_sha256": SERVER_SOURCE_SHA256,
+        "catalog_source_sha256": CATALOG_SOURCE_SHA256,
+        "inventory_source_sha256": INVENTORY_SOURCE_SHA256,
+        "transport_source_sha256": TRANSPORT_SOURCE_SHA256,
+    }
     serialized = canonical_bytes(value).decode("utf-8")
     return {
         "content": [{
@@ -474,7 +632,7 @@ def tool_completeness_receipt(args):
             )
         registry_value = load_legacy_registry(repo, commit)
         loaded = load_catalog_cached(repo, commit)
-        value = catalog.completeness_receipt(loaded)
+        value = scoped_completeness_receipt(repo, commit, loaded, registry_value)
         value["legacy_backfill"] = legacy_registry_summary(registry_value)
         add_github_identity(value, remote_url, tip)
         return bounded_mcp_result(value)
@@ -883,7 +1041,9 @@ def tool_catalog_query(args):
         )
         coverage, terms, exact_filters, cursor, requested_limit = query_arguments(args)
         registry_value = load_legacy_registry(repo, commit)
-        loaded = filter_review_candidates(load_catalog_cached(repo, commit), registry_value)
+        loaded = filter_review_candidates(
+            repo, commit, load_catalog_cached(repo, commit), registry_value,
+        )
         requested_catalog_sha256 = args.get("catalog_sha256")
         if requested_catalog_sha256 is not None:
             if not isinstance(requested_catalog_sha256, str) \
@@ -1049,8 +1209,8 @@ def _prepare_legacy_evidence_bundle(
             "relationship_status": "not_modeled",
             "reason": "historical_terminal_schema_has_no_verified_launch_relationship",
         },
-        "project_receipt": catalog.completeness_receipt(
-            load_catalog_cached(repo, commit)
+        "project_receipt": scoped_completeness_receipt(
+            repo, commit, load_catalog_cached(repo, commit), registry_value,
         ),
         "binding": binding,
         "legacy_registry": legacy_registry_summary(registry_value),
@@ -1258,7 +1418,9 @@ def _prepare_evidence_bundle(args):
         "files": file_records,
         "research_context": research_context,
     })
-    project_receipt = catalog.completeness_receipt(loaded)
+    project_receipt = scoped_completeness_receipt(
+        repo, commit, loaded, load_legacy_registry(repo, commit),
+    )
     return {
         "repo": repo,
         "remote_url": remote_url,

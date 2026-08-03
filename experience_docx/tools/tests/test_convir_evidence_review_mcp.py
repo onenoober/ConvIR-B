@@ -372,6 +372,17 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             for tool in cloud_tools
         ))
 
+        ordinary = review.mcp_result({"ok": True})["structuredContent"]
+        self.assertEqual("2.2.0", ordinary["runtime_identity"]["server_version"])
+        self.assertEqual(
+            review.SERVER_SOURCE_SHA256,
+            ordinary["runtime_identity"]["server_source_sha256"],
+        )
+        self.assertEqual(
+            review.CATALOG_SOURCE_SHA256,
+            ordinary["runtime_identity"]["catalog_source_sha256"],
+        )
+
     def test_catalog_cache_reuses_one_commit_and_isolates_another(self):
         first = {"catalog_sha256": "a" * 64}
         second = {"catalog_sha256": "b" * 64}
@@ -834,6 +845,81 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         self.assertEqual(
             "SNAPSHOT_OUTSIDE_GITHUB_MAIN",
             rejected["structuredContent"]["state"],
+        )
+
+    def test_registry_bound_history_is_nonblocking_but_new_history_is_not(self):
+        record = terminal_record()
+        legacy_path = "experience_docx/experiment_logs/legacy/summary.json"
+        first = self.commit_snapshot(record, {legacy_path: b"old"})
+        loaded = review.load_catalog_cached(self.repo, first)
+        terminal = next(
+            terminal
+            for entry in loaded["entries"]
+            for route in entry.get("routes", [])
+            for terminal in route["terminals"]
+        )
+        registry = {
+            "registry_sha256": "f" * 64,
+            "snapshot_commit": first,
+            "directories": [{
+                "directory_path": "experience_docx/experiment_logs/legacy",
+                "tracked_file_count": 1,
+                "default_access": "DO_NOT_READ",
+            }],
+            "loose_files": [],
+            "legacy_terminals": [{
+                "terminal_record_sha256": terminal["record_sha256"],
+            }],
+        }
+        receipt = review.scoped_completeness_receipt(
+            self.repo, first, loaded, registry,
+        )
+        self.assertEqual("complete", receipt["review_completeness"])
+        self.assertFalse(any(receipt["unresolved_counts"].values()))
+        self.assertEqual(
+            {
+                "registry_bound_unindexed_entries": 1,
+                "registry_bound_path_only_terminal_records": 1,
+                "registry_bound_ambiguous_legacy_routes": 0,
+            },
+            receipt["historical_nonblocking_counts"],
+        )
+        self.assertEqual(
+            "current_terminal_catalog_v1", receipt["review_scope"]["scope_id"]
+        )
+
+        second = self.commit_snapshot(
+            record,
+            {
+                legacy_path: b"old",
+                "experience_docx/experiment_logs/new-history/summary.json": b"new",
+            },
+            "new unregistered history",
+        )
+        current = review.scoped_completeness_receipt(
+            self.repo, second, review.load_catalog_cached(self.repo, second), registry,
+        )
+        self.assertEqual("incomplete", current["review_completeness"])
+        self.assertEqual(
+            1, current["unresolved_counts"]["unclassified_unindexed_entries"]
+        )
+
+        third = self.commit_snapshot(
+            record, {legacy_path: b"changed"}, "changed registered history",
+        )
+        changed = review.scoped_completeness_receipt(
+            self.repo, third, review.load_catalog_cached(self.repo, third), registry,
+        )
+        self.assertEqual("incomplete", changed["review_completeness"])
+        self.assertEqual(
+            1, changed["unresolved_counts"]["unclassified_unindexed_entries"]
+        )
+        filtered = review.filter_review_candidates(
+            self.repo, third, review.load_catalog_cached(self.repo, third), registry,
+        )
+        self.assertIn(
+            "experience_docx/experiment_logs/legacy",
+            {entry.get("directory_path") for entry in filtered["entries"]},
         )
 
     def test_completeness_freezes_symbolic_ref_before_repository_moves(self):

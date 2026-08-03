@@ -264,6 +264,14 @@ class ConvirOpsV4Tests(unittest.TestCase):
         for profile in OPS.MONITOR_PROFILES.values():
             self.assertLessEqual(profile["max_polls"] * profile["interval_seconds"], 60)
 
+    def test_ordinary_results_expose_runtime_source_identity(self):
+        value = payload(OPS.typed_result(True, "IDENTITY_TEST"))
+        self.assertEqual("5.9.0", value["runtime_identity"]["server_version"])
+        self.assertEqual(
+            OPS.SERVER_SOURCE_SHA256,
+            value["runtime_identity"]["server_source_sha256"],
+        )
+
     def test_unknown_start_recovery_bodies_have_valid_bash_syntax(self):
         for body in (
             OPS.atomic_start_body(context(), None),
@@ -290,12 +298,19 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual(2, value["total_gpu_count"])
         self.assertEqual(21312, value["rows"][0]["free_mib"])
 
-    def test_gpu_probe_selects_first_device_that_satisfies_both_gates(self):
+    def test_gpu_probe_selects_eligible_device_with_most_free_memory(self):
         completed = self.run_fake_gpu_probe(
             "printf '0, 11000, 0\n1, 15000, 9\n2, 16000, 5\n'"
         )
         self.assertEqual(0, completed.returncode, completed.stderr)
-        self.assertEqual(1, OPS.parse_gpu(completed.stdout)["index"])
+        self.assertEqual(2, OPS.parse_gpu(completed.stdout)["index"])
+
+    def test_gpu_probe_breaks_equal_free_memory_ties_by_utilization_then_index(self):
+        completed = self.run_fake_gpu_probe(
+            "printf '7, 16000, 5\n3, 16000, 4\n2, 16000, 4\n'"
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        self.assertEqual(2, OPS.parse_gpu(completed.stdout)["index"])
 
     def test_gpu_probe_true_resource_wait_is_typed_and_retryable(self):
         completed = self.run_fake_gpu_probe(
@@ -345,9 +360,26 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual(OPS.GPU_SUMMARY_LIMIT, len(value["rows"]))
         self.assertTrue(value["summary_truncated"])
 
-    def test_atomic_gpu_recheck_precedes_workspace_creation_and_uses_fixed_binary(self):
+    def test_gpu_probe_keeps_selected_device_in_a_truncated_summary(self):
+        rows = "".join(
+            f"printf '{index}, {12000 + index}, 0\\n'\n" for index in range(10)
+        )
+        completed = self.run_fake_gpu_probe(rows)
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        value = OPS.parse_gpu(completed.stdout)
+        self.assertEqual(9, value["index"])
+        self.assertIn(9, {item["index"] for item in value["rows"]})
+
+    def test_atomic_gpu_recheck_immediately_precedes_launch_and_uses_fixed_binary(self):
         body = OPS.atomic_start_body(context(require_gpu=True), 0)
-        self.assertLess(body.index("NVIDIA_SMI=/usr/bin/nvidia-smi"), body.index("REMOTE_REPO="))
+        self.assertLess(
+            body.index('test ! -e "$CLOSEOUT"'),
+            body.index("NVIDIA_SMI=/usr/bin/nvidia-smi"),
+        )
+        self.assertLess(
+            body.index("NVIDIA_SMI=/usr/bin/nvidia-smi"),
+            body.index('"$TMUX" new-session'),
+        )
         self.assertNotIn("nvidia-smi --query-gpu", body)
         self.assertNotIn(
             'fetch --quiet --no-tags --depth=1 github '
@@ -482,13 +514,9 @@ class ConvirOpsV4Tests(unittest.TestCase):
             "refs/heads/codex/a1x": "a" * 40,
             "refs/heads/main": "f" * 40,
         }
-        with (
-            patch.object(OPS, "github_refs", return_value=refs),
-            patch.object(OPS, "prepare_seeded_bare"),
-            patch.object(OPS, "ensure_commit"),
-            patch.object(OPS, "rule_bundle_digest", return_value="d" * 64),
-        ):
-            OPS.verify_live_context(ctx)
+        with patch.object(OPS, "github_refs", return_value=refs):
+            with self.assertRaisesRegex(OPS.ToolError, "fresh plan"):
+                OPS.verify_live_context(ctx)
         self.assertEqual(before, json.dumps(ctx, sort_keys=True))
 
     def test_launch_timeout_recovers_receipt_from_bound_output(self):
