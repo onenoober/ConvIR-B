@@ -1,0 +1,53 @@
+{
+  "schema_version": 3,
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
+  "run_id": "daytime-dehazing-observable-signal-domain-factorial-v1-r1",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "At the predeclared 50% sequential look, the selected physics-spatial arm a2 had an overall equal-domain paired PSNR effect of -0.0010467021359937031 dB relative to the global-sham arm a1, with the reported interval [-0.004061130123261075, 0.0019677258512736688] dB. This is far below the +0.1 dB minimum meaningful effect, so the primary observable-utility gate was unfavorable and the route stopped for predeclared primary futility.",
+  "gate_reasons": [
+    "Evidence identity, integrity, and coverage passed; 1106 of 1106 workload units completed and 253 development-screening scenes were evaluated before the predeclared futility stop.",
+    "Primary observable utility was unfavorable: a2 minus a1 was -0.0010467021359937031 dB overall equal-domain against a +0.1 dB minimum meaningful effect.",
+    "Spatial signal specificity was unfavorable: the selected spatial-versus-sham specificity estimate was -0.0003168090922920952 dB overall equal-domain.",
+    "Primary precision was met at the 50% look, while repeatability, near-clear fidelity, and negative-tail/keep-supported gates remained indeterminate because the predeclared primary futility boundary stopped further evaluation."
+  ],
+  "competing_explanation": "Under the frozen adapters, training budget, and development-screening population, the near-zero effects for both physics-spatial and learned-spatial variants relative to the global-sham control are more consistent with the adaptation being explained by non-spatial or global adjustment than by useful observable spatial haze signals. This does not rule out orthogonal information sources, objectives, architectures, or supervision regimes that were outside C1.",
+  "limitations": [
+    "All scientific evidence was development_screening; confirmation, sealed-final, canary, and locked-test data were not touched.",
+    "The predeclared 50% futility stop left repeatability, near-clear fidelity, and negative-tail/keep-supported gates indeterminate and precludes claims about their full-budget outcomes.",
+    "The conclusion is limited to the frozen C1 observable-signal factorization, adapters, 2000-step training budget, datasets, and equal-domain aggregation; it does not establish that all spatially adaptive dehazing mechanisms fail.",
+    "The recovered primary review fact binds the point estimate, threshold, and typed gate outcome only; its interval is preserved in the closeout-bound summary but is not attached to that fact because the source does not bind a confidence-level field."
+  ],
+  "primary_fact_ids": [
+    "selected_primary_a2_minus_a1"
+  ],
+  "gate_fact_ids": [
+    "evidence_identity_integrity_coverage",
+    "primary_observable_utility",
+    "spatial_signal_specificity",
+    "cross_observation_repeatability",
+    "near_clear_fidelity",
+    "negative_tail_and_keep_supported",
+    "primary_precision"
+  ],
+  "primary_fact_recovery": {
+    "fact_id": "selected_primary_a2_minus_a1",
+    "claim_id": "primary_observable_utility",
+    "metric": "a2 minus a1 overall equal-domain paired PSNR effect",
+    "unit": "dB",
+    "population": "253 evaluated development-screening original clear scenes at the 50% sequential look",
+    "grouping": "original clear scene with equal-domain aggregation",
+    "source_filename": "daytime_dehazing_observable_signal_domain_factorial_v1_summary.json",
+    "threshold_operator": ">=",
+    "json_pointers": {
+      "point": "/summaries/primary/a2_minus_a1/overall_equal_domain/estimate",
+      "ci_lower": null,
+      "ci_upper": null,
+      "confidence_level": null,
+      "threshold": "/design/minimum_meaningful_effect_db",
+      "gate_outcome": "/gate_outcomes/primary_observable_utility"
+    }
+  }
+}

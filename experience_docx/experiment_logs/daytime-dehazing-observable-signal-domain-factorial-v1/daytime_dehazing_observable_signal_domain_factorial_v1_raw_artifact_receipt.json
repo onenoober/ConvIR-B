@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 1111
+  },
+  "entry_count": 1112,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "a58fd06d87ba405d8fd8f5efba457a0d2a44d9f7d20b8bb8fdb6f445fa648eff",
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
+  "route_commit": "651bdb3e8bb7430b012a7a01ef86db18622f46d5",
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "run_id": "daytime-dehazing-observable-signal-domain-factorial-v1-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 6098210
+}

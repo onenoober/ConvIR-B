@@ -1,0 +1,63 @@
+{
+  "assurance": {
+    "method_id": "bounded_scene_range_worst_case_variance",
+    "planning_sd_rule": "Every primary scene-level contrast is clipped to [-0.25, 0.25] dB, so Popoviciu's inequality provides a distribution-free planning SD upper bound of 0.25 dB without reusing historical route outcomes.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_observable_signal_domain_factorial_precision_v1",
+  "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+  "confidence_level": 0.95,
+  "critical_value": 2.74,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
+  "primary_estimand_id": "observable_spatial_adapter_utility",
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "schema_version": 2,
+  "source_reference": "Frozen S0 and unified dataset-role ledger capacities plus the distribution-free bound implied only by the predeclared scene-contrast clipping interval.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "HAZE4K_INTERNAL",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 52,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The frozen S0 Haze4K role ledger supplies exactly 150 internal-development original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "ITS_UNASSIGNED",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 52,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The SHA-bound unified role ledger supplies allocation ranks 0 through 149 from 7226 unassigned known-overlap-quarantined ITS original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "OTS_UNASSIGNED",
+      "independent_groups_available": 150,
+      "independent_groups_planned": 150,
+      "independent_groups_required": 52,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The SHA-bound unified role ledger supplies allocation ranks 0 through 149 from 6419 unassigned known-overlap-quarantined OTS original-clear scenes."
+    },
+    {
+      "feasible": true,
+      "id": "NHHAZE_HISTORICAL",
+      "independent_groups_available": 55,
+      "independent_groups_planned": 55,
+      "independent_groups_required": 52,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The SHA-bound unified role ledger identifies all 55 NH-HAZE scenes as historical development and not confirmation."
+    }
+  ],
+  "target_half_width": 0.095
+}

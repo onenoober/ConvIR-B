@@ -1,0 +1,290 @@
+{
+  "gate_outcomes": {
+    "cross_observation_repeatability": "indeterminate",
+    "evidence_identity_integrity_coverage": "pass",
+    "near_clear_fidelity": "indeterminate",
+    "negative_tail_and_keep_supported": "indeterminate",
+    "primary_observable_utility": "unfavorable",
+    "primary_precision": "met",
+    "spatial_signal_specificity": "unfavorable"
+  },
+  "keep_supported": {
+    "by_domain": {
+      "HAZE4K_INTERNAL": {
+        "estimate": 0.6875,
+        "lower": 0.2613243930744276,
+        "successes": 11,
+        "total": 16,
+        "upper": 0.9318849428006819
+      },
+      "ITS_UNASSIGNED": {
+        "estimate": 1.0,
+        "lower": 0.4435507717783429,
+        "successes": 12,
+        "total": 12,
+        "upper": 1.0
+      },
+      "NHHAZE_HISTORICAL": {
+        "estimate": 1.0,
+        "lower": 0.4221935642348318,
+        "successes": 11,
+        "total": 11,
+        "upper": 1.0
+      },
+      "OTS_UNASSIGNED": {
+        "estimate": 1.0,
+        "lower": 0.5445568517353212,
+        "successes": 18,
+        "total": 18,
+        "upper": 1.0
+      }
+    },
+    "overall_equal_domain": {
+      "estimate": 0.921875,
+      "lower": 0.41790639520573086,
+      "upper": 0.9829712357001705
+    }
+  },
+  "near_clear": {
+    "count": 108,
+    "mean_delta": null,
+    "negative_tail": {
+      "by_domain": {
+        "HAZE4K_INTERNAL": {
+          "estimate": 0.16,
+          "lower": 0.05653125695966363,
+          "successes": 12,
+          "total": 75,
+          "upper": 0.3771443879838372
+        },
+        "ITS_UNASSIGNED": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 0,
+          "upper": 1.0
+        },
+        "NHHAZE_HISTORICAL": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 0,
+          "upper": 1.0
+        },
+        "OTS_UNASSIGNED": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "successes": 0,
+          "total": 33,
+          "upper": 0.31327828461077445
+        }
+      },
+      "overall_equal_domain": {
+        "estimate": 0.04,
+        "lower": 0.014132814239915907,
+        "upper": 0.672605668148653
+      }
+    }
+  },
+  "negative_tail": {
+    "by_domain": {
+      "HAZE4K_INTERNAL": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 75,
+        "upper": 0.16717006609338356
+      },
+      "ITS_UNASSIGNED": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 75,
+        "upper": 0.16717006609338356
+      },
+      "NHHAZE_HISTORICAL": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 28,
+        "upper": 0.34965996506744956
+      },
+      "OTS_UNASSIGNED": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "successes": 0,
+        "total": 75,
+        "upper": 0.16717006609338356
+      }
+    },
+    "overall_equal_domain": {
+      "estimate": 0.0,
+      "lower": 0.0,
+      "upper": 0.21279254083690005
+    }
+  },
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
+  "primary": {
+    "a2_minus_a1": {
+      "by_domain": {
+        "HAZE4K_INTERNAL": {
+          "count": 75,
+          "estimate": 0.0004939478581278915,
+          "half_width": 0.011295345504661878,
+          "lower": -0.010801397646533987,
+          "upper": 0.01178929336278977
+        },
+        "ITS_UNASSIGNED": {
+          "count": 75,
+          "estimate": -0.00011198119390118203,
+          "half_width": 0.0011355852964001411,
+          "lower": -0.001247566490301323,
+          "upper": 0.0010236041024989592
+        },
+        "NHHAZE_HISTORICAL": {
+          "count": 28,
+          "estimate": -0.00022934452754630463,
+          "half_width": 0.0009646773267918956,
+          "lower": -0.0011940218543382002,
+          "upper": 0.0007353327992455909
+        },
+        "OTS_UNASSIGNED": {
+          "count": 75,
+          "estimate": -0.004339430680655217,
+          "half_width": 0.003947585473022873,
+          "lower": -0.008287016153678089,
+          "upper": -0.0003918452076323445
+        }
+      },
+      "overall_equal_domain": {
+        "estimate": -0.0010467021359937031,
+        "half_width": 0.003014427987267372,
+        "lower": -0.004061130123261075,
+        "upper": 0.0019677258512736688
+      }
+    },
+    "a3_minus_a1": {
+      "by_domain": {
+        "HAZE4K_INTERNAL": {
+          "count": 75,
+          "estimate": 0.0011216358114576033,
+          "half_width": 0.007211618914788201,
+          "lower": -0.006089983103330598,
+          "upper": 0.008333254726245805
+        },
+        "ITS_UNASSIGNED": {
+          "count": 75,
+          "estimate": 0.0013317275146416563,
+          "half_width": 0.0006429545381167338,
+          "lower": 0.0006887729765249225,
+          "upper": 0.0019746820527583903
+        },
+        "NHHAZE_HISTORICAL": {
+          "count": 28,
+          "estimate": -0.0004847587693811915,
+          "half_width": 0.0008555503903716516,
+          "lower": -0.0013403091597528431,
+          "upper": 0.0003707916209904601
+        },
+        "OTS_UNASSIGNED": {
+          "count": 75,
+          "estimate": 0.0003567023802037757,
+          "half_width": 0.0024700124054253835,
+          "lower": -0.002113310025221608,
+          "upper": 0.002826714785629159
+        }
+      },
+      "overall_equal_domain": {
+        "estimate": 0.0005813267342304609,
+        "half_width": 0.0019244116903555915,
+        "lower": -0.0013430849561251305,
+        "upper": 0.0025057384245860525
+      }
+    }
+  },
+  "repeatability": {
+    "by_domain": {
+      "HAZE4K_INTERNAL": {
+        "estimate": 0.4266666666666667,
+        "lower": 0.23633311118362635,
+        "successes": 32,
+        "total": 75,
+        "upper": 0.64151849851007
+      },
+      "ITS_UNASSIGNED": {
+        "estimate": 0.4266666666666667,
+        "lower": 0.23633311118362635,
+        "successes": 32,
+        "total": 75,
+        "upper": 0.64151849851007
+      },
+      "OTS_UNASSIGNED": {
+        "estimate": 0.17333333333333334,
+        "lower": 0.06382109649477807,
+        "successes": 13,
+        "total": 75,
+        "upper": 0.39206334668623255
+      }
+    },
+    "overall_equal_domain": {
+      "estimate": 0.34222222222222226,
+      "lower": 0.17882910628734358,
+      "upper": 0.5583667812354576
+    }
+  },
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "schema_version": 1,
+  "selected_arm": "a2",
+  "sequential_looks": [
+    {
+      "critical_value": 3.88,
+      "evaluated_counts": {
+        "HAZE4K_INTERNAL": 75,
+        "ITS_UNASSIGNED": 75,
+        "NHHAZE_HISTORICAL": 28,
+        "OTS_UNASSIGNED": 75
+      },
+      "information_fraction": 0.5,
+      "look_id": "look_050",
+      "stop_reason": "predeclared_primary_futility"
+    }
+  ],
+  "specificity": {
+    "by_domain": {
+      "HAZE4K_INTERNAL": {
+        "count": 75,
+        "estimate": 0.0009822446359954522,
+        "half_width": 0.011617416261550296,
+        "lower": -0.010635171625554843,
+        "upper": 0.012599660897545748
+      },
+      "ITS_UNASSIGNED": {
+        "count": 75,
+        "estimate": 0.0006156602992429446,
+        "half_width": 0.0006771098492126396,
+        "lower": -6.144954996969499e-05,
+        "upper": 0.0012927701484555841
+      },
+      "NHHAZE_HISTORICAL": {
+        "count": 28,
+        "estimate": 0.0002459097441439097,
+        "half_width": 0.00045347187497261226,
+        "lower": -0.00020756213082870258,
+        "upper": 0.0006993816191165219
+      },
+      "OTS_UNASSIGNED": {
+        "count": 75,
+        "estimate": -0.0031110510485506874,
+        "half_width": 0.0047535647721883515,
+        "lower": -0.00786461582073904,
+        "upper": 0.001642513723637664
+      }
+    },
+    "overall_equal_domain": {
+      "estimate": -0.0003168090922920952,
+      "half_width": 0.0031446865218056246,
+      "lower": -0.00346149561409772,
+      "upper": 0.0028278774295135293
+    }
+  }
+}
