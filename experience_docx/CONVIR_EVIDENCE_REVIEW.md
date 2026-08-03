@@ -13,8 +13,11 @@ only from SHA-bound launch copies of the experiment spec and program contract;
 legacy evidence without these fields is `not_modeled`, and one malformed
 historical binding is a route-local `identity_conflict` rather than a catalog-
 wide failure. Schema-3 context also returns the trigger type, frozen research
-snapshot, bottleneck class, hypothesis ids, design strategy and literature identifiers;
-the research context is included in cursor and evidence-bundle identity.
+snapshot, bottleneck class, hypothesis ids, design strategy and literature
+identifiers. New structured designs additionally return their canonical
+decision-design SHA-256, while early schema-3 records are labeled
+`legacy_not_modeled`; the research context is included in cursor and
+evidence-bundle identity.
 For schema-3 terminals it also resolves every trigger against the frozen
 research snapshot, requires one route-wide update, and independently rejects a
 `program_foundation` whose program id was already archived or whose typed claim
@@ -70,6 +73,11 @@ cloud text continuation also supplies the returned full-file SHA-256. An
 unconsumed page or an explicit excluded source remains unread and cannot be
 reported as reviewed. The MCP never fetches Git, so every response reports
 `ref_freshness=not_assessed`.
+The first catalog query may optionally repeat the completeness receipt's
+`catalog_sha256`; a mismatch fails closed. Omitting it remains valid because
+the exact snapshot commit and returned cursor already bind the immutable
+catalog. All later bundle and cloud calls require their declared catalog
+identity.
 When a bundle contains `review_facts`, read it immediately after the scientific
 conclusion, then read only the formal JSON sources needed for the claims under
 review. The archive has already checked its JSON Pointers and source SHA-256;

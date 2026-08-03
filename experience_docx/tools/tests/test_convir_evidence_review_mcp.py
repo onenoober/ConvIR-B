@@ -91,6 +91,53 @@ def context_terminal_record(
                             "id": "measurement_mismatch",
                         }],
                         "design_selection": {"strategy": "multi_arm"},
+                        "decision_design": {
+                            "arms": [
+                                {
+                                    "id": "reference", "role": "reference",
+                                    "description": "Frozen reference arm.",
+                                },
+                                {
+                                    "id": "conditional", "role": "intervention",
+                                    "description": "Frozen conditional arm.",
+                                },
+                            ],
+                            "factors": [],
+                            "estimable_terms": ["conditional_minus_reference"],
+                            "alias_structure": "not_applicable",
+                            "mechanism_estimands": [{
+                                "id": "conditional_response",
+                                "hypothesis_id": "conditional_capacity",
+                                "metric_id": "paired_effect",
+                                "prediction": "Conditional capacity improves the paired effect.",
+                                "falsifier": "The paired effect remains below the frozen margin.",
+                            }, {
+                                "id": "stratum_response",
+                                "hypothesis_id": "measurement_mismatch",
+                                "metric_id": "paired_effect",
+                                "prediction": "Frozen strata have materially different paired effects.",
+                                "falsifier": "All simultaneous stratum effects remain equivalent.",
+                            }],
+                            "multiplicity_control": (
+                                "One frozen comparison family covers all estimable terms."
+                            ),
+                            "sequential_plan": {
+                                "looks": [{
+                                    "id": "terminal", "information_fraction": 1.0,
+                                }],
+                                "alpha_spending": {
+                                    "method": "not_applicable",
+                                    "familywise_alpha": 0.05,
+                                },
+                                "boundaries": {
+                                    "success": "Apply the frozen success rule.",
+                                    "futility": "Apply the frozen futility rule.",
+                                    "precision": "Apply the frozen precision rule.",
+                                    "validity": "Apply the frozen validity rule.",
+                                },
+                                "outcome_access": "terminal_only",
+                            },
+                        },
                     },
                 },
             },
@@ -306,6 +353,12 @@ class EvidenceReviewMcpTests(unittest.TestCase):
             [tool["name"] for tool in listed["tools"]],
         )
         self.assertTrue(all("outputSchema" in tool for tool in listed["tools"]))
+        self.assertIn(
+            "catalog_sha256",
+            review.TOOLS["convir_evidence_catalog_query"]["inputSchema"][
+                "properties"
+            ],
+        )
         forbidden = {
             "host", "command", "remote_path", "run_root", "cloud_available",
             "active_session", "scan_limits",
@@ -332,6 +385,30 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         self.assertIs(first_read, repeated)
         self.assertIs(second, other_commit)
         self.assertEqual(2, load_catalog.call_count)
+
+    def test_catalog_query_accepts_receipt_hash_and_rejects_drift(self):
+        commit = self.commit_snapshot(terminal_record())
+        arguments = {
+            "local_repo": str(self.repo),
+            "snapshot_commit": commit,
+        }
+        first = self.call("convir_evidence_catalog_query", arguments)
+        self.assertFalse(first["isError"])
+        catalog_sha256 = first["structuredContent"]["catalog_sha256"]
+        repeated = self.call("convir_evidence_catalog_query", {
+            **arguments, "catalog_sha256": catalog_sha256,
+        })
+        self.assertFalse(repeated["isError"])
+        self.assertEqual(
+            catalog_sha256, repeated["structuredContent"]["catalog_sha256"],
+        )
+        mismatch = self.call("convir_evidence_catalog_query", {
+            **arguments, "catalog_sha256": "f" * 64,
+        })
+        self.assertEqual(
+            "CATALOG_IDENTITY_MISMATCH",
+            mismatch["structuredContent"]["state"],
+        )
 
     def test_catalog_relationship_filters_use_terminal_bound_launch_contracts(self):
         prior = terminal_record(route_id="prior-route", group="prior-route")
@@ -363,6 +440,8 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         self.assertEqual("family-a", context["family_id"])
         self.assertEqual(["prior-route"], context["trigger_route_ids"])
         self.assertEqual("multi_arm", context["design_strategy"])
+        self.assertEqual("structured", context["decision_design_status"])
+        self.assertEqual(64, len(context["decision_design_sha256"]))
         self.assertIn("research_context_collection_sha256", value)
 
     def test_research_trigger_must_exist_in_the_frozen_snapshot(self):

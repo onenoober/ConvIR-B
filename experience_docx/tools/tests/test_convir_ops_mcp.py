@@ -75,6 +75,7 @@ def manifest(op=None, operation_id="S0"):
 def context(require_gpu=False):
     return {
         "schema_version": 4,
+        "route_manifest_schema_version": 6,
         "branch": "codex/a1x",
         "route_branch_commit": "a" * 40,
         "current_rules_commit": "b" * 40,
@@ -150,6 +151,35 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIsNone(value["prior_closeout_relpath"])
         self.assertEqual("d" * 64, value["rules_bundle_digest"])
         self.assertEqual(__import__("hashlib").sha256(b"runner\n").hexdigest(), value["runner_sha256"])
+
+    def test_plan_rejects_historical_read_only_manifest(self):
+        historical_context = {
+            **context(), "route_manifest_schema_version": 5,
+        }
+        with patch.object(
+            OPS, "load_operation",
+            return_value=(manifest(), "S0", historical_context),
+        ):
+            result = payload(OPS.tool_plan_manifest({}))
+        self.assertFalse(result["ok"])
+        self.assertEqual("PLAN_REJECTED", result["state"])
+        self.assertIn("read-only", result["error"]["message"])
+
+    def test_start_rejects_historical_unused_plan_without_remote_access(self):
+        plan = {
+            "context": {**context(), "route_manifest_schema_version": 5},
+            "issued_at": int(time.time()),
+            "expires_at": int(time.time()) + 60,
+            "nonce": "n",
+        }
+        token = OPS.write_new_record("plan", plan, {"receipt": None})
+        with patch.object(OPS, "verify_live_context") as live, \
+                patch.object(OPS, "run_remote") as remote:
+            result = payload(OPS.tool_start({"plan_token": token}))
+        self.assertEqual("START_REJECTED", result["operation_state"])
+        self.assertIn("read-only", result["mismatches"][0])
+        live.assert_not_called()
+        remote.assert_not_called()
 
     def test_later_operation_requires_exact_prior_closeout(self):
         prior = terminal("S0_PASS", "FORMAL")

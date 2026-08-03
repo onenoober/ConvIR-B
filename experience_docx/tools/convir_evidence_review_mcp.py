@@ -596,7 +596,8 @@ def _terminal_research_context(repo, commit, record, snapshot_cache=None):
                 "bottleneck_statement", "literature_basis", "hypotheses",
                 "design_selection",
             }
-            if not isinstance(update, dict) or set(update) != required:
+            if not isinstance(update, dict) or not required <= set(update) \
+                    or set(update) - (required | {"decision_design"}):
                 raise ReviewError(
                     "terminal research update field contract differs",
                     state="IDENTITY_CONFLICT", exit_code=3,
@@ -734,6 +735,21 @@ def _terminal_research_context(repo, commit, record, snapshot_cache=None):
                     "terminal research update summary differs",
                     state="IDENTITY_CONFLICT", exit_code=3,
                 )
+            decision_design = update.get("decision_design")
+            decision_design_sha256 = None
+            decision_design_status = "legacy_not_modeled"
+            if decision_design is not None:
+                normalized_decision_design = (
+                    science_contract.validate_decision_design(
+                        decision_design,
+                        strategy=design["strategy"],
+                        hypothesis_ids={item["id"] for item in hypotheses},
+                    )
+                )
+                decision_design_sha256 = catalog.canonical_sha256(
+                    normalized_decision_design
+                )
+                decision_design_status = "structured"
             research_update = {
                 "research_snapshot_commit": research_snapshot,
                 "research_trigger_type": trigger_type,
@@ -750,6 +766,8 @@ def _terminal_research_context(repo, commit, record, snapshot_cache=None):
                     item["identifier"] for item in literature
                 ],
                 "design_strategy": design["strategy"],
+                "decision_design_status": decision_design_status,
+                "decision_design_sha256": decision_design_sha256,
             }
         return {
             "relationship_status": "modeled",
@@ -866,6 +884,16 @@ def tool_catalog_query(args):
         coverage, terms, exact_filters, cursor, requested_limit = query_arguments(args)
         registry_value = load_legacy_registry(repo, commit)
         loaded = filter_review_candidates(load_catalog_cached(repo, commit), registry_value)
+        requested_catalog_sha256 = args.get("catalog_sha256")
+        if requested_catalog_sha256 is not None:
+            if not isinstance(requested_catalog_sha256, str) \
+                    or not inventory.SHA256.fullmatch(requested_catalog_sha256):
+                raise ReviewError("catalog_sha256 has an invalid SHA identity")
+            if loaded["catalog_sha256"] != requested_catalog_sha256:
+                raise ReviewError(
+                    "catalog_sha256 differs from the immutable snapshot catalog",
+                    state="CATALOG_IDENTITY_MISMATCH", exit_code=3,
+                )
         loaded = _catalog_with_research_context(repo, commit, loaded)
         effective_limit = requested_limit
         while True:
@@ -1922,6 +1950,9 @@ TOOLS = {
             "properties": {
                 "local_repo": {"type": "string"},
                 "snapshot_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+                "catalog_sha256": {
+                    "type": "string", "pattern": "^[0-9a-f]{64}$",
+                },
                 "coverage": {
                     "enum": ["indexed", "unindexed", "all"],
                     "default": "all",

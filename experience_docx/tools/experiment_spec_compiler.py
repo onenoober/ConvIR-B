@@ -580,6 +580,7 @@ def _lint_operation_components(
                     scientific_value, route_id, operation_id,
                     expected_snapshot_commit=authoritative_snapshot_commit,
                     read_evidence_file=read_authoritative_file,
+                    require_current_design=True,
                 )
             if operation is not None:
                 operation = _compile_operation_v2(
@@ -955,6 +956,7 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
                         scientific, route_id, operation_id,
                         expected_snapshot_commit=authoritative_snapshot_commit,
                         read_evidence_file=read_authoritative_file,
+                        require_current_design=True,
                     )
             except science_contract.ScientificContractError as exc:
                 raise ExperimentSpecError(

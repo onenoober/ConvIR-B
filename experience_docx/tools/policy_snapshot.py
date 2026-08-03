@@ -33,6 +33,7 @@ CHANGE_ROUTES = {
     "read_only_audit": [
         "AGENTS.md", "experience_docx/SCIENCE_FASTPATH.md",
         "experience_docx/CONVIR_EVIDENCE_REVIEW.md",
+        "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
     ],
     "route_authoring": [
         "AGENTS.md", "experience_docx/ROUTE_READY_FASTPATH.md",

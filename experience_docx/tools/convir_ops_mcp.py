@@ -982,9 +982,10 @@ def parse_manifest(value, branch, route_commit, current_main, bare_repo, operati
         except json.JSONDecodeError as exc:
             raise ToolError("experiment spec JSON is invalid") from exc
         if not isinstance(source_spec, dict) \
-                or source_spec.get("schema_version") not in {2, 3}:
+                or source_spec.get("schema_version") != 3:
             raise ToolError(
-                "runnable manifest schema 6 requires experiment spec schema 2 or 3"
+                "historical experiment schema 1/2 is read-only; "
+                "runnable manifest schema 6 requires experiment spec schema 3"
             )
         if hashlib.sha256(program_raw).hexdigest() != require_sha(
                 value["program_contract_sha256"], "program_contract_sha256", SHA256):
@@ -1320,6 +1321,10 @@ def receipt_context(record):
 def tool_plan_manifest(args):
     try:
         manifest, operation_id, context = load_operation(args)
+        if context.get("route_manifest_schema_version") != 6:
+            raise ToolError(
+                "historical manifest schema 4/5 is read-only and cannot be planned"
+            )
         now = int(time.time())
         payload = {
             "context": context,
@@ -1845,6 +1850,7 @@ def tool_start(args):
     try:
         with locked_record("plan", token) as record:
             payload = record["payload"]
+            context = payload["context"]
             if record.get("receipt"):
                 return typed_result(
                     True, "LAUNCH_IDEMPOTENT",
@@ -1854,9 +1860,12 @@ def tool_start(args):
                 )
             if record.get("attempted"):
                 return recover_unknown_start(record)
+            if context.get("route_manifest_schema_version") != 6:
+                raise ToolError(
+                    "historical manifest schema 4/5 is read-only and cannot be started"
+                )
             if time.time() > payload["expires_at"]:
                 raise ToolError("plan has expired")
-            context = payload["context"]
             verify_live_context(context)
             gpu_index = None
             if context["require_gpu"]:

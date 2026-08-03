@@ -76,10 +76,13 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
    JSON, runtime/asset/capability/precision contracts and a <=8 KiB rationale
    note. New typed asset manifests use schema 2. Historical experiment-spec and
    scientific schema 1/2, asset schema 1 and manifest schema 4/5 remain
-   immutable and readable. Schema 3 additionally binds the terminal-triggered
+   immutable and readable through evidence review only; compiler writes,
+   route-ready, plan and start reject them. Schema 3 additionally binds the terminal-triggered
    research update: exact trigger evidence, bottleneck, live competing
    hypotheses, discriminating predictions, falsifiers and the basis for
-   selecting the design. Freeze the question, population/grouping, evidence roles,
+   selecting the design. Its structured decision design freezes arms, factors,
+   estimable terms, aliases, mechanism estimands, multiplicity and every
+   sequential look/boundary. Freeze the question, population/grouping, evidence roles,
    permissions, intervention, controls, estimand, uncertainty, gates, competing
    explanation, finite typed gate outcomes, a complete mutually exclusive
    decision table and all terminal actions. Every PASS/FAIL/INCONCLUSIVE action
@@ -140,7 +143,7 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    start once. Require one positive workload-progress observation. ETA remains
    a frozen cost forecast, not a prohibition on human observation. A receipt
    holder may request a bounded result-blind progress snapshot, an early
-   terminal probe, or explicit cancellation at any time. Every new scientific schema-2/3 run records each completed
+   terminal probe, or explicit cancellation at any time. Every new scientific schema-3 run records each completed
    workload unit with input/output SHA-256 and must cover exact `total_units`
    before scientific terminal derivation. Retry/not-before controls only full
    sealed finish windows; progress-only refresh bypasses it, is rate-limited,
@@ -334,7 +337,7 @@ mismatch executes the frozen contract once and publishes compact qualification
 evidence for registration during terminal archive. Device class is verified on
 the execution host; reuse never carries scientific authorization.
 
-Every new scientific schema-2/3 workload uses this completion ledger.
+Every new scientific schema-3 workload uses this completion ledger.
 `complete_units` always starts in a fresh output and additionally may import only a
 hash-bound unrestricted run-only `completed_unit_ledger` asset whose unit,
 input, output-asset, output-path and output SHA-256 records are unique and whose

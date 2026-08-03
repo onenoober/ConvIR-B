@@ -166,6 +166,19 @@ class RouteReadyTests(unittest.TestCase):
                 SCIENTIFIC_SCHEMA2, "program.py", scientific_schema=2,
                 require_unit_ledger=True,
             )
+        with self.assertRaisesRegex(READY.ReadyError, "completed-unit ledger"):
+            READY.check_entrypoint(
+                SCIENTIFIC_SCHEMA2, "program.py", scientific_schema=3,
+                require_unit_ledger=True,
+            )
+
+    def test_only_current_route_and_experiment_schemas_are_runnable(self):
+        READY.require_current_runnable_schema(6, {"schema_version": 3})
+        self.assertTrue(READY.typed_scientific_contract({"schema_version": 3}))
+        with self.assertRaisesRegex(READY.ReadyError, "manifest schema 4/5"):
+            READY.require_current_runnable_schema(5)
+        with self.assertRaisesRegex(READY.ReadyError, "experiment schema 1/2"):
+            READY.require_current_runnable_schema(6, {"schema_version": 2})
 
     def test_schema2_unknown_engineering_field_is_rejected_prelaunch(self):
         raw = SCHEMA2_ENGINEERING.replace(
@@ -265,7 +278,7 @@ def main():
             f"experience_docx/scientific_contracts/{route_id}__S1.json"
         )
         runtime_relpath = "experience_docx/route_runtime_specs/S1.json"
-        spec_raw = b'{"route_id":"receipt_fixture"}\n'
+        spec_raw = b'{"route_id":"receipt_fixture","schema_version":3}\n'
         program_raw = b'{"program_id":"receipt_fixture"}\n'
         runtime_raw = json.dumps({
             "asset_manifest_relpath": None,
@@ -310,7 +323,11 @@ def main():
                 return files[relpath]
 
             with patch.object(READY, "_private_receipt_path", return_value=receipt_path), \
-                    patch.object(READY, "show", side_effect=shown):
+                    patch.object(READY, "show", side_effect=shown), \
+                    patch.object(
+                        READY.spec_compiler, "research_snapshot_commit",
+                        return_value=None,
+                    ):
                 bundle_sha, receipt_sha, recovered = READY.validate_authoring_receipt(
                     Path(directory), "snapshot", "b" * 40, manifest,
                 )

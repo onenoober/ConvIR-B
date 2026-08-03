@@ -30,6 +30,10 @@ class PolicySnapshotTests(unittest.TestCase):
         self.assertEqual("deterministic_read_index_not_policy_authority", first["snapshot_role"])
         self.assertFalse(first["change_routes"]["route_authoring"]["snapshot_is_authority"])
         self.assertIn("AGENTS.md", first["change_routes"]["governance_change"]["read_full"])
+        self.assertIn(
+            "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md",
+            first["change_routes"]["read_only_audit"]["read_full"],
+        )
         self.assertIn("orthogonal", first["route_mechanisms"])
         self.assertFalse(first["local_runtime_allowed"])
 

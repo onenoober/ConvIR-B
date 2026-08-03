@@ -60,7 +60,9 @@ hash changes.
    first route of a genuinely new program. Both record stable authoritative-
    literature identifiers and transfer
    limits, bottleneck, live competing hypotheses, discriminating predictions,
-   falsifiers and design-selection basis. Freeze every control,
+   falsifiers and design-selection basis. Its structured decision design
+   freezes arms, factors, estimable terms, aliases, mechanism estimands,
+   multiplicity and every sequential look/boundary. Freeze every control,
    typed gate outcome, complete mutually
    exclusive decision table, uncertainty rule, data role and terminal action.
    Failed identity/integrity/coverage uses `validity_veto`; precision uses
@@ -85,7 +87,8 @@ hash changes.
    likely outcomes leave the same next action unresolved.
    New typed asset manifests use schema 2. Historical experiment-spec,
    scientific schema 1/2, asset schema 1 and manifest schema 4/5 routes remain
-   immutable and supported.
+   immutable and supported for read-only evidence review only. Compiler writes,
+   route-ready, plan and start reject those historical schemas; they cannot be rerun.
    Amendment and reopen evidence is resolved directly from the exact refreshed
    current GitHub-main commit; `rules_commit` records design provenance and is
    checked through `RULE_COMPATIBILITY.json`. Never materialize family history
@@ -99,7 +102,7 @@ hash changes.
    receipt-bound result-blind progress refresh or terminal probe; each response
    must name its snapshot time and cached/current status. Explicit cancellation
    is allowed only through receipt-bound lifecycle control, never by PID.
-   Every new scientific schema-2/3 run records each completed workload unit in
+   Every new scientific schema-3 run records each completed workload unit in
    the generic SHA-bound ledger; finalization requires exact `total_units` coverage.
    Retry/not-before timestamps govern full sealed finish windows only. They do
    not block the bounded result-blind refresh, early terminal detection, or

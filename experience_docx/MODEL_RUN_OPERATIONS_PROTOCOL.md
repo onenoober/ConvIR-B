@@ -39,11 +39,11 @@ contracts, publishes compact evidence write-once, and writes one closeout bound
 to route id, run id, route commit, runner SHA-256, evidence role, and allowed
 terminal tuple.
 
-New scientific schema-2 entrypoints publish typed gate outcomes only. The
+New scientific schema-3 entrypoints publish typed gate outcomes only. The
 lifecycle loads the canonical contract, resolves its complete decision table,
 and alone chooses the state, decision, authorization, next action and family
 effect. Historical scientific schema-1 terminal writers remain supported.
-Every nonempty schema-2 workload records unique completed-unit input/output
+Every nonempty schema-3 workload records unique completed-unit input/output
 identities, and the lifecycle refuses terminal derivation until the ledger
 covers exactly `total_units`.
 
@@ -195,7 +195,7 @@ write. Explicit materialization is reserved for archive workflows. New
 schema-6 archive receipts require a schema-3 conclusion with at least one
 source-bound numeric primary fact; historical schema-2 conclusions remain
 readable but cannot satisfy that new receipt contract.
-For future schema-2 scientific terminals, the generic lifecycle seals regular
+For future schema-3 scientific terminals, the generic lifecycle seals regular
 files below `contract/` and `workload/` in
 `control/raw_artifact_manifest.jsonl`; the closeout binds a compact GitHub
 receipt. Symlinks, special files and identity changes fail closed.

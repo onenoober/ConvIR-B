@@ -202,6 +202,54 @@ def contract_v3(snapshot_commit="a" * 40, terminal_record_sha256="b" * 64):
             "shared_setup": "All arms reuse the same paired scenes and frozen preprocessing.",
             "worst_case_stopping_cost": "Stop after the predeclared complete arm set.",
         },
+        "decision_design": {
+            "arms": [
+                {
+                    "id": "reference",
+                    "role": "reference",
+                    "description": "Frozen reference restoration path.",
+                },
+                {
+                    "id": "conditional",
+                    "role": "intervention",
+                    "description": "Frozen conditional restoration path.",
+                },
+            ],
+            "factors": [],
+            "estimable_terms": ["conditional_minus_reference"],
+            "alias_structure": "not_applicable",
+            "mechanism_estimands": [
+                {
+                    "id": "capacity_response",
+                    "hypothesis_id": "global_capacity",
+                    "metric_id": "scene_mean_error",
+                    "prediction": "Conditional capacity improves the paired scene response.",
+                    "falsifier": "The paired response remains below the worthwhile margin.",
+                },
+                {
+                    "id": "stratum_response",
+                    "hypothesis_id": "measurement_mismatch",
+                    "metric_id": "scene_mean_error",
+                    "prediction": "Predeclared strata have materially different paired responses.",
+                    "falsifier": "All simultaneous stratum contrasts remain practically equivalent.",
+                },
+            ],
+            "multiplicity_control": "One simultaneous comparison family covers both mechanism estimands.",
+            "sequential_plan": {
+                "looks": [{"id": "terminal", "information_fraction": 1.0}],
+                "alpha_spending": {
+                    "method": "not_applicable",
+                    "familywise_alpha": 0.05,
+                },
+                "boundaries": {
+                    "success": "Apply the frozen favorable materiality rule.",
+                    "futility": "Apply the frozen unfavorable materiality rule.",
+                    "precision": "Apply the frozen inconclusive-only precision rule.",
+                    "validity": "Apply every frozen validity-veto rule.",
+                },
+                "outcome_access": "terminal_only",
+            },
+        },
     }
     return value
 
@@ -280,9 +328,68 @@ class ScientificContractTests(unittest.TestCase):
             SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
 
         value = contract_v3()
+        del value["research_update_binding"]["decision_design"]
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "requires.*decision_design",
+        ):
+            SCIENCE.validate_scientific_contract_v3(
+                value, "route", "S0", require_current_design=True,
+            )
+
+        value = contract_v3()
         value["research_update_binding"]["hypotheses"][1]["id"] = "global_capacity"
         with self.assertRaisesRegex(SCIENCE.ScientificContractError, "ids must be unique"):
             SCIENCE.validate_scientific_contract_v3(value, "route", "S0")
+
+    def test_schema3_rejects_uncontrolled_sequential_and_fractional_designs(self):
+        value = contract_v3()
+        value["research_update_binding"]["decision_design"][
+            "mechanism_estimands"
+        ].pop()
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "every live hypothesis",
+        ):
+            SCIENCE.validate_scientific_contract_v3(
+                value, "route", "S0", require_current_design=True,
+            )
+
+        value = contract_v3()
+        value["research_update_binding"]["decision_design"][
+            "multiplicity_control"
+        ] = "not_applicable"
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "multiplicity control",
+        ):
+            SCIENCE.validate_scientific_contract_v3(
+                value, "route", "S0", require_current_design=True,
+            )
+
+        value = contract_v3()
+        design = value["research_update_binding"]
+        design["design_selection"]["strategy"] = "group_sequential"
+        design["decision_design"]["sequential_plan"]["looks"] = [
+            {"id": "terminal", "information_fraction": 1.0},
+        ]
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "group_sequential requires",
+        ):
+            SCIENCE.validate_scientific_contract_v3(
+                value, "route", "S0", require_current_design=True,
+            )
+
+        value = contract_v3()
+        design = value["research_update_binding"]
+        design["design_selection"]["strategy"] = "fractional_factorial"
+        design["decision_design"]["factors"] = [
+            {"id": "capacity", "levels": ["off", "on"]},
+            {"id": "selector", "levels": ["global", "local"]},
+        ]
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "alias structure",
+        ):
+            SCIENCE.validate_scientific_contract_v3(
+                value, "route", "S0", require_current_design=True,
+            )
 
         value = contract_v3()
         value["research_update_binding"]["hypotheses"][0]["falsifier"] = "none"

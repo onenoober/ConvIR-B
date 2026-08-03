@@ -3,12 +3,12 @@
 Date: 2026-08-02
 
 Status: main-first snapshot server `5.9.0` retains exactly six tools and stable control
-protocol schema 4. It reads immutable historical manifest schema 4 and uses
-immutable historical manifest schema 5 plus compiled manifest schema 6 and
-runtime schema 2 for new routes. New experiment specs and scientific contracts
+protocol schema 4. It reads immutable historical manifest schema 4/5 for status
+and evidence provenance, while plan accepts only compiled manifest schema 6 and
+runtime schema 2. New experiment specs and scientific contracts
 use schema 3; typed asset manifests and other supporting contracts remain schema
-2. Historical experiment/scientific schema 1/2 remains readable and is not
-migrated.
+2. Historical experiment/scientific schema 1/2 remains readable, is not
+migrated and cannot pass route-ready, plan or start.
 
 Version 5.9.0 adds a machine-enforced research-update binding for future routes:
 the exact GitHub-main snapshot; either 1-8 `post_terminal` records or a zero-
@@ -16,8 +16,8 @@ terminal `program_foundation` bootstrap for a genuinely new program; explicit
 bottleneck, stable literature identifiers and applicability limits, competing
 falsifiable hypotheses, and the decision-value/time/cost basis for the chosen
 design. The scientific contract changed, so the
-compatibility id rotates to v3; explicitly listed prior rule-source commits stay
-supported for immutable historical and already-authored schema-2 routes.
+compatibility id rotates when this contract changes. Prior rule-source commits
+remain evidence provenance only and do not authorize historical reruns.
 
 `convir-ops` is a restricted local stdio bridge to `convir-4090`. Its lifecycle
 tools accept only a GitHub route branch, exact commit, and operation id; its
@@ -295,7 +295,7 @@ actual CUDA compute-capability class before reuse. New qualification evidence is
 compact and registered only by terminal archive. Every reuse result carries
 `scientific_authorization: NONE`.
 
-Every nonempty scientific schema-2/3 workload must finish with exact
+Every nonempty scientific schema-3 workload must finish with exact
 `total_units` coverage in the generic completion ledger. `complete_units`
 remains a fresh-output transition and additionally requires a hash-bound
 unrestricted run-only `completed_unit_ledger` file asset. The generic API and

@@ -41,6 +41,26 @@ GENERIC_ENGINEERING_TERMINAL = {
 }
 
 
+def require_current_runnable_schema(
+    manifest_schema: Any, experiment_spec: Any | None = None,
+) -> None:
+    if manifest_schema != 6:
+        raise ReadyError(
+            "historical manifest schema 4/5 is read-only; route-ready requires schema 6"
+        )
+    if experiment_spec is not None and (
+        not isinstance(experiment_spec, dict)
+        or experiment_spec.get("schema_version") != 3
+    ):
+        raise ReadyError(
+            "historical experiment schema 1/2 is read-only; route-ready requires schema 3"
+        )
+
+
+def typed_scientific_contract(value: Any) -> bool:
+    return isinstance(value, dict) and value.get("schema_version") in {2, 3}
+
+
 def claim_published_name(owners: dict[str, str], name: str, owner: str) -> None:
     if name in owners:
         raise ReadyError(
@@ -551,6 +571,7 @@ def validate_authoring_receipt(
         research_snapshot = spec_compiler.research_snapshot_commit(source_spec)
     except (json.JSONDecodeError, spec_compiler.ExperimentSpecError) as exc:
         raise ReadyError(f"experiment research snapshot is invalid: {exc}") from exc
+    require_current_runnable_schema(manifest.get("schema_version"), source_spec)
     evidence_commit = research_snapshot or current_main
     if research_snapshot is not None:
         ancestry = subprocess.run(
@@ -701,6 +722,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
         raise ReadyError("route_operations.json exceeds MCP size limit")
     manifest = json.loads(raw)
     manifest_schema = manifest.get("schema_version") if isinstance(manifest, dict) else None
+    require_current_runnable_schema(manifest_schema)
     operations = manifest.get("operations", {}) if isinstance(manifest, dict) else {}
     if not isinstance(operations, dict) or not operations:
         raise ReadyError("no operations selected")
@@ -844,7 +866,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                     contract["schema_version"] if contract is not None else 1
                 ),
                 require_unit_ledger=(
-                    contract is not None and contract["schema_version"] == 2
+                    typed_scientific_contract(contract)
                     and spec["total_units"] > 0
                 ),
                 require_cost_evidence=(
@@ -858,7 +880,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
             if context["closeout_filename"] in destinations:
                 raise ReadyError(f"{operation_id} closeout collides with evidence filename")
             closeout_suffix = "_closeout.json"
-            if contract is not None and contract["schema_version"] == 2:
+            if typed_scientific_contract(contract):
                 if not context["closeout_filename"].endswith(closeout_suffix):
                     raise ReadyError(f"{operation_id} closeout cannot derive raw receipt")
                 raw_receipt_name = (
@@ -873,7 +895,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                     published_names, raw_receipt_name,
                     f"{operation_id} automatic raw receipt",
                 )
-            if contract is not None and contract["schema_version"] == 2 \
+            if typed_scientific_contract(contract) \
                     and rules_require_review_facts(repo, manifest.get("rules_commit")):
                 facts_name = (
                     context["closeout_filename"][:-len(closeout_suffix)]
@@ -893,7 +915,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                     context["closeout_filename"],
                     *(
                         [raw_receipt_name]
-                        if contract is not None and contract["schema_version"] == 2
+                        if typed_scientific_contract(contract)
                         else []
                     ),
                 }

@@ -25,6 +25,15 @@ that can count against it is not contract-ready. This binding preserves the
 reason for the next experiment; it does not inherit authorization from review
 prose or change the triggering terminal.
 
+Current schema-3 authoring also freezes one structured decision design: arms,
+factor levels, estimable terms, alias structure, at least one mechanism
+estimand for every live hypothesis, multiplicity control, and a finite sequential plan. Every
+sequential plan ends at information fraction 1.0 and names success, futility,
+precision and validity boundaries. More than one outcome look is legal only
+for `group_sequential`, with predeclared access and an alpha-spending method.
+Historical schema 1/2 and early schema-3 launch copies remain readable
+provenance only; they cannot pass current route-ready, plan or start.
+
 The zero-terminal foundation form still requires typed program authorization
 and cannot reopen or escape an existing stopped family. It is machine-valid
 only when no terminal-bound program contract at the frozen snapshot has that

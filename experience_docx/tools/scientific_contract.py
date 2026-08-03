@@ -54,6 +54,7 @@ LITERATURE_SOURCE_STATUSES = {
     "official_protocol",
 }
 RESEARCH_TRIGGER_TYPES = {"post_terminal", "program_foundation"}
+SEQUENTIAL_OUTCOME_ACCESS = {"terminal_only", "predeclared_group_sequential"}
 
 
 def _token(value: Any, name: str) -> str:
@@ -192,15 +193,272 @@ def archived_terminal_program_ids(
     return result
 
 
+def validate_decision_design(
+    value: Any, *, strategy: str, hypothesis_ids: set[str],
+) -> dict[str, Any]:
+    item = _object(value, {
+        "arms", "factors", "estimable_terms", "alias_structure",
+        "mechanism_estimands", "multiplicity_control", "sequential_plan",
+    }, "research_update_binding.decision_design")
+
+    arms = item["arms"]
+    if not isinstance(arms, list) or not 2 <= len(arms) <= 16:
+        raise ScientificContractError(
+            "research update decision design arms must contain 2-16 entries"
+        )
+    normalized_arms = []
+    seen_arms = set()
+    for index, arm in enumerate(arms):
+        name = f"research_update_binding.decision_design.arms[{index}]"
+        arm = _object(arm, {"id", "role", "description"}, name)
+        identifier = _token(arm["id"], f"{name}.id")
+        if identifier in seen_arms:
+            raise ScientificContractError("research update arm ids must be unique")
+        seen_arms.add(identifier)
+        normalized_arms.append({
+            "id": identifier,
+            "role": _token(arm["role"], f"{name}.role"),
+            "description": _text(arm["description"], f"{name}.description", 8, 1024),
+        })
+
+    factors = item["factors"]
+    if not isinstance(factors, list) or len(factors) > 8:
+        raise ScientificContractError(
+            "research update decision design factors must contain 0-8 entries"
+        )
+    normalized_factors = []
+    seen_factors = set()
+    for index, factor in enumerate(factors):
+        name = f"research_update_binding.decision_design.factors[{index}]"
+        factor = _object(factor, {"id", "levels"}, name)
+        identifier = _token(factor["id"], f"{name}.id")
+        if identifier in seen_factors:
+            raise ScientificContractError("research update factor ids must be unique")
+        seen_factors.add(identifier)
+        levels = factor["levels"]
+        if not isinstance(levels, list) or not 2 <= len(levels) <= 16:
+            raise ScientificContractError(f"{name}.levels must contain 2-16 entries")
+        normalized_levels = [_token(level, f"{name}.levels[]") for level in levels]
+        if len(normalized_levels) != len(set(normalized_levels)):
+            raise ScientificContractError(f"{name}.levels must be unique")
+        normalized_factors.append({"id": identifier, "levels": normalized_levels})
+
+    terms = item["estimable_terms"]
+    if not isinstance(terms, list) or not 1 <= len(terms) <= 32:
+        raise ScientificContractError(
+            "research update decision design estimable_terms must contain 1-32 entries"
+        )
+    normalized_terms = [
+        _text(term, "research_update_binding.decision_design.estimable_terms[]", 1, 256)
+        for term in terms
+    ]
+    if len(normalized_terms) != len(set(normalized_terms)):
+        raise ScientificContractError("research update estimable_terms must be unique")
+
+    mechanism_estimands = item["mechanism_estimands"]
+    if (
+        not isinstance(mechanism_estimands, list)
+        or not 1 <= len(mechanism_estimands) <= 8
+    ):
+        raise ScientificContractError(
+            "research update mechanism_estimands must contain 1-8 entries"
+        )
+    normalized_mechanisms = []
+    seen_mechanisms = set()
+    for index, estimand in enumerate(mechanism_estimands):
+        name = (
+            f"research_update_binding.decision_design.mechanism_estimands[{index}]"
+        )
+        estimand = _object(estimand, {
+            "id", "hypothesis_id", "metric_id", "prediction", "falsifier",
+        }, name)
+        identifier = _token(estimand["id"], f"{name}.id")
+        if identifier in seen_mechanisms:
+            raise ScientificContractError(
+                "research update mechanism estimand ids must be unique"
+            )
+        seen_mechanisms.add(identifier)
+        hypothesis_id = _token(estimand["hypothesis_id"], f"{name}.hypothesis_id")
+        if hypothesis_id not in hypothesis_ids:
+            raise ScientificContractError(
+                f"{name}.hypothesis_id is not a declared live hypothesis"
+            )
+        normalized_mechanisms.append({
+            "id": identifier,
+            "hypothesis_id": hypothesis_id,
+            "metric_id": _token(estimand["metric_id"], f"{name}.metric_id"),
+            "prediction": _text(
+                estimand["prediction"], f"{name}.prediction", 16, 2048,
+            ),
+            "falsifier": _text(
+                estimand["falsifier"], f"{name}.falsifier", 16, 2048,
+            ),
+        })
+    covered_hypotheses = {
+        estimand["hypothesis_id"] for estimand in normalized_mechanisms
+    }
+    if covered_hypotheses != hypothesis_ids:
+        raise ScientificContractError(
+            "every live hypothesis must bind at least one mechanism estimand"
+        )
+
+    sequential = _object(item["sequential_plan"], {
+        "looks", "alpha_spending", "boundaries", "outcome_access",
+    }, "research_update_binding.decision_design.sequential_plan")
+    looks = sequential["looks"]
+    if not isinstance(looks, list) or not 1 <= len(looks) <= 16:
+        raise ScientificContractError(
+            "research update sequential looks must contain 1-16 entries"
+        )
+    normalized_looks = []
+    seen_looks = set()
+    previous_fraction = 0.0
+    for index, look in enumerate(looks):
+        name = f"research_update_binding.decision_design.sequential_plan.looks[{index}]"
+        look = _object(look, {"id", "information_fraction"}, name)
+        identifier = _token(look["id"], f"{name}.id")
+        fraction = look["information_fraction"]
+        if identifier in seen_looks:
+            raise ScientificContractError("research update sequential look ids must be unique")
+        if (
+            isinstance(fraction, bool)
+            or not isinstance(fraction, (int, float))
+            or not previous_fraction < float(fraction) <= 1.0
+        ):
+            raise ScientificContractError(
+                "research update information fractions must strictly increase in (0, 1]"
+            )
+        seen_looks.add(identifier)
+        previous_fraction = float(fraction)
+        normalized_looks.append({
+            "id": identifier, "information_fraction": float(fraction),
+        })
+    if previous_fraction != 1.0:
+        raise ScientificContractError(
+            "research update sequential plan must end at information_fraction 1.0"
+        )
+    alpha = _object(sequential["alpha_spending"], {
+        "method", "familywise_alpha",
+    }, "research_update_binding.decision_design.sequential_plan.alpha_spending")
+    familywise_alpha = alpha["familywise_alpha"]
+    if (
+        isinstance(familywise_alpha, bool)
+        or not isinstance(familywise_alpha, (int, float))
+        or not 0.0 < float(familywise_alpha) < 0.5
+    ):
+        raise ScientificContractError(
+            "research update familywise_alpha must be in (0, 0.5)"
+        )
+    alpha_method = _token(
+        alpha["method"],
+        "research_update_binding.decision_design.sequential_plan.alpha_spending.method",
+    )
+    boundaries = _object(sequential["boundaries"], {
+        "success", "futility", "precision", "validity",
+    }, "research_update_binding.decision_design.sequential_plan.boundaries")
+    normalized_boundaries = {
+        key: _text(
+            boundaries[key],
+            f"research_update_binding.decision_design.sequential_plan.boundaries.{key}",
+            8, 2048,
+        )
+        for key in ("success", "futility", "precision", "validity")
+    }
+    outcome_access = sequential["outcome_access"]
+    if outcome_access not in SEQUENTIAL_OUTCOME_ACCESS:
+        raise ScientificContractError(
+            "research update sequential outcome_access is invalid"
+        )
+    if strategy == "group_sequential":
+        if (
+            len(normalized_looks) < 2
+            or outcome_access != "predeclared_group_sequential"
+            or alpha_method == "not_applicable"
+        ):
+            raise ScientificContractError(
+                "group_sequential requires multiple looks, predeclared outcome access, "
+                "and an alpha-spending method"
+            )
+    elif len(normalized_looks) != 1 or outcome_access != "terminal_only":
+        raise ScientificContractError(
+            "non-sequential strategies permit one terminal-only outcome look"
+        )
+
+    if strategy == "single_factor" and len(normalized_factors) != 1:
+        raise ScientificContractError("single_factor requires exactly one factor")
+    if (
+        strategy in {"full_factorial", "fractional_factorial"}
+        and len(normalized_factors) < 2
+    ):
+        raise ScientificContractError(f"{strategy} requires at least two factors")
+    alias_structure = _text(
+        item["alias_structure"],
+        "research_update_binding.decision_design.alias_structure", 4, 2048,
+    )
+    if (
+        strategy == "fractional_factorial"
+        and alias_structure.casefold() == "not_applicable"
+    ):
+        raise ScientificContractError(
+            "fractional_factorial requires an explicit alias structure"
+        )
+    multiplicity = _text(
+        item["multiplicity_control"],
+        "research_update_binding.decision_design.multiplicity_control", 8, 2048,
+    )
+    if (
+        (
+            len(normalized_arms) > 2
+            or len(normalized_terms) > 1
+            or len(normalized_mechanisms) > 1
+        )
+        and multiplicity.casefold() in {"none", "not_applicable"}
+    ):
+        raise ScientificContractError(
+            "multi-comparison designs require explicit multiplicity control"
+        )
+    return {
+        "arms": normalized_arms,
+        "factors": normalized_factors,
+        "estimable_terms": normalized_terms,
+        "alias_structure": alias_structure,
+        "mechanism_estimands": normalized_mechanisms,
+        "multiplicity_control": multiplicity,
+        "sequential_plan": {
+            "looks": normalized_looks,
+            "alpha_spending": {
+                "method": alpha_method,
+                "familywise_alpha": float(familywise_alpha),
+            },
+            "boundaries": normalized_boundaries,
+            "outcome_access": outcome_access,
+        },
+    }
+
+
 def _validate_research_update_binding(
     value: Any, *, expected_snapshot_commit: str | None = None,
     read_evidence_file: Callable[[str], bytes] | None = None,
+    require_current_design: bool = False,
 ) -> dict[str, Any]:
-    item = _object(value, {
+    required_fields = {
         "snapshot_commit", "trigger_type", "trigger_terminals", "bottleneck_class",
         "bottleneck_statement", "literature_basis", "hypotheses",
         "design_selection",
-    }, "research_update_binding")
+    }
+    if (
+        not isinstance(value, dict)
+        or not required_fields <= set(value)
+        or set(value) - (required_fields | {"decision_design"})
+    ):
+        raise ScientificContractError(
+            "research_update_binding has an invalid field contract"
+        )
+    if require_current_design and "decision_design" not in value:
+        raise ScientificContractError(
+            "new schema-3 authoring requires research_update_binding.decision_design"
+        )
+    item = value
     snapshot_commit = item["snapshot_commit"]
     if not isinstance(snapshot_commit, str) or not SHA40.fullmatch(snapshot_commit):
         raise ScientificContractError(
@@ -369,7 +627,7 @@ def _validate_research_update_binding(
         normalized_design[field] = _text(
             design[field], f"research_update_binding.design_selection.{field}", 8, 2048,
         )
-    return {
+    result = {
         "snapshot_commit": snapshot_commit,
         "trigger_type": trigger_type,
         "trigger_terminals": normalized_triggers,
@@ -382,6 +640,13 @@ def _validate_research_update_binding(
         "hypotheses": normalized_hypotheses,
         "design_selection": normalized_design,
     }
+    if "decision_design" in item:
+        result["decision_design"] = validate_decision_design(
+            item["decision_design"],
+            strategy=design["strategy"],
+            hypothesis_ids=seen_hypotheses,
+        )
+    return result
 
 
 def _validate_population(value: Any) -> dict[str, Any]:
@@ -835,6 +1100,7 @@ def validate_scientific_contract_v3(
     value: Any, route_id: str, operation_id: str, *,
     expected_snapshot_commit: str | None = None,
     read_evidence_file: Callable[[str], bytes] | None = None,
+    require_current_design: bool = False,
 ) -> dict[str, Any]:
     expected = {
         "schema_version", "route_id", "operation_id", "question", "population",
@@ -860,6 +1126,7 @@ def validate_scientific_contract_v3(
             item["research_update_binding"],
             expected_snapshot_commit=expected_snapshot_commit,
             read_evidence_file=read_evidence_file,
+            require_current_design=require_current_design,
         ),
     }
 
