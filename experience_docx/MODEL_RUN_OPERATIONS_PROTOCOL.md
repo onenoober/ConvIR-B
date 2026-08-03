@@ -21,6 +21,15 @@ commit. A stale remote-tracking ref fails closed, and launch fetches that exact
 main into a dedicated runtime ref before the lifecycle reads canonical runtime
 or capability-registry bytes.
 
+`min_free_gpu_mib` is the evidence-bound minimum free memory required for the
+exact capability and cost contract to attempt execution, not a comfortable or
+preferred-capacity target. A GPU that meets this floor and the frozen
+utilization limit is resource-eligible for the attempt. Any higher comfortable
+or preferred free-memory range may guide scheduling preference only; it must
+not create a second blocking threshold. The protected-data-free synthetic
+contract and existing peak-memory and cost bounds still determine whether the
+execution path is qualified to continue.
+
 For the default path, `validate_route_ready.py` performs the complete static
 check once before commit. MCP plan/start and the generic contract phase own the
 dynamic checks once after push. Do not insert another route-specific checklist,

@@ -1,5 +1,7 @@
 {
   "schema_version": 1,
   "compatibility_id": "science-fastpath-contract-v4",
-  "compatible_prior_rules_commits": []
+  "compatible_prior_rules_commits": [
+    "4cf78e400a5adfb839ff09dc7a8ac38cfd3a0b75"
+  ]
 }
