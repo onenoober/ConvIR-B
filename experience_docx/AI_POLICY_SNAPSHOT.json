@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "4e34d6af70cee3793734e7c555bd236fb2e589e14fb7a4bf360b5c62bcd13bd5",
-  "rules_commit": "4cf78e400a5adfb839ff09dc7a8ac38cfd3a0b75",
+  "rules_bundle_sha256": "beb88279b62396a39ec1fcc987eaf2e6c732fa73b04dc5176995ae3e104d4bc1",
+  "rules_commit": "08aaf0396e2f782e5a290940da0919261daef57e",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -152,16 +152,16 @@
       "sha256": "dd8e0e3f09fc34e8779c424b7aa02cd781e9e022f3af0b7e713260748aa1a48d"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
-      "bytes": 12242,
-      "sha256": "bda409ede95ed7e4672075b1bb3c0a2359d7a63d98c5b270b451c4bc08547e36"
+      "bytes": 12818,
+      "sha256": "aec00751cf29d8970ed64de794e48990408cd62ea169cf925cc8ec3f00543715"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
       "bytes": 16320,
       "sha256": "4f357431de89a9fcb764c6a1de72979b353c18739f2074ef3f299943c9a169b7"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
-      "bytes": 120,
-      "sha256": "b219463f2581ad3a96b4fbc44ddfd0e8d3e557c5940943e4c2af0c7ff2e9f45f"
+      "bytes": 170,
+      "sha256": "043bf21c0b1ddce12ec82ce375a48cdf08473f3a8b95b14716fc9eff60e28c69"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
       "bytes": 23788,
