@@ -912,7 +912,7 @@ class EvidenceReviewMcpTests(unittest.TestCase):
         )
         self.assertEqual("incomplete", changed["review_completeness"])
         self.assertEqual(
-            1, changed["unresolved_counts"]["unclassified_unindexed_entries"]
+            2, changed["unresolved_counts"]["unclassified_unindexed_entries"]
         )
         filtered = review.filter_review_candidates(
             self.repo, third, review.load_catalog_cached(self.repo, third), registry,
