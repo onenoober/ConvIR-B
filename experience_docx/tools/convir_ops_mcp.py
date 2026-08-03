@@ -1413,6 +1413,7 @@ def gpu_probe_body(context, gpu_index=None):
         '  else',
         '    PARSE_RC=0',
         "    LAST_PARSED=$(awk -F, -v min=\"$MIN_FREE\" -v max=\"$MAX_UTIL\" -v target=\"$GPU_TARGET\" -v limit=\"$GPU_SUMMARY_LIMIT\" '",
+        '      BEGIN { shown=0 }',
         '      function trim(value) { gsub(/^[[:space:]]+|[[:space:]]+$/, "", value); return value }',
         '      {',
         '        if (NF != 3) { bad=1; next }',
