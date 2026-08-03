@@ -1,0 +1,747 @@
+{
+  "competing_explanation": "A gain could arise from adapter capacity, global haze difficulty, data-domain concentration, spatial-signal histograms without correct location, observation-specific noise, pseudoreplication, near-clear damage, or uncontrolled tail risk rather than a transferable inference-observable spatial restoration mechanism.",
+  "controls": [
+    "the authoritative sequence-2 terminal record, terminal-bound program contract, formal amendment, and unified role-ledger compact evidence remain SHA-bound",
+    "strict official architecture checkout, entrypoint, runtime environment, checkpoint, model source, and model layers identities",
+    "synthetic-only device-aware same-scale capability phase runs the production graph without scientific or protected-data assets",
+    "A0 official baseline and A1 equal-capacity global-pooled physics sham separate baseline quality, adapter capacity, and spatial signal information",
+    "equal adapter parameter counts, zero initialization, shared training roster, batch schedule, optimizer, loss, step count, crop policy, and seed",
+    "within-scene spatial shuffle tests whether aligned location rather than signal histogram causes utility",
+    "two deterministic nested haze observations per Haze4K, ITS, and OTS scene test cross-observation repeatability without increasing sample size",
+    "all four development domains remain separate strata before equal-domain aggregation; ITS and OTS are never sample-size-weight pooled",
+    "near-clear fidelity, negative-tail prevalence, and keep-supported behavior are predeclared safety controls",
+    "three group-sequential looks use frozen information fractions, critical values, futility, safety, and skipped-unit actions",
+    "the generic SHA-bound ledger must cover exactly 1106 unique training, evaluation or skipped, and aggregate units before finalization",
+    "confirmation, sealed-final, canary, locked-test, promotion, deployment, post-processing, and result-adaptive tuning remain disabled"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "validity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "evidence_identity_integrity_coverage": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "primary_decisive_fail",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "primary_observable_utility": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "specificity_decisive_fail",
+        "terminal": "fail",
+        "when": {
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "primary_observable_utility": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "spatial_signal_specificity": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "repeatability_decisive_fail",
+        "terminal": "fail",
+        "when": {
+          "cross_observation_repeatability": [
+            "unfavorable"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "primary_observable_utility": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "spatial_signal_specificity": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "near_clear_decisive_fail",
+        "terminal": "fail",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "unsafe"
+          ],
+          "primary_observable_utility": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "spatial_signal_specificity": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "tail_keep_decisive_fail",
+        "terminal": "fail",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_tail_and_keep_supported": [
+            "unsafe"
+          ],
+          "primary_observable_utility": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "spatial_signal_specificity": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "primary_unresolved_without_decisive_fail",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_tail_and_keep_supported": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "primary_observable_utility": [
+            "indeterminate",
+            "invalid"
+          ],
+          "spatial_signal_specificity": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "specificity_unresolved_without_decisive_fail",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_tail_and_keep_supported": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "primary_observable_utility": [
+            "favorable"
+          ],
+          "spatial_signal_specificity": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "repeatability_unresolved_without_decisive_fail",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_observation_repeatability": [
+            "indeterminate",
+            "invalid"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_tail_and_keep_supported": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "primary_observable_utility": [
+            "favorable"
+          ],
+          "spatial_signal_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "near_clear_unresolved_without_decisive_fail",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_tail_and_keep_supported": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "primary_observable_utility": [
+            "favorable"
+          ],
+          "spatial_signal_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "tail_keep_unresolved_without_decisive_fail",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe"
+          ],
+          "negative_tail_and_keep_supported": [
+            "indeterminate",
+            "invalid"
+          ],
+          "primary_observable_utility": [
+            "favorable"
+          ],
+          "spatial_signal_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "all_decisive_gates_pass_with_precision",
+        "terminal": "pass",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe"
+          ],
+          "negative_tail_and_keep_supported": [
+            "safe"
+          ],
+          "primary_observable_utility": [
+            "favorable"
+          ],
+          "primary_precision": [
+            "met"
+          ],
+          "spatial_signal_specificity": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "all_decisive_gates_pass_without_precision",
+        "terminal": "inconclusive",
+        "when": {
+          "cross_observation_repeatability": [
+            "favorable"
+          ],
+          "evidence_identity_integrity_coverage": [
+            "pass"
+          ],
+          "near_clear_fidelity": [
+            "safe"
+          ],
+          "negative_tail_and_keep_supported": [
+            "safe"
+          ],
+          "primary_observable_utility": [
+            "favorable"
+          ],
+          "primary_precision": [
+            "unmet",
+            "invalid"
+          ],
+          "spatial_signal_specificity": [
+            "favorable"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_c1_observable_signal_domain_route",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "review_c1_measurement_validity_or_precision_only",
+        "terminal": {
+          "authorizes": "C1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "author_internal_adaptive_restoration_contract",
+        "terminal": {
+          "authorizes": "AUTHOR_INTERNAL_ADAPTIVE_RESTORATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "confirmation, sealed-final, canary, locked-test, or any non-development evidence access",
+    "unfreezing or fine-tuning the official ConvIR-B backbone",
+    "using ground truth, privileged oracle actions, or outcome-derived labels as inference-time inputs",
+    "unequal arm architectures, training budgets, losses, optimizers, schedules, seeds, or result-adaptive tuning",
+    "changing scene roles, domain weights, allocation ranks, nested-observation handling, clips, margins, gates, critical values, looks, stopping actions, or precision target after outcome access",
+    "treating haze observations, pixels, crops, optimization steps, or sequential looks as independent samples",
+    "publishing images, arrays, raw outputs, checkpoints, feature maps, action maps, or per-scene and per-feature tables to GitHub",
+    "interpreting this development-only route as confirmation, sealed-final evidence, candidate promotion, deployment authorization, or a post-processing method",
+    "reopening or extending the failed adjacent local-restoration-need route family without a separate evidence-bound amendment"
+  ],
+  "gates": [
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "evidence_identity_integrity_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all trigger, program, amendment, asset, role-ledger, dataset-role, protected-access, roster, parameter-count, unit-identity, output-hash, and exact 1106-unit ledger checks pass",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "primary_observable_utility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "favorable when the selected A2-minus-A1 or A3-minus-A1 equal-domain LCB exceeds 0.10 dB, at least three stratum LCBs exceed zero, and no stratum UCB is negative; unfavorable when both primary equal-domain UCBs are at or below 0.10 dB",
+      "threshold": 0.1,
+      "type": "materiality",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "spatial_signal_specificity",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "selected aligned spatial arm minus its deterministic within-scene shuffled signal map has equal-domain LCB above 0.05 dB, at least three stratum LCBs above zero, and no negative stratum UCB; unfavorable when the equal-domain UCB is at or below 0.05 dB",
+      "threshold": 0.05,
+      "type": "materiality",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "cross_observation_repeatability",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "selected-arm two-observation scene correlation has equal-domain LCB at least 0.50, at least two paired-domain LCBs at least 0.40, and every paired-domain UCB at least 0.30; corresponding UCB impossibility is unfavorable",
+      "threshold": 0.5,
+      "type": "materiality",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "near_clear_fidelity",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "among baseline-PSNR-at-least-30 dB scenes, the selected arm versus A0 equal-domain mean LCB is at least -0.05 dB and the below--0.10 dB harm-prevalence UCB is at most 0.10; a corresponding upper or lower bound beyond either limit is unsafe",
+      "threshold": "mean_lcb_ge_minus_0.05_and_negative_tail_ucb_le_0.10",
+      "type": "safety",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "negative_tail_and_keep_supported",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "selected primary contrast below--0.10 dB prevalence UCB is at most 0.10 and, on severity-at-most-0.15 scenes, keep-supported prevalence LCB is at least 0.50; a corresponding lower or upper bound beyond either limit is unsafe",
+      "threshold": "negative_tail_ucb_le_0.10_and_keep_supported_lcb_ge_0.50",
+      "type": "safety",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    },
+    {
+      "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+      "decision_role": "inconclusive_only",
+      "direction": "max",
+      "estimand_id": "observable_spatial_adapter_utility",
+      "id": "primary_precision",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "maximum distance from each primary contrast equal-domain or stratum estimate to either simultaneous interval endpoint",
+      "threshold": 0.095,
+      "type": "precision",
+      "uncertainty_id": "scene_grouped_group_sequential_simultaneous_uncertainty"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the official ConvIR-B architecture, source, layers, Haze4K checkpoint, parameter count 8630665, and backbone weights remain frozen",
+      "all adapters are inserted after the final decoder 32-channel feature and before the final RGB projection",
+      "all adapters use z times one plus 0.1 tanh gamma plus 0.1 tanh beta, with a 4-to-16 3-by-3 convolution, GELU, and 16-to-64 1-by-1 convolution whose final layer is zero initialized",
+      "A1 receives spatially constant global means of A2 dark-channel, saturation, local-contrast, and gradient maps; A2 receives the aligned maps; A3 receives raw RGB plus luminance through the same four-channel adapter",
+      "all adapters use AdamW learning rate 0.0002, betas 0.9 and 0.999, zero weight decay, batch two, 256 crops, seed 20260803, and exactly 2000 optimization steps",
+      "training loss is Charbonnier reconstruction plus 0.1 edge fidelity plus 0.01 modulation regularization",
+      "spatial shuffle is an inference-only within-scene mechanism control and never receives a separate training budget",
+      "scene-level PSNR differences are clipped to [-0.25, 0.25] dB before equal-domain aggregation",
+      "Haze4K training uses only 600 training-role scenes; Haze4K evaluation uses 150 internal-development scenes",
+      "ITS and OTS evaluation use role unassigned_known_overlap_quarantined with allocation ranks 0 through 149 and remain separate equal-weight strata",
+      "NH-HAZE contributes all 55 historical-development scenes and cannot supply confirmation evidence",
+      "the original clear scene is the only independent unit; haze observations, pixels, crops, steps, and sequential looks are nested",
+      "no output image, checkpoint publication, array, raw prediction, feature map, action map, or per-scene GitHub table is permitted"
+    ],
+    "matched_budget": "three equal-capacity adapters, each trained for 2000 steps on the same 600 Haze4K training-role scenes; 505 development-only original-clear evaluation scenes with two nested haze observations in Haze4K, ITS, and OTS and one observation in NH-HAZE",
+    "primary_variable": "inference-observable signal domain for equal-capacity final-decoder feature modulation",
+    "reference": "A1 global-pooled physics sham for primary signal contrasts and A0 official ConvIR-B for baseline, fidelity, and tail-risk controls"
+  },
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "development_screening",
+    "grouping_unit": "original_clear_scene",
+    "independent_group_count": 505,
+    "strata": [
+      {
+        "id": "HAZE4K_INTERNAL",
+        "independent_group_count": 150
+      },
+      {
+        "id": "ITS_UNASSIGNED",
+        "independent_group_count": 150
+      },
+      {
+        "id": "OTS_UNASSIGNED",
+        "independent_group_count": 150
+      },
+      {
+        "id": "NHHAZE_HISTORICAL",
+        "independent_group_count": 55
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "two primary contrasts A2-minus-A1 and A3-minus-A1; average nested haze observations within original clear scene, clip each scene contrast to [-0.25, 0.25] dB, compute each of four stratum means separately, then average the four means equally; select A2 on a predeclared near tie",
+    "direction": "higher",
+    "id": "observable_spatial_adapter_utility",
+    "metric_id": "equal_domain_mean_clipped_scene_delta_psnr_db",
+    "strata": [
+      "HAZE4K_INTERNAL",
+      "ITS_UNASSIGNED",
+      "OTS_UNASSIGNED",
+      "NHHAZE_HISTORICAL"
+    ],
+    "unit": "original_clear_scene"
+  },
+  "question": "Do inference-observable spatial signals, rather than adapter capacity or global pooled haze statistics alone, enable an equal-capacity final-decoder modulation of frozen ConvIR-B that yields material, spatially specific, cross-observation repeatable daytime-dehazing utility across four development strata while preserving near-clear regions and controlling negative-tail risk?",
+  "research_update_binding": {
+    "bottleneck_class": "scientific_hypothesis",
+    "bottleneck_statement": "The archived sequence-2 result proves a valid scientific FAIL for GT-privileged cross-observation local-error operationalization: the remaining bottleneck is whether inference-observable spatial signals carry transferable restoration-control information beyond equal-capacity global conditioning and dataset-specific difficulty.",
+    "decision_design": {
+      "alias_structure": "A0 identifies the frozen baseline; A1 identifies adapter capacity plus global physics statistics; A2-minus-A1 and A3-minus-A1 identify the two primary observable spatial-signal contrasts. Spatial shuffle is a within-scene inference control and is not aliased with another trained arm. Physics versus learned signal class is not interpreted as a factorial interaction because their input definitions are distinct bundled interventions.",
+      "arms": [
+        {
+          "description": "Official frozen ConvIR-B with no adapter.",
+          "id": "a0_official",
+          "role": "reference"
+        },
+        {
+          "description": "Equal-capacity adapter driven by spatially constant global-pooled A2 physics maps.",
+          "id": "a1_global_physics_sham",
+          "role": "matched_control"
+        },
+        {
+          "description": "Equal-capacity adapter driven by aligned dark-channel, saturation, local-contrast, and gradient maps.",
+          "id": "a2_physics_observable_spatial",
+          "role": "intervention"
+        },
+        {
+          "description": "Equal-capacity adapter driven by aligned raw RGB and luminance maps.",
+          "id": "a3_learned_rgb_luminance_spatial",
+          "role": "intervention"
+        }
+      ],
+      "estimable_terms": [
+        "a2_minus_a1_equal_domain_scene_psnr_db",
+        "a3_minus_a1_equal_domain_scene_psnr_db",
+        "selected_spatial_minus_a0_scene_psnr_db",
+        "selected_aligned_minus_spatial_shuffle_scene_psnr_db",
+        "selected_cross_observation_repeatability"
+      ],
+      "factors": [
+        {
+          "id": "signal_domain",
+          "levels": [
+            "none",
+            "global_pooled_physics",
+            "physics_observable_spatial",
+            "learned_rgb_luminance_spatial"
+          ]
+        },
+        {
+          "id": "spatial_arrangement_control",
+          "levels": [
+            "aligned",
+            "within_scene_shuffled"
+          ]
+        }
+      ],
+      "mechanism_estimands": [
+        {
+          "falsifier": "The simultaneous equal-domain A2-minus-A1 upper bound is at or below 0.10 dB or aligned-over-shuffled specificity cannot exceed 0.05 dB.",
+          "hypothesis_id": "physics_observable_signal",
+          "id": "physics_signal_utility",
+          "metric_id": "a2_minus_a1_equal_domain_scene_psnr_db",
+          "prediction": "The simultaneous equal-domain A2-minus-A1 lower bound exceeds 0.10 dB with positive support in at least three development strata and no negative stratum."
+        },
+        {
+          "falsifier": "The simultaneous equal-domain A3-minus-A1 upper bound is at or below 0.10 dB or aligned-over-shuffled specificity cannot exceed 0.05 dB.",
+          "hypothesis_id": "learned_observable_signal",
+          "id": "learned_signal_utility",
+          "metric_id": "a3_minus_a1_equal_domain_scene_psnr_db",
+          "prediction": "The simultaneous equal-domain A3-minus-A1 lower bound exceeds 0.10 dB with positive support in at least three development strata and no negative stratum."
+        },
+        {
+          "falsifier": "Any specificity or repeatability gate is unfavorable, any safety gate is unsafe, or the selected arm has a negative simultaneous domain effect.",
+          "hypothesis_id": "transferable_spatial_mechanism",
+          "id": "spatial_transfer_and_safety",
+          "metric_id": "selected_spatial_specificity_repeatability_and_risk",
+          "prediction": "The predeclared selected spatial arm has material aligned-over-shuffled specificity, cross-observation repeatability, near-clear fidelity, bounded negative-tail prevalence, and supported keep behavior."
+        }
+      ],
+      "multiplicity_control": "A family of two primary contrasts by four strata uses simultaneous two-sided Bonferroni control; group-sequential success uses the frozen critical values 3.88, 3.16, and 2.74 at information fractions 0.50, 0.75, and 1.00. The same look-specific critical value is applied conservatively to specificity, repeatability, safety, and precision summaries.",
+      "sequential_plan": {
+        "alpha_spending": {
+          "familywise_alpha": 0.05,
+          "method": "bonferroni_obrien_fleming_three_look"
+        },
+        "boundaries": {
+          "futility": "At looks 0.50 or 0.75, stop scientific evaluation when both primary equal-domain contrast upper bounds are at or below 0.10 dB; write every remaining scene as a typed predeclared skipped unit.",
+          "precision": "At the terminal look, a maximum simultaneous primary interval half-width above 0.095 dB is inconclusive-only and cannot change any decisive FAIL.",
+          "success": "No early efficacy terminal is permitted; favorable evidence is decided only after the completed terminal look using critical value 2.74 and all frozen gates.",
+          "validity": "Any identity, role, integrity, roster, asset, protected-access, or exact completed-unit-ledger failure triggers the validity veto and an inconclusive terminal."
+        },
+        "looks": [
+          {
+            "id": "look_050",
+            "information_fraction": 0.5
+          },
+          {
+            "id": "look_075",
+            "information_fraction": 0.75
+          },
+          {
+            "id": "look_100",
+            "information_fraction": 1.0
+          }
+        ],
+        "outcome_access": "predeclared_group_sequential"
+      }
+    },
+    "design_selection": {
+      "decision_value": "One shared four-arm route separates baseline quality, adapter capacity, physics-observable spatial information, and learned spatial information while using shuffle, observation, domain, and safety controls to discriminate all live explanations.",
+      "expected_time_to_decision": "Three predeclared balanced scene looks after one shared adapter-training phase permit early futility or near-clear safety termination and otherwise finish in one bounded development run.",
+      "shared_setup": "All arms reuse the official frozen backbone, one final-decoder insertion point, equal adapter parameter count, Haze4K training roster, optimizer, loss, steps, seed, evaluation rosters, scene grouping, and uncertainty implementation.",
+      "strategy": "group_sequential",
+      "worst_case_stopping_cost": "Three adapters train for 2000 steps each and all 505 frozen development scenes are evaluated at the terminal look; the synthetic same-scale contract is capped at 900 seconds before scientific data access."
+    },
+    "hypotheses": [
+      {
+        "discriminating_prediction": "A2 exceeds A1 by more than 0.10 dB on the equal-domain clipped scene mean with simultaneous support in at least three strata and retains aligned-over-shuffled spatial specificity.",
+        "falsifier": "The simultaneous equal-domain A2-minus-A1 upper bound is at or below 0.10 dB, or aligned physics modulation cannot beat its spatial shuffle under the frozen specificity margin.",
+        "id": "physics_observable_signal",
+        "statement": "Spatial dark-channel, saturation, local-contrast, and gradient maps contain local daytime-haze information that a matched adapter can exploit beyond their global pooled values."
+      },
+      {
+        "discriminating_prediction": "A3 exceeds A1 by more than 0.10 dB on the equal-domain clipped scene mean with simultaneous support in at least three strata and retains aligned-over-shuffled spatial specificity.",
+        "falsifier": "The simultaneous equal-domain A3-minus-A1 upper bound is at or below 0.10 dB, or aligned learned modulation cannot beat its spatial shuffle under the frozen specificity margin.",
+        "id": "learned_observable_signal",
+        "statement": "A learned RGB-plus-luminance spatial signal contains transferable local restoration information beyond equal-capacity global physics conditioning."
+      },
+      {
+        "discriminating_prediction": "The selected spatial arm beats its shuffled control, has cross-observation repeatability at the frozen thresholds, avoids negative domain effects, protects near-clear scenes, and satisfies the predeclared keep and tail-risk controls.",
+        "falsifier": "Spatial shuffling preserves the gain, cross-observation repeatability is below threshold, a stratum has a negative simultaneous upper bound, or either frozen safety gate is unsafe.",
+        "id": "transferable_spatial_mechanism",
+        "statement": "Any primary gain is caused by spatially located observable information that repeats across nested haze observations and domains rather than parameter count, global difficulty, or one-dataset concentration."
+      }
+    ],
+    "literature_basis": [
+      {
+        "applicability_limit": "NH-HAZE establishes a benchmark and spatially nonhomogeneous condition; it does not prove that either proposed signal or this ConvIR-B adapter is useful.",
+        "identifier": "doi:10.1109/CVPRW50498.2020.00230",
+        "source_status": "peer_reviewed",
+        "task": "nonhomogeneous daytime dehazing benchmark construction",
+        "transferable_claim": "Spatially nonuniform haze is an explicit real-image dehazing condition that warrants region-sensitive evaluation."
+      },
+      {
+        "applicability_limit": "The super-resolution result does not establish dehazing utility, the selected signal class, or safety on this project's datasets.",
+        "identifier": "doi:10.1109/CVPR.2018.00070",
+        "source_status": "peer_reviewed",
+        "task": "conditional spatial feature modulation",
+        "transferable_claim": "Spatial feature transforms can condition intermediate restoration features using aligned spatial side information."
+      },
+      {
+        "applicability_limit": "Dark-channel assumptions have known exceptions and do not prove that the four frozen physics maps predict local correction direction.",
+        "identifier": "doi:10.1109/CVPR.2009.5206515",
+        "source_status": "peer_reviewed",
+        "task": "single-image haze observation modeling",
+        "transferable_claim": "Dark-channel image statistics provide a physically motivated observable correlate of haze under stated scene assumptions."
+      },
+      {
+        "applicability_limit": "The published method does not validate this adapter, these uncertainty surrogates, or the frozen tail-risk thresholds.",
+        "identifier": "doi:10.1016/j.knosys.2023.110306",
+        "source_status": "peer_reviewed",
+        "task": "uncertainty-guided image restoration",
+        "transferable_claim": "Observable uncertainty-related information can be used to modulate restoration behavior and motivate explicit risk-aware evaluation."
+      }
+    ],
+    "snapshot_commit": "8f8bae380648ed20318c7ddb853ab87238f88754",
+    "trigger_terminals": [
+      {
+        "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+        "terminal_record_sha256": "e66d466b36c58fa950b7179a547029bee020566ce0a207f68e3aa81f124cb343"
+      }
+    ],
+    "trigger_type": "post_terminal"
+  },
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "schema_version": 3,
+  "uncertainty": {
+    "comparison_family": "c1_two_contrasts_four_strata_three_looks",
+    "confidence_level": 0.95,
+    "id": "scene_grouped_group_sequential_simultaneous_uncertainty",
+    "independent_unit": "original_clear_scene",
+    "method_id": "stratified_scene_normal_intervals_and_simultaneous_wilson"
+  }
+}

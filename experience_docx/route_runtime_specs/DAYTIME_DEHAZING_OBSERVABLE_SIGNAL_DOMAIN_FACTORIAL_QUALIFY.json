@@ -1,0 +1,55 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-observable-signal-domain-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/daytime-dehazing-observable-signal-domain-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY.json",
+    "cost_contract": {
+      "formal_iterations": 10780,
+      "max_peak_memory_mib": 14000,
+      "max_wall_seconds": 900,
+      "strategy": "same_scale_probe",
+      "workload_class": "variable_graph_or_matrix"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_observable_signal_domain_factorial_v1.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "daytime_dehazing_observable_signal_domain_factorial_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_observable_signal_domain_factorial_v1_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_observable_signal_domain_factorial_v1_gate_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_observable_signal_domain_factorial_v1_gate_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_observable_signal_domain_factorial_v1_review_facts.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_observable_signal_domain_factorial_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 43200,
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-observable-signal-domain-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The primary scene contrast is clipped to [-0.25, 0.25] dB, giving a distribution-free planning-SD upper bound of 0.25 dB. A final simultaneous critical value 2.74 and target half-width 0.095 dB require ceil((2.74*0.25/0.095)^2)=52 independent scenes in each stratum; planned counts 150, 150, 150, and 55 are all feasible. Precision is inconclusive-only."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "schema_version": 2,
+  "timeout_seconds": 46800,
+  "total_units": 1106
+}

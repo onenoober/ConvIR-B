@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-observable-signal-domain-factorial-v1.json",
+  "experiment_spec_sha256": "3fca79451a9f434c30dcc9927ed209a347d20680b55f5f6950c5ace40dc2477a",
+  "operations": {
+    "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "AUTHOR_INTERNAL_ADAPTIVE_RESTORATION_CONTRACT_ONLY",
+          "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "C1_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_observable_signal_domain_factorial_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 16000,
+      "mode": "daytime_dehazing_observable_signal_domain_factorial",
+      "monitor_profile": "standard",
+      "output_id": "daytime-dehazing-observable-signal-domain-factorial-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "846c1a1f9476e5ef7900159f0187410e3888ad55b0dfbd868450d3394a0af7af",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-observable-signal-domain-factorial-v1.md",
+  "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+  "rules_commit": "4cf78e400a5adfb839ff09dc7a8ac38cfd3a0b75",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-observable-signal-domain-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_SIGNAL_DOMAIN_FACTORIAL_QUALIFY.json"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor_checkout",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "observable_signal_factorial_entrypoint",
+      "identity": "164e9c36037ba14d91d27379b14abd5566e2ec02753e9f019cba6e91e76ba968"
+    },
+    {
+      "id": "runtime_environment",
+      "identity": "57c3933f857ca2a8b5fdb95560696f93180d536b849223427735b3f79994fb00"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    }
+  ],
+  "compatibility_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 2,
+    "channels": 3,
+    "height": 256,
+    "width": 256
+  },
+  "production_path_statement": "The exact production ConvIR-B graph, frozen checkpoint load, equal-capacity final-decoder adapters, zero initialization, physics and learned signal construction, modulation, training loss, optimizer path, aligned and shuffled inference, four-arm prediction, grouped summaries, sequential boundaries, and typed gate generation run on device-aware synthetic CUDA tensors at the full formal 10780-iteration count without dataset or protected-data access.",
+  "profile_id": "daytime_dehazing_observable_signal_domain_factorial_gpu_v1",
+  "protected_data_prohibited": true,
+  "reuse_identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "164e9c36037ba14d91d27379b14abd5566e2ec02753e9f019cba6e91e76ba968",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "58470836f4ab7ee7773f6723e81797b0c05d08dc3f049a260a9a4e426ba879d8",
+    "runtime_environment_sha256": "57c3933f857ca2a8b5fdb95560696f93180d536b849223427735b3f79994fb00",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "schema_version": 2,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

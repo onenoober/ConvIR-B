@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "environment_id": "convir_4090_cu121_observable_signal_factorial_v1",
+  "execution_host": "convir-4090",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "device_class": "cuda_sm89",
+  "required_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "production_contract": "Frozen official ConvIR-B inference with one equal-capacity final-decoder signal adapter, Haze4K-only adapter training, four development strata, spatial-shuffle controls, group-sequential inference, and complete SHA-bound unit-ledger coverage."
+}
