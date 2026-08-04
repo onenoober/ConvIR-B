@@ -1,0 +1,77 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": null,
+  "details": {
+    "error_message": "contract program failed rc=1; program_tail= return forward_call(*args, **kwargs) File \"<path>\", line 190, in forward x2 = self.square_att(x) File \"<path>\", line 1736, in _wrapped_call_impl return self._call_impl(*args, **kwargs) File \"<path>\", line 1747, in _call_impl return forward_call(*args, **kwargs) File \"<path>\", line 106, in forward low_filter = self.bn(low_filter) File \"<path>\", line 1736, in _wrapped_call_impl return self._call_impl(*args, **kwargs) File \"<path>\", line 1747, in _call_impl return forward_call(*args, **kwargs) File \"<path>\", line 193, in forward return F.batch_norm( File \"<path>\", line 2810, in batch_norm _verify_batch_size(input.size()) File \"<path>\", line 2776, in _verify_batch_size raise ValueError( ValueError: Expected more than 1 value per channel when training, got input size torch.Size([1, 72, 1, 1])",
+    "error_type": "LifecycleError",
+    "protected_data_touched": false,
+    "scientific_data_touched": false,
+    "traceback_tail": "LifecycleError: contract program failed rc=1; program_tail=    return forward_call(*args, **kwargs)\n  File \"<path>\", line 190, in forward\n    x2 = self.square_att(x)\n  File \"<path>\", line 1736, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n  File \"<path>\", line 1747, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"<path>\", line 106, in forward\n    low_filter = self.bn(low_filter)\n  File \"<path>\", line 1736, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n  File \"<path>\", line 1747, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"<path>\", line 193, in forward\n    return F.batch_norm(\n  File \"<path>\", line 2810, in batch_norm\n    _verify_batch_size(input.size())\n  File \"<path>\", line 2776, in _verify_batch_size\n    raise ValueError(\nValueError: Expected more than 1 value per channel when training, got input size torch.Size([1, 72, 1, 1])",
+    "workload_started": false
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {},
+  "failure_phase": "contract",
+  "locked_test_touched": false,
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "returncode": 1,
+  "route_commit": "f7334a14e41f260055eec8f1bce606ae0e76652e",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r2",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "FAILED_ENGINEERING",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "c2_entrypoint",
+      "kind": "file",
+      "sha256": "3cf2e6d339a0063805262c93789221219444dbe8cf40d9e8d3f0b298c6565c7b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "vgg19_imagenet1k_v1",
+      "kind": "file",
+      "sha256": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+    }
+  ]
+}
