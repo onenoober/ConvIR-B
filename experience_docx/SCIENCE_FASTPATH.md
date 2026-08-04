@@ -126,6 +126,15 @@ main retains the same compatibility id and explicitly names that prior commit.
 An incompatible scientific/governance change rotates the id and blocks the old
 contract.
 
+An evidence-bound operational fixed-factor change must freeze exact old and new
+values. The schema-preserving current encoding is the reserved
+`fixed_factor.<factor>.from_<value>.to_<value>` token inside the existing
+`orthogonal_dimensions` amendment value. It is a compatibility carrier, not an
+orthogonal route permission. Bare `training_batch_shape` is ambiguous and
+current authoring rejects it; route authorization also rejects every
+`fixed_factor.` token. Only the exact canonical-SHA-bound historical C2
+amendment is grandfathered for reading; historical contracts are not rewritten.
+
 The compiler removes duplicated identity/path authoring only. It never chooses
 the question, model, dataset, primary variable, threshold, control, terminal, or
 authorization. Route-ready consumes the compiler receipt and rejects any changed
@@ -201,6 +210,18 @@ delivery is reserved for archive workflows. The archive
 tool derives that path from the validated `*_closeout.json` when `--conclusion`
 is omitted; it never writes or infers scientific content. Engineering archive
 contracts intentionally omit this scientific conclusion requirement.
+
+Current schema-3 entrypoints must call `write_scientific_review_facts`; that
+writer rejects publication unless at least one fact has a finite numeric point
+and a matching source JSON Pointer. The historical `write_review_facts` API
+remains available only for legacy or non-scientific facts and cannot satisfy
+current route-ready.
+
+An explicitly requested engineering-failure archive is stored only under
+`experience_docx/engineering_failures/{route_id}/{run_id}/`. The validator
+binds both identities and the exact `FAILED_ENGINEERING / null / NONE` tuple.
+It cannot write below `experiment_logs`, update route cards or project/family
+memory, or enter scientific evidence review.
 
 ## Read-Only Review Entry
 

@@ -313,6 +313,16 @@ def check_entrypoint(
         if phase == "run" and scientific_schema in {2, 3} \
                 and any(call_name(node) == "write_run_result" for node in calls):
             raise ReadyError("scientific schema 2/3 cannot call write_run_result")
+        if phase == "run" and scientific_schema == 3:
+            observed = {call_name(node) for node in calls}
+            if "write_scientific_review_facts" not in observed:
+                raise ReadyError(
+                    "scientific schema 3 run must call write_scientific_review_facts"
+                )
+            if "write_review_facts" in observed:
+                raise ReadyError(
+                    "scientific schema 3 cannot call the legacy write_review_facts writer"
+                )
         if phase == "run" and require_unit_ledger:
             observed = {call_name(node) for node in calls}
             if not {

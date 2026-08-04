@@ -787,6 +787,7 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         except ExperimentSpecError as exc:
             errors.append(_lint_error("experiment_spec_relpath", "IDENTITY_MISMATCH", exc))
     try:
+        program_contract.validate_current_amendment_encoding(program_source)
         effective_program = program_contract.validate_program_contract(
             program_source, evidence_exists=evidence_exists,
         )
@@ -900,6 +901,7 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         spec["program_contract_relpath"], "program_contract_relpath", PROGRAM_DIRECTORY,
     )
     try:
+        program_contract.validate_current_amendment_encoding(program_source)
         effective_program = program_contract.validate_program_contract(
             program_source, evidence_exists=evidence_exists,
         )

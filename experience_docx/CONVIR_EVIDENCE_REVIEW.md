@@ -96,6 +96,10 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
 
 - The GitHub discovery tools read only the terminal index and Git path names
   under `experience_docx/experiment_logs` at one resolved commit.
+- Explicit engineering-failure archives live separately under
+  `experience_docx/engineering_failures/{route_id}/{run_id}/`. They are outside
+  the scientific catalog and completeness denominator by construction; their
+  exclusion is not a scientific review or a claim about their contents.
 - The repository must expose the trusted `github` remote identity and
   `refs/remotes/github/main`. Summary accepts no caller-selected ref. Every
   query requires an exact 40-character commit and rejects commits outside that

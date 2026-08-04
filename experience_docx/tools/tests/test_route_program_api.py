@@ -118,6 +118,49 @@ class RouteProgramApiTests(unittest.TestCase):
                     value, relpath="route_review_facts.json", facts=[fact],
                 )
 
+    def test_scientific_review_facts_require_finite_numeric_primary_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = self.load(root, "run")
+            API.prepare_phase_output(value)
+            gate = API.build_gate_review_fact(
+                fact_id="materiality", metric="materiality_gate", unit="gate",
+                population="development", grouping="all",
+                gate_outcome="favorable", source_filename="summary.json",
+                source_sha256="c" * 64,
+            )
+            with self.assertRaisesRegex(API.ContractError, "finite numeric point"):
+                API.write_scientific_review_facts(
+                    value, relpath="route_review_facts.json", facts=[gate],
+                )
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            value = self.load(root, "run")
+            API.prepare_phase_output(value)
+            primary = API.build_primary_review_fact(
+                fact_id="combined_effect", metric="psnr_difference", unit="dB",
+                population="development scenes", grouping="original_clear_scene",
+                point=0.12, point_pointer="/estimands/combined_effect/point",
+                source_filename="summary.json", source_sha256="d" * 64,
+            )
+            API.write_scientific_review_facts(
+                value, relpath="route_review_facts.json", facts=[primary],
+            )
+            written = json.loads(
+                (value.phase_output_path / "route_review_facts.json").read_text()
+            )
+            self.assertEqual(0.12, written["facts"][0]["point"])
+
+    def test_primary_review_fact_rejects_nonfinite_point(self):
+        with self.assertRaisesRegex(API.ContractError, "finite numeric"):
+            API.build_primary_review_fact(
+                fact_id="combined_effect", metric="psnr_difference", unit="dB",
+                population="development scenes", grouping="original_clear_scene",
+                point=float("nan"), point_pointer="/estimands/combined_effect/point",
+                source_filename="summary.json", source_sha256="d" * 64,
+            )
+
     def test_result_path_cannot_escape_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

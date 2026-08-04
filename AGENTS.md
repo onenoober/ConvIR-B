@@ -189,6 +189,14 @@ repair policy below and is not a scientific terminal archive.
   dependency use, family state, reopen evidence type, or orthogonal dimension.
   Validators check identity, scope, and evidence presence; they do not choose
   the scientific judgment. Closing one family never globally closes the problem.
+- An operational fixed-factor change is not an orthogonal scientific route.
+  Without changing the program schema, encode its exact old/new values as the
+  reserved compatibility token
+  `fixed_factor.<factor>.from_<value>.to_<value>` inside the existing
+  `orthogonal_dimensions` amendment value. Route-ready rejects an untyped
+  `training_batch_shape` token and rejects using a fixed-factor token as route
+  authorization. Only an exact canonical-SHA-bound historical exception remains
+  readable; historical contracts remain immutable.
 
 ## Finite Recovery
 
@@ -235,6 +243,11 @@ terminal with verified absence of scientific/protected data touch, no active
 session, exact derived paths and post-delete checks. It cannot delete a
 scientific terminal, shared checkout, anchor, dataset, checkpoint, branch, or
 GitHub evidence.
+
+An explicitly archived engineering failure lives only below
+`experience_docx/engineering_failures/{route_id}/{run_id}/`. It never occupies
+`experience_docx/experiment_logs`, the scientific terminal index, a route card,
+or project/family memory.
 
 ## Three-End Command Boundary
 

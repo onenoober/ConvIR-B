@@ -67,6 +67,15 @@ SCIENTIFIC_SCHEMA2 = SCHEMA2_ENGINEERING.replace(
     b'write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
 )
 
+SCIENTIFIC_SCHEMA3 = SCIENTIFIC_SCHEMA2.replace(
+    b"from route_program_api import load_context, write_contract_result, write_gate_result",
+    b"from route_program_api import load_context, write_contract_result, write_gate_result, write_scientific_review_facts",
+).replace(
+    b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
+    b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})\n'
+    b'    write_scientific_review_facts(context, relpath="route_review_facts.json", facts=[])',
+)
+
 
 class RouteReadyTests(unittest.TestCase):
     def test_standard_entrypoint_interface_passes(self):
@@ -132,7 +141,7 @@ class RouteReadyTests(unittest.TestCase):
 
     def test_scientific_schema3_requires_gate_writer_and_rejects_legacy_writer(self):
         READY.check_entrypoint(
-            SCIENTIFIC_SCHEMA2, "experience_docx/tools/program.py",
+            SCIENTIFIC_SCHEMA3, "experience_docx/tools/program.py",
             require_engineering=True, scientific_schema=3,
         )
         with self.assertRaisesRegex(READY.ReadyError, "write_gate_result"):
@@ -140,14 +149,29 @@ class RouteReadyTests(unittest.TestCase):
                 SCHEMA2_ENGINEERING, "experience_docx/tools/program.py",
                 require_engineering=True, scientific_schema=3,
             )
-        mixed_writers = SCIENTIFIC_SCHEMA2.replace(
-            b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})',
-            b'    write_gate_result(context, gate_outcomes={"materiality": "favorable"})\n'
+        mixed_writers = SCIENTIFIC_SCHEMA3.replace(
+            b'    write_scientific_review_facts(context, relpath="route_review_facts.json", facts=[])',
+            b'    write_scientific_review_facts(context, relpath="route_review_facts.json", facts=[])\n'
             b'    write_run_result(context, state="PASS", decision="PASS", authorizes="NEXT")',
         )
         with self.assertRaisesRegex(READY.ReadyError, "schema 2/3"):
             READY.check_entrypoint(
                 mixed_writers, "experience_docx/tools/program.py",
+                require_engineering=True, scientific_schema=3,
+            )
+
+    def test_scientific_schema3_requires_numeric_primary_writer(self):
+        with self.assertRaisesRegex(READY.ReadyError, "write_scientific_review_facts"):
+            READY.check_entrypoint(
+                SCIENTIFIC_SCHEMA2, "experience_docx/tools/program.py",
+                require_engineering=True, scientific_schema=3,
+            )
+        legacy_facts = SCIENTIFIC_SCHEMA3.replace(
+            b"write_scientific_review_facts", b"write_review_facts",
+        )
+        with self.assertRaisesRegex(READY.ReadyError, "write_scientific_review_facts"):
+            READY.check_entrypoint(
+                legacy_facts, "experience_docx/tools/program.py",
                 require_engineering=True, scientific_schema=3,
             )
 
@@ -168,7 +192,7 @@ class RouteReadyTests(unittest.TestCase):
             )
         with self.assertRaisesRegex(READY.ReadyError, "completed-unit ledger"):
             READY.check_entrypoint(
-                SCIENTIFIC_SCHEMA2, "program.py", scientific_schema=3,
+                SCIENTIFIC_SCHEMA3, "program.py", scientific_schema=3,
                 require_unit_ledger=True,
             )
 

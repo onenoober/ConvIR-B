@@ -98,6 +98,15 @@ and reject any generated-file drift. Program governance distinguishes adjacent,
 orthogonal and evidence-backed reopen mechanisms; it does not impose one global
 experiment-count limit.
 
+Operational fixed-factor amendments retain the existing program schema and
+amendment kind. Their exact values use the reserved
+`fixed_factor.<factor>.from_<value>.to_<value>` compatibility token. Current
+compiler/route-ready rejects bare `training_batch_shape` and prevents the token
+from authorizing an orthogonal route. Because valid tokens are already safe
+`orthogonal_dimensions` values, an already-running server can parse a route
+that passed the fresh route-ready gate without a server-version or protocol
+change.
+
 Scientific schema 3 binds the route to its triggering terminal evidence and
 research update, then freezes finite typed outcomes for every gate and one
 complete mutually exclusive decision table. The update must classify the

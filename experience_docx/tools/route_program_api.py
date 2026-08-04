@@ -6,6 +6,7 @@ from __future__ import annotations
 import fcntl
 import hashlib
 import json
+import math
 import os
 import tempfile
 from dataclasses import dataclass
@@ -309,13 +310,16 @@ def validate_review_facts_value(
             pointer = pointers[key]
             if (declared is None) != (pointer is None):
                 raise ContractError(f"review fact {key} pointer/value presence differs")
-            if pointer is not None and not isinstance(pointer, str):
+            if pointer is not None and (
+                not isinstance(pointer, str) or not pointer.startswith("/")
+            ):
                 raise ContractError(f"review fact {key} pointer is invalid")
         for key in ("point", "ci_lower", "ci_upper", "confidence_level", "threshold"):
             if fact[key] is not None and (
                 not isinstance(fact[key], (int, float)) or isinstance(fact[key], bool)
+                or not math.isfinite(fact[key])
             ):
-                raise ContractError(f"review fact {key} must be numeric")
+                raise ContractError(f"review fact {key} must be finite numeric")
         if fact["gate_outcome"] is not None:
             require_token(fact["gate_outcome"], "review fact gate_outcome")
         if fact["point"] is None and fact["gate_outcome"] is None:
@@ -379,10 +383,56 @@ def build_gate_review_fact(
     }
 
 
-def write_review_facts(
+def build_primary_review_fact(
+    *, fact_id: str, metric: str, unit: str, population: str, grouping: str,
+    point: float, point_pointer: str, source_filename: str, source_sha256: str,
+    claim_id: str | None = None, ci_lower: float | None = None,
+    ci_upper: float | None = None, confidence_level: float | None = None,
+    ci_lower_pointer: str | None = None, ci_upper_pointer: str | None = None,
+    confidence_level_pointer: str | None = None, threshold: float | None = None,
+    threshold_operator: str | None = None, threshold_pointer: str | None = None,
+    gate_outcome: str | None = None, gate_pointer: str | None = None,
+) -> dict[str, Any]:
+    """Build one source-bound numeric fact eligible for primary selection."""
+    fact = {
+        "fact_id": fact_id,
+        "claim_id": claim_id or fact_id,
+        "metric": metric,
+        "unit": unit,
+        "population": population,
+        "grouping": grouping,
+        "point": point,
+        "ci_lower": ci_lower,
+        "ci_upper": ci_upper,
+        "confidence_level": confidence_level,
+        "threshold": threshold,
+        "threshold_operator": threshold_operator,
+        "gate_outcome": gate_outcome,
+        "source_filename": source_filename,
+        "source_sha256": source_sha256,
+        "json_pointers": {
+            "point": point_pointer,
+            "ci_lower": ci_lower_pointer,
+            "ci_upper": ci_upper_pointer,
+            "confidence_level": confidence_level_pointer,
+            "threshold": threshold_pointer,
+            "gate_outcome": gate_pointer,
+        },
+    }
+    validate_review_facts_value({
+        "schema_version": 2,
+        "route_id": "validation_route",
+        "operation_id": "validation_operation",
+        "run_id": "validation_run",
+        "facts": [fact],
+    })
+    return fact
+
+
+def _write_review_facts(
     context: RouteContext, *, relpath: str, facts: list[dict[str, Any]],
+    require_numeric_primary: bool,
 ) -> None:
-    """Write one schema-2 review-facts result with bound field semantics."""
     if context.phase != "run":
         raise ContractError("review facts require run context")
     relpath = require_relpath(relpath, "review facts relpath")
@@ -394,7 +444,29 @@ def write_review_facts(
         "facts": facts,
     }
     validate_review_facts_value(value, expected_filename=Path(relpath).name)
+    if require_numeric_primary and not any(fact["point"] is not None for fact in facts):
+        raise ContractError(
+            "scientific review facts require at least one finite numeric point fact"
+        )
     atomic_json(output_file(context, relpath), value)
+
+
+def write_review_facts(
+    context: RouteContext, *, relpath: str, facts: list[dict[str, Any]],
+) -> None:
+    """Write historical or non-scientific schema-2 review facts."""
+    _write_review_facts(
+        context, relpath=relpath, facts=facts, require_numeric_primary=False,
+    )
+
+
+def write_scientific_review_facts(
+    context: RouteContext, *, relpath: str, facts: list[dict[str, Any]],
+) -> None:
+    """Write scientific facts only when a numeric primary candidate exists."""
+    _write_review_facts(
+        context, relpath=relpath, facts=facts, require_numeric_primary=True,
+    )
 
 
 def asset_path(context: RouteContext, asset_id: str, *, kind: str | None = None) -> Path:

@@ -23,6 +23,12 @@ superseded failed bundle by default. An explicit `archive` choice fetches only
 compact failure evidence. The cloud closeout remains required provenance, not
 Git evidence sync. An engineering failure alone does not change a family
 verdict or justify a central-index scientific entry.
+The compact archive is stored only at
+`experience_docx/engineering_failures/{route_id}/{run_id}/`. The staged
+validator binds both path identities and requires the exact
+`FAILED_ENGINEERING / null / NONE` closeout. It rejects `experiment_logs`,
+route-card, index and family-summary paths in engineering mode, preventing a
+superseded engineering run from colliding with the canonical scientific route.
 
 `CANCELLED_BY_OPERATOR / null / NONE` is a separate control terminal. Keep its
 receipt-bound closeout and request provenance in cloud control state; it is not

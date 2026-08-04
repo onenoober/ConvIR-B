@@ -41,6 +41,15 @@ AMENDMENT_KINDS = {
     "family_state", "reopen_evidence_types", "stage_scope",
     "orthogonal_dimensions",
 }
+FIXED_FACTOR_PREFIX = "fixed_factor."
+FIXED_FACTOR_TOKEN = re.compile(
+    r"^fixed_factor\.[a-z][a-z0-9_]{0,31}\.from_[a-z0-9][a-z0-9_-]{0,31}"
+    r"\.to_[a-z0-9][a-z0-9_-]{0,31}$"
+)
+LEGACY_UNTYPED_FIXED_FACTORS = {"training_batch_shape"}
+LEGACY_UNTYPED_FIXED_FACTOR_AMENDMENT_SHA256 = {
+    "574cfb5d6bbf3dc38e67e365c040f94ba9de255208e5337725f6a3a88911856f",
+}
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -96,6 +105,36 @@ def _require_relpath(value: Any, name: str) -> str:
     if path.is_absolute() or ".." in path.parts or not value.startswith("experience_docx/"):
         raise ProgramContractError(f"{name} must stay below experience_docx/")
     return value
+
+
+def validate_current_amendment_encoding(value: Any) -> None:
+    """Reject ambiguous fixed-factor amendments in current route authoring."""
+    if not isinstance(value, dict) or not isinstance(value.get("amendments"), list):
+        return
+    for amendment_index, amendment in enumerate(value["amendments"]):
+        if not isinstance(amendment, dict) or not isinstance(amendment.get("changes"), list):
+            continue
+        for change_index, change in enumerate(amendment["changes"]):
+            if not isinstance(change, dict) or change.get("kind") != "orthogonal_dimensions":
+                continue
+            dimensions = change.get("value")
+            if not isinstance(dimensions, list):
+                continue
+            name = f"amendments[{amendment_index}].changes[{change_index}].value"
+            for dimension in dimensions:
+                if dimension in LEGACY_UNTYPED_FIXED_FACTORS:
+                    if canonical_sha256(amendment) in \
+                            LEGACY_UNTYPED_FIXED_FACTOR_AMENDMENT_SHA256:
+                        continue
+                    raise ProgramContractError(
+                        f"{name} uses ambiguous {dimension}; encode exact old/new values as "
+                        "fixed_factor.<factor>.from_<value>.to_<value>"
+                    )
+                if isinstance(dimension, str) and dimension.startswith(FIXED_FACTOR_PREFIX) \
+                        and not FIXED_FACTOR_TOKEN.fullmatch(dimension):
+                    raise ProgramContractError(
+                        f"{name} has an invalid fixed-factor compatibility token"
+                    )
 
 
 def _default_evidence_exists(repo_root: Path) -> Callable[[str], bool]:
@@ -406,6 +445,10 @@ def validate_route_authorization(program: dict[str, Any], claim: Any, *,
                                    f"orthogonal_changes[{index}]")
             dimension = _require_token(item["dimension"],
                                        f"orthogonal_changes[{index}].dimension")
+            if dimension.startswith(FIXED_FACTOR_PREFIX):
+                raise ProgramContractError(
+                    "fixed-factor amendment tokens cannot authorize an orthogonal route"
+                )
             if dimension not in program["orthogonal_dimensions"]:
                 raise ProgramContractError(f"orthogonal_changes[{index}] dimension is not allowed")
             if dimension in seen_dimensions:

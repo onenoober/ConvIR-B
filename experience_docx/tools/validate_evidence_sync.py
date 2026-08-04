@@ -25,6 +25,7 @@ INDEX_PATH = "experience_docx/EXPERIMENT_INDEX.md"
 CARD_PREFIX = "experience_docx/experiment_cards/"
 FAMILY_PREFIX = "experience_docx/family_summaries/"
 LOG_PREFIX = "experience_docx/experiment_logs/"
+ENGINEERING_FAILURE_PREFIX = "experience_docx/engineering_failures/"
 
 
 class EvidenceSyncError(RuntimeError):
@@ -102,10 +103,37 @@ def show(repo: Path, snapshot: str, relpath: str) -> bytes:
     return completed.stdout
 
 
-def classify_path(relpath: str, route_id: str) -> str:
+def _engineering_path_run_id(relpath: str, route_id: str) -> str:
+    prefix = f"{ENGINEERING_FAILURE_PREFIX}{route_id}/"
+    if not relpath.startswith(prefix):
+        raise EvidenceSyncError(
+            "engineering archives must stay below "
+            f"{ENGINEERING_FAILURE_PREFIX}{{route_id}}/{{run_id}}/"
+        )
+    remainder = PurePosixPath(relpath[len(prefix):])
+    if len(remainder.parts) != 2:
+        raise EvidenceSyncError("engineering archive files must be top-level in one run directory")
+    run_id, filename = remainder.parts
+    if not 1 <= len(run_id) <= 128 or any(
+        character not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.-"
+        for character in run_id
+    ):
+        raise EvidenceSyncError("engineering archive run_id must be a safe token")
+    if PurePosixPath(filename).suffix.lower() not in ALLOWED_SUFFIXES:
+        raise EvidenceSyncError(f"forbidden evidence suffix: {relpath}")
+    lowered = filename.lower()
+    if any(token in lowered for token in FORBIDDEN_NAME_TOKENS):
+        raise EvidenceSyncError(f"cloud-only/raw evidence is forbidden: {relpath}")
+    return run_id
+
+
+def classify_path(relpath: str, route_id: str, *, engineering_archive: bool) -> str:
     path = PurePosixPath(relpath)
     if path.is_absolute() or ".." in path.parts or "\\" in relpath:
         raise EvidenceSyncError(f"unsafe staged path: {relpath}")
+    if engineering_archive:
+        _engineering_path_run_id(relpath, route_id)
+        return "engineering_evidence"
     route_prefix = f"{LOG_PREFIX}{route_id}/"
     if relpath.startswith(route_prefix):
         filename = relpath[len(route_prefix):]
@@ -129,7 +157,7 @@ def classify_path(relpath: str, route_id: str) -> str:
 
 
 def inspect_json(raw: bytes, relpath: str, route_id: str,
-                 engineering_archive: bool) -> tuple[Any, bool]:
+                 engineering_archive: bool, run_id: str | None) -> tuple[Any, bool]:
     try:
         value = json.loads(raw)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -139,6 +167,9 @@ def inspect_json(raw: bytes, relpath: str, route_id: str,
         recorded_route = value.get("route_id")
         if recorded_route is not None and recorded_route != route_id:
             raise EvidenceSyncError(f"route_id mismatch in {relpath}")
+        recorded_run = value.get("run_id")
+        if recorded_run is not None and run_id is not None and recorded_run != run_id:
+            raise EvidenceSyncError(f"run_id mismatch in {relpath}")
         failed_engineering = value.get("state") == "FAILED_ENGINEERING"
         if failed_engineering and not engineering_archive:
             raise EvidenceSyncError(
@@ -183,8 +214,15 @@ def validate_staged(repo: Path, route_id: str, base_ref: str, *,
     cards = 0
     closeouts = 0
     failed_engineering = 0
+    engineering_run_ids = set()
     for relpath in paths:
-        role = classify_path(relpath, route_id)
+        role = classify_path(
+            relpath, route_id, engineering_archive=engineering_archive,
+        )
+        run_id = None
+        if role == "engineering_evidence":
+            run_id = _engineering_path_run_id(relpath, route_id)
+            engineering_run_ids.add(run_id)
         if role == "project_memory" and not allow_project_memory_update:
             raise EvidenceSyncError(
                 "index/family updates require --allow-project-memory-update"
@@ -199,7 +237,7 @@ def validate_staged(repo: Path, route_id: str, base_ref: str, *,
         parsed_json = None
         if suffix == ".json":
             parsed_json, is_failed = inspect_json(
-                raw, relpath, route_id, engineering_archive,
+                raw, relpath, route_id, engineering_archive, run_id,
             )
             failed_engineering += int(is_failed)
         elif suffix == ".csv":
@@ -213,12 +251,21 @@ def validate_staged(repo: Path, route_id: str, base_ref: str, *,
             cards += 1
             if f"- Route id: {route_id}" not in raw.decode("utf-8"):
                 raise EvidenceSyncError(f"route card identity mismatch: {relpath}")
-        if role == "route_evidence":
+        if role in {"route_evidence", "engineering_evidence"}:
             route_evidence += 1
             if relpath.endswith("_closeout.json"):
                 if not isinstance(parsed_json, dict) or parsed_json.get("route_id") != route_id \
                         or not all(key in parsed_json for key in ("state", "decision", "authorizes")):
                     raise EvidenceSyncError(f"closeout identity/terminal tuple is incomplete: {relpath}")
+                if engineering_archive and (
+                    parsed_json.get("run_id") != run_id
+                    or parsed_json.get("state") != "FAILED_ENGINEERING"
+                    or parsed_json.get("decision") is not None
+                    or parsed_json.get("authorizes") != "NONE"
+                ):
+                    raise EvidenceSyncError(
+                        f"engineering closeout identity/terminal tuple is invalid: {relpath}"
+                    )
                 closeouts += 1
         reports.append({
             "path": relpath, "role": role, "bytes": len(raw),
@@ -230,6 +277,10 @@ def validate_staged(repo: Path, route_id: str, base_ref: str, *,
         raise EvidenceSyncError("sync may update at most one route card")
     if engineering_archive and failed_engineering < 1:
         raise EvidenceSyncError("--engineering-archive requires FAILED_ENGINEERING evidence")
+    if engineering_archive and len(engineering_run_ids) != 1:
+        raise EvidenceSyncError("engineering archive must contain exactly one run_id")
+    if engineering_archive and closeouts != 1:
+        raise EvidenceSyncError("engineering archive must contain exactly one closeout")
     return {
         "schema_version": 1,
         "status": "EVIDENCE_SYNC_READY",

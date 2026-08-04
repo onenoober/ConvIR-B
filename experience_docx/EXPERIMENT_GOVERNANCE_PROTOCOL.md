@@ -14,6 +14,13 @@ explanation, cheapest discriminating observation, matched baseline/budget,
 data roles, locked-test policy, and the exact actions for pass, inconclusive and
 fail.
 
+An evidence-bound operational fixed-factor amendment freezes the exact old and
+new values with the reserved schema-preserving token
+`fixed_factor.<factor>.from_<value>.to_<value>`. It does not create an
+orthogonal scientific route permission. Current authoring rejects the ambiguous
+bare `training_batch_shape` dimension and any route claim that uses a
+`fixed_factor.` token; historical source bytes remain readable provenance.
+
 For a new schema-3 route, bind the read-only research update that selected the
 question. `post_terminal` binds 1-8 exact triggering terminal records;
 `program_foundation` binds none and is limited to the first route of a genuinely

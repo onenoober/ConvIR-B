@@ -184,6 +184,41 @@ class ResearchProgramContractTests(unittest.TestCase):
         with self.assertRaises(PROGRAM.ProgramContractError):
             PROGRAM.validate_program_contract(contract(amendments=[amendment]))
 
+    def test_current_fixed_factor_amendment_requires_exact_compatibility_token(self):
+        amendment = {
+            "id": "batch_shape_repair",
+            "reason": "protected-data-free qualification showed the frozen batch shape is invalid",
+            "evidence_refs": ["experience_docx/engineering_failures/route/route-r1/closeout.json"],
+            "approved_scope": "change training batch size from one to two only",
+            "changes": [{
+                "kind": "orthogonal_dimensions", "target": "restoration_program",
+                "value": contract()["orthogonal_dimensions"] + ["training_batch_shape"],
+            }],
+        }
+        with self.assertRaisesRegex(PROGRAM.ProgramContractError, "ambiguous"):
+            PROGRAM.validate_current_amendment_encoding(contract(amendments=[amendment]))
+
+        exact = copy.deepcopy(amendment)
+        exact["changes"][0]["value"][-1] = (
+            "fixed_factor.training_batch_shape.from_b1.to_b2"
+        )
+        value = contract(amendments=[exact])
+        PROGRAM.validate_current_amendment_encoding(value)
+        program = PROGRAM.validate_program_contract(value, evidence_exists=lambda _: True)
+        self.assertIn(
+            "fixed_factor.training_batch_shape.from_b1.to_b2",
+            program["orthogonal_dimensions"],
+        )
+        route = claim(
+            mechanism="orthogonal", sequence=None,
+            orthogonal=[{
+                "dimension": "fixed_factor.training_batch_shape.from_b1.to_b2",
+                "reason": "attempt to misuse a fixed-factor amendment as route authorization",
+            }],
+        )
+        with self.assertRaisesRegex(PROGRAM.ProgramContractError, "cannot authorize"):
+            PROGRAM.validate_route_authorization(program, route)
+
     def test_stage_permissions_fail_closed_without_blocking_unprotected_work(self):
         program = PROGRAM.validate_program_contract(contract())
         protected = claim(permissions={

@@ -25,11 +25,15 @@ class EvidenceSyncTests(unittest.TestCase):
         subprocess.run(["git", "commit", "-qm", "base"], cwd=repo, check=True)
         return repo
 
-    def stage_closeout(self, repo: Path, *, state="COMPLETED_GATE_PASS") -> None:
-        directory = repo / "experience_docx/experiment_logs/route"
+    def stage_closeout(self, repo: Path, *, state="COMPLETED_GATE_PASS",
+                       engineering=False, run_id="route-r1") -> None:
+        if engineering:
+            directory = repo / SYNC.ENGINEERING_FAILURE_PREFIX / "route" / run_id
+        else:
+            directory = repo / "experience_docx/experiment_logs/route"
         directory.mkdir(parents=True)
         value = {
-            "route_id": "route", "state": state,
+            "route_id": "route", "run_id": run_id, "state": state,
             "decision": None if state == "FAILED_ENGINEERING" else "PASS",
             "authorizes": "NONE",
         }
@@ -79,11 +83,46 @@ class EvidenceSyncTests(unittest.TestCase):
             self.stage_closeout(repo, state="FAILED_ENGINEERING")
             with self.assertRaises(SYNC.EvidenceSyncError):
                 self.validate(repo)
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.repo(Path(directory))
+            self.stage_closeout(repo, state="FAILED_ENGINEERING", engineering=True)
             report = SYNC.validate_staged(
                 repo, "route", "HEAD", allow_project_memory_update=False,
                 engineering_archive=True,
             )
             self.assertTrue(report["engineering_archive"])
+            self.assertTrue(all(
+                item["role"] == "engineering_evidence" for item in report["files"]
+            ))
+
+    def test_engineering_archive_rejects_scientific_log_path_and_run_mismatch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.repo(Path(directory))
+            self.stage_closeout(repo, state="FAILED_ENGINEERING")
+            with self.assertRaisesRegex(SYNC.EvidenceSyncError, "engineering archives"):
+                SYNC.validate_staged(
+                    repo, "route", "HEAD", allow_project_memory_update=False,
+                    engineering_archive=True,
+                )
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.repo(Path(directory))
+            self.stage_closeout(
+                repo, state="FAILED_ENGINEERING", engineering=True,
+                run_id="route-r1",
+            )
+            closeout = (
+                repo / SYNC.ENGINEERING_FAILURE_PREFIX / "route" / "route-r1"
+                / "run_closeout.json"
+            )
+            value = json.loads(closeout.read_text(encoding="utf-8"))
+            value["run_id"] = "route-r2"
+            closeout.write_text(json.dumps(value), encoding="utf-8")
+            subprocess.run(["git", "add", str(closeout.relative_to(repo))], cwd=repo, check=True)
+            with self.assertRaisesRegex(SYNC.EvidenceSyncError, "run_id mismatch"):
+                SYNC.validate_staged(
+                    repo, "route", "HEAD", allow_project_memory_update=False,
+                    engineering_archive=True,
+                )
 
 
 if __name__ == "__main__":

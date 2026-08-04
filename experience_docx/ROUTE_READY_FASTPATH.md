@@ -154,6 +154,10 @@ unless each value has a matching JSON Pointer; a gate outcome always carries its
 own source-bound pointer. A schema-3 conclusion must select at least one primary fact with a
 source-bound numeric point estimate; a pure gate fact cannot be the entire
 primary result.
+The schema-3 `run()` must call `write_scientific_review_facts`, which requires
+at least one finite numeric point fact before publication. Route-ready rejects
+the legacy `write_review_facts` writer for current scientific entrypoints, so a
+gate-only facts file cannot survive until ARCHIVE before failing.
 Lifecycle evidence publication validates this contract
 before copying any file, so malformed review facts cannot create partial evidence.
 Paths are delivered through `RouteContext`; entrypoints never infer positional
@@ -290,3 +294,10 @@ gates, or scientific scope. Re-run the staged gate only when the card,
 manifest, runtime spec, entrypoint, asset manifest, or canonical runtime bundle
 changed. A cloud contract pass is not repeated for unchanged code, and it
 never constitutes a scientific result.
+
+Current authoring represents an evidence-bound operational fixed-factor change
+with `fixed_factor.<factor>.from_<value>.to_<value>` in the existing amendment
+value. The compiler rejects bare `training_batch_shape`, malformed tokens, and
+any attempt to use the compatibility token as an orthogonal route dimension.
+This preserves the program schema and remains parseable by an already-running
+MCP process; route-ready supplies the stricter current-authoring gate.
