@@ -468,7 +468,7 @@
         "transferable_claim": "A component ablation can separate reconstruction contrast loss, haze-density consistency, and their combination in a dehazing training objective."
       }
     ],
-    "snapshot_commit": "b46a98d22915ed7e873ce48893cbd52027448e1c",
+    "snapshot_commit": "bda53e058472b0b5395c683598cc5268ee1c1b6c",
     "trigger_terminals": [
       {
         "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",

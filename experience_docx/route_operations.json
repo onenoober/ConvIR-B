@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-factorial-v1.json",
-  "experiment_spec_sha256": "aa75e4161c7f14d318fd023d8d11dbbffec2c989c42df4413e5525435e45ab3d",
+  "experiment_spec_sha256": "aaa212b0942bdd2319130e099b4bf303c6412be71148c7631910135ac41ca71a",
   "operations": {
     "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 14000,
       "mode": "daytime_dehazing_density_consistency_carl_factorial",
       "monitor_profile": "standard",
-      "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r2",
+      "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r3",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -41,7 +41,7 @@
     }
   },
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
-  "program_contract_sha256": "299b0b56dd8bbac2776c6c8e0c881b6fdab11fc67421246a33e8ee4273899fb1",
+  "program_contract_sha256": "a5313637be12cb6fa2a6d1115ac97dcaa338854bf61dab050574ffd4d055b39f",
   "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-factorial-v1.md",
   "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
   "rules_commit": "b46a98d22915ed7e873ce48893cbd52027448e1c",

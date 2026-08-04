@@ -6,7 +6,7 @@
     },
     {
       "id": "c2_entrypoint",
-      "identity": "3cf2e6d339a0063805262c93789221219444dbe8cf40d9e8d3f0b298c6565c7b"
+      "identity": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e"
     },
     {
       "id": "official_checkpoint",
@@ -36,7 +36,7 @@
   ],
   "contract_mode": "gpu_synthetic_no_data",
   "minimum_fixture": {
-    "batch": 1,
+    "batch": 2,
     "channels": 3,
     "height": 256,
     "width": 256
@@ -46,9 +46,9 @@
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
-    "code_path_sha256": "3cf2e6d339a0063805262c93789221219444dbe8cf40d9e8d3f0b298c6565c7b",
+    "code_path_sha256": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e",
     "device_class": "cuda_sm89",
-    "input_contract_sha256": "2a31167b414469283578be67e8e901d7920753cf103b70065e09d6234f51aac8",
+    "input_contract_sha256": "49ba890956f598460dbe8bf5f8f26897d86d3da3cd59694ba8dcd9db565b13b9",
     "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
     "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
   },

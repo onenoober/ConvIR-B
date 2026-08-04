@@ -459,6 +459,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "amend_c2_batch_shape_after_r2_engineering_failure",
+      "reason": "The r2 route-bound engineering closeout recorded a protected-data-free synthetic CUDA failure in the unchanged official ConvIR-B path: BatchNorm received a singleton batch after downsampling to 1x1. No scientific data, scientific outputs, or scientific training were touched. The user-authorized formal amendment changes only the batch shape needed to exercise the same production path.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-density-consistency-carl-factorial-v1/daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json"
+      ],
+      "approved_scope": "Change the C2 synthetic qualification fixture and the matched scientific training batch from 1 to 2. Keep architecture, initialization, scene roles, optimizer, steps, seeds, inference path, metrics, gates, permissions, VGG-19 identity, GPU selection rule, and total workload unchanged. This amendment authorizes re-finalization and one new route-ready start only; it does not authorize any scientific interpretation or protected-data expansion.",
+      "changes": [
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "daytime_dehazing_spatially_adaptive_restoration_v1",
+          "value": [
+            "bidirectional_local_error_operationalization",
+            "observable_signal_class",
+            "mechanism_parameterization",
+            "integration_location",
+            "training_objective_density_consistency_carl_factorial",
+            "dataset_scope",
+          "precision_model",
+          "training_batch_shape"
+          ]
+        }
+      ]
     }
   ]
 }

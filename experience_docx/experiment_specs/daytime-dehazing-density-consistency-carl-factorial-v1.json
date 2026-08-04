@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_density_consistency_carl_factorial",
         "require_gpu": true,
-        "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r2",
+        "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r3",
         "closeout_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -387,7 +387,7 @@
           "using C2 as a reproduction claim for the published K=5 FFA-Net/RESIDE CARL study"
         ],
         "research_update_binding": {
-          "snapshot_commit": "b46a98d22915ed7e873ce48893cbd52027448e1c",
+        "snapshot_commit": "bda53e058472b0b5395c683598cc5268ee1c1b6c",
           "trigger_type": "post_terminal",
           "trigger_terminals": [
             {
@@ -601,7 +601,7 @@
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_factorial_v1.py",
           "access_role": "engineering_debug",
           "contract_access": true,
-          "sha256": "3cf2e6d339a0063805262c93789221219444dbe8cf40d9e8d3f0b298c6565c7b"
+          "sha256": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e"
         },
         {
           "id": "runtime_environment",
@@ -670,7 +670,7 @@
         "profile_id": "daytime_dehazing_density_consistency_carl_factorial_gpu_v1",
         "contract_mode": "gpu_synthetic_no_data",
         "minimum_fixture": {
-          "batch": 1,
+          "batch": 2,
           "channels": 3,
           "height": 256,
           "width": 256
@@ -682,7 +682,7 @@
           },
           {
             "id": "c2_entrypoint",
-            "identity": "3cf2e6d339a0063805262c93789221219444dbe8cf40d9e8d3f0b298c6565c7b"
+            "identity": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e"
           },
           {
             "id": "official_checkpoint",
@@ -716,7 +716,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "3cf2e6d339a0063805262c93789221219444dbe8cf40d9e8d3f0b298c6565c7b",
+          "code_path_sha256": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cuda_sm89"

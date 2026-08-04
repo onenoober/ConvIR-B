@@ -54,6 +54,7 @@ OBSERVATIONS_PER_SCENE = 4
 TRAINING_STEPS = 2000
 FORMAL_ITERATIONS = len(ARMS) * TRAINING_STEPS
 TOTAL_UNITS = len(ARMS) + len(ARMS) * DEVELOPMENT_SCENES + 1
+BATCH_SIZE = 2
 TRAIN_CROP = 256
 EVAL_CROP = 256
 TRAINING_SEED = 20_260_803
@@ -380,9 +381,11 @@ def train_arm(context: Any, torch: Any, features: Any, training: list[dict[str, 
     for step in range(TRAINING_STEPS):
         group = training[step % len(training)]
         crop_key = f"{group['scene_id']}|{step}"
-        clear, hazy = scene_batch(
+        clear_single, hazy_single = scene_batch(
             torch, group, crop=TRAIN_CROP, crop_key=crop_key, center=False, device=context.device,
         )
+        clear = torch.cat([clear_single, clear_single], dim=0)
+        hazy = [torch.cat([item, item], dim=0) for item in hazy_single]
         primary = hazy[step % OBSERVATIONS_PER_SCENE]
         paired = hazy[(step // OBSERVATIONS_PER_SCENE + 1) % OBSERVATIONS_PER_SCENE]
         prediction = unwrap_prediction(model(primary))
@@ -564,7 +567,7 @@ def contract(context_path):
     started = time.monotonic()
     for iteration in range(FORMAL_ITERATIONS):
         arm = ARMS[iteration // TRAINING_STEPS]
-        hazy = torch.rand((1, 3, TRAIN_CROP, TRAIN_CROP), device=context.device)
+        hazy = torch.rand((BATCH_SIZE, 3, TRAIN_CROP, TRAIN_CROP), device=context.device)
         paired_hazy = torch.rand_like(hazy)
         clear = torch.rand_like(hazy)
         negatives = [hazy, paired_hazy, torch.rand_like(hazy), torch.rand_like(hazy)]
@@ -601,7 +604,7 @@ def contract(context_path):
         engineering={
             "mode": "gpu_synthetic_no_data",
             "device": context.device,
-            "fixture": {"batch": 1, "channels": 3, "height": TRAIN_CROP, "width": TRAIN_CROP},
+            "fixture": {"batch": BATCH_SIZE, "channels": 3, "height": TRAIN_CROP, "width": TRAIN_CROP},
             "production_path_exercised": True,
             "protected_data_touched": False,
             "scientific_output_created": False,
