@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_density_consistency_carl_factorial",
         "require_gpu": true,
-        "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r3",
+        "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
         "closeout_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -601,7 +601,7 @@
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_factorial_v1.py",
           "access_role": "engineering_debug",
           "contract_access": true,
-          "sha256": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e"
+          "sha256": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1"
         },
         {
           "id": "runtime_environment",
@@ -682,7 +682,7 @@
           },
           {
             "id": "c2_entrypoint",
-            "identity": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e"
+            "identity": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1"
           },
           {
             "id": "official_checkpoint",
@@ -716,7 +716,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "b304bc1eac74b35054e8249f114cbc06627e941dc1c52a05140948b30e571b6e",
+          "code_path_sha256": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cuda_sm89"

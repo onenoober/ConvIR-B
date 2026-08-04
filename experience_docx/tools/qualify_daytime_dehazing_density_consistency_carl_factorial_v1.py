@@ -172,7 +172,7 @@ def load_convir(context: Any, torch: Any, *, trainable: bool) -> Any:
 
 def unwrap_prediction(value: Any) -> Any:
     if isinstance(value, (tuple, list)):
-        value = value[0]
+        value = value[-1]
     if not hasattr(value, "ndim") or value.ndim != 4 or value.shape[1] != 3:
         raise RuntimeError("ConvIR prediction has an invalid RGB tensor contract")
     return value
