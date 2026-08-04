@@ -1,0 +1,73 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-density-consistency-carl-multiseed-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/daytime-dehazing-density-consistency-carl-multiseed-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY.json",
+    "cost_contract": {
+      "batch_shape_policy": "fixed",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 120,
+      "formal_iterations": 40000,
+      "formal_max_wall_seconds": 14400,
+      "max_peak_memory_mib": 14000,
+      "max_seconds_per_iteration": 0.15,
+      "memory_scaling": "constant",
+      "probe_iterations": 4000,
+      "production_path": "exact",
+      "safety_factor": 2.0,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_factorial_v1.py",
+  "environment": {
+    "CONVIR_ROUTE_PYTHON": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+    "CONVIR_ROUTE_VGG19_PATH": "/sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "multiseed_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/multiseed_gate_summary.json"
+    },
+    {
+      "destination_filename": "multiseed_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/multiseed_summary.json"
+    },
+    {
+      "destination_filename": "multiseed_completed_unit_ledger.txt",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/completed_units.jsonl"
+    },
+    {
+      "destination_filename": "daytime_dehazing_density_consistency_carl_multiseed_factorial_v1_review_facts.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_density_consistency_carl_multiseed_factorial_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 216000,
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-density-consistency-carl-multiseed-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The raw primary and fixed density-stratum contrasts require a pre-run planning-SD transfer bound and actual terminal uncertainty. The largest archived RESIDE development upper bound is transferred conservatively with explicit cross-dataset limitations."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-v1",
+  "schema_version": 2,
+  "timeout_seconds": 259200,
+  "total_units": 41
+}

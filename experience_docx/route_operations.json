@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-multiseed-factorial-v1.json",
+  "experiment_spec_sha256": "012d79857af5f7a0752e828493aee4f9667e681150d82bf22f38f93d39e57626",
+  "operations": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "C2_MULTISEED_VALIDITY_OR_PRECISION_REVIEW_ONLY",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_factorial_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 14000,
+      "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
+      "monitor_profile": "standard",
+      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "facc0399c0556f3b29b4443b5aeaf8863ce4b06b0c12c021b4d0c19e2a37f8e6",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-multiseed-factorial-v1.md",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-v1",
+  "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-density-consistency-carl-multiseed-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY.json"
+  }
+}

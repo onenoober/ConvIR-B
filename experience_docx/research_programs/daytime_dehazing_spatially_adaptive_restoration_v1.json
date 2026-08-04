@@ -1,0 +1,515 @@
+{
+  "schema_version": 1,
+  "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+  "objective": "Study and solve a general daytime single-image dehazing problem: repeatable, measurable, and intervenable spatial heterogeneity in bidirectional local restoration error, including under-restoration, over-restoration, and damage to already-clear or nearly clear regions. Qualify observable signals that estimate the direction and strength of local restoration adjustment without ground truth at inference, then develop an end-to-end trainable mechanism inside the model graph that can increase, decrease, or preserve local restoration as needed. Fidelity-constrained feature modulation is the primary candidate mechanism, not a mandatory or exclusive parameterization; evidence may support another internal trainable implementation, but never post-processing. ConvIR-B is only the reproducible baseline, initialization, and matched comparison, while every scientific claim concerns a dehazing-domain problem. Final success requires stable improvement over matched ConvIR-B on predeclared standard dehazing quality metrics, preservation of nearly clear regions, controlled tail risk, and independent cross-domain evidence. The program must form a defensible master's-thesis research loop within five months, using CCF B review quality as the design bar through mechanistic explanation, sufficient ablation, valid uncertainty, and independent confirmation, without weakening scientific gates to meet the schedule. Every candidate must progress through program-local training, development, confirmation, and one-use sealed-final evidence without inheriting historical route outcomes, exposure labels, decisions, or authorizations.",
+  "source_anchors": [
+    {
+      "id": "official_architecture_anchor",
+      "reference": "Immutable github/codex/haze4k-official-arch-anchor@3b4da35440c8c26a7d1bcaf1daf342e11d9a3898.",
+      "allowed_uses": [
+        "baseline",
+        "initialization"
+      ]
+    },
+    {
+      "id": "official_haze4k_checkpoint",
+      "reference": "Official Haze4K checkpoint SHA-256 6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088.",
+      "allowed_uses": [
+        "baseline",
+        "initialization",
+        "comparison"
+      ]
+    },
+    {
+      "id": "haze4k_train_scene_identity",
+      "reference": "GitHub-main Haze4K train scene-split summary a9aaa2b40d73eccb133763ce75d030c1a41013079178b39b4ebd5693a22099a9; reusable only for scene identity, grouping, and partition membership.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "haze4k_test_scene_identity",
+      "reference": "GitHub-main Haze4K test scene-split summary 656407f3183f92e75e357004b04b505d2b92cd4b0f4b02b3c6a22aef57d069cf; reusable only for scene identity, grouping, and partition membership.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "its_verified_overlap_membership",
+      "reference": "GitHub-main ITS verified-overlap exclusion membership c4dddbcf214c301ffa6d3879217e6336024119bb07d0f9c1f929ac040aa0dda3; reusable only as a known-overlap quarantine relation and not as proof of full source disjointness.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "ots_verified_overlap_membership",
+      "reference": "GitHub-main OTS verified-overlap exclusion membership d7526849879cf8650af545db20a5e4555cb0eb1931973612af98a5897f2e03d2; reusable only as a known-overlap quarantine relation and not as proof of full source disjointness.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "s0_program_foundation_pass",
+      "reference": "GitHub-main daytime-dehazing-haze4k-identity-v1 typed closeout SHA-256 9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346 at main commit 86653086060c4600c5f3b84f6937c05c2576f737; authorizes only S1 utility-qualification contract authoring.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "s0_scene_role_ledger",
+      "reference": "Run-only S0 original-clear-scene ledger daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl, 21025 rows, SHA-256 4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960; only retained development_screening members may supply S1 outcomes.",
+      "allowed_uses": [
+        "evaluation"
+      ]
+    },
+    {
+      "id": "s1_v1_measurement_validity_review",
+      "reference": "GitHub-main daytime-dehazing-local-restoration-need-qualification-v1 typed closeout SHA-256 8272c22034ad827c39ac2ff7d7c1903f39a9872f8a7a81ca854bc95b045af98b at main commit 93dc5bd7bdfde1d0dccdf3ad024c155790c5c481; authorizes only S1 measurement-validity or precision review after the pre-inference ITS/OTS identity-and-coverage veto.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "reside_pairing_v2_pass",
+      "reference": "GitHub-main daytime-dehazing-reside-pairing-contract-v2 typed closeout SHA-256 915d98b1dae5847cdb1166610e16ade96b5fb656373587d08895e2a7863492b9, summary SHA-256 d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699, and identity summary SHA-256 123acad0dcf73b958d2d02845c8c51f0eac89023a469de551102ca40a714794a at main commit 6d33d79fa6eaa5cc1f4aba3bfd7ee78fcc03ce49; its cloud-only 300-row mapping ledger SHA-256 d3e889b3cce92c0a11f25a6a49db0e3a3854b7eb427721b2410871ad65d39c25 authorizes only revised S1 utility-qualification contract authoring.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "s1_v2_compact_scene_evidence",
+      "reference": "GitHub-main daytime-dehazing-local-restoration-need-qualification-v2 typed closeout SHA-256 64831258a340a0e3f9a3bad82c8138ce144c837b3e01cd42ded67daa82d59992, summary SHA-256 fdb15c9da34b6e9bba815927578898957b1980f87d7bb3295dfb1b31fb3fa068, gate summary SHA-256 a498559a645d547472185d889af9c19ce589f56ed91564cb3931deda4e338a69, and 450-scene compact CSV SHA-256 db6cfe210b3eedf08e06d2b6fd4447f523b1777661d87ccb53e0bf5e99bb1f8e; the terminal remains COMPLETED_INCONCLUSIVE and authorizes only S1 measurement-validity or precision review.",
+      "allowed_uses": [
+        "evaluation"
+      ]
+    },
+    {
+      "id": "s1_validity_precision_review_pass",
+      "reference": "GitHub-main daytime-dehazing-s1-validity-precision-review-v1 typed closeout SHA-256 b05665be761bbe90707cc622ce24cba285027b3c43a34041a007bcbe0e321670 at main commit b14e63a387b1b6ea9a4677c353678011d7174c14; its COMPLETED_GATE_PASS authorizes only authoring a revised S1 utility-qualification contract.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "s1_v3_valid_operationalization_fail",
+      "reference": "GitHub-main daytime-dehazing-local-restoration-need-qualification-v3 typed closeout SHA-256 293b9e973fb6bec9e85d5722597c2b303525cdbe9797cbb0bd6c5d27d9409240 and conclusion SHA-256 675b9dff3816cd136d796add509f56cb368a8d2e1d78a595e4188e514c0ea7d8 at main commit 452f7aa382b8968737eea0998b03e85c686f3a10; its valid sequence-1 FAIL authorizes no execution or promotion and names only authoring a second S1 operationalization contract if budget remains.",
+      "allowed_uses": [
+        "evaluation"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "baseline_model": [
+      "baseline",
+      "initialization",
+      "comparison"
+    ],
+    "dataset_structure": [
+      "diagnostic"
+    ],
+    "overlap_membership": [
+      "diagnostic"
+    ],
+    "parent_authorization": [
+      "diagnostic"
+    ],
+    "program_role_ledger": [
+      "evaluation"
+    ],
+    "archived_route_evidence": [
+      "evaluation"
+    ]
+  },
+  "stages": {
+    "program_foundation": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "dataset_contract_foundation"
+      ]
+    },
+    "utility_qualification": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "local_restoration_need_qualification"
+      ]
+    },
+    "mechanism_discovery": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "observable_need_estimation"
+      ]
+    },
+    "module_development": {
+      "evidence_roles": [
+        "development_screening"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "internal_adaptive_restoration"
+      ]
+    },
+    "frozen_confirmation": {
+      "evidence_roles": [
+        "confirmation"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": true,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "frozen_candidate_confirmation"
+      ]
+    },
+    "sealed_final": {
+      "evidence_roles": [
+        "sealed_final"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": true,
+        "allow_canary": false,
+        "allow_locked_test": true
+      },
+      "route_families": [
+        "sealed_final_evaluation"
+      ]
+    }
+  },
+  "route_families": {
+    "dataset_contract_foundation": {
+      "core_assumption": "Outcome-blind clear-scene identity, exact-content grouping, known-overlap quarantine, and deterministic program-local role assignment can create a usable evidence contract without inheriting any historical scientific conclusion or exposure label.",
+      "adjacent_budget": 1,
+      "attempts_used": 1,
+      "state": "closed",
+      "close_condition": "Close after one typed S0 terminal establishes whether the initial dataset scope can support authoring the S1 utility-qualification contract.",
+      "reopen_evidence_types": [
+        "new_dataset_identity_evidence",
+        "new_overlap_membership_evidence"
+      ]
+    },
+    "local_restoration_need_qualification": {
+      "core_assumption": "Daytime dehazing exhibits scene-grouped, repeatable, spatially heterogeneous bidirectional local restoration error: different regions may require stronger restoration, weaker restoration, or preservation, including under-restoration, over-restoration, and damage to already-clear or nearly clear regions. This structure is materially stronger than measurement noise and simple global difficulty variation.",
+      "adjacent_budget": 2,
+      "attempts_used": 1,
+      "state": "open",
+      "close_condition": "Advance and close this qualification family on a typed PASS. A valid FAIL of adjacent sequence 1 records rejection of that frozen operationalization but preserves the already budgeted sequence-2 bidirectional-local-error operationalization; close without advancement only after sequence 2 also fails, or when the remaining attempt is explicitly abandoned by a later evidence-bound decision.",
+      "reopen_evidence_types": [
+        "new_failure_mode_evidence",
+        "new_measurement_validity_evidence"
+      ]
+    },
+    "observable_need_estimation": {
+      "core_assumption": "Observable internal or image-derived signals can predict the direction and strength of local restoration adjustment well enough to support a trainable non-privileged mechanism without using ground truth at inference time.",
+      "adjacent_budget": 3,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close when observable-signal qualification either supports one frozen mechanism interface or rejects the family core assumption.",
+      "reopen_evidence_types": [
+        "new_observable_signal_evidence",
+        "new_privileged_upper_bound_evidence"
+      ]
+    },
+    "internal_adaptive_restoration": {
+      "core_assumption": "An end-to-end trainable internal adaptive-restoration mechanism can allocate restoration strength spatially while preserving already-clear or nearly clear regions and improving predeclared standard dehazing metrics over matched ConvIR-B without post-processing. Fidelity-constrained feature modulation is the primary candidate, while other internal parameterizations remain eligible only if they solve the same bidirectional local-error problem under the same evidence gates.",
+      "adjacent_budget": 4,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the adjacent module budget yields one frozen candidate meeting utility, preservation, stability, and ablation gates or rejects the family assumption.",
+      "reopen_evidence_types": [
+        "new_mechanism_evidence",
+        "new_interaction_evidence"
+      ]
+    },
+    "frozen_candidate_confirmation": {
+      "core_assumption": "One fully frozen candidate selected without confirmation access retains its predeclared standard-metric gains, nearly-clear-region preservation, and tail-risk behavior on independent confirmation scenes and domains.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the single frozen-candidate confirmation terminal; confirmation outcomes cannot be used to tune or reopen the same candidate.",
+      "reopen_evidence_types": [
+        "new_independent_confirmation_population"
+      ]
+    },
+    "sealed_final_evaluation": {
+      "core_assumption": "The completely frozen method generalizes to the one-use sealed-final evidence and supports the final daytime dehazing claim under predeclared standard quality metrics, preservation and tail-risk criteria, cross-domain analysis, and valid uncertainty.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close permanently after the single sealed-final access and final typed terminal; sealed outcomes never authorize tuning or reopening.",
+      "reopen_evidence_types": [
+        "new_external_dataset_evidence"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "bidirectional_local_error_operationalization",
+    "observable_signal_class",
+    "mechanism_parameterization",
+    "integration_location",
+    "training_objective",
+    "dataset_scope",
+    "precision_model"
+  ],
+  "amendments": [
+    {
+      "id": "record_daytime_s0_r3_identity_inconclusive",
+      "reason": "The first S0 attempt consumed the dataset-contract-foundation adjacent budget and closed inconclusively because its frozen Haze4K root resolved zero train and test scenes. The typed closeout authorizes only completion of missing data-identity or overlap evidence.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-program-foundation-v1/daytime_dehazing_program_foundation_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-program-foundation-v1/daytime_dehazing_program_foundation_v1_identity_summary.json"
+      ],
+      "approved_scope": "Record the consumed S0 attempt, close its adjacent family, and permit only an evidence-backed reopen that completes the missing Haze4K identity and path evidence under the unchanged S0 question and gates.",
+      "changes": [
+        {
+          "kind": "attempts_used",
+          "target": "dataset_contract_foundation",
+          "value": 1
+        },
+        {
+          "kind": "family_state",
+          "target": "dataset_contract_foundation",
+          "value": "closed"
+        }
+      ]
+    },
+    {
+      "id": "record_daytime_s0_identity_completion_pass",
+      "reason": "The authorized identity-completion reopen produced a typed S0 PASS with exact role separation, sufficient role capacity, a SHA-bound cloud-only scene ledger, and no model or restoration-outcome access.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_role_summary.json"
+      ],
+      "approved_scope": "Record the S0 PASS and its exact authorization to author the S1 utility-qualification contract only; preserve the limitation that exact RGB and archived known-overlap controls do not prove complete source-provenance disjointness.",
+      "changes": [
+        {
+          "kind": "family_state",
+          "target": "dataset_contract_foundation",
+          "value": "closed"
+        }
+      ]
+    },
+    {
+      "id": "record_daytime_s1_v1_pairing_inconclusive",
+      "reason": "The first S1 run ended inconclusively before inference because the frozen ITS and OTS planned rosters each resolved zero paired haze observations even though the parent S0 clear-scene identities remained valid. The typed closeout authorizes only measurement-validity or precision review and does not consume an adjacent scientific attempt.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v1/daytime_dehazing_local_restoration_need_v1_summary.json"
+      ],
+      "approved_scope": "Permit one outcome-blind evidence-backed reopen of dataset-contract-foundation to bind the original ITS and OTS planned rosters to canonical clear scenes, exactly two nested distinct haze payloads, a verifiable formation/content relation, and whole-image shape bounds. PASS may authorize only revised S1 contract authoring; it cannot authorize inference, S2, or consume the local-restoration scientific budget.",
+      "changes": [
+        {
+          "kind": "reopen_evidence_types",
+          "target": "dataset_contract_foundation",
+          "value": [
+            "new_dataset_identity_evidence",
+            "new_overlap_membership_evidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "record_daytime_reside_pairing_v2_pass",
+      "reason": "The authorized outcome-blind dataset-contract reopen verified the unchanged S1-v1 ITS and OTS planned rosters: 300 canonical clear scenes, exactly 600 nested distinct haze observations, bounded relative paths in the actual official RESIDE layout, file and decoded-RGB identities, aligned dimensions, scoring geometry, and whole-image shape feasibility. No model, checkpoint, inference, restoration outcome, confirmation, or sealed-final data was accessed.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_identity_summary.json"
+      ],
+      "approved_scope": "Close the outcome-blind dataset-contract reopen and authorize only a revised S1 utility-qualification contract that consumes mapping ledger SHA-256 d3e889b3cce92c0a11f25a6a49db0e3a3854b7eb427721b2410871ad65d39c25 exactly, preserves the original S1 scientific gates and adjacent sequence, and separately qualifies complete-image ConvIR-B inference at the bound device and shape contract. The validity-vetoed S1-v1 run consumed no local-restoration scientific attempt.",
+      "changes": [
+        {
+          "kind": "family_state",
+          "target": "dataset_contract_foundation",
+          "value": "closed"
+        }
+      ]
+    },
+    {
+      "id": "record_daytime_s1_v2_inconclusive",
+      "reason": "The revised S1-v2 route completed all frozen development workload but ended COMPLETED_INCONCLUSIVE under its original validity-veto contract. Its typed terminal authorizes only S1 measurement-validity or precision review and does not consume an adjacent scientific attempt.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_gate_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v2/daytime_dehazing_local_restoration_need_v2_scene_metrics.csv"
+      ],
+      "approved_scope": "Record the unchanged S1-v2 inconclusive terminal and preserve the open local-restoration family at zero consumed adjacent attempts. Only an S1 measurement-validity or precision review may reinterpret gate precedence; historical estimates, thresholds, outcomes, and terminal remain immutable.",
+      "changes": [
+        {
+          "kind": "reopen_evidence_types",
+          "target": "local_restoration_need_qualification",
+          "value": [
+            "new_failure_mode_evidence",
+            "new_measurement_validity_evidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "record_daytime_s1_validity_precision_review_pass",
+      "reason": "The authorized S1 validity and precision review passed after separating affirmative measurement-artifact evidence from insufficient precision and preserving decisive scientific FAIL precedence. It authorizes only one revised S1 utility-qualification contract.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-s1-validity-precision-review-v1/daytime_dehazing_s1_validity_precision_review_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-s1-validity-precision-review-v1/daytime_dehazing_s1_validity_precision_review_v1_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-s1-validity-precision-review-v1/daytime_dehazing_s1_validity_precision_review_v1_gate_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-s1-validity-precision-review-v1/daytime_dehazing_s1_validity_precision_review_v1_review_facts.json"
+      ],
+      "approved_scope": "Keep the local-restoration family open with zero consumed attempts and authorize only the revised S1 contract to re-evaluate the SHA-bound compact evidence. This amendment does not authorize route execution, S2, model changes, training, inference, protected data, or deployment.",
+      "changes": [
+        {
+          "kind": "family_state",
+          "target": "local_restoration_need_qualification",
+          "value": "open"
+        }
+      ]
+    },
+    {
+      "id": "record_daytime_s1_v3_valid_operationalization_fail",
+      "reason": "The SHA-bound v3 terminal resolved the prior validity and primary-precision ambiguity, passed every validity veto, and returned a decisive scientific FAIL for the frozen sequence-1 four-by-four discrete-alpha operationalization because local utility and bidirectional repeatability were unfavorable. The terminal authorizes no execution or promotion, but its typed next action preserves authoring the already-budgeted second S1 operationalization contract.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v3/daytime_dehazing_local_restoration_need_v3_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v3/daytime_dehazing_local_restoration_need_v3_conclusion.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v3/daytime_dehazing_local_restoration_need_v3_gate_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-local-restoration-need-qualification-v3/daytime_dehazing_local_restoration_need_v3_review_facts.json"
+      ],
+      "approved_scope": "Record one consumed adjacent attempt, keep the family open, and permit authoring only adjacent sequence 2: a development-only privileged bidirectional local-error operationalization using the unchanged official ConvIR-B baseline, scene roster, data roles, pairing identities, minimum effect, grouped uncertainty, and protected-data prohibitions. This record does not authorize route execution, S2, training, model changes, confirmation, sealed-final access, deployment, or promotion.",
+      "changes": [
+        {
+          "kind": "attempts_used",
+          "target": "local_restoration_need_qualification",
+          "value": 1
+        },
+        {
+          "kind": "family_state",
+          "target": "local_restoration_need_qualification",
+          "value": "open"
+        }
+      ]
+    },
+    {
+      "id": "record_sequence2_fail_and_authorize_c1_orthogonal_route",
+      "reason": "The identity-bound sequence-2 terminal passed every validity control but returned a decisive scientific FAIL for privileged bidirectional local-error operationalization. Its local and bidirectional utility gates were unfavorable, while the independent outcome-blind dataset-role ledger established unused development-only ITS and OTS capacity and preserved NH-HAZE as historical development evidence. The user therefore authorizes one evidence-bound orthogonal C1 route that changes both observable signal class and dataset scope without reopening or extending the failed adjacent family.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-bidirectional-local-error-operationalization-v1/daytime_dehazing_bidirectional_local_error_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-bidirectional-local-error-operationalization-v1/daytime_dehazing_bidirectional_local_error_v1_conclusion.json",
+        "experience_docx/experiment_logs/daytime-dehazing-bidirectional-local-error-operationalization-v1/daytime_dehazing_bidirectional_local_error_v1_gate_summary.json",
+        "experience_docx/experiment_logs/daytime-dehazing-bidirectional-local-error-operationalization-v1/daytime_dehazing_bidirectional_local_error_v1_review_facts.json",
+        "experience_docx/experiment_logs/convir-existing-dataset-role-ledger-v1/convir_existing_dataset_role_ledger_v1_closeout.json",
+        "experience_docx/experiment_logs/convir-existing-dataset-role-ledger-v1/convir_existing_dataset_role_ledger_v1_summary.json"
+      ],
+      "approved_scope": "Record the consumed sequence-2 FAIL, close the adjacent local-restoration-need family, and authorize exactly one development-only orthogonal C1 factorial route that changes observable_signal_class and dataset_scope together. The route may train equal-capacity signal adapters on the existing Haze4K training role and evaluate only the frozen Haze4K internal-development, first 150 unassigned ITS, first 150 unassigned OTS, and historical-development NH-HAZE strata. It does not reopen the failed privileged local-error assumption and does not authorize confirmation, sealed-final access, promotion, deployment, post-processing, unequal arm tuning, or result-adaptive extension.",
+      "changes": [
+        {
+          "kind": "attempts_used",
+          "target": "local_restoration_need_qualification",
+          "value": 2
+        },
+        {
+          "kind": "family_state",
+          "target": "local_restoration_need_qualification",
+          "value": "closed"
+        }
+      ]
+    },
+    {
+      "id": "amend_c2_training_objective_density_consistency_carl_factorial",
+      "reason": "The terminal-bound C1 closeout and conclusion establish a decisive scientific FAIL limited to the frozen observable spatial-conditioning adapter hypothesis. They do not test a training-objective mechanism. The user selected C2 as a density-consistency and contrast-assisted-reconstruction factorial, so the program must replace its previously broad training-objective orthogonal permission with this evidence-bound, falsifiable scope before any C2 contract is authored.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-observable-signal-domain-factorial-v1/daytime_dehazing_observable_signal_domain_factorial_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-observable-signal-domain-factorial-v1/daytime_dehazing_observable_signal_domain_factorial_v1_conclusion.json"
+      ],
+      "approved_scope": "Replace the broad training_objective permission with the single training_objective_density_consistency_carl_factorial dimension. It authorizes only authoring a post-terminal, development-screening, orthogonal C2 contract that compares the predeclared CARL and haze-density-consistency losses in one 2x2 factorial while freezing backbone, data, initialization, training budget, and inference path. It does not authorize plan or start, confirmation, sealed-final access, promotion, deployment, post-processing, result-adaptive extension, or any other training objective.",
+      "changes": [
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "daytime_dehazing_spatially_adaptive_restoration_v1",
+          "value": [
+            "bidirectional_local_error_operationalization",
+            "observable_signal_class",
+            "mechanism_parameterization",
+            "integration_location",
+            "training_objective_density_consistency_carl_factorial",
+            "dataset_scope",
+            "precision_model"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "amend_c2_batch_shape_after_r2_engineering_failure",
+      "reason": "The r2 route-bound engineering closeout recorded a protected-data-free synthetic CUDA failure in the unchanged official ConvIR-B path: BatchNorm received a singleton batch after downsampling to 1x1. No scientific data, scientific outputs, or scientific training were touched. The user-authorized formal amendment changes only the batch shape needed to exercise the same production path.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-density-consistency-carl-factorial-v1/daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json"
+      ],
+      "approved_scope": "Change the C2 synthetic qualification fixture and the matched scientific training batch from 1 to 2. Keep architecture, initialization, scene roles, optimizer, steps, seeds, inference path, metrics, gates, permissions, VGG-19 identity, GPU selection rule, and total workload unchanged. This amendment authorizes re-finalization and one new route-ready start only; it does not authorize any scientific interpretation or protected-data expansion.",
+      "changes": [
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "daytime_dehazing_spatially_adaptive_restoration_v1",
+          "value": [
+            "bidirectional_local_error_operationalization",
+            "observable_signal_class",
+            "mechanism_parameterization",
+            "integration_location",
+            "training_objective_density_consistency_carl_factorial",
+            "dataset_scope",
+            "precision_model",
+            "fixed_factor.training_batch_size.from_1.to_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "amend_c2_multiseed_unclipped_precision_model_after_r4_pass",
+      "reason": "The exact r4 terminal passed only for scene contrasts clipped to [-0.25, +0.25] dB. Every primary, factorial, interaction, and density-stratum estimate saturated at +0.25 dB under one training seed, so that terminal cannot identify the unbounded effect magnitude, separate the natural CARL, density-consistency, and interaction contributions, or establish stability across training randomness. The user selected the read-only update's first candidate: one seed-blocked multiseed replication of the unchanged 2x2 training-objective factorial with an unclipped primary PSNR contrast.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/daytime-dehazing-density-consistency-carl-factorial-v1/daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json",
+        "experience_docx/experiment_logs/daytime-dehazing-density-consistency-carl-factorial-v1/daytime_dehazing_density_consistency_carl_factorial_v1_conclusion.json",
+        "experience_docx/experiment_logs/daytime-dehazing-density-consistency-carl-factorial-v1/c2_summary.json",
+        "experience_docx/experiment_logs/convir-existing-dataset-role-ledger-v1/convir_existing_dataset_role_ledger_v1_summary.json"
+      ],
+      "approved_scope": "Authorize exactly one development-screening orthogonal precision-model route that repeats the unchanged CARL-by-density-consistency 2x2 factorial as a five-seed maximum seed-blocked design, with a predeclared nonbinding futility look after three seeds and a terminal look after five. The route changes the primary and mechanism estimands from the prior +/-0.25 dB clipped contrasts to raw finite scene PSNR differences, treats seeds as frozen blocks rather than extra scene groups, and uses the archived 0.632364322219979 dB cross-dataset planning-SD upper bound only as a conservative feasibility transfer. Architecture, official checkpoint, trainable scope, Haze4K roles, per-arm 2000-step budget, batch size 2, optimizer, CARL and consistency definitions and weights, inference path, metric implementation, and protected-data prohibitions remain unchanged. After successful compiler, route-ready, identity, and capability checks, this amendment authorizes exactly one plan and start for this route. It does not authorize confirmation, sealed-final access, promotion, deployment, publication, post-processing, changed loss weights, or a result-adaptive seed extension beyond five.",
+      "changes": [
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "daytime_dehazing_spatially_adaptive_restoration_v1",
+          "value": [
+            "bidirectional_local_error_operationalization",
+            "observable_signal_class",
+            "mechanism_parameterization",
+            "integration_location",
+            "training_objective_density_consistency_carl_factorial",
+            "dataset_scope",
+            "precision_model",
+            "fixed_factor.training_seed_count.from_1.to_5"
+          ]
+        }
+      ]
+    }
+  ]
+}

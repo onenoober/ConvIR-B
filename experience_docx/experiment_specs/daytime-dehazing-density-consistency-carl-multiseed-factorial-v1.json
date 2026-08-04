@@ -1,0 +1,1002 @@
+{
+  "schema_version": 3,
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-v1",
+  "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
+  "title": "Daytime Dehazing Density Consistency CARL Multiseed Factorial v1",
+  "rationale": "The r4 development-screening factorial passed only for scene contrasts clipped to [-0.25,+0.25] dB, and every primary, main-effect, interaction, and density-stratum estimate reached the upper clipping boundary under one training seed. This orthogonal precision-model route repeats the unchanged 2x2 CARL-by-density-consistency intervention with five predeclared paired seed blocks, raw finite scene PSNR differences as primary and mechanism estimands, and a nonbinding futility look after three seeds. It tests whether the combined signal is stable across seeds and whether the CARL main effect, consistency main effect, and interaction can each be classified as material, equivalent-to-small, or unresolved. Architecture, official initialization, Haze4K roles, per-arm training budget, batch shape, optimizer, loss definitions and weights, inference path, and protected-data prohibitions remain unchanged. Development evidence cannot authorize confirmation, sealed-final access, promotion, deployment, or publication.",
+  "first_operation": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "operations": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
+        "require_gpu": true,
+        "output_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-v1-r1",
+        "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_factorial_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 14000,
+        "max_gpu_utilization_pct": 10
+      },
+      "program_authorization": {
+        "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+        "stage_id": "module_development",
+        "family_id": "internal_adaptive_restoration",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "baseline_model",
+            "use": "baseline",
+            "anchor_id": "official_architecture_anchor"
+          },
+          {
+            "role": "baseline_model",
+            "use": "initialization",
+            "anchor_id": "official_haze4k_checkpoint"
+          },
+          {
+            "role": "dataset_structure",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_train_scene_identity"
+          },
+          {
+            "role": "dataset_structure",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_test_scene_identity"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "precision_model",
+            "reason": "The prior clipped single-seed estimand cannot quantify the raw effect, attribute the three factorial terms, or test stability across training randomness. This route changes only the precision and seed-blocking model while preserving the scientific intervention."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Under the unchanged official ConvIR-B 2x2 CARL-by-density-consistency training intervention, is the raw combined-versus-baseline scene PSNR effect material and directionally stable across five frozen seed blocks, and can the two main effects and interaction be separated under one simultaneous comparison family?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 150,
+          "strata": [
+            {
+              "id": "DENSITY_LOW",
+              "independent_group_count": 50
+            },
+            {
+              "id": "DENSITY_MID",
+              "independent_group_count": 50
+            },
+            {
+              "id": "DENSITY_HIGH",
+              "independent_group_count": 50
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "the fixed 2x2 combination of CARL and same-clear-scene haze-density consistency losses repeated in five paired training-seed blocks",
+          "reference": "b00_baseline within the same seed block, with both additional loss terms disabled",
+          "matched_budget": "twenty mutually exclusive arm-by-seed training cells; every cell trains the complete ConvIR-B parameter scope for 2000 steps on the same 600 Haze4K training clear scenes, and every completed cell evaluates the same 150-scene development screen with four haze observations per clear scene",
+          "fixed_factors": [
+            "official ConvIR-B architecture and exact official Haze4K checkpoint initialization",
+            "complete trainable ConvIR-B parameter scope in every arm and seed block",
+            "five explicit paired training seeds: 20260803, 20260817, 20260831, 20260914, and 20260928",
+            "Haze4K 600 training clear-scene role, four same-scene haze observations, deterministic within-seed data order, crop, and augmentation policy",
+            "AdamW optimizer, learning-rate schedule, batch size 2, 256x256 train crop, 2000 steps per cell, inference route, metric code, output processing, and scene aggregation",
+            "density proxy construction before outcome access, fixed rank order, and three 50-scene severity strata",
+            "fixed VGG-19 ImageNet-1K V1 local state dict SHA-256 dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44; layers 1/3/5/9/13, weights 1/32,1/16,1/8,1/4,1, tau 0.5, lambda_consistency 1.0, lambda_CARL 10.0, and K=4 same-scene hazy negatives",
+            "no arm-specific tuning, seed replacement, seed extension beyond five, or outcome-dependent change to any training cell"
+          ]
+        },
+        "primary_estimand": {
+          "id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+          "metric_id": "seed_blocked_raw_combined_minus_baseline_scene_psnr_db",
+          "direction": "higher",
+          "aggregation": "Within each seed and original-clear scene, average the four haze-observation PSNR values for each arm and compute the raw finite b11_combined minus b00_baseline difference without clipping or winsorization. At each predeclared look, average the completed paired-seed differences within scene, then report the scene mean, the five seed-specific scene means, and the three fixed density-stratum scene means. Seeds are frozen paired blocks and never increase the independent scene count.",
+          "unit": "original_clear_scene",
+          "strata": [
+            "DENSITY_LOW",
+            "DENSITY_MID",
+            "DENSITY_HIGH"
+          ]
+        },
+        "controls": [
+          "b00_baseline: CARL off and density consistency off",
+          "b10_carl: CARL on and density consistency off",
+          "b01_consistency: CARL off and density consistency on",
+          "b11_combined: CARL on and density consistency on",
+          "all four arms within a seed use the same initialization seed, scene order, augmentation keys, optimizer, and step count",
+          "EMA teacher uses another of the four haze observations for the same clear scene only when consistency is enabled and never supplies inference input",
+          "CARL compares the prediction with its clear target and four same-scene hazy negatives using only the exact declared local VGG asset",
+          "the prior [-0.25,+0.25] dB clipped estimand is retained only as a descriptive sensitivity summary and cannot determine a terminal",
+          "the three-seed look permits only predeclared nonbinding futility; no early efficacy PASS or result-adaptive seed choice is allowed"
+        ],
+        "uncertainty": {
+          "id": "multiseed_scene_simultaneous_terminal_uncertainty",
+          "method_id": "paired_scene_normal_intervals_with_frozen_seed_blocks",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability"
+        },
+        "gates": [
+          {
+            "id": "identity_integrity",
+            "type": "integrity",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "Exact route, code, checkpoint, VGG asset, role ledger, arm, seed, grouping, look, and gate identities must match the generated contract.",
+            "direction": "equal",
+            "threshold": "exact_bound_identity",
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "workload_coverage",
+            "type": "coverage",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "The SHA-bound ledger must cover exactly twenty training cells, twenty seed-by-arm evaluation bundles that each retain all 150 development scenes, and one terminal summary. Units skipped only by the frozen three-seed futility rule remain explicit typed skipped outputs, so every valid terminal covers exactly 41 units.",
+            "direction": "equal",
+            "threshold": "exact_total_units",
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "primary_precision",
+            "type": "precision",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "Every fixed density-stratum raw combined-effect interval must have half-width at most 0.260 dB at the final look; actual observed uncertainty, not the transferred planning bound, determines this gate.",
+            "direction": "max",
+            "threshold": 0.26,
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "inconclusive_only",
+            "outcomes": [
+              "met",
+              "unmet",
+              "invalid"
+            ],
+            "neutral_outcome": "met"
+          },
+          {
+            "id": "combined_materiality",
+            "type": "materiality",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "At the terminal look, the simultaneous lower bound of the raw seed-blocked b11-minus-b00 scene effect must exceed the unchanged +0.10 dB minimum meaningful effect. At the three-seed look, an upper bound at or below +0.10 dB triggers nonbinding futility and a scientific FAIL.",
+            "direction": "min",
+            "threshold": 0.1,
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "indeterminate"
+          },
+          {
+            "id": "seed_robustness",
+            "type": "materiality",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "At the terminal five-seed look, every seed-specific raw combined-effect simultaneous interval must have a lower bound above 0.0 dB for stable direction. At either look, any completed seed-specific upper bound at or below 0.0 dB is unstable; otherwise the gate is indeterminate.",
+            "direction": "min",
+            "threshold": 0.0,
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "indeterminate"
+          },
+          {
+            "id": "mechanism_separation",
+            "type": "materiality",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "At the terminal look, each of the CARL main effect, consistency main effect, and interaction must be classified by its simultaneous interval as materially positive above +0.05 dB, materially negative below -0.05 dB, or equivalent-to-small wholly inside [-0.05,+0.05] dB. Any crossing interval leaves mechanism attribution unresolved.",
+            "direction": "equal",
+            "threshold": 0.05,
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "indeterminate"
+          },
+          {
+            "id": "worst_stratum_safety",
+            "type": "safety",
+            "estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+            "reference": "The route is safe only when every fixed density-stratum simultaneous lower bound for the raw seed-blocked b11-minus-b00 effect is at least -0.10 dB. It is unsafe when any stratum upper bound is below -0.10 dB; otherwise it is indeterminate.",
+            "direction": "min",
+            "threshold": -0.1,
+            "uncertainty_id": "multiseed_scene_simultaneous_terminal_uncertainty",
+            "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+            "decision_role": "decisive",
+            "outcomes": [
+              "safe",
+              "unsafe",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "indeterminate"
+          }
+        ],
+        "competing_explanation": "The r4 clipped PASS may reflect a single favorable training seed, clipping-induced loss of rank information, or a combined objective whose apparent components cannot be separated. The paired five-seed 2x2 design, raw finite scene contrasts, seed-specific intervals, exact equal budgets, unchanged VGG identity, fixed density strata, simultaneous comparison family, nonbinding futility rule, and generic unit ledger distinguish these explanations without changing the intervention or accessing protected data.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_PASS",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "MULTISEED_READONLY_RESEARCH_UPDATE",
+              "family_effect": "allow_predeclared_evidence"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": null,
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_INCONCLUSIVE",
+                "authorizes": "C2_MULTISEED_VALIDITY_OR_PRECISION_REVIEW_ONLY"
+              },
+              "next_action_id": "C2_MULTISEED_READONLY_VALIDITY_OR_PRECISION_REVIEW",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "validity_veto",
+              "when": {
+                "identity_integrity": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "coverage_veto",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "combined_decisive_fail",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "unfavorable"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "seed_decisive_fail",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "seed_robustness": [
+                  "unfavorable"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "safety_decisive_fail",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "seed_robustness": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "worst_stratum_safety": [
+                  "unsafe"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "precision_inconclusive",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "seed_robustness": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "worst_stratum_safety": [
+                  "safe",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "primary_precision": [
+                  "unmet",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "combined_unresolved",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "primary_precision": [
+                  "met"
+                ],
+                "combined_materiality": [
+                  "indeterminate",
+                  "invalid"
+                ],
+                "seed_robustness": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "worst_stratum_safety": [
+                  "safe",
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "seed_unresolved",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "primary_precision": [
+                  "met"
+                ],
+                "combined_materiality": [
+                  "favorable"
+                ],
+                "seed_robustness": [
+                  "indeterminate",
+                  "invalid"
+                ],
+                "worst_stratum_safety": [
+                  "safe",
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "safety_unresolved",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "primary_precision": [
+                  "met"
+                ],
+                "combined_materiality": [
+                  "favorable"
+                ],
+                "seed_robustness": [
+                  "favorable"
+                ],
+                "worst_stratum_safety": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "mechanism_unresolved",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "primary_precision": [
+                  "met"
+                ],
+                "combined_materiality": [
+                  "favorable"
+                ],
+                "seed_robustness": [
+                  "favorable"
+                ],
+                "worst_stratum_safety": [
+                  "safe"
+                ],
+                "mechanism_separation": [
+                  "unfavorable",
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "scientific_pass",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "primary_precision": [
+                  "met"
+                ],
+                "combined_materiality": [
+                  "favorable"
+                ],
+                "seed_robustness": [
+                  "favorable"
+                ],
+                "mechanism_separation": [
+                  "favorable"
+                ],
+                "worst_stratum_safety": [
+                  "safe"
+                ]
+              },
+              "terminal": "pass"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "confirmation, canary, locked-test, sealed-final, promotion, deployment, and publication claims",
+          "runtime download, weights API resolution, or cache fallback for VGG-19",
+          "post-processing, arm-specific tuning, seed replacement, seed extension beyond five, changed data roles, changed metrics, changed thresholds, or changed loss weights",
+          "interpreting the frozen five seeds as a random sample that proves performance over every possible training seed",
+          "using the transferred RESIDE planning-SD upper bound as an observed Haze4K variance result"
+        ],
+        "research_update_binding": {
+          "snapshot_commit": "4f9a093c0216f6c09a84f1791053a18dc5f0b589",
+          "trigger_type": "post_terminal",
+          "trigger_terminals": [
+            {
+              "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+              "terminal_record_sha256": "fe215d3345a4fc14645640bd1d0a15213a9da95a76cd10a3508ff055949b289a"
+            }
+          ],
+          "bottleneck_class": "scientific_hypothesis",
+          "bottleneck_statement": "The r4 terminal supports only a clipped development-screening estimand. Universal +0.25 dB saturation prevents raw effect-size and factorial-term identification, while one training seed leaves initialization and optimization randomness unresolved.",
+          "literature_basis": [
+            {
+              "identifier": "doi:10.24963/IJCAI.2022/119",
+              "source_status": "peer_reviewed",
+              "task": "contrast-assisted reconstruction and haze-density consistency training losses",
+              "transferable_claim": "A component factorial can separate reconstruction contrast loss, haze-density consistency, and their combination in a dehazing training objective.",
+              "applicability_limit": "The published FFA-Net/RESIDE K=5 results do not predict ConvIR-B/Haze4K effect sizes, seed stability, thresholds, or PASS criteria; this route preserves the prior K=4 transfer."
+            },
+            {
+              "identifier": "arxiv:2103.03098",
+              "source_status": "author_formal_version",
+              "task": "variance accounting in machine-learning benchmark comparisons",
+              "transferable_claim": "Training randomness and data-sampling variability can materially change benchmark comparisons and should be represented in experimental design.",
+              "applicability_limit": "The paper does not determine this route's seed count, PSNR threshold, Haze4K variance, or scientific outcome."
+            },
+            {
+              "identifier": "arxiv:2109.08203",
+              "source_status": "author_formal_version",
+              "task": "influence of random seeds in computer-vision deep learning",
+              "transferable_claim": "A single seed can be atypically favorable or unfavorable, motivating predeclared repeated seeds and score distributions.",
+              "applicability_limit": "The paper does not establish that five seeds exhaust the training-seed distribution or validate any dehazing mechanism."
+            },
+            {
+              "identifier": "doi:10.18653/v1/D17-1035",
+              "source_status": "peer_reviewed",
+              "task": "reporting score distributions across repeated neural-network runs",
+              "transferable_claim": "Distributional reporting across repeated runs is more informative than one point estimate.",
+              "applicability_limit": "The sequence-tagging results do not transfer numerically to image restoration and provide no dehazing threshold."
+            }
+          ],
+          "hypotheses": [
+            {
+              "id": "combined_seed_robust_utility",
+              "statement": "The raw combined CARL-plus-consistency utility is material and directionally stable across the five frozen paired seed blocks.",
+              "discriminating_prediction": "The terminal raw seed-blocked combined-effect lower bound exceeds +0.10 dB and every seed-specific lower bound exceeds 0.0 dB.",
+              "falsifier": "The combined-effect upper bound is at or below +0.10 dB, or any seed-specific upper bound is at or below 0.0 dB."
+            },
+            {
+              "id": "carl_main_effect_unclipped",
+              "statement": "CARL has a separable raw main effect under the balanced factorial rather than appearing positive only because of the prior clipping boundary.",
+              "discriminating_prediction": "The raw CARL main-effect simultaneous interval is materially positive, materially negative, or wholly equivalent-to-small within +/-0.05 dB.",
+              "falsifier": "The terminal raw CARL main-effect interval crosses both the equivalence and materiality regions."
+            },
+            {
+              "id": "density_consistency_main_effect_unclipped",
+              "statement": "Haze-density consistency has a separable raw main effect under the balanced factorial.",
+              "discriminating_prediction": "The raw consistency main-effect simultaneous interval is materially positive, materially negative, or wholly equivalent-to-small within +/-0.05 dB.",
+              "falsifier": "The terminal raw consistency main-effect interval crosses both the equivalence and materiality regions."
+            },
+            {
+              "id": "factorial_interaction_unclipped",
+              "statement": "The raw CARL-by-consistency interaction is identifiable as synergistic, antagonistic, or equivalent-to-small.",
+              "discriminating_prediction": "The raw interaction interval lies wholly above +0.05 dB, wholly below -0.05 dB, or wholly inside [-0.05,+0.05] dB.",
+              "falsifier": "The terminal raw interaction interval crosses both the equivalence and materiality regions."
+            }
+          ],
+          "design_selection": {
+            "strategy": "group_sequential",
+            "decision_value": "One shared seed-blocked 2x2 route simultaneously tests whether r4 survives training randomness and whether each previously saturated factorial term can be classified on its raw scale.",
+            "expected_time_to_decision": "A predeclared nonbinding futility look after three complete seed blocks can stop a non-material or directionally failed replication; otherwise the terminal five-seed look resolves the frozen decision table.",
+            "shared_setup": "All twenty cells share the official ConvIR-B architecture, checkpoint, Haze4K roles, per-arm optimizer and 2000-step budget, batch shape, VGG identity, losses, evaluation roster, density strata, and inference implementation.",
+            "worst_case_stopping_cost": "The protected-data-free fixed-linear qualification probes 4000 synthetic iterations across every seed-by-arm production path and mechanically bounds the exact 40000-iteration formal map at 14400 seconds. Scientific execution then costs either twelve 2000-step cells plus twelve seed-by-arm evaluation bundles and sixteen explicit skipped units after the three-seed futility boundary, or all twenty training cells and twenty seed-by-arm evaluation bundles."
+          },
+          "decision_design": {
+            "arms": [
+              {
+                "id": "b00_baseline",
+                "role": "reference",
+                "description": "CARL off and density consistency off."
+              },
+              {
+                "id": "b10_carl",
+                "role": "intervention",
+                "description": "CARL on and density consistency off."
+              },
+              {
+                "id": "b01_consistency",
+                "role": "intervention",
+                "description": "CARL off and density consistency on."
+              },
+              {
+                "id": "b11_combined",
+                "role": "intervention",
+                "description": "CARL on and density consistency on."
+              }
+            ],
+            "factors": [
+              {
+                "id": "carl",
+                "levels": [
+                  "off",
+                  "on"
+                ]
+              },
+              {
+                "id": "density_consistency",
+                "levels": [
+                  "off",
+                  "on"
+                ]
+              },
+              {
+                "id": "training_seed_block",
+                "levels": [
+                  "20260803",
+                  "20260817",
+                  "20260831",
+                  "20260914",
+                  "20260928"
+                ]
+              }
+            ],
+            "estimable_terms": [
+              "raw_combined_vs_baseline_b11_minus_b00",
+              "raw_carl_main_effect_half_of_b10_minus_b00_plus_b11_minus_b01",
+              "raw_consistency_main_effect_half_of_b01_minus_b00_plus_b11_minus_b10",
+              "raw_interaction_b11_minus_b01_minus_b10_plus_b00",
+              "raw_combined_vs_baseline_each_fixed_density_stratum",
+              "raw_combined_vs_baseline_each_seed_block",
+              "worst_density_stratum_raw_combined_safety"
+            ],
+            "alias_structure": "Within each seed block this is a full two-factor two-level factorial, so the intercept, two main effects, and interaction are unaliased. Seed is a paired blocking factor crossed with every arm and is not counted as an independent scene. Density strata are fixed reporting strata rather than treatment factors.",
+            "mechanism_estimands": [
+              {
+                "id": "combined_seed_robust_utility",
+                "hypothesis_id": "combined_seed_robust_utility",
+                "metric_id": "seed_blocked_raw_combined_minus_baseline_scene_psnr_db",
+                "prediction": "Combined raw utility is material at the terminal look and positive in every frozen seed block.",
+                "falsifier": "Combined utility is non-material or at least one seed block is directionally unfavorable."
+              },
+              {
+                "id": "carl_main_effect_unclipped",
+                "hypothesis_id": "carl_main_effect_unclipped",
+                "metric_id": "seed_blocked_raw_carl_main_effect_scene_psnr_db",
+                "prediction": "The raw CARL main effect is classified outside the unresolved interval-crossing region.",
+                "falsifier": "The raw CARL main-effect interval remains unresolved."
+              },
+              {
+                "id": "density_consistency_main_effect_unclipped",
+                "hypothesis_id": "density_consistency_main_effect_unclipped",
+                "metric_id": "seed_blocked_raw_consistency_main_effect_scene_psnr_db",
+                "prediction": "The raw consistency main effect is classified outside the unresolved interval-crossing region.",
+                "falsifier": "The raw consistency main-effect interval remains unresolved."
+              },
+              {
+                "id": "factorial_interaction_unclipped",
+                "hypothesis_id": "factorial_interaction_unclipped",
+                "metric_id": "seed_blocked_raw_factorial_interaction_scene_psnr_db",
+                "prediction": "The raw interaction is classified as synergistic, antagonistic, or equivalent-to-small.",
+                "falsifier": "The raw interaction interval remains unresolved."
+              }
+            ],
+            "multiplicity_control": "The terminal family contains twelve simultaneous two-sided Bonferroni comparisons: the combined primary, CARL main effect, consistency main effect, interaction, three density-stratum combined effects, and five seed-specific combined effects. Only the first three seed-specific comparisons are observed at the nonbinding futility look, but the frozen terminal-family critical value 2.865 is conservatively used at both looks. The three-seed look cannot produce efficacy PASS and therefore spends no efficacy alpha.",
+            "sequential_plan": {
+              "looks": [
+                {
+                  "id": "seed_look_060",
+                  "information_fraction": 0.6
+                },
+                {
+                  "id": "seed_look_100",
+                  "information_fraction": 1.0
+                }
+              ],
+              "alpha_spending": {
+                "method": "terminal_bonferroni_with_nonbinding_futility",
+                "familywise_alpha": 0.05
+              },
+              "boundaries": {
+                "success": "No early efficacy terminal is permitted. PASS is available only after all five seed blocks, exact ledger coverage, and every decisive gate passes.",
+                "futility": "After three complete seed blocks, stop and write all remaining seed units as typed skipped outputs when the combined raw upper bound is at or below +0.10 dB or any completed seed-specific raw upper bound is at or below 0.0 dB.",
+                "precision": "At the terminal five-seed look, any fixed density-stratum half-width above 0.260 dB is inconclusive-only and cannot hide a decisive combined, seed, or safety FAIL.",
+                "validity": "Any route, asset, data-role, grouping, arm, seed, look, protected-access, output, or exact completed-unit-ledger failure triggers the validity veto."
+              },
+              "outcome_access": "predeclared_group_sequential"
+            }
+          }
+        }
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_factorial_v1.py",
+        "timeout_seconds": 259200,
+        "expected_wall_seconds": 216000,
+        "total_units": 41,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_PYTHON": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+          "CONVIR_ROUTE_VGG19_PATH": "/sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/multiseed_gate_summary.json",
+            "destination_filename": "multiseed_gate_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/multiseed_summary.json",
+            "destination_filename": "multiseed_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/completed_units.jsonl",
+            "destination_filename": "multiseed_completed_unit_ledger.txt",
+            "required": true,
+            "max_bytes": 1048576
+          },
+          {
+            "source_relpath": "workload/daytime_dehazing_density_consistency_carl_multiseed_factorial_v1_review_facts.json",
+            "destination_filename": "daytime_dehazing_density_consistency_carl_multiseed_factorial_v1_review_facts.json",
+            "required": true,
+            "max_bytes": 262144
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900,
+          "cost_contract": {
+            "strategy": "fixed_linear_extrapolation",
+            "workload_class": "fixed_iteration_map",
+            "formal_iterations": 40000,
+            "probe_iterations": 4000,
+            "max_seconds_per_iteration": 0.15,
+            "fixed_overhead_seconds": 120,
+            "safety_factor": 2.0,
+            "formal_max_wall_seconds": 14400,
+            "memory_scaling": "constant",
+            "batch_shape_policy": "fixed",
+            "termination_policy": "fixed_count",
+            "candidate_schedule": "none",
+            "production_path": "exact",
+            "max_peak_memory_mib": 14000
+          }
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The raw primary and fixed density-stratum contrasts require a pre-run planning-SD transfer bound and actual terminal uncertainty. The largest archived RESIDE development upper bound is transferred conservatively with explicit cross-dataset limitations."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor_checkout",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true
+        },
+        {
+          "id": "multiseed_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_factorial_v1.py",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "sha256": "41669b9075c418d93047463229c9773040f0c24056bfa85e2dd7c167ccd42129"
+        },
+        {
+          "id": "runtime_environment",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/layers.py",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+        },
+        {
+          "id": "vgg19_imagenet1k_v1",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+        },
+        {
+          "id": "s0_scene_role_ledger",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/daytime-dehazing-haze4k-identity-v1/daytime-dehazing-haze4k-identity-v1-r1/workload/daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl",
+          "access_role": "development_screening",
+          "contract_access": false,
+          "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+        },
+        {
+          "id": "haze4k_train",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_test",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "daytime_dehazing_density_consistency_carl_multiseed_factorial_gpu_v1",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 2,
+          "channels": 3,
+          "height": 256,
+          "width": 256
+        },
+        "bound_assets": [
+          {
+            "id": "official_anchor_checkout",
+            "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+          },
+          {
+            "id": "multiseed_entrypoint",
+            "identity": "41669b9075c418d93047463229c9773040f0c24056bfa85e2dd7c167ccd42129"
+          },
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "model_source",
+            "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          },
+          {
+            "id": "runtime_environment",
+            "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+          },
+          {
+            "id": "vgg19_imagenet1k_v1",
+            "identity": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+          }
+        ],
+        "compatibility_imports": [
+          "torch",
+          "torchvision",
+          "numpy"
+        ],
+        "production_path_statement": "The protected-data-free qualification exercises every frozen seed-by-arm model, teacher, optimizer, CARL, and consistency production path with a 4000-iteration fixed-linear CUDA probe, then mechanically bounds the exact fixed 40000-iteration formal map. Batch shape and memory scaling are fixed, there is no candidate schedule or adaptive termination, and the probe reads no Haze4K image or role outcome, trains no scientific weight, and creates no scientific result.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true,
+        "reuse_identity": {
+          "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "code_path_sha256": "41669b9075c418d93047463229c9773040f0c24056bfa85e2dd7c167ccd42129",
+          "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "device_class": "cuda_sm89"
+        }
+      },
+      "precision": {
+        "certificate_id": "daytime_dehazing_density_consistency_carl_multiseed_factorial_precision_v1",
+        "route_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-v1",
+        "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_QUALIFY",
+        "primary_estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 2.865,
+        "target_half_width": 0.26,
+        "assurance": {
+          "method_id": "archived_cross_dataset_planning_sd_upper_bound_transfer",
+          "probability": 0.95,
+          "planning_sd_rule": "Use 0.632364322219979 dB, the larger archived 1.05-multiplied planning-SD upper bound from 1587-scene development-only RESIDE ITS/OTS continuous-utility evidence. This is a conservative feasibility transfer, not an observed Haze4K variance or a guarantee; actual Haze4K raw intervals own the inconclusive-only precision gate."
+        },
+        "strata": [
+          {
+            "id": "DENSITY_LOW",
+            "independent_groups_available": 50,
+            "independent_groups_planned": 50,
+            "planning_sd": 0.632364322219979,
+            "planning_sd_upper_bound": 0.632364322219979,
+            "independent_groups_required": 49,
+            "feasible": true,
+            "source_reference": "GitHub-main convir-existing-dataset-role-ledger-v1 summary supplies the conservative 0.632364322219979 dB planning upper bound; the frozen Haze4K role supplies 50 low-density development scenes."
+          },
+          {
+            "id": "DENSITY_MID",
+            "independent_groups_available": 50,
+            "independent_groups_planned": 50,
+            "planning_sd": 0.632364322219979,
+            "planning_sd_upper_bound": 0.632364322219979,
+            "independent_groups_required": 49,
+            "feasible": true,
+            "source_reference": "GitHub-main convir-existing-dataset-role-ledger-v1 summary supplies the conservative 0.632364322219979 dB planning upper bound; the frozen Haze4K role supplies 50 mid-density development scenes."
+          },
+          {
+            "id": "DENSITY_HIGH",
+            "independent_groups_available": 50,
+            "independent_groups_planned": 50,
+            "planning_sd": 0.632364322219979,
+            "planning_sd_upper_bound": 0.632364322219979,
+            "independent_groups_required": 49,
+            "feasible": true,
+            "source_reference": "GitHub-main convir-existing-dataset-role-ledger-v1 summary supplies the conservative 0.632364322219979 dB planning upper bound; the frozen Haze4K role supplies 50 high-density development scenes."
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "Archived outcome-bound RESIDE development planning summary plus frozen Haze4K development capacity; no confirmation or sealed-final outcome is used."
+      }
+    }
+  }
+}

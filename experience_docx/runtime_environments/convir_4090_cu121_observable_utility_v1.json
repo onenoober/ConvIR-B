@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "environment_id": "convir_4090_cu121_observable_utility_v1",
+  "execution_host": "convir-4090",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "device_class": "cuda_sm89",
+  "required_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "production_contract": "Frozen official ConvIR-B inference, Decoder[2] feature capture, contextual utility-risk head training, calibrated abstention, and complete image replay."
+}
