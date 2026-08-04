@@ -1,0 +1,779 @@
+{
+  "schema_version": 3,
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "rules_commit": "b46a98d22915ed7e873ce48893cbd52027448e1c",
+  "title": "Daytime Dehazing Density Consistency CARL Factorial v1",
+  "rationale": "C2 is the evidence-bound orthogonal training-objective route selected after C1's decisive FAIL of observable spatial conditioning. It tests only two fixed losses in a 2x2 factorial: haze-density consistency and contrast-assisted reconstruction loss (CARL). All four arms retain the official ConvIR-B architecture, the same official Haze4K initialization, complete trainable model scope, data roles, scene grouping, augmentation, optimizer, step budget, seeds, evaluation route, and inference path. CARL is a fixed K=4 transfer variant of Cheng et al. rather than a reproduction of its K=5 FFA-Net/RESIDE experiment. Its VGG-19 feature extractor is bound to an exact local state-dict identity and runtime download or cache resolution is prohibited. A single terminal-only comparison family covers the combined effect, both factorial main effects, interaction, three severity-stratum combined effects, and the worst-stratum safety check. Validity failures veto the result, precision is inconclusive-only, and no development result can authorize promotion, deployment, confirmation, sealed-final evaluation, post-processing, or a result-adaptive extension.",
+  "first_operation": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "operations": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "daytime_dehazing_density_consistency_carl_factorial",
+        "require_gpu": true,
+        "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
+        "closeout_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 14000,
+        "max_gpu_utilization_pct": 10
+      },
+      "program_authorization": {
+        "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+        "stage_id": "module_development",
+        "family_id": "internal_adaptive_restoration",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "baseline_model",
+            "use": "baseline",
+            "anchor_id": "official_architecture_anchor"
+          },
+          {
+            "role": "baseline_model",
+            "use": "initialization",
+            "anchor_id": "official_haze4k_checkpoint"
+          },
+          {
+            "role": "dataset_structure",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_train_scene_identity"
+          },
+          {
+            "role": "dataset_structure",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_test_scene_identity"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "training_objective_density_consistency_carl_factorial",
+            "reason": "C1 tested a frozen observable spatial-conditioning adapter and did not test whether same-clear-scene density consistency or contrast-assisted reconstruction improves the unchanged trainable ConvIR-B path."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "For the unchanged official ConvIR-B training path, do haze-density consistency and contrast-assisted reconstruction loss, alone or together, change grouped development-screening dehazing utility while preserving the worst density stratum?",
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 150,
+          "strata": [
+            {
+              "id": "DENSITY_LOW",
+              "independent_group_count": 50
+            },
+            {
+              "id": "DENSITY_MID",
+              "independent_group_count": 50
+            },
+            {
+              "id": "DENSITY_HIGH",
+              "independent_group_count": 50
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "the fixed 2x2 combination of CARL and same-clear-scene haze-density consistency losses",
+          "reference": "b00_baseline with both loss terms disabled",
+          "matched_budget": "four mutually exclusive arms each train the complete ConvIR-B parameter scope for the same fixed 2000-step budget on 600 Haze4K training original-clear scenes and evaluate the frozen 150-scene development screen with four haze observations per clear scene",
+          "fixed_factors": [
+            "official ConvIR-B architecture and the exact official Haze4K checkpoint initialization",
+            "complete trainable ConvIR-B parameter scope in every arm; frozen backbone means identical architecture and initialization, not a non-trainable model",
+            "Haze4K 600 training clear-scene role, four same-scene haze observations, data ordering, crop and augmentation policy",
+            "optimizer, learning-rate schedule, batch shape, seed plan, total steps, inference route, metric code, output processing, and scene aggregation",
+            "density proxy construction before outcome access, fixed rank order, and three 50-scene severity strata",
+            "fixed VGG-19 ImageNet-1K V1 local state dict from https://download.pytorch.org/models/vgg19-dcbb9e9d.pth at /sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth, exactly 574673361 bytes and SHA-256 dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44; layers 1/3/5/9/13, weights 1/32,1/16,1/8,1/4,1, tau 0.5, lambda_consistency 1.0, lambda_CARL 10.0, and C2 K=4 negatives"
+          ]
+        },
+        "primary_estimand": {
+          "id": "combined_vs_baseline_scene_psnr_db",
+          "metric_id": "combined_minus_baseline_scene_psnr_db",
+          "direction": "higher",
+          "aggregation": "For each original-clear scene, average the four haze-observation PSNR values within each arm, compute b11_combined minus b00_baseline, clip the scene contrast to [-0.25,0.25] dB before grouped analysis, and report the overall and fixed density-stratum means.",
+          "unit": "original_clear_scene",
+          "strata": [
+            "DENSITY_LOW",
+            "DENSITY_MID",
+            "DENSITY_HIGH"
+          ]
+        },
+        "controls": [
+          "b00_baseline: CARL off and density consistency off",
+          "b10_carl: CARL on and density consistency off",
+          "b01_consistency: CARL off and density consistency on",
+          "b11_combined: CARL on and density consistency on",
+          "EMA teacher uses another of the four haze observations for the same clear scene only when consistency is enabled; it shares the frozen update rule and never supplies inference input",
+          "CARL compares the prediction with its clear target and four same-scene hazy negatives; the fixed VGG state dict is loaded only from the declared local asset, with no weights= API, download, or cache fallback",
+          "all reported factorial main effects and interaction use the same predeclared grouped scene contrasts and no arm is selected after observing results"
+        ],
+        "uncertainty": {
+          "id": "c2_scene_bootstrap_bonferroni",
+          "method_id": "paired_scene_mean_simultaneous_interval",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "c2_factorial_main_interaction_density_safety"
+        },
+        "gates": [
+          {
+            "id": "identity_integrity",
+            "type": "integrity",
+            "estimand_id": "combined_vs_baseline_scene_psnr_db",
+            "reference": "Exact route, code, checkpoint, VGG asset, data-role, grouping, arm, and gate identities must match the generated contract.",
+            "direction": "equal",
+            "threshold": "exact_bound_identity",
+            "uncertainty_id": "c2_scene_bootstrap_bonferroni",
+            "comparison_family": "c2_factorial_main_interaction_density_safety",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "workload_coverage",
+            "type": "coverage",
+            "estimand_id": "combined_vs_baseline_scene_psnr_db",
+            "reference": "The SHA-bound completed-unit ledger must cover exactly every frozen arm, scene, haze observation, evaluation output, and grouped summary unit.",
+            "direction": "equal",
+            "threshold": "exact_total_units",
+            "uncertainty_id": "c2_scene_bootstrap_bonferroni",
+            "comparison_family": "c2_factorial_main_interaction_density_safety",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "primary_precision",
+            "type": "precision",
+            "estimand_id": "combined_vs_baseline_scene_psnr_db",
+            "reference": "Simultaneous interval half-width for every fixed density stratum must not exceed 0.10 dB under the frozen planning bound.",
+            "direction": "max",
+            "threshold": 0.1,
+            "uncertainty_id": "c2_scene_bootstrap_bonferroni",
+            "comparison_family": "c2_factorial_main_interaction_density_safety",
+            "decision_role": "inconclusive_only",
+            "outcomes": [
+              "met",
+              "unmet",
+              "invalid"
+            ],
+            "neutral_outcome": "met"
+          },
+          {
+            "id": "combined_materiality",
+            "type": "materiality",
+            "estimand_id": "combined_vs_baseline_scene_psnr_db",
+            "reference": "The simultaneous lower bound for b11 minus b00 exceeds the predeclared meaningful effect of 0.10 dB, with CARL and consistency main effects plus interaction reported without selection.",
+            "direction": "min",
+            "threshold": 0.1,
+            "uncertainty_id": "c2_scene_bootstrap_bonferroni",
+            "comparison_family": "c2_factorial_main_interaction_density_safety",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "indeterminate"
+          },
+          {
+            "id": "worst_stratum_safety",
+            "type": "safety",
+            "estimand_id": "combined_vs_baseline_scene_psnr_db",
+            "reference": "The worst fixed density-stratum simultaneous lower bound for b11 minus b00 is not below -0.10 dB.",
+            "direction": "min",
+            "threshold": -0.1,
+            "uncertainty_id": "c2_scene_bootstrap_bonferroni",
+            "comparison_family": "c2_factorial_main_interaction_density_safety",
+            "decision_role": "decisive",
+            "outcomes": [
+              "safe",
+              "unsafe",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "indeterminate"
+          }
+        ],
+        "competing_explanation": "Any apparent gain may be caused by changed capacity, different initialization, data ordering, density composition, additional compute, VGG download/cache resolution, grouping mistakes, or selective reporting. The frozen four-arm factorial, exact local VGG identity, matched budgets, scene-level four-observation aggregation, fixed severity strata, full comparison family, capability contract, and generic ledger are intended to expose those alternatives rather than assume them away.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_PASS",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "C2_READONLY_RESEARCH_UPDATE",
+              "family_effect": "allow_predeclared_evidence"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": null,
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_INCONCLUSIVE",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "C2_READONLY_VALIDITY_OR_PRECISION_REVIEW",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "validity_veto",
+              "when": {
+                "identity_integrity": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "coverage_veto",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "decisive_fail",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "unfavorable"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "safety_fail",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "worst_stratum_safety": [
+                  "unsafe"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "precision_inconclusive",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "worst_stratum_safety": [
+                  "safe",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "primary_precision": [
+                  "unmet",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "scientific_pass",
+              "when": {
+                "identity_integrity": [
+                  "pass"
+                ],
+                "workload_coverage": [
+                  "pass"
+                ],
+                "combined_materiality": [
+                  "favorable"
+                ],
+                "worst_stratum_safety": [
+                  "safe"
+                ],
+                "primary_precision": [
+                  "met"
+                ]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "uncertain_materiality",
+              "when": {
+                "identity_integrity": ["pass"],
+                "workload_coverage": ["pass"],
+                "primary_precision": ["met"],
+                "combined_materiality": ["indeterminate", "invalid"],
+                "worst_stratum_safety": ["safe", "indeterminate", "invalid"]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "uncertain_safety",
+              "when": {
+                "identity_integrity": ["pass"],
+                "workload_coverage": ["pass"],
+                "primary_precision": ["met"],
+                "combined_materiality": ["favorable"],
+                "worst_stratum_safety": ["indeterminate", "invalid"]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "confirmation, canary, locked-test, sealed-final, promotion, deployment, and publication claims",
+          "runtime download, weights API resolution, or cache fallback for VGG-19",
+          "post-processing, arm-specific tuning, changed data roles, changed metrics, changed thresholds, or result-adaptive extension",
+          "using C2 as a reproduction claim for the published K=5 FFA-Net/RESIDE CARL study"
+        ],
+        "research_update_binding": {
+        "snapshot_commit": "bda53e058472b0b5395c683598cc5268ee1c1b6c",
+          "trigger_type": "post_terminal",
+          "trigger_terminals": [
+            {
+              "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+              "terminal_record_sha256": "9174e6793caab67ba0ed73293ce8b3268bde290162d9dbdd2925a143cbacf1ff"
+            }
+          ],
+          "bottleneck_class": "scientific_hypothesis",
+          "bottleneck_statement": "C1's valid terminal FAIL is limited to an observable spatial-conditioning adapter. The open question is whether a fixed training-objective intervention, rather than an inference-time adapter, can improve the unchanged ConvIR-B path while maintaining density-stratum safety.",
+          "literature_basis": [
+            {
+              "identifier": "doi:10.24963/IJCAI.2022/119",
+              "source_status": "peer_reviewed",
+              "task": "contrast-assisted reconstruction and haze-density consistency training losses",
+              "transferable_claim": "A component ablation can separate reconstruction contrast loss, haze-density consistency, and their combination in a dehazing training objective.",
+              "applicability_limit": "The published FFA-Net/RESIDE K=5 numerical results do not predict C2 effect sizes, gates, or PASS criteria; C2 is a K=4 transfer to ConvIR-B and Haze4K."
+            }
+          ],
+          "hypotheses": [
+            {
+              "id": "carl_main_effect",
+              "statement": "Fixed CARL adds useful contrast-aware reconstruction supervision beyond the matched baseline objective.",
+              "discriminating_prediction": "The predeclared CARL main-effect contrast is reported with the family-adjusted grouped interval.",
+              "falsifier": "The CARL main-effect interval includes no useful evidence once the fixed comparison family is applied."
+            },
+            {
+              "id": "density_consistency_main_effect",
+              "statement": "Same-clear-scene haze-density consistency adds information beyond the matched baseline objective.",
+              "discriminating_prediction": "The predeclared consistency main-effect contrast is reported with the family-adjusted grouped interval.",
+              "falsifier": "The consistency main-effect interval includes no useful evidence once the fixed comparison family is applied."
+            },
+            {
+              "id": "combined_density_robust_utility",
+              "statement": "Combining CARL and density consistency produces material grouped utility without unacceptable degradation in the fixed worst density stratum.",
+              "discriminating_prediction": "The combined-versus-baseline lower bound exceeds 0.10 dB and the worst density-stratum lower bound is not below -0.10 dB.",
+              "falsifier": "The combined utility gate is unfavorable or the worst density-stratum safety gate is unsafe."
+            }
+          ],
+          "design_selection": {
+            "strategy": "full_factorial",
+            "decision_value": "The four-arm 2x2 directly separates baseline, CARL, density consistency, and their interaction under one frozen training and evaluation path.",
+            "expected_time_to_decision": "One finite terminal evaluation after all four equal-budget arms and all fixed scene units complete.",
+            "shared_setup": "Every arm uses the same ConvIR-B architecture, checkpoint initialization, trainable scope, 600-scene Haze4K training role, 150-scene development role, optimizer, steps, seeds, and inference implementation.",
+            "worst_case_stopping_cost": "One same-scale protected-data-free GPU probe followed, only after explicit EXECUTE authorization, by four 2000-step arms and exact ledger coverage for the fixed train and development workload."
+          },
+          "decision_design": {
+            "arms": [
+              {
+                "id": "b00_baseline",
+                "role": "reference",
+                "description": "CARL off and density consistency off."
+              },
+              {
+                "id": "b10_carl",
+                "role": "intervention",
+                "description": "CARL on and density consistency off."
+              },
+              {
+                "id": "b01_consistency",
+                "role": "intervention",
+                "description": "CARL off and density consistency on."
+              },
+              {
+                "id": "b11_combined",
+                "role": "intervention",
+                "description": "CARL on and density consistency on."
+              }
+            ],
+            "factors": [
+              {
+                "id": "carl",
+                "levels": [
+                  "off",
+                  "on"
+                ]
+              },
+              {
+                "id": "density_consistency",
+                "levels": [
+                  "off",
+                  "on"
+                ]
+              }
+            ],
+            "estimable_terms": [
+              "combined_vs_baseline_b11_minus_b00",
+              "carl_main_effect_half_of_b10_minus_b00_plus_b11_minus_b01",
+              "consistency_main_effect_half_of_b01_minus_b00_plus_b11_minus_b10",
+              "interaction_b11_minus_b01_minus_b10_minus_b00",
+              "combined_vs_baseline_each_fixed_density_stratum",
+              "worst_density_stratum_combined_safety"
+            ],
+            "alias_structure": "This is a full two-factor two-level factorial. The intercept, two main effects, and CARL-by-consistency interaction are estimable without aliasing. The three density strata are fixed reporting strata, not treatment factors.",
+            "mechanism_estimands": [
+              {
+                "id": "carl_main_effect",
+                "hypothesis_id": "carl_main_effect",
+                "metric_id": "carl_main_effect_scene_psnr_db",
+                "prediction": "The CARL main effect is reported from its predeclared balanced factorial contrast.",
+                "falsifier": "The CARL main-effect interval does not support a material directional effect under the fixed family."
+              },
+              {
+                "id": "consistency_main_effect",
+                "hypothesis_id": "density_consistency_main_effect",
+                "metric_id": "consistency_main_effect_scene_psnr_db",
+                "prediction": "The density-consistency main effect is reported from its predeclared balanced factorial contrast.",
+                "falsifier": "The density-consistency main-effect interval does not support a material directional effect under the fixed family."
+              },
+              {
+                "id": "combined_density_robust_utility",
+                "hypothesis_id": "combined_density_robust_utility",
+                "metric_id": "combined_minus_baseline_scene_psnr_db",
+                "prediction": "Combined utility is material and all three fixed density-stratum effects plus the worst-stratum safety analysis are available.",
+                "falsifier": "The combined primary gate is unfavorable or worst-stratum safety is unsafe."
+              }
+            ],
+            "multiplicity_control": "A fixed eight-comparison family uses simultaneous two-sided Bonferroni 95% intervals: combined primary, CARL main effect, consistency main effect, interaction, three density-stratum combined effects, and the worst-stratum safety comparison.",
+            "sequential_plan": {
+              "looks": [
+                {
+                  "id": "terminal_100",
+                  "information_fraction": 1.0
+                }
+              ],
+              "alpha_spending": {
+                "method": "bonferroni_terminal_only",
+                "familywise_alpha": 0.05
+              },
+              "boundaries": {
+                "success": "Only the complete terminal look may yield a favorable scientific result.",
+                "futility": "No interim outcome look or result-adaptive early stop is permitted.",
+                "precision": "The fixed formal precision certificate determines only the inconclusive-only precision outcome.",
+                "validity": "Identity, integrity, grouping, asset, coverage, and ledger failures produce the validity veto."
+              },
+              "outcome_access": "terminal_only"
+            }
+          }
+        }
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_factorial_v1.py",
+        "timeout_seconds": 86400,
+        "expected_wall_seconds": 43200,
+        "total_units": 605,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {
+          "CONVIR_ROUTE_PYTHON": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+          "CONVIR_ROUTE_VGG19_PATH": "/sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth"
+        },
+        "evidence_files": [
+          {
+            "source_relpath": "workload/c2_gate_summary.json",
+            "destination_filename": "c2_gate_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/c2_summary.json",
+            "destination_filename": "c2_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/completed_units.jsonl",
+            "destination_filename": "c2_completed_unit_ledger.txt",
+            "required": true,
+            "max_bytes": 1048576
+          },
+          {
+            "source_relpath": "workload/daytime_dehazing_density_consistency_carl_factorial_v1_review_facts.json",
+            "destination_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_review_facts.json",
+            "required": true,
+            "max_bytes": 262144
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 900,
+          "cost_contract": {
+            "strategy": "same_scale_probe",
+            "workload_class": "adaptive_search",
+            "formal_iterations": 8000,
+            "max_peak_memory_mib": 14000,
+            "max_wall_seconds": 900
+          }
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The primary and fixed density-stratum scene contrasts require the formal certificate before development-screening evidence may be interpreted."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor_checkout",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true
+        },
+        {
+          "id": "c2_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_factorial_v1.py",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "sha256": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1"
+        },
+        {
+          "id": "runtime_environment",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+          "access_role": "engineering_debug",
+          "contract_access": true,
+          "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/layers.py",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+        },
+        {
+          "id": "vgg19_imagenet1k_v1",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth",
+          "access_role": "unrestricted",
+          "contract_access": true,
+          "sha256": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+        },
+        {
+          "id": "s0_scene_role_ledger",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/daytime-dehazing-haze4k-identity-v1/daytime-dehazing-haze4k-identity-v1-r1/workload/daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl",
+          "access_role": "development_screening",
+          "contract_access": false,
+          "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+        },
+        {
+          "id": "haze4k_train",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_test",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "daytime_dehazing_density_consistency_carl_factorial_gpu_v1",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 2,
+          "channels": 3,
+          "height": 256,
+          "width": 256
+        },
+        "bound_assets": [
+          {
+            "id": "official_anchor_checkout",
+            "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+          },
+          {
+            "id": "c2_entrypoint",
+            "identity": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1"
+          },
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "model_source",
+            "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          },
+          {
+            "id": "runtime_environment",
+            "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+          },
+          {
+            "id": "vgg19_imagenet1k_v1",
+            "identity": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+          }
+        ],
+        "compatibility_imports": [
+          "torch",
+          "torchvision",
+          "numpy"
+        ],
+        "production_path_statement": "The synthetic qualification uses only synthetic CUDA tensors and the exact fixed local VGG state-dict loading code path; it does not read Haze4K or any development evidence, train scientific weights, or write scientific outputs.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true,
+        "reuse_identity": {
+          "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "code_path_sha256": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1",
+          "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+          "device_class": "cuda_sm89"
+        }
+      },
+      "precision": {
+        "certificate_id": "daytime_dehazing_density_consistency_carl_factorial_precision_v1",
+        "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+        "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+        "primary_estimand_id": "combined_vs_baseline_scene_psnr_db",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "c2_factorial_main_interaction_density_safety",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 2.74,
+        "target_half_width": 0.1,
+        "assurance": {
+          "method_id": "bounded_scene_range_worst_case_variance",
+          "probability": 0.95,
+          "planning_sd_rule": "Every primary scene-level contrast is clipped to [-0.25,0.25] dB, so Popoviciu's inequality gives a distribution-free 0.25 dB planning-SD upper bound without using prior route outcomes."
+        },
+        "strata": [
+          {
+            "id": "DENSITY_LOW",
+            "independent_groups_available": 50,
+            "independent_groups_planned": 50,
+            "planning_sd": 0.25,
+            "planning_sd_upper_bound": 0.25,
+            "independent_groups_required": 47,
+            "feasible": true,
+            "source_reference": "The frozen 150-scene Haze4K development role is split before outcome access into three equal 50-scene severity strata."
+          },
+          {
+            "id": "DENSITY_MID",
+            "independent_groups_available": 50,
+            "independent_groups_planned": 50,
+            "planning_sd": 0.25,
+            "planning_sd_upper_bound": 0.25,
+            "independent_groups_required": 47,
+            "feasible": true,
+            "source_reference": "The frozen 150-scene Haze4K development role is split before outcome access into three equal 50-scene severity strata."
+          },
+          {
+            "id": "DENSITY_HIGH",
+            "independent_groups_available": 50,
+            "independent_groups_planned": 50,
+            "planning_sd": 0.25,
+            "planning_sd_upper_bound": 0.25,
+            "independent_groups_required": 47,
+            "feasible": true,
+            "source_reference": "The frozen 150-scene Haze4K development role is split before outcome access into three equal 50-scene severity strata."
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "Frozen Haze4K development capacity and the distribution-free clipped-contrast planning bound."
+      }
+    }
+  }
+}

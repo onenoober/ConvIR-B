@@ -1,0 +1,133 @@
+{
+  "facts": [
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "combined_materiality",
+      "confidence_level": null,
+      "fact_id": "combined_materiality",
+      "gate_outcome": "favorable",
+      "grouping": "original_clear_scene",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/combined_materiality",
+        "point": null,
+        "threshold": null
+      },
+      "metric": "combined_materiality",
+      "point": null,
+      "population": "Haze4K development screening",
+      "source_filename": "c2_gate_summary.json",
+      "source_sha256": "a84e72d67e89e4ee9ca65f74d51eaf7c25287ce562b7820fa4f2f1bed4a0387f",
+      "threshold": null,
+      "threshold_operator": null,
+      "unit": "original_clear_scene"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "identity_integrity",
+      "confidence_level": null,
+      "fact_id": "identity_integrity",
+      "gate_outcome": "pass",
+      "grouping": "original_clear_scene",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/identity_integrity",
+        "point": null,
+        "threshold": null
+      },
+      "metric": "identity_integrity",
+      "point": null,
+      "population": "Haze4K development screening",
+      "source_filename": "c2_gate_summary.json",
+      "source_sha256": "a84e72d67e89e4ee9ca65f74d51eaf7c25287ce562b7820fa4f2f1bed4a0387f",
+      "threshold": null,
+      "threshold_operator": null,
+      "unit": "original_clear_scene"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "primary_precision",
+      "confidence_level": null,
+      "fact_id": "primary_precision",
+      "gate_outcome": "met",
+      "grouping": "original_clear_scene",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/primary_precision",
+        "point": null,
+        "threshold": null
+      },
+      "metric": "primary_precision",
+      "point": null,
+      "population": "Haze4K development screening",
+      "source_filename": "c2_gate_summary.json",
+      "source_sha256": "a84e72d67e89e4ee9ca65f74d51eaf7c25287ce562b7820fa4f2f1bed4a0387f",
+      "threshold": null,
+      "threshold_operator": null,
+      "unit": "original_clear_scene"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "workload_coverage",
+      "confidence_level": null,
+      "fact_id": "workload_coverage",
+      "gate_outcome": "pass",
+      "grouping": "original_clear_scene",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/workload_coverage",
+        "point": null,
+        "threshold": null
+      },
+      "metric": "workload_coverage",
+      "point": null,
+      "population": "Haze4K development screening",
+      "source_filename": "c2_gate_summary.json",
+      "source_sha256": "a84e72d67e89e4ee9ca65f74d51eaf7c25287ce562b7820fa4f2f1bed4a0387f",
+      "threshold": null,
+      "threshold_operator": null,
+      "unit": "original_clear_scene"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "worst_stratum_safety",
+      "confidence_level": null,
+      "fact_id": "worst_stratum_safety",
+      "gate_outcome": "safe",
+      "grouping": "original_clear_scene",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/worst_stratum_safety",
+        "point": null,
+        "threshold": null
+      },
+      "metric": "worst_stratum_safety",
+      "point": null,
+      "population": "Haze4K development screening",
+      "source_filename": "c2_gate_summary.json",
+      "source_sha256": "a84e72d67e89e4ee9ca65f74d51eaf7c25287ce562b7820fa4f2f1bed4a0387f",
+      "threshold": null,
+      "threshold_operator": null,
+      "unit": "original_clear_scene"
+    }
+  ],
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
+  "schema_version": 2
+}

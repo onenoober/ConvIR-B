@@ -1,0 +1,53 @@
+{
+  "schema_version": 3,
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "run_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_PASS",
+  "authorizes": "NONE",
+  "primary_result": "The frozen clipped combined-versus-baseline scene PSNR estimand was +0.25 dB with the reported simultaneous interval [+0.25, +0.25] dB, exceeding the predeclared +0.10 dB meaningful-effect gate. All three 50-scene density strata reported the same clipped +0.25 dB value, and the worst-stratum safety gate passed.",
+  "gate_reasons": [
+    "Identity and integrity passed, and the SHA-bound workload ledger covered all 605 of 605 predeclared units.",
+    "Combined materiality was favorable because the clipped primary interval lower bound of +0.25 dB exceeded the +0.10 dB threshold.",
+    "Primary precision was met for the frozen clipped estimand, with all three density strata reporting [+0.25, +0.25] dB.",
+    "Worst-density-stratum safety passed because every reported stratum lower bound was +0.25 dB, above the -0.10 dB floor.",
+    "The CARL main effect, density-consistency main effect, and interaction were all reported at the +0.25 dB clipping ceiling."
+  ],
+  "competing_explanation": "The coherent positive development-screening result supports the frozen training-objective route over the matched baseline, but universal saturation at the predeclared +0.25 dB clipping ceiling prevents quantitative separation of CARL, density consistency, and their interaction. The evidence is also compatible with larger, heterogeneous raw effects that the clipped estimand cannot resolve; it does not establish that the three reported mechanism terms have identical natural magnitudes.",
+  "limitations": [
+    "The primary and mechanism contrasts were clipped to [-0.25, +0.25] dB before aggregation. Because every reported mean reached the upper bound with zero reported variance, the archive supports the clipped estimand and gate only, not an exact unbounded effect size or absence of scene heterogeneity.",
+    "All scientific evidence was development_screening Haze4K. Confirmation, canary, locked-test, and sealed-final evidence were not touched.",
+    "The four arms shared one seed and one fixed 2000-step budget; this route does not establish robustness across independent training seeds or longer schedules.",
+    "The PASS authorizes no confirmation, promotion, deployment, or publication claim. The typed next action is a read-only C2 research update.",
+    "The recovered primary review fact binds only the clipped combined-versus-baseline point estimate. The interval and +0.10 dB gate remain preserved in the closeout-bound gate summary but are not attached to that recovered fact because the source does not expose a confidence-level or threshold field."
+  ],
+  "primary_fact_ids": [
+    "combined_vs_baseline_clipped_point"
+  ],
+  "gate_fact_ids": [
+    "combined_materiality",
+    "identity_integrity",
+    "primary_precision",
+    "workload_coverage",
+    "worst_stratum_safety"
+  ],
+  "primary_fact_recovery": {
+    "fact_id": "combined_vs_baseline_clipped_point",
+    "claim_id": "combined_materiality",
+    "metric": "clipped combined-versus-baseline scene PSNR effect",
+    "unit": "dB",
+    "population": "150 Haze4K development-screening original clear scenes",
+    "grouping": "original clear scene after averaging four haze observations",
+    "source_filename": "c2_summary.json",
+    "threshold_operator": null,
+    "json_pointers": {
+      "point": "/combined_vs_baseline/point",
+      "ci_lower": null,
+      "ci_upper": null,
+      "confidence_level": null,
+      "threshold": null,
+      "gate_outcome": null
+    }
+  }
+}

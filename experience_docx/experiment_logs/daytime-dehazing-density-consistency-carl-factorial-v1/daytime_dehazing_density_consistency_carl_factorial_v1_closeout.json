@@ -1,0 +1,124 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_capability_qualification.json",
+    "identity_sha256": "a01dcc9cd09621ffa8b5160b1fb5aadc3e708ea439f4580a5c6d02d57f8a6202",
+    "qualification_id": "cap_a01dcc9cd09621ffa8b5160b",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "a01dcc9cd09621ffa8b5160b1fb5aadc3e708ea439f4580a5c6d02d57f8a6202",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_PASS",
+  "decision_rule_id": "scientific_pass",
+  "details": {
+    "comparison_family": "c2_factorial_main_interaction_density_safety",
+    "gate_summary_filename": "c2_gate_summary.json",
+    "summary_filename": "c2_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "c2_completed_unit_ledger.txt": "5c708f101ce3f80731cbeb5ee5f5d224c9400eea886b32a29abef272fc822de8",
+    "c2_gate_summary.json": "a84e72d67e89e4ee9ca65f74d51eaf7c25287ce562b7820fa4f2f1bed4a0387f",
+    "c2_summary.json": "765872b1e1eb5e02d230e81ba3c80e22c93bf94acc48fd262ff746019ba17db1",
+    "daytime_dehazing_density_consistency_carl_factorial_v1_capability_qualification.json": "408913fa2c0459437d1611e34e9573b51be7ac392d3a50034711dd749ca8b78e",
+    "daytime_dehazing_density_consistency_carl_factorial_v1_raw_artifact_receipt.json": "e1f6613588ecad88147b8f67f6227b262b199f4f933fd49f4afc5a6042e25c3a",
+    "daytime_dehazing_density_consistency_carl_factorial_v1_review_facts.json": "b52af143ee110c69446f6037c7827fae5cb51f22fdf519331d265c19387f4a1a"
+  },
+  "failure_phase": null,
+  "family_effect": "allow_predeclared_evidence",
+  "gate_outcomes": {
+    "combined_materiality": "favorable",
+    "identity_integrity": "pass",
+    "primary_precision": "met",
+    "workload_coverage": "pass",
+    "worst_stratum_safety": "safe"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "C2_READONLY_RESEARCH_UPDATE",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "returncode": 0,
+  "route_commit": "947c1b8ec37566250dd3d420975a9fcb4821af2f",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "c2_entrypoint",
+      "kind": "file",
+      "sha256": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "vgg19_imagenet1k_v1",
+      "kind": "file",
+      "sha256": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+    }
+  ]
+}

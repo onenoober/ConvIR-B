@@ -1,0 +1,46 @@
+{
+  "carl_main_effect": {
+    "ci_lower": 0.25,
+    "ci_upper": 0.25,
+    "half_width": 0.0,
+    "point": 0.25
+  },
+  "combined_vs_baseline": {
+    "ci_lower": 0.25,
+    "ci_upper": 0.25,
+    "half_width": 0.0,
+    "point": 0.25
+  },
+  "consistency_main_effect": {
+    "ci_lower": 0.25,
+    "ci_upper": 0.25,
+    "half_width": 0.0,
+    "point": 0.25
+  },
+  "density_strata": {
+    "DENSITY_HIGH": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    },
+    "DENSITY_LOW": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    },
+    "DENSITY_MID": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    }
+  },
+  "interaction": {
+    "ci_lower": 0.25,
+    "ci_upper": 0.25,
+    "half_width": 0.0,
+    "point": 0.25
+  }
+}

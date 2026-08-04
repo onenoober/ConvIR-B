@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 613
+  },
+  "entry_count": 614,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "1028f5e2f52f119eba4bd7b5ce9c1fdfa3d1acac39da6051b0ec76fba13f9aee",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "route_commit": "947c1b8ec37566250dd3d420975a9fcb4821af2f",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 139659726
+}

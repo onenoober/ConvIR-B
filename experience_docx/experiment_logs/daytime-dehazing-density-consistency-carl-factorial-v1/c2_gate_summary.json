@@ -1,0 +1,59 @@
+{
+  "completed_units": 605,
+  "gate_outcomes": {
+    "combined_materiality": "favorable",
+    "identity_integrity": "pass",
+    "primary_precision": "met",
+    "workload_coverage": "pass",
+    "worst_stratum_safety": "safe"
+  },
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "summary": {
+    "carl_main_effect": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    },
+    "combined_vs_baseline": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    },
+    "consistency_main_effect": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    },
+    "density_strata": {
+      "DENSITY_HIGH": {
+        "ci_lower": 0.25,
+        "ci_upper": 0.25,
+        "half_width": 0.0,
+        "point": 0.25
+      },
+      "DENSITY_LOW": {
+        "ci_lower": 0.25,
+        "ci_upper": 0.25,
+        "half_width": 0.0,
+        "point": 0.25
+      },
+      "DENSITY_MID": {
+        "ci_lower": 0.25,
+        "ci_upper": 0.25,
+        "half_width": 0.0,
+        "point": 0.25
+      }
+    },
+    "interaction": {
+      "ci_lower": 0.25,
+      "ci_upper": 0.25,
+      "half_width": 0.0,
+      "point": 0.25
+    }
+  },
+  "total_units": 605
+}

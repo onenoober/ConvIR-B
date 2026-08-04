@@ -1,0 +1,40 @@
+{
+  "contract_mode": "gpu_synthetic_no_data",
+  "engineering_evidence": {
+    "cost": {
+      "observed_iterations": 8000,
+      "observed_peak_memory_mib": 3524.5322265625,
+      "observed_wall_seconds": 883.6217958685011
+    },
+    "device": "cuda",
+    "fixture": {
+      "batch": 2,
+      "channels": 3,
+      "height": 256,
+      "width": 256
+    },
+    "mode": "gpu_synthetic_no_data",
+    "production_path_exercised": true,
+    "protected_data_touched": false,
+    "scientific_output_created": false,
+    "scientific_training_occurred": false
+  },
+  "identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "5e9250588aed5121667754a7e99a84664be2df8522a0fbf2b729ae60c0c4d1c1",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "49ba890956f598460dbe8bf5f8f26897d86d3da3cd59694ba8dcd9db565b13b9",
+    "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "identity_sha256": "a01dcc9cd09621ffa8b5160b1fb5aadc3e708ea439f4580a5c6d02d57f8a6202",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "protected_data_touched": false,
+  "qualification_id": "cap_a01dcc9cd09621ffa8b5160b",
+  "route_commit": "947c1b8ec37566250dd3d420975a9fcb4821af2f",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r4",
+  "schema_version": 1,
+  "scientific_authorization": "NONE",
+  "status": "PASSED_ENGINEERING"
+}
