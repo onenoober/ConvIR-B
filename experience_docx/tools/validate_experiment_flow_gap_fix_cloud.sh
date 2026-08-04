@@ -59,11 +59,13 @@ snapshot=$work/repo/experience_docx/AI_POLICY_SNAPSHOT.json
 snapshot_commit=$("$python" -c \
   'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["rules_commit"])' \
   "$snapshot")
+trap - ERR
 set +e
 "$python" "$tools/policy_snapshot.py" --repo "$work/repo" \
   --rules-commit "$snapshot_commit" --check >/dev/null 2>&1
 snapshot_rc=$?
 set -e
+trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 if [[ $snapshot_rc -ne 0 ]]; then
   "$python" "$tools/policy_snapshot.py" --repo "$work/repo" \
     --rules-commit "$candidate" --write >/dev/null
