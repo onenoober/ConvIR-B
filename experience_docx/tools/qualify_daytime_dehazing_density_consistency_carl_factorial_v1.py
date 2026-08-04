@@ -534,6 +534,14 @@ def gate_outcomes(summary: dict[str, Any], ledger_count: int) -> dict[str, str]:
     }
 
 
+# The generic lifecycle supplies its phase as argv[1]; normalize that transport
+# token before argparse handles the entrypoint's context-only interface.
+@(
+    (lambda argv: argv.pop(1) if len(argv) > 1 and argv[1] in {"contract", "run"} else None)(
+        __import__("sys").argv
+    ),
+    lambda function: function,
+)[1]
 def contract(context_path):
     context = load_context(context_path, "contract")
     require_context(context)
