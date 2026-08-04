@@ -1,0 +1,53 @@
+{
+  "assurance": {
+    "method_id": "bounded_scene_range_worst_case_variance",
+    "planning_sd_rule": "Every primary scene-level contrast is clipped to [-0.25,0.25] dB, so Popoviciu's inequality gives a distribution-free 0.25 dB planning-SD upper bound without using prior route outcomes.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_density_consistency_carl_factorial_precision_v1",
+  "comparison_family": "c2_factorial_main_interaction_density_safety",
+  "confidence_level": 0.95,
+  "critical_value": 2.74,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "primary_estimand_id": "combined_vs_baseline_scene_psnr_db",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "schema_version": 2,
+  "source_reference": "Frozen Haze4K development capacity and the distribution-free clipped-contrast planning bound.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "DENSITY_LOW",
+      "independent_groups_available": 50,
+      "independent_groups_planned": 50,
+      "independent_groups_required": 47,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The frozen 150-scene Haze4K development role is split before outcome access into three equal 50-scene severity strata."
+    },
+    {
+      "feasible": true,
+      "id": "DENSITY_MID",
+      "independent_groups_available": 50,
+      "independent_groups_planned": 50,
+      "independent_groups_required": 47,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The frozen 150-scene Haze4K development role is split before outcome access into three equal 50-scene severity strata."
+    },
+    {
+      "feasible": true,
+      "id": "DENSITY_HIGH",
+      "independent_groups_available": 50,
+      "independent_groups_planned": 50,
+      "independent_groups_required": 47,
+      "planning_sd": 0.25,
+      "planning_sd_upper_bound": 0.25,
+      "source_reference": "The frozen 150-scene Haze4K development role is split before outcome access into three equal 50-scene severity strata."
+    }
+  ],
+  "target_half_width": 0.1
+}

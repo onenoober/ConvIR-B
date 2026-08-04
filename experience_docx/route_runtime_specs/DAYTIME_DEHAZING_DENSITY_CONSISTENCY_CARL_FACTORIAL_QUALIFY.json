@@ -1,0 +1,64 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-density-consistency-carl-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/daytime-dehazing-density-consistency-carl-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY.json",
+    "cost_contract": {
+      "formal_iterations": 8000,
+      "max_peak_memory_mib": 14000,
+      "max_wall_seconds": 900,
+      "strategy": "same_scale_probe",
+      "workload_class": "adaptive_search"
+    },
+    "max_seconds": 900,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_factorial_v1.py",
+  "environment": {
+    "CONVIR_ROUTE_PYTHON": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+    "CONVIR_ROUTE_VGG19_PATH": "/sda/home/wangyuxin/ConvIR-B/checkpoints/vgg19-dcbb9e9d.pth"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "c2_gate_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/c2_gate_summary.json"
+    },
+    {
+      "destination_filename": "c2_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/c2_summary.json"
+    },
+    {
+      "destination_filename": "c2_completed_unit_ledger.txt",
+      "max_bytes": 1048576,
+      "required": true,
+      "source_relpath": "workload/completed_units.jsonl"
+    },
+    {
+      "destination_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_review_facts.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_density_consistency_carl_factorial_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 43200,
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-density-consistency-carl-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The primary and fixed density-stratum scene contrasts require the formal certificate before development-screening evidence may be interpreted."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "schema_version": 2,
+  "timeout_seconds": 86400,
+  "total_units": 605
+}

@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-factorial-v1.json",
+  "experiment_spec_sha256": "86847c1dfcc50f65ee4d624daddbd32cb4dc9a0f02f2efec39828a55893c0848",
+  "operations": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "daytime_dehazing_density_consistency_carl_factorial_v1_closeout.json",
+      "heartbeat_timeout_seconds": 900,
+      "max_gpu_utilization_pct": 10,
+      "min_free_gpu_mib": 14000,
+      "mode": "daytime_dehazing_density_consistency_carl_factorial",
+      "monitor_profile": "standard",
+      "output_id": "daytime-dehazing-density-consistency-carl-factorial-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": true,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "program_contract_sha256": "299b0b56dd8bbac2776c6c8e0c881b6fdab11fc67421246a33e8ee4273899fb1",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-factorial-v1.md",
+  "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",
+  "rules_commit": "b46a98d22915ed7e873ce48893cbd52027448e1c",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-density-consistency-carl-factorial-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_FACTORIAL_QUALIFY.json"
+  }
+}
