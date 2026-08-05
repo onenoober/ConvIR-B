@@ -107,6 +107,12 @@ def diagnostic_log_tail(path: Path, maximum: int = 3072) -> str:
     return safe_diagnostic_text(raw.decode("utf-8", errors="replace"), maximum)
 
 
+def program_failure_message(label: str, returncode: int, log_path: Path) -> str:
+    tail = diagnostic_log_tail(log_path)
+    detail = f"; program_tail={tail}" if tail else ""
+    return f"{label} failed rc={returncode}{detail}"
+
+
 def safe_control_diagnostic(value: Any) -> dict[str, Any]:
     """Keep only bounded, non-scientific lifecycle diagnostics."""
     if not isinstance(value, dict):
@@ -320,10 +326,9 @@ def run_terminal_adapter(
             timeout=300, check=False,
         )
     if completed.returncode:
-        tail = diagnostic_log_tail(log_path)
-        detail = f"; program_tail={tail}" if tail else ""
         raise LifecycleError(
-            f"terminal adapter failed rc={completed.returncode}{detail}", phase="finalize",
+            program_failure_message("terminal adapter", completed.returncode, log_path),
+            phase="finalize",
         )
 
 
@@ -1188,9 +1193,10 @@ def lifecycle() -> int:
             ),
         )
         if rc:
-            tail = diagnostic_log_tail(runtime_log)
-            detail = f"; program_tail={tail}" if tail else ""
-            raise LifecycleError(f"contract program failed rc={rc}{detail}", phase="contract")
+            raise LifecycleError(
+                program_failure_message("contract program", rc, runtime_log),
+                phase="contract",
+            )
         contract_result = validate_contract_result(
             Path(contract_context["result_path"]), spec,
         )
@@ -1216,7 +1222,10 @@ def lifecycle() -> int:
         spec=spec, env=env, log_path=runtime_log, timeout=spec["timeout_seconds"],
     )
     if rc:
-        raise LifecycleError(f"run program failed rc={rc}", phase="workload")
+        raise LifecycleError(
+            program_failure_message("run program", rc, runtime_log),
+            phase="workload",
+        )
     result = validate_run_result(
         Path(run_context["result_path"]), spec, operation, scientific,
     )

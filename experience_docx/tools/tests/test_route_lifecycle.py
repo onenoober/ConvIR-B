@@ -555,6 +555,20 @@ class LifecycleTests(unittest.TestCase):
             self.assertNotIn("/sda/home/private", tail)
             self.assertIn("schema-2 contract requires complete engineering evidence", tail)
 
+    def test_workload_failure_message_includes_bounded_redacted_program_tail(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "runtime.log"
+            path.write_text(
+                "api_key=do-not-expose /sda/home/private/route.py\n"
+                "RuntimeError: first-look summary failed\n",
+                encoding="utf-8",
+            )
+            message = LIFE.program_failure_message("run program", 1, path)
+            self.assertTrue(message.startswith("run program failed rc=1; program_tail="))
+            self.assertNotIn("do-not-expose", message)
+            self.assertNotIn("/sda/home/private", message)
+            self.assertIn("RuntimeError: first-look summary failed", message)
+
     def test_exact_capability_registry_match_authorizes_engineering_reuse_only(self):
         identity = {
             "source_commit": "a" * 40,
