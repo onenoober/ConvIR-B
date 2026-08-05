@@ -1,0 +1,96 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": null,
+  "details": {
+    "error_message": "run program failed rc=1; program_tail={\"completed_units\":17,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41} {\"completed_units\":18,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41} {\"completed_units\":19,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41} {\"completed_units\":20,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41} {\"completed_units\":21,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41} {\"completed_units\":22,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41} {\"completed_units\":23,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41} {\"completed_units\":24,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41} Traceback (most recent call last): File \"<path>\", line 1162, in <module> main() File \"<path>\", line 1156, in main run(args.context) File \"<path>\", line 1029, in run first_look_summary = summarize(scores, completed_seeds) File \"<path>\", line 707, in summarize stratum_results[stratum] = interval(values) File \"<path>\", line 607, in interval raise RuntimeError(\"raw grouped contrast is empty or non-finite\") RuntimeError: raw grouped contrast is empty or non-finite",
+    "error_type": "LifecycleError",
+    "protected_data_touched": false,
+    "scientific_data_touched": true,
+    "traceback_tail": "LifecycleError: run program failed rc=1; program_tail={\"completed_units\":17,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41}\n{\"completed_units\":18,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41}\n{\"completed_units\":19,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41}\n{\"completed_units\":20,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41}\n{\"completed_units\":21,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41}\n{\"completed_units\":22,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41}\n{\"completed_units\":23,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_train\",\"total_units\":41}\n{\"completed_units\":24,\"event\":\"workload_progress\",\"phase\":\"workload\",\"stage\":\"multiseed_evaluate\",\"total_units\":41}\nTraceback (most recent call last):\n  File \"<path>\", line 1162, in <module>\n    main()\n  File \"<path>\", line 1156, in main\n    run(args.context)\n  File \"<path>\", line 1029, in run\n    first_look_summary = summarize(scores, completed_seeds)\n  File \"<path>\", line 707, in summarize\n    stratum_results[stratum] = interval(values)\n  File \"<path>\", line 607, in interval\n    raise RuntimeError(\"raw grouped contrast is empty or non-finite\")\nRuntimeError: raw grouped contrast is empty or non-finite",
+    "workload_started": true
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {},
+  "failure_phase": "workload",
+  "locked_test_touched": false,
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_RERUN_QUALIFY",
+  "returncode": 1,
+  "route_commit": "8f3cb65101e028f428b002ffcf7a6be3cf8919d5",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-rerun-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-rerun-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 1,
+  "state": "FAILED_ENGINEERING",
+  "verified_assets": [
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "multiseed_entrypoint",
+      "kind": "file",
+      "sha256": "0b1c5cad955dece0f1c81dbfdf1b4dde17623b1f51718f9ea5a768e84d5575d2"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "vgg19_imagenet1k_v1",
+      "kind": "file",
+      "sha256": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+    }
+  ]
+}
