@@ -176,6 +176,13 @@ FAILED_ENGINEERING
   -> explicit archive -> ENGINEERING_ARCHIVE_AUTHORIZED
 ```
 
+Use `convir_route_finish` with `engineering_failure_resolution=diagnose` for
+that control diagnosis. It is idempotent and does not select a resolution,
+change the receipt, consume repair authority or unlock evidence. Its bounded
+view excludes scientific metrics, data/sample identities and partial outcomes.
+Any completed/total counts are result-blind progress only and do not establish
+SHA-bound ledger coverage or resume eligibility.
+
 The MCP keeps evidence locked. `validate_engineering_repair.py` permits only a
 new output identity, immutable-identity file/Git path relocation, import/symbol
 binding repair with unchanged arguments/control flow, protected-data-free

@@ -33,7 +33,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.10.0"
+SERVER_VERSION = "5.11.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -297,6 +297,57 @@ def safe_status_summary(status):
     return safe_diagnostic_text(
         json.dumps(records[-8:], sort_keys=True, separators=(",", ":")), 2048,
     )
+
+
+def safe_engineering_log_tail(value, maximum=4096):
+    """Return bounded control diagnostics without scientific/result content."""
+    forbidden = re.compile(
+        r"(?i)\b(?:metric|metrics|psnr|ssim|lpips|fid|score|loss|outcome|result|"
+        r"verdict|decision|sample|scene|image|target|prediction|ground[_ -]?truth|"
+        r"label|seed|arm)\b"
+    )
+    safe = safe_diagnostic_text(value, maximum * 2)
+    lines = [
+        line for line in safe.splitlines()[-20:]
+        if line.strip() and not forbidden.search(line)
+    ]
+    return "\n".join(lines).encode("utf-8", errors="replace")[-maximum:].decode(
+        "utf-8", errors="replace",
+    )
+
+
+def engineering_stack_fingerprint(value):
+    safe = safe_diagnostic_text(value, 4096)
+    normalized = re.sub(r"0x[0-9a-fA-F]+", "0x#", safe)
+    normalized = re.sub(r"\b\d+\b", "#", normalized)
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest() if normalized else None
+
+
+def reported_progress_coverage(last_status):
+    """Expose counts only; a monitor status is never ledger verification."""
+    try:
+        records = json.loads(last_status) if isinstance(last_status, str) else []
+    except json.JSONDecodeError:
+        records = []
+    if not isinstance(records, list):
+        records = []
+    for item in reversed(records):
+        if not isinstance(item, dict):
+            continue
+        completed = item.get("completed_units", item.get("completed"))
+        total = item.get("total_units", item.get("total"))
+        if type(completed) is int and completed >= 0 \
+                and type(total) is int and total >= completed:
+            return {
+                "reported_completed_units": completed,
+                "reported_total_units": total,
+                "sha_bound_ledger_verified": False,
+            }
+    return {
+        "reported_completed_units": None,
+        "reported_total_units": None,
+        "sha_bound_ledger_verified": False,
+    }
 
 
 def failure_result(state, exc, default_phase):
@@ -2652,6 +2703,90 @@ def resolve_engineering_failure(token, resolution):
         )
 
 
+def diagnose_engineering_failure(token):
+    """Return an idempotent, receipt-bound control view without changing state."""
+    with read_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        current_state = record.get("finish_closed")
+        if current_state not in {
+            "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+            "ENGINEERING_REPAIR_AUTHORIZED",
+        }:
+            raise ToolError("receipt is not a diagnosable engineering terminal")
+        closeout = record.get("terminal_closeout")
+        if not isinstance(closeout, dict) \
+                or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING":
+            raise ToolError("receipt has no validated engineering closeout", failure_class="evidence")
+        diagnostic = closeout.get("engineering_diagnostic")
+        if not isinstance(diagnostic, dict):
+            raise ToolError("engineering diagnostic is unavailable", failure_class="evidence")
+        traceback_tail = diagnostic.get("traceback_tail")
+        log_tail = safe_engineering_log_tail(traceback_tail) \
+            if isinstance(traceback_tail, str) else None
+        failure_phase = diagnostic.get("failure_phase")
+        if not isinstance(failure_phase, str) or not SAFE_TOKEN.fullmatch(failure_phase):
+            failure_phase = None
+        failed_checks = diagnostic.get("failed_contract_checks")
+        if not isinstance(failed_checks, list):
+            failed_checks = []
+        failed_checks = sorted(set(
+            item for item in failed_checks[:32]
+            if isinstance(item, str) and SAFE_TOKEN.fullmatch(item)
+        ))
+        returncode = diagnostic.get("returncode")
+        if type(returncode) is not int:
+            returncode = None
+        exception_type = diagnostic.get("exception_type")
+        if not isinstance(exception_type, str) or not SAFE_TOKEN.fullmatch(exception_type):
+            exception_type = None
+        diagnosis = {
+            "failure_phase": failure_phase,
+            "exception_type": exception_type,
+            "stack_fingerprint_sha256": engineering_stack_fingerprint(traceback_tail)
+            if isinstance(traceback_tail, str) else None,
+            "failed_check_tokens": failed_checks,
+            "runtime_log": {
+                "tail": log_tail,
+                "tail_sha256": hashlib.sha256(log_tail.encode("utf-8")).hexdigest()
+                if log_tail else None,
+                "source": "validated_closeout_traceback_tail" if log_tail else None,
+            },
+            "exit_status": {"returncode": returncode},
+            "resource_status": {
+                "available": False,
+                "failure_class": engineering_failure_class(failure_phase),
+            },
+            "workload_started": diagnostic.get("workload_started")
+            if isinstance(diagnostic.get("workload_started"), bool) else None,
+            "ledger_coverage": reported_progress_coverage(diagnostic.get("last_status")),
+            "scientific_data_touched": diagnostic.get("scientific_data_touched")
+            if isinstance(diagnostic.get("scientific_data_touched"), bool) else None,
+            "protected_data_touched": diagnostic.get("protected_data_touched")
+            if isinstance(diagnostic.get("protected_data_touched"), bool) else None,
+        }
+        closeout_sha256 = closeout.get("closeout_sha256")
+    repair_authorized = current_state in {
+        "ENGINEERING_AUTO_REPAIR_AUTHORIZED", "ENGINEERING_REPAIR_AUTHORIZED",
+    }
+    return typed_result(
+        True, "ENGINEERING_DIAGNOSIS_READY",
+        observed={
+            "receipt_bound": True,
+            "closeout_sha256": closeout_sha256,
+            "diagnosis": diagnosis,
+            "receipt_state_before": current_state,
+            "receipt_state_after": current_state,
+        },
+        next_actions=["prepare_one_same_contract_engineering_repair"]
+        if repair_authorized else ["choose_repair_archive_or_discard"],
+        receipt=token, diagnosis_read_only=True, state_changed=False,
+        evidence_access_unlocked=False, repair_authority_preserved=True,
+        repair_authorized=repair_authorized, archive_authorized=False,
+        relaunch_authorized=False,
+    )
+
+
 def validate_discard_context(context):
     remote_repo = Path(context["remote_repo"])
     run_root = Path(context["run_root"])
@@ -3592,6 +3727,8 @@ def tool_finish(args):
                 "engineering failure resolution cannot be combined with operator control"
             )
         if resolution is not None:
+            if resolution == "diagnose":
+                return diagnose_engineering_failure(token)
             if resolution == "finalize":
                 return resolve_finalization_repair(
                     token, args.get("finalization_repair_commit"),
@@ -4714,13 +4851,13 @@ TOOLS = {
         "handler": tool_start,
     },
     "convir_route_finish": {
-        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, or perform receipt-bound operator cancellation; validate every closeout and keep scientific decisions explicit.",
+        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, perform receipt-bound operator cancellation, or read a bounded engineering diagnosis; validate every closeout and keep scientific decisions explicit.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
             "properties": {
                 "receipt": {"type": "string"},
                 "engineering_failure_resolution": {
-                    "enum": ["repair", "archive", "discard", "finalize"],
+                    "enum": ["diagnose", "repair", "archive", "discard", "finalize"],
                 },
                 "finalization_repair_commit": {
                     "type": "string", "pattern": "^[0-9a-f]{40}$",

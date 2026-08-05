@@ -362,7 +362,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def test_ordinary_results_expose_runtime_source_identity(self):
         value = payload(OPS.typed_result(True, "IDENTITY_TEST"))
-        self.assertEqual("5.10.0", value["runtime_identity"]["server_version"])
+        self.assertEqual("5.11.0", value["runtime_identity"]["server_version"])
         self.assertEqual(
             OPS.SERVER_SOURCE_SHA256,
             value["runtime_identity"]["server_source_sha256"],
@@ -1364,6 +1364,72 @@ class ConvirOpsV4Tests(unittest.TestCase):
         )
         return receipt
 
+    def test_engineering_diagnosis_is_read_only_idempotent_and_keeps_evidence_locked(self):
+        receipt = self.discardable_receipt(
+            failure_phase="workload", workload_started=True,
+            returncode=1, exception_type="RuntimeError",
+            traceback_tail=(
+                "metric psnr=31.2\n"
+                "sample_id=private-17 outcome=partial-pass\n"
+                "RuntimeError: non-finite running_var\n"
+            ),
+            failed_contract_checks=["finite_state", "finite_state", "bad token"],
+            last_status='[{"completed_units":10,"total_units":41}]',
+            metrics={"psnr": 31.2}, sample_id="private-17",
+        )
+        with OPS.locked_record("receipt", receipt) as record:
+            record["finish_closed"] = "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
+            record["engineering_failure_resolution"] = "repair"
+        with OPS.read_record("receipt", receipt) as record:
+            before = json.dumps(record, sort_keys=True)
+
+        first = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "diagnose",
+        }))
+        second = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "diagnose",
+        }))
+
+        self.assertEqual("ENGINEERING_DIAGNOSIS_READY", first["operation_state"])
+        self.assertEqual(first, second)
+        self.assertTrue(first["diagnosis_read_only"])
+        self.assertFalse(first["state_changed"])
+        self.assertFalse(first["evidence_access_unlocked"])
+        self.assertTrue(first["repair_authority_preserved"])
+        self.assertTrue(first["repair_authorized"])
+        diagnosis = first["observed"]["diagnosis"]
+        rendered = json.dumps(diagnosis)
+        self.assertNotIn("31.2", rendered)
+        self.assertNotIn("private-17", rendered)
+        self.assertNotIn("partial-pass", rendered)
+        self.assertNotIn("metrics", rendered)
+        self.assertNotIn("sample_id", rendered)
+        self.assertIn("non-finite running_var", diagnosis["runtime_log"]["tail"])
+        self.assertRegex(diagnosis["stack_fingerprint_sha256"], r"^[0-9a-f]{64}$")
+        self.assertEqual(["finite_state"], diagnosis["failed_check_tokens"])
+        self.assertEqual(10, diagnosis["ledger_coverage"]["reported_completed_units"])
+        self.assertFalse(diagnosis["ledger_coverage"]["sha_bound_ledger_verified"])
+        with OPS.read_record("receipt", receipt) as record:
+            after = json.dumps(record, sort_keys=True)
+        self.assertEqual(before, after)
+        blocked = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
+        self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked["operation_state"])
+
+    def test_engineering_diagnosis_requires_validated_engineering_terminal(self):
+        receipt = self.discardable_receipt()
+        with OPS.locked_record("receipt", receipt) as record:
+            record["terminal_closeout"]["terminal_tuple"] = terminal()
+        result = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "diagnose",
+        }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+
+        schema = OPS.TOOLS["convir_route_finish"]["inputSchema"]
+        self.assertIn(
+            "diagnose",
+            schema["properties"]["engineering_failure_resolution"]["enum"],
+        )
+
     def test_receipt_bound_engineering_discard_requires_verified_no_data_touch(self):
         receipt = self.discardable_receipt()
         with patch.object(OPS, "run_remote", return_value="CONVIR_OPS_ENGINEERING_DISCARD_OK") as remote:
@@ -1951,7 +2017,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.10.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.11.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

@@ -228,10 +228,12 @@ repair policy below and is not a scientific terminal archive.
 - Engineering failure never changes data, metric, threshold, gate, locked-test
   policy, or scientific authorization.
 - A validated ordinary engineering failure gets one deterministic same-contract
-  repair cycle automatically. Do not fetch, stage, push, update project memory,
-  or relaunch until the repair gate classifies the candidate. Sensitive changes
-  and a repeated root cause stop for the user; explicit `archive` is the only
-  path that unlocks failure evidence.
+  repair cycle automatically. `convir_route_finish` resolution `diagnose` may
+  read the receipt-bound, bounded control diagnostic repeatedly without changing
+  receipt state, consuming repair authority or unlocking evidence. Do not fetch,
+  stage, push, update project memory, or relaunch until the repair gate classifies
+  the candidate. Sensitive changes and a repeated root cause stop for the user;
+  explicit `archive` is the only path that unlocks general failure evidence.
   The repair gate's tool-owned temporary Git index is an isolated classifier
   input and is not real staging; it must leave the worktree index unchanged.
 - Finalization repair is a distinct single-use engineering resolution. It is

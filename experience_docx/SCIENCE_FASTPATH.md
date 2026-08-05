@@ -229,6 +229,14 @@ binds both identities and the exact `FAILED_ENGINEERING / null / NONE` tuple.
 It cannot write below `experiment_logs`, update route cards or project/family
 memory, or enter scientific evidence review.
 
+Before any engineering archive decision, `convir_route_finish` resolution
+`diagnose` returns only the validated receipt's bounded control view. It is
+idempotent, leaves the receipt and repair authority unchanged, and does not
+unlock evidence tools. The view omits scientific values and data identities;
+reported completed/total counts are explicitly not SHA-bound ledger proof and
+cannot authorize resume. Archive remains optional and is never required merely
+to understand or classify an engineering failure.
+
 ## Read-Only Review Entry
 
 A cross-route or project-level evidence review is read-only and does not add a

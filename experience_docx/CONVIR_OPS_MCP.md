@@ -1,8 +1,8 @@
 # Convir Operations MCP
 
-Date: 2026-08-02
+Date: 2026-08-05
 
-Status: main-first snapshot server `5.10.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.11.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4/5 for status
 and evidence provenance, while plan accepts only compiled manifest schema 6 and
 runtime schema 2. New experiment specs and scientific contracts
@@ -13,6 +13,11 @@ Every ordinary structured response exposes the loaded server version, exact
 server source SHA-256, loaded control commit, complete validator-bundle SHA-256
 and module-origin-manifest SHA-256, so dependency or process drift is visible
 directly.
+
+Version 5.11.0 adds receipt-bound engineering diagnosis to the existing finish
+tool. It is an idempotent read of the validated control closeout, preserves
+repair authority, keeps evidence locked and adds no archive or caller workflow
+step.
 
 Version 5.10.0 adds an internal pre-plan control self-check without adding a
 tool or caller step. Before route-contract parsing it compares the loaded
@@ -50,7 +55,7 @@ route validator or a route-specific shell surface.
 | --- | --- |
 | `convir_route_plan` | validate and seal one committed operation; no cloud call |
 | `convir_route_start` | run one sealed plan and return verified, pending, or early-failure state with a receipt |
-| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation and one same-contract repair state machine |
+| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation, read-only engineering diagnosis and one same-contract repair state machine |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
 | `convir_git_status` | token-bounded GitHub-main project/route authority snapshot plus a separate local write binding; never a result reader |
@@ -247,6 +252,17 @@ the failure immediately. Evidence list/fetch remain locked. The external
 repairs from sensitive scientific/data/model changes before commit/push/start.
 Explicit `archive` still unlocks compact failure evidence but no relaunch.
 
+Finish resolution `diagnose` is a receipt-bound, read-only view over that
+already validated engineering closeout. It does not contact the cloud, mutate
+the receipt, change its engineering resolution, consume repair/relaunch rights,
+or unlock evidence. Repeated calls are idempotent. The fixed view includes only
+failure phase/class, exception type and stack fingerprint, safe failed-check
+tokens, a bounded redacted control tail and its SHA-256, exit state, workload-
+started status, protected/scientific-touch booleans and reported progress
+coverage. It excludes verified-asset identities, metrics, outcomes, samples and
+partial scientific results. Reported progress is marked as non-ledger evidence;
+resume still requires the exact SHA-bound completed-unit ledger.
+
 If the failure occurred after workload completion and its typed phase is only
 `evidence` or `finalize`, finish also accepts one finalization-only resolution.
 It validates the candidate before atomically consuming the receipt's single
@@ -351,10 +367,10 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.10.0`, source SHA-256, loaded control
+restart the host and verify version `5.11.0`, source SHA-256, loaded control
 commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
-startup/progress/cancel/repair/discard states.
+startup/progress/cancel/diagnose/repair/discard states.
 The same version, source SHA-256, loaded commit, bundle SHA-256 and module-origin
 SHA-256 must appear in ordinary structured responses after restart, not only in
 MCP initialization metadata.
