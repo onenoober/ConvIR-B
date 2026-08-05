@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "69d56d7231d29d7e6332399fa4e0c90722590ca7c3a93039d8bc2e380ce67279",
-  "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
+  "rules_bundle_sha256": "f25ca2fd761fb1817f115a0a096dead4e7e2dd377889981a7e18cf77e1e5794e",
+  "rules_commit": "35b50de82ac44935382abdc9fd3c14cd2e2e4803",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -160,8 +160,8 @@
       "sha256": "991b3f2e7e7e6ff1218b63fc24d841a3101bce0b7b5e893af78f2a2f3d4cdee0"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
-      "bytes": 362,
-      "sha256": "8d283f5eda10773cba0375a0f8a3e8e506ceabec1dc678ee4a472a750d8d2fda"
+      "bytes": 410,
+      "sha256": "ebd29440881a9a5dd9efc9d95850a78f853b4dabe602db7444941310415f04ad"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
       "bytes": 25940,
