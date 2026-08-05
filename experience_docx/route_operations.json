@@ -1,22 +1,22 @@
 {
-  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1.json",
-  "experiment_spec_sha256": "fa940ff2feb0bc0244afdee6294ea71ceb73364bd206d1ea01a348dcaf713707",
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1.json",
+  "experiment_spec_sha256": "b2cf3043a2f883c95e75819a503b2b027c91fcb3a7ad4f464e1401b65501dc41",
   "operations": {
-    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY": {
       "allowed_terminal_tuples": [
         {
           "authorizes": "NONE",
-          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_PASS",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_PASS",
           "state": "COMPLETED_GATE_PASS"
         },
         {
           "authorizes": "NONE",
-          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_FAIL",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_FAIL",
           "state": "COMPLETED_GATE_FAIL"
         },
         {
           "authorizes": "C2_MULTISEED_VALIDITY_OR_PRECISION_REVIEW_ONLY",
-          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_INCONCLUSIVE",
+          "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_INCONCLUSIVE",
           "state": "COMPLETED_INCONCLUSIVE"
         },
         {
@@ -25,13 +25,13 @@
           "state": "FAILED_ENGINEERING"
         }
       ],
-      "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1_closeout.json",
+      "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_frozen_bn_stability_v1_closeout.json",
       "heartbeat_timeout_seconds": 900,
       "max_gpu_utilization_pct": 10,
       "min_free_gpu_mib": 14000,
       "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
       "monitor_profile": "standard",
-      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r2",
+      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -41,12 +41,12 @@
     }
   },
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
-  "program_contract_sha256": "5ff318e9da4ce8b9786293fd8f45fa75d6361229816287dcca7151711c4e343e",
-  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1.md",
-  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1",
-  "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
+  "program_contract_sha256": "230cdcad16f9359260a54a0d82502e5df7fbc18ec3ae70d7df4d7d8fcada6486",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1.md",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1",
+  "rules_commit": "dea4c31dbc14245ee15eb461d2a5b5088741399a",
   "schema_version": 6,
   "scientific_contract_relpaths": {
-    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY.json"
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY.json"
   }
 }

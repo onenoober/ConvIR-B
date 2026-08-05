@@ -589,6 +589,37 @@
           ]
         }
       ]
+    },
+    {
+      "id": "amend_c2_checkpoint_frozen_batch_norm_after_archived_parameter_state_failure",
+      "reason": "The archived protected-data-free qualification for daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1 failed before workload start at seed 20260803, arm b10_carl, step 427 with non-finite synthetic_parameter_state. GitHub-main preserves the canonical closeout at SHA-256 c27a401a7240d5d8d8b615c3e0a82f0e4dffedd9ba00e740a6f9f66a962e189a with decision null, authorizes NONE, no scientific-data touch, and no protected-data touch. The subsequent source-bound integrity design corrected five independent hazards but retained mutable BatchNorm running statistics. The bound official model layers contain an AdaptiveAvgPool2d(1)-to-Conv2d-to-BatchNorm2d path, so batch size 2 supplies only two pooled values per channel to a running-variance update. The user explicitly ends the prior same-contract recovery path without archiving it and authorizes a new formal fixed-factor route based only on the durable archived failure and bound source identities.",
+      "evidence_refs": [
+        "experience_docx/engineering_failures/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1-r1/daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1_closeout.json"
+      ],
+      "approved_scope": "Authorize exactly one fresh development-screening precision-model route, daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1. Preserve the official architecture and checkpoint, five seeds, four factorial arms, Haze4K roles, 2000 training steps per arm-seed cell, raw scene PSNR estimands, uncertainty method, all scientific thresholds and gates, loss definitions and weights, optimizer, learning rate, TF32 disablement, two-distinct-scene batches, strictly distinct consistency pairs, full EMA state, elementwise finite checks, exact 41-unit ledger, and protected-data prohibitions. Change only the common normalization fixed factor: every BatchNorm module must use checkpoint running_mean, running_var, and num_batches_tracked in evaluation-statistics mode for training and evaluation while affine parameters remain trainable in every arm. Verify those buffers after every relevant forward and optimizer or EMA update. The protected-data-free fixed-linear engineering qualification must cover all five seeds and all four arms for 512 steps per cell, beyond the archived step-427 failure point, plus four deterministic structured haze scenes with four evaluation observations per cell, totaling 10560 exact-path iterations under an 8100-second maximum. Use a new route, workspace, output, capability, and receipt identity; do not read, resume, copy, or reference partial output from any unarchived failure. After compiler, route-ready, identity, and capability checks, this amendment authorizes exactly one plan and one start. It does not authorize confirmation, sealed-final access, promotion, deployment, publication, changed scientific factors, partial-result reuse, a second start, same-contract repair, or another repair route.",
+      "changes": [
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "daytime_dehazing_spatially_adaptive_restoration_v1",
+          "value": [
+            "bidirectional_local_error_operationalization",
+            "observable_signal_class",
+            "mechanism_parameterization",
+            "integration_location",
+            "training_objective_density_consistency_carl_factorial",
+            "dataset_scope",
+            "precision_model",
+            "fixed_factor.training_seed_count.from_1.to_5",
+            "fixed_factor.cuda_tf32.from_framework_default.to_disabled",
+            "fixed_factor.training_batch_composition.from_duplicate_single_scene.to_two_distinct_scenes",
+            "fixed_factor.consistency_pairing.from_may_equal_primary.to_strictly_distinct_observation",
+            "fixed_factor.ema_state_scope.from_parameters_only.to_parameters_and_buffers",
+            "fixed_factor.finite_state_check.from_fp32_l2_norm.to_elementwise_isfinite",
+            "fixed_factor.cost_map.from_training_only_probe.to_exact_training_evaluation_probe",
+            "fixed_factor.batch_norm_running_statistics.from_mutable_training_updates.to_checkpoint_frozen"
+          ]
+        }
+      ]
     }
   ]
 }
