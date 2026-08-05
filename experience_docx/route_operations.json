@@ -1,8 +1,8 @@
 {
-  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1.json",
-  "experiment_spec_sha256": "8dcb8bfe6de3b5c3bc123078dddc384ec3135bca534b0a4bdd9fc946586d9708",
+  "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1.json",
+  "experiment_spec_sha256": "72ad8f1ffbe404fdba87ed381cc36f13b20e39e161fbbc7a0dda2be4d5a7cd74",
   "operations": {
-    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY": {
       "allowed_terminal_tuples": [
         {
           "authorizes": "NONE",
@@ -25,13 +25,13 @@
           "state": "FAILED_ENGINEERING"
         }
       ],
-      "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1_closeout.json",
+      "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1_closeout.json",
       "heartbeat_timeout_seconds": 900,
       "max_gpu_utilization_pct": 10,
       "min_free_gpu_mib": 14000,
       "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
       "monitor_profile": "standard",
-      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1-r1",
+      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r1",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
@@ -41,12 +41,12 @@
     }
   },
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
-  "program_contract_sha256": "7dfb91d1c54bb0113c3b79498acf2df32088461d7865db94c18e432cb03c92b9",
-  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1.md",
-  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1",
+  "program_contract_sha256": "5ff318e9da4ce8b9786293fd8f45fa75d6361229816287dcca7151711c4e343e",
+  "route_card_relpath": "experience_docx/experiment_cards/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1.md",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1",
   "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
   "schema_version": 6,
   "scientific_contract_relpaths": {
-    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY.json"
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY": "experience_docx/scientific_contracts/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY.json"
   }
 }

@@ -559,6 +559,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "amend_c2_training_state_integrity_after_archived_numerical_stability_failure",
+      "reason": "The protected-data-free qualification for daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1 failed before workload start at seed 20260803, arm b10_carl, step 427 with non-finite synthetic_parameter_state. GitHub-main commit 0a7a1762065cd7418e1966a58a2e06243d44d440 preserves the canonical closeout with SHA-256 c27a401a7240d5d8d8b615c3e0a82f0e4dffedd9ba00e740a6f9f66a962e189a, decision null, authorizes NONE, no scientific-data touch, and no protected-data touch. Source-bound review then found five independent contract-integrity hazards that the failed diagnostic could not distinguish: duplicated-scene batch composition through a 1x1 BatchNorm path, an overflow-prone FP32 norm finite checker, consistency pairing that could equal the primary observation, EMA state that omitted persistent buffers, and a training-only cost map that omitted evaluation forwards. The user authorized an archive-bound formal amendment and a fresh repair route after this evidence was preserved.",
+      "evidence_refs": [
+        "experience_docx/engineering_failures/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1/daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1-r1/daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1_closeout.json"
+      ],
+      "approved_scope": "Authorize exactly one fresh development-screening precision-model route, daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1. Preserve the official architecture and checkpoint, five seeds, four factorial arms, Haze4K roles, 2000 training steps per arm-seed cell, raw scene PSNR estimands, uncertainty method, all scientific thresholds and gates, loss definitions and weights, TF32 disablement, 41-unit ledger, and protected-data prohibitions. Change only the five declared operational fixed factors: every batch-size-2 training step uses two distinct scenes; the consistency pair is always a distinct same-clear-scene observation; EMA covers parameters and persistent buffers; finite checks use named elementwise isfinite without an overflow-prone norm; and the exact cost map includes all training iterations and evaluation forwards. Under the authoritative 900-second engineering cap, the protected-data-free fixed-linear qualification must cover 800 steps per arm, beyond the archived step-427 failure point in all four arms, plus 10 synthetic scenes with four evaluation observations per arm, totaling 3360 exact-path composite iterations with bounded result-blind heartbeats and identity-correct compact evidence. The formal mechanical cost bound must include all 40000 training iterations and 12000 evaluation forwards. After compiler, route-ready, identity, and capability checks, this amendment authorizes one plan and one start. It does not authorize confirmation, sealed-final access, promotion, deployment, publication, changed scientific factors, partial-result reuse, a second start, or another repair route.",
+      "changes": [
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "daytime_dehazing_spatially_adaptive_restoration_v1",
+          "value": [
+            "bidirectional_local_error_operationalization",
+            "observable_signal_class",
+            "mechanism_parameterization",
+            "integration_location",
+            "training_objective_density_consistency_carl_factorial",
+            "dataset_scope",
+            "precision_model",
+            "fixed_factor.training_seed_count.from_1.to_5",
+            "fixed_factor.cuda_tf32.from_framework_default.to_disabled",
+            "fixed_factor.training_batch_composition.from_duplicate_single_scene.to_two_distinct_scenes",
+            "fixed_factor.consistency_pairing.from_may_equal_primary.to_strictly_distinct_observation",
+            "fixed_factor.ema_state_scope.from_parameters_only.to_parameters_and_buffers",
+            "fixed_factor.finite_state_check.from_fp32_l2_norm.to_elementwise_isfinite",
+            "fixed_factor.cost_map.from_training_only_probe.to_exact_training_evaluation_probe"
+          ]
+        }
+      ]
     }
   ]
 }

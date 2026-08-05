@@ -1,19 +1,19 @@
 {
   "schema_version": 3,
-  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1",
   "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
-  "title": "Daytime Dehazing Density Consistency CARL Multiseed Numerical Stability v1",
-  "rationale": "The receipt-bound rerun reached 24 of 41 units and ended FAILED_ENGINEERING at the frozen three-seed summary because at least one raw grouped contrast was non-finite. Its archived closeout SHA-256 is 2c3b36264e14288dcc905716fd0922dccb4eb2a5eb14c947636425335e0625b6, with decision null, authorizes=NONE, scientific-data touch, and no protected-data touch. The closeout does not identify the first non-finite tensor, seed, arm, or scene, so this contract makes no such claim and never reads partial scientific results. The user-authorized formal amendment changes one operational fixed factor: CUDA TF32 moves from unspecified framework-default behavior to explicit disablement for matmul and cuDNN. The route adds observation-only fail-fast finite assertions over prediction, component and total loss, gradient, parameter, optimizer, EMA teacher, evaluation prediction, and PSNR state. The protected-data-free engineering contract exercises the first frozen seed through all four arms for 1000 steps each, totaling 4000 representative synthetic iterations under the fixed 900-second limit, before scientific work is eligible. Every scientific cell retains its full 2000-step trajectory through the same asserted code. The scientific 2x2 intervention, five frozen seed blocks, data roles, optimizer, learning rate, budgets, losses and weights, metrics, thresholds, uncertainty, sequential boundaries, and 41-unit ledger remain unchanged. No non-finite value may be filtered, imputed, clipped, replaced, or excluded. This route tests one falsifiable stability repair and cannot establish the cause if another non-finite failure occurs. Development evidence cannot authorize confirmation, sealed-final access, promotion, deployment, publication, or another repair route.",
-  "first_operation": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY",
+  "title": "Daytime Dehazing Density Consistency CARL Multiseed Training State Integrity v1",
+  "rationale": "The archived receipt-bound engineering contract failed before workload start at seed 20260803, arm b10_carl, step 427 with non-finite synthetic_parameter_state. GitHub-main commit 0a7a1762065cd7418e1966a58a2e06243d44d440 preserves the canonical closeout at SHA-256 c27a401a7240d5d8d8b615c3e0a82f0e4dffedd9ba00e740a6f9f66a962e189a, with decision null, authorizes=NONE, no scientific-data touch, and no protected-data touch. A source-bound review found five contract-integrity hazards that the failed diagnostic could not distinguish: batch size 2 duplicated one scene through a 1x1 BatchNorm path; FP32 L2 norms could overflow while their tensors remained elementwise finite; the consistency pair could equal the primary observation; EMA updated parameters but omitted BatchNorm buffers; and the fixed-linear cost map omitted all 12000 formal evaluation forwards and contradicted the declared wall bound. This formal amendment repairs those fixed factors together because leaving any one unresolved could invalidate the next run. The scientific 2x2 intervention, five seeds, Haze4K roles, 2000-step cell budget, optimizer, learning rate, CARL and consistency definitions and weights, raw estimands, uncertainty, gates, sequential boundaries, and 41-unit ledger remain unchanged. Under the authoritative 900-second qualification cap, the protected-data-free fixed-linear probe exercises 800 steps per arm and 10 synthetic scenes with four evaluation observations per arm, totaling 3360 exact-path composite iterations and extending beyond the archived step-427 failure point in every arm. It uses two distinct synthetic scenes per training batch, strictly distinct same-scene consistency observations, EMA over parameters and buffers, named elementwise finite checks, and bounded result-blind heartbeats. The formal cost map separately includes all 40000 training iterations and 12000 evaluation forwards. The qualification tests the corrected path as a whole and cannot attribute success to one repair or guarantee later scientific utility. Any non-finite value, identity mismatch, incomplete map, or cost violation fails without filtering, replacement, retry, or scientific interpretation. Development evidence cannot authorize confirmation, sealed-final access, promotion, deployment, publication, or another repair route.",
+  "first_operation": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY",
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
   "operations": {
-    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY": {
+    "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY": {
       "operation": {
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
         "require_gpu": true,
-        "output_id": "daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1-r1",
-        "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1_closeout.json",
+        "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r1",
+        "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
         "workspace_policy": "fresh_route",
@@ -60,13 +60,13 @@
         "orthogonal_changes": [
           {
             "dimension": "precision_model",
-            "reason": "The unchanged multiseed precision route cannot reach a scientific terminal until the archived non-finite training outcome is addressed. This evidence-bound route preserves the raw estimands and seed-blocking model while changing only the amended CUDA TF32 fixed factor and adding observation-only finite assertions."
+            "reason": "The unchanged multiseed precision route cannot reach a scientific terminal until the archived non-finite parameter-state failure and the source-bound training-state integrity hazards are addressed. This evidence-bound route preserves the raw estimands and seed-blocking model while applying only the formally amended operational fixed factors."
           }
         ],
         "reopen_evidence": []
       },
       "scientific_contract": {
-        "question": "With CUDA TF32 explicitly disabled and fail-fast finite diagnostics applied without changing the frozen intervention, is the official ConvIR-B 2x2 CARL-by-density-consistency route numerically finite through all five seed blocks, and if so is the raw combined-versus-baseline scene PSNR effect material and directionally stable while the two main effects and interaction remain separable under one simultaneous comparison family?",
+        "question": "With the amended training-state integrity controls applied without changing the frozen scientific intervention, is the official ConvIR-B 2x2 CARL-by-density-consistency route finite and identity-valid through all five seed blocks, and if so is the raw combined-versus-baseline scene PSNR effect material and directionally stable while the two main effects and interaction remain separable under one simultaneous comparison family?",
         "population": {
           "evidence_role": "development_screening",
           "grouping_unit": "original_clear_scene",
@@ -98,9 +98,12 @@
             "complete trainable ConvIR-B parameter scope in every arm and seed block",
             "five explicit paired training seeds: 20260803, 20260817, 20260831, 20260914, and 20260928",
             "Haze4K 600 training clear-scene role, four same-scene haze observations, deterministic within-seed data order, crop, and augmentation policy",
-            "AdamW optimizer, learning-rate schedule, batch size 2, 256x256 train crop, 2000 steps per cell, inference route, metric code, output processing, and scene aggregation",
+            "AdamW optimizer, learning-rate schedule, batch size 2 containing two distinct clear scenes, 256x256 train crop, 2000 steps per cell, inference route, metric code, output processing, and scene aggregation",
             "CUDA TF32 explicitly disabled for both matmul and cuDNN before model construction, training, and evaluation",
-            "fail-fast finite assertions observe every prediction, component and total loss, gradient, parameter, optimizer state, EMA teacher state, evaluation prediction, observation PSNR, and scene mean without changing any finite value",
+            "consistency pairing always uses a different one of the four observations for the same clear scene and can never select the primary observation",
+            "EMA updates every floating parameter and persistent floating buffer while copying integer buffers exactly, so BatchNorm running statistics and counters remain teacher-state complete",
+            "named elementwise isfinite assertions observe every prediction, component and total loss, gradient, parameter, persistent buffer, optimizer state, EMA teacher state, evaluation prediction, observation PSNR, and scene mean without reducing finite tensors through an overflow-prone norm",
+            "the exact cost map counts all 40000 training iterations and all 12000 evaluation forwards, with result-blind heartbeat intervals bounded below the lifecycle stale threshold",
             "density proxy construction before outcome access, fixed rank order, and three 50-scene severity strata",
             "fixed VGG-19 ImageNet-1K V1 local state dict SHA-256 dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44; layers 1/3/5/9/13, weights 1/32,1/16,1/8,1/4,1, tau 0.5, lambda_consistency 1.0, lambda_CARL 10.0, and K=4 same-scene hazy negatives",
             "no arm-specific tuning, seed replacement, seed extension beyond five, or outcome-dependent change to any training cell"
@@ -556,7 +559,7 @@
           "using the transferred RESIDE planning-SD upper bound as an observed Haze4K variance result"
         ],
         "research_update_binding": {
-          "snapshot_commit": "87607c61670b115ea59caaec26d459c44c993b18",
+          "snapshot_commit": "0a7a1762065cd7418e1966a58a2e06243d44d440",
           "trigger_type": "post_terminal",
           "trigger_terminals": [
             {
@@ -565,7 +568,7 @@
             }
           ],
           "bottleneck_class": "engineering_capability",
-          "bottleneck_statement": "The multiseed scientific question remains unresolved because the fresh rerun produced at least one non-finite raw grouped contrast after completing 24 of 41 units. The archived closeout does not identify the first non-finite seed, arm, scene, loss, gradient, parameter, optimizer state, EMA state, or prediction, so one explicit numerical fixed factor and fail-fast observation path must be tested before another scientific interpretation is possible.",
+          "bottleneck_statement": "The multiseed scientific question remains unresolved because the latest protected-data-free qualification failed before workload start with a non-finite synthetic parameter state at seed 20260803, arm b10_carl, step 427. The failure names the first observed state class but not the responsible tensor or mechanism. Source-bound review also found independent batch-composition, finite-check, consistency-pair, EMA-buffer, cost-map, lifecycle-heartbeat, evidence-filename, and evaluation-lifetime hazards. One formal amendment must close the full training-state integrity surface before another scientific interpretation is possible.",
           "literature_basis": [
             {
               "identifier": "https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-and-later-devices",
@@ -573,6 +576,27 @@
               "task": "explicit CUDA TF32 backend control for float32 matmul and cuDNN operations",
               "transferable_claim": "PyTorch exposes separate matmul and cuDNN controls that can explicitly disable TF32 execution on Ampere-class and later CUDA devices.",
               "applicability_limit": "The framework documentation does not establish that TF32 caused this route's non-finite value or that disabling it will make ConvIR-B training finite; that claim is tested by the frozen full-path diagnostic."
+            },
+            {
+              "identifier": "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
+              "source_status": "official_protocol",
+              "task": "BatchNorm2d batch and spatial statistic semantics",
+              "transferable_claim": "BatchNorm2d computes per-channel statistics over the batch and spatial dimensions and maintains running statistics used during evaluation.",
+              "applicability_limit": "The documentation supports preserving non-degenerate batch composition and running-buffer identity, but it does not prove that duplicated scenes caused the archived non-finite parameter state."
+            },
+            {
+              "identifier": "https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.state_dict",
+              "source_status": "official_protocol",
+              "task": "complete module state identity for EMA",
+              "transferable_claim": "A module state dict contains both parameters and persistent buffers, so an EMA teacher that claims complete model state must account for both classes.",
+              "applicability_limit": "Complete EMA state removes a contract mismatch but does not establish which repair, if any, is sufficient for numerical stability or scientific utility."
+            },
+            {
+              "identifier": "https://pytorch.org/docs/stable/generated/torch.isfinite.html",
+              "source_status": "official_protocol",
+              "task": "elementwise finite-state validation",
+              "transferable_claim": "torch.isfinite classifies each tensor element directly, avoiding a derived FP32 norm whose reduction may overflow even when all source elements are finite.",
+              "applicability_limit": "Elementwise checking prevents a false diagnostic classification; it does not make a genuinely non-finite parameter finite."
             },
             {
               "identifier": "doi:10.24963/IJCAI.2022/119",
@@ -605,10 +629,10 @@
           ],
           "hypotheses": [
             {
-              "id": "explicit_tf32_disable_restores_full_path_finiteness",
-              "statement": "Explicitly disabling CUDA TF32 while preserving all scientific factors is sufficient for every frozen seed-by-arm trajectory, evaluation prediction, PSNR value, and raw grouped contrast to remain finite.",
-              "discriminating_prediction": "The protected-data-free 4000-iteration representative four-arm diagnostic and the subsequent full 2000-step scientific cells complete with every declared finite assertion passing.",
-              "falsifier": "Any declared prediction, component or total loss, gradient, parameter, optimizer tensor, EMA teacher tensor, evaluation prediction, PSNR value, or grouped contrast becomes non-finite under explicit TF32 disablement."
+              "id": "training_state_integrity_restores_full_path_finiteness",
+              "statement": "The formally amended batch composition, consistency pairing, complete EMA state, elementwise finite checks, exact cost map, heartbeat path, and bounded evaluation lifetime are jointly sufficient for the unchanged scientific route to remain finite and identity-valid.",
+              "discriminating_prediction": "The protected-data-free 3360-iteration fixed-linear probe completes 800 steps per arm, beyond the archived step-427 failure point, and 40 evaluation forwards per arm; every subsequent full 2000-step scientific cell also completes with every declared identity and finite assertion passing.",
+              "falsifier": "Any declared prediction, component or total loss, gradient, named parameter or buffer, optimizer tensor, EMA teacher tensor, evaluation prediction, PSNR value, grouped contrast, workload identity, or cost bound fails under the amended path."
             },
             {
               "id": "combined_seed_robust_utility",
@@ -637,10 +661,10 @@
           ],
           "design_selection": {
             "strategy": "group_sequential",
-            "decision_value": "One route first falsifies or supports the single explicit-TF32 numerical repair on a protected-data-free representative 1000-step trajectory through all four arm branches, then, only if finite, preserves the original full 2000-step shared seed-blocked 2x2 decision on raw utility and factorial attribution.",
-            "expected_time_to_decision": "A non-finite engineering tensor stops before scientific-data access with its stage, seed, arm, step, and tensor class identified. If the full engineering map is finite, the unchanged predeclared nonbinding futility look after three scientific seed blocks can stop a non-material or directionally failed replication; otherwise the terminal five-seed look resolves the frozen decision table.",
-            "shared_setup": "All engineering and scientific cells share the official ConvIR-B architecture, checkpoint, per-arm optimizer and 2000-step budget, batch shape, VGG identity, losses, explicit TF32 disablement, finite assertions, and inference implementation; scientific cells additionally use only the unchanged Haze4K roles, evaluation roster, and density strata.",
-            "worst_case_stopping_cost": "The protected-data-free qualification executes 4000 synthetic iterations, the first frozen seed through all four arm branches for 1000 steps each, under the 900-second engineering limit and a 14400-second mechanical bound for the unchanged 40000-iteration scientific map. If it passes, scientific execution then costs either twelve 2000-step cells plus twelve seed-by-arm evaluation bundles and sixteen explicit skipped units after the three-seed futility boundary, or all twenty training cells and twenty seed-by-arm evaluation bundles. The first non-finite assertion stops the affected phase without filtering or retry."
+            "decision_value": "One route first tests the amended training-state path on a protected-data-free fixed-linear probe: all four 800-step arm trajectories, each beyond the archived step-427 failure point, plus 40 evaluation forwards per arm. Only after that probe passes does the unchanged full seed-blocked 2x2 scientific decision on raw utility and factorial attribution become eligible.",
+            "expected_time_to_decision": "A non-finite or identity-invalid engineering state stops before scientific-data access with phase, seed, arm, step, and named state class. If the exact engineering map is finite and within cost, the unchanged nonbinding futility look after three scientific seed blocks can stop a non-material or directionally failed replication; otherwise the terminal five-seed look resolves the frozen decision table.",
+            "shared_setup": "Engineering and scientific cells share the official ConvIR-B architecture, checkpoint, optimizer, two-distinct-scene batch, strictly distinct consistency pair, complete EMA state, VGG identity, losses, explicit TF32 disablement, named elementwise finite assertions, evaluation implementation, and bounded heartbeat path. The fixed-linear probe uses the exact shapes and code branches at 800 rather than 2000 training steps and 10 rather than 150 evaluation scenes per arm; scientific cells use only the unchanged Haze4K roles, full evaluation roster, and density strata.",
+            "worst_case_stopping_cost": "The protected-data-free qualification executes 3360 composite iterations: 3200 training iterations and 160 evaluation forwards, under the authoritative 900-second cap. If it passes, the formal worst case is 52000 composite iterations under a 21600-second mechanical bound. The three-seed futility boundary costs 24000 training iterations plus 7200 evaluation forwards before sixteen typed skipped units; the first non-finite, identity, coverage, or cost failure stops without filtering or retry."
           },
           "decision_design": {
             "arms": [
@@ -703,11 +727,11 @@
             "alias_structure": "Within each seed block this is a full two-factor two-level factorial, so the intercept, two main effects, and interaction are unaliased. Seed is a paired blocking factor crossed with every arm and is not counted as an independent scene. Density strata are fixed reporting strata rather than treatment factors.",
             "mechanism_estimands": [
               {
-                "id": "explicit_tf32_disable_restores_full_path_finiteness",
-                "hypothesis_id": "explicit_tf32_disable_restores_full_path_finiteness",
+                "id": "training_state_integrity_restores_full_path_finiteness",
+                "hypothesis_id": "training_state_integrity_restores_full_path_finiteness",
                 "metric_id": "all_declared_training_evaluation_and_summary_tensors_finite",
-                "prediction": "Every protected-data-free and scientific prediction, loss, gradient, parameter, optimizer, EMA, PSNR, and grouped-contrast finite assertion passes with TF32 explicitly disabled.",
-                "falsifier": "Any declared finite assertion fails under explicit TF32 disablement."
+                "prediction": "Every protected-data-free and scientific identity, prediction, loss, gradient, named parameter or buffer, optimizer, EMA, PSNR, grouped-contrast, coverage, and cost assertion passes on the amended path.",
+                "falsifier": "Any declared integrity, finite-state, coverage, or cost assertion fails on the amended path."
               },
               {
                 "id": "combined_seed_robust_utility",
@@ -766,9 +790,9 @@
         }
       },
       "runtime": {
-        "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1.py",
-        "timeout_seconds": 259200,
-        "expected_wall_seconds": 216000,
+        "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1.py",
+        "timeout_seconds": 43200,
+        "expected_wall_seconds": 21600,
         "total_units": 41,
         "evidence_role": "development_screening",
         "resume_policy": "none",
@@ -801,8 +825,8 @@
             "max_bytes": 1048576
           },
           {
-            "source_relpath": "workload/daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1_review_facts.json",
-            "destination_filename": "daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1_review_facts.json",
+            "source_relpath": "workload/daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1_review_facts.json",
+            "destination_filename": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1_review_facts.json",
             "required": true,
             "max_bytes": 262144
           }
@@ -813,12 +837,12 @@
           "cost_contract": {
             "strategy": "fixed_linear_extrapolation",
             "workload_class": "fixed_iteration_map",
-            "formal_iterations": 40000,
-            "probe_iterations": 4000,
-            "max_seconds_per_iteration": 0.15,
-            "fixed_overhead_seconds": 120,
+            "formal_iterations": 52000,
+            "probe_iterations": 3360,
+            "max_seconds_per_iteration": 0.2,
+            "fixed_overhead_seconds": 200,
             "safety_factor": 2.0,
-            "formal_max_wall_seconds": 14400,
+            "formal_max_wall_seconds": 21600,
             "memory_scaling": "constant",
             "batch_shape_policy": "fixed",
             "termination_policy": "fixed_count",
@@ -843,12 +867,12 @@
           "require_clean": true
         },
         {
-          "id": "numerical_stability_entrypoint",
+          "id": "training_state_integrity_entrypoint",
           "kind": "file",
-          "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_v1.py",
+          "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1.py",
           "access_role": "engineering_debug",
           "contract_access": true,
-          "sha256": "ceb41f4e77c0e43f1bee8c88d0331cb434a277e46b0f4b0a730a6470f8708fca"
+          "sha256": "a42ecbd361567b526232e8efcf9f9fa9fc0bde0899ac5ed65f75ef637b96d951"
         },
         {
           "id": "runtime_environment",
@@ -914,7 +938,7 @@
         }
       ],
       "capability": {
-        "profile_id": "daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_gpu_v1",
+        "profile_id": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_gpu_v1",
         "contract_mode": "gpu_synthetic_no_data",
         "minimum_fixture": {
           "batch": 2,
@@ -928,8 +952,8 @@
             "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
           },
           {
-            "id": "numerical_stability_entrypoint",
-            "identity": "ceb41f4e77c0e43f1bee8c88d0331cb434a277e46b0f4b0a730a6470f8708fca"
+            "id": "training_state_integrity_entrypoint",
+            "identity": "a42ecbd361567b526232e8efcf9f9fa9fc0bde0899ac5ed65f75ef637b96d951"
           },
           {
             "id": "official_checkpoint",
@@ -957,22 +981,22 @@
           "torchvision",
           "numpy"
         ],
-        "production_path_statement": "The protected-data-free qualification explicitly disables CUDA TF32 and executes the first frozen seed through every arm-specific model, teacher, optimizer, CARL, consistency, and finite-assertion production branch for 1000 steps each, exactly 4000 representative CUDA iterations. The unchanged scientific map remains exactly 40000 fixed iterations across all five seeds with 2000 steps per cell. Batch shape and memory scaling are fixed, there is no candidate schedule or adaptive termination, and the qualification reads no Haze4K image or role outcome, trains no scientific weight, and creates no scientific result. Any non-finite value fails immediately without replacement or omission.",
+        "production_path_statement": "The protected-data-free fixed-linear qualification explicitly disables CUDA TF32 and executes the first frozen seed through every arm-specific model, complete EMA teacher, optimizer, CARL, consistency, named elementwise finite assertion, heartbeat, and evaluation production branch for 800 training steps and 40 evaluation forwards per arm, exactly 3360 composite CUDA iterations. It extends beyond the archived step-427 failure point in every arm. Each training batch contains two distinct synthetic scenes, each consistency pair is a distinct observation of the same synthetic clear scene, and the exact formal fixed-count map contains 40000 training iterations plus 12000 evaluation forwards. Batch shape and memory scaling are fixed, there is no candidate schedule or adaptive contract termination, and the qualification reads no Haze4K image or role outcome, trains no scientific weight, and creates no scientific result. Any non-finite or identity-invalid value fails immediately without replacement or omission.",
         "protected_data_prohibited": true,
         "scientific_output_prohibited": true,
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "ceb41f4e77c0e43f1bee8c88d0331cb434a277e46b0f4b0a730a6470f8708fca",
+          "code_path_sha256": "a42ecbd361567b526232e8efcf9f9fa9fc0bde0899ac5ed65f75ef637b96d951",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cuda_sm89"
         }
       },
       "precision": {
-        "certificate_id": "daytime_dehazing_density_consistency_carl_multiseed_numerical_stability_precision_v1",
-        "route_id": "daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1",
-        "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY",
+        "certificate_id": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_precision_v1",
+        "route_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1",
+        "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY",
         "primary_estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
         "independent_unit": "original_clear_scene",
         "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",

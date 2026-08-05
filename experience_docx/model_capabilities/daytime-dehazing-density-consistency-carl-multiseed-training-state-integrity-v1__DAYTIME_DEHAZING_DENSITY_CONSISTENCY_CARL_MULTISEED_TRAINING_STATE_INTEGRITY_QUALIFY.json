@@ -1,0 +1,58 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor_checkout",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "training_state_integrity_entrypoint",
+      "identity": "a42ecbd361567b526232e8efcf9f9fa9fc0bde0899ac5ed65f75ef637b96d951"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "id": "runtime_environment",
+      "identity": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "id": "vgg19_imagenet1k_v1",
+      "identity": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+    }
+  ],
+  "compatibility_imports": [
+    "torch",
+    "torchvision",
+    "numpy"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 2,
+    "channels": 3,
+    "height": 256,
+    "width": 256
+  },
+  "production_path_statement": "The protected-data-free fixed-linear qualification explicitly disables CUDA TF32 and executes the first frozen seed through every arm-specific model, complete EMA teacher, optimizer, CARL, consistency, named elementwise finite assertion, heartbeat, and evaluation production branch for 800 training steps and 40 evaluation forwards per arm, exactly 3360 composite CUDA iterations. It extends beyond the archived step-427 failure point in every arm. Each training batch contains two distinct synthetic scenes, each consistency pair is a distinct observation of the same synthetic clear scene, and the exact formal fixed-count map contains 40000 training iterations plus 12000 evaluation forwards. Batch shape and memory scaling are fixed, there is no candidate schedule or adaptive contract termination, and the qualification reads no Haze4K image or role outcome, trains no scientific weight, and creates no scientific result. Any non-finite or identity-invalid value fails immediately without replacement or omission.",
+  "profile_id": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_gpu_v1",
+  "protected_data_prohibited": true,
+  "reuse_identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "a42ecbd361567b526232e8efcf9f9fa9fc0bde0899ac5ed65f75ef637b96d951",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "ca3245e5749cff3020df1891769f78fa69be5be2d2c757181f3a11bab85b3c82",
+    "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "schema_version": 2,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

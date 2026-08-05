@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the TF32-disabled seed-blocked CARL by consistency 2x2 factorial."""
+"""Run the training-state-integrity CARL by consistency 2x2 factorial."""
 
 from __future__ import annotations
 
@@ -33,8 +33,8 @@ from route_program_api import (
 )
 
 
-ROUTE_ID = "daytime-dehazing-density-consistency-carl-multiseed-numerical-stability-v1"
-OPERATION_ID = "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_NUMERICAL_STABILITY_QUALIFY"
+ROUTE_ID = "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1"
+OPERATION_ID = "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY"
 ANCHOR_COMMIT = "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
 CHECKPOINT_SHA256 = "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
 MODEL_SOURCE_SHA256 = "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
@@ -50,11 +50,31 @@ TRAINING_SCENES = 600
 DEVELOPMENT_SCENES = 150
 OBSERVATIONS_PER_SCENE = 4
 TRAINING_STEPS = 2000
-FORMAL_ITERATIONS = len(SEEDS) * len(ARMS) * TRAINING_STEPS
-PROBE_STEPS_PER_CELL = 1000
+FORMAL_TRAINING_ITERATIONS = len(SEEDS) * len(ARMS) * TRAINING_STEPS
+FORMAL_EVALUATION_ITERATIONS = (
+    len(SEEDS)
+    * len(ARMS)
+    * DEVELOPMENT_SCENES
+    * OBSERVATIONS_PER_SCENE
+)
+FORMAL_ITERATIONS = FORMAL_TRAINING_ITERATIONS + FORMAL_EVALUATION_ITERATIONS
+PROBE_STEPS_PER_CELL = 800
+PROBE_EVALUATION_SCENES = 10
 PROBE_SEEDS = SEEDS[:1]
-PROBE_ITERATIONS = len(PROBE_SEEDS) * len(ARMS) * PROBE_STEPS_PER_CELL
+PROBE_TRAINING_ITERATIONS = (
+    len(PROBE_SEEDS) * len(ARMS) * PROBE_STEPS_PER_CELL
+)
+PROBE_EVALUATION_ITERATIONS = (
+    len(PROBE_SEEDS)
+    * len(ARMS)
+    * PROBE_EVALUATION_SCENES
+    * OBSERVATIONS_PER_SCENE
+)
+PROBE_ITERATIONS = PROBE_TRAINING_ITERATIONS + PROBE_EVALUATION_ITERATIONS
 TOTAL_UNITS = len(SEEDS) * len(ARMS) * 2 + 1
+TRAIN_HEARTBEAT_STEPS = 100
+EVALUATION_HEARTBEAT_OBSERVATIONS = 100
+CONTRACT_HEARTBEAT_ITERATIONS = 100
 BATCH_SIZE = 2
 TRAIN_CROP = 256
 EVAL_CROP = 256
@@ -71,7 +91,7 @@ CARL_MARGIN = 0.5
 VGG_LAYER_INDICES = (1, 3, 5, 9, 13)
 VGG_LAYER_WEIGHTS = (1.0 / 32.0, 1.0 / 16.0, 1.0 / 8.0, 1.0 / 4.0, 1.0)
 IMAGE_EXTENSIONS = {".bmp", ".jpeg", ".jpg", ".png", ".tif", ".tiff"}
-NUMERICAL_MODE = "cuda_tf32_explicitly_disabled"
+NUMERICAL_MODE = "cuda_tf32_disabled_training_state_integrity"
 
 
 def sha256_file(path: Path) -> str:
@@ -118,15 +138,14 @@ def require_finite_tensor(
 
 def require_finite_state(
     torch: Any,
-    tensors: list[Any],
+    tensors: list[tuple[str, Any]],
     *,
     seed: int,
     arm: str,
     step: int,
     label: str,
 ) -> None:
-    groups: dict[tuple[str, int | None, Any], list[Any]] = {}
-    for value in tensors:
+    for name, value in tensors:
         if (
             value is None
             or not hasattr(value, "is_floating_point")
@@ -134,12 +153,8 @@ def require_finite_state(
             or value.numel() == 0
         ):
             continue
-        key = (value.device.type, value.device.index, value.dtype)
-        groups.setdefault(key, []).append(value.detach())
-    for values in groups.values():
-        norms = torch._foreach_norm(values, 2.0)
-        if not bool(torch.isfinite(torch.stack(norms)).all().item()):
-            raise RuntimeError(finite_context(seed, arm, step, label))
+        if not bool(torch.isfinite(value.detach()).all().item()):
+            raise RuntimeError(finite_context(seed, arm, step, f"{label}.{name}"))
 
 
 def require_finite_optimizer(
@@ -150,12 +165,11 @@ def require_finite_optimizer(
     arm: str,
     step: int,
 ) -> None:
-    tensors = [
-        value
-        for state in optimizer.state.values()
-        for value in state.values()
-        if hasattr(value, "is_floating_point")
-    ]
+    tensors = []
+    for parameter_index, state in enumerate(optimizer.state.values()):
+        for state_name, value in state.items():
+            if hasattr(value, "is_floating_point"):
+                tensors.append((f"parameter_{parameter_index}.{state_name}", value))
     require_finite_state(
         torch,
         tensors,
@@ -166,8 +180,8 @@ def require_finite_optimizer(
     )
 
 
-def model_state_tensors(model: Any) -> list[Any]:
-    return list(model.parameters()) + list(model.buffers())
+def model_state_tensors(model: Any) -> list[tuple[str, Any]]:
+    return list(model.named_parameters()) + list(model.named_buffers())
 
 
 def require_context(context: Any) -> None:
@@ -538,8 +552,22 @@ def psnr(
 
 
 def update_ema(teacher: Any, student: Any) -> None:
-    for target, source in zip(teacher.parameters(), student.parameters()):
-        target.mul_(EMA_DECAY).add_(source, alpha=1.0 - EMA_DECAY)
+    teacher_state = teacher.state_dict(keep_vars=True)
+    student_state = student.state_dict(keep_vars=True)
+    if teacher_state.keys() != student_state.keys():
+        raise RuntimeError("EMA teacher and student state identities differ")
+    for name, target in teacher_state.items():
+        source = student_state[name]
+        if (
+            target.shape != source.shape
+            or target.dtype != source.dtype
+            or target.device != source.device
+        ):
+            raise RuntimeError(f"EMA state identity differs: {name}")
+        if target.is_floating_point():
+            target.mul_(EMA_DECAY).add_(source, alpha=1.0 - EMA_DECAY)
+        else:
+            target.copy_(source)
 
 
 def write_unit(context: Any, unit_id: str, payload: dict[str, Any]) -> None:
@@ -582,22 +610,34 @@ def train_arm(
         label="initial_parameter_state",
     )
     for step in range(TRAINING_STEPS):
-        group = training[step % len(training)]
-        crop_key = f"{group['scene_id']}|{seed}|{step}"
-        clear_single, hazy_single = scene_batch(
-            torch,
-            group,
-            crop=TRAIN_CROP,
-            crop_key=crop_key,
-            center=False,
-            device=context.device,
-        )
-        clear = torch.cat([clear_single, clear_single], dim=0)
-        hazy = [torch.cat([item, item], dim=0) for item in hazy_single]
-        primary = hazy[step % OBSERVATIONS_PER_SCENE]
-        paired = hazy[
-            (step // OBSERVATIONS_PER_SCENE + 1) % OBSERVATIONS_PER_SCENE
+        batch_groups = [
+            training[(step * BATCH_SIZE + offset) % len(training)]
+            for offset in range(BATCH_SIZE)
         ]
+        batch_items = [
+            scene_batch(
+                torch,
+                group,
+                crop=TRAIN_CROP,
+                crop_key=f"{group['scene_id']}|{seed}|{step}|{offset}",
+                center=False,
+                device=context.device,
+            )
+            for offset, group in enumerate(batch_groups)
+        ]
+        if len({group["scene_id"] for group in batch_groups}) != BATCH_SIZE:
+            raise RuntimeError("training batch does not contain distinct scenes")
+        clear = torch.cat([item[0] for item in batch_items], dim=0)
+        hazy = [
+            torch.cat(
+                [item[1][observation] for item in batch_items],
+                dim=0,
+            )
+            for observation in range(OBSERVATIONS_PER_SCENE)
+        ]
+        observation_index = step % OBSERVATIONS_PER_SCENE
+        primary = hazy[observation_index]
+        paired = hazy[(observation_index + 1) % OBSERVATIONS_PER_SCENE]
         prediction = unwrap_prediction(model(primary))
         step_number = step + 1
         require_finite_tensor(
@@ -672,7 +712,10 @@ def train_arm(
         loss.backward()
         require_finite_state(
             torch,
-            [parameter.grad for parameter in model.parameters()],
+            [
+                (name, parameter.grad)
+                for name, parameter in model.named_parameters()
+            ],
             seed=seed,
             arm=arm,
             step=step_number,
@@ -704,6 +747,12 @@ def train_arm(
             step=step_number,
             label="ema_teacher_state",
         )
+        if step_number % TRAIN_HEARTBEAT_STEPS == 0:
+            write_workload_progress(
+                context,
+                completed_units=len(load_completed_unit_ledger(context)),
+                stage="multiseed_train_active",
+            )
     checkpoint = output_file(context, f"checkpoints/seed_{seed}/{arm}.pt")
     checkpoint.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"model": model.state_dict(), "arm": arm, "seed": seed}, checkpoint)
@@ -797,6 +846,17 @@ def evaluate_arm(
                             step=evaluation_step,
                         )
                     )
+                    if (
+                        evaluation_step % EVALUATION_HEARTBEAT_OBSERVATIONS
+                        == 0
+                    ):
+                        write_workload_progress(
+                            context,
+                            completed_units=len(
+                                load_completed_unit_ledger(context)
+                            ),
+                            stage="multiseed_evaluate_active",
+                        )
                 scene_score = float(sum(observation_scores) / len(observation_scores))
                 if not math.isfinite(scene_score):
                     raise RuntimeError(
@@ -1107,14 +1167,26 @@ def synthetic_training_cell(
         label="initial_parameter_state",
     )
     for cell_step in range(1, iterations + 1):
-        hazy = torch.rand(
+        clear = torch.rand(
             (BATCH_SIZE, 3, TRAIN_CROP, TRAIN_CROP),
             device=context.device,
         )
-        paired_hazy = torch.rand_like(hazy)
-        clear = torch.rand_like(hazy)
-        negatives = [hazy, paired_hazy, torch.rand_like(hazy), torch.rand_like(hazy)]
-        prediction = unwrap_prediction(model(hazy))
+        if cell_step == 1 and bool(torch.equal(clear[0], clear[1])):
+            raise RuntimeError("synthetic batch does not contain distinct scenes")
+        airlight = 0.7 + 0.3 * torch.rand(
+            (BATCH_SIZE, 3, 1, 1),
+            device=context.device,
+        )
+        observations = [
+            clear * transmission + airlight * (1.0 - transmission)
+            for transmission in (0.30, 0.45, 0.65, 0.85)
+        ]
+        observation_index = (cell_step - 1) % OBSERVATIONS_PER_SCENE
+        primary = observations[observation_index]
+        paired = observations[
+            (observation_index + 1) % OBSERVATIONS_PER_SCENE
+        ]
+        prediction = unwrap_prediction(model(primary))
         require_finite_tensor(
             torch,
             prediction,
@@ -1135,7 +1207,7 @@ def synthetic_training_cell(
         loss_components = [reconstruction_loss]
         if arm in {"b01_consistency", "b11_combined"}:
             with torch.no_grad():
-                teacher_prediction = unwrap_prediction(teacher(paired_hazy))
+                teacher_prediction = unwrap_prediction(teacher(paired))
             require_finite_tensor(
                 torch,
                 teacher_prediction,
@@ -1163,7 +1235,7 @@ def synthetic_training_cell(
                 features,
                 prediction,
                 clear,
-                negatives,
+                observations,
             )
             require_finite_tensor(
                 torch,
@@ -1187,7 +1259,10 @@ def synthetic_training_cell(
         loss.backward()
         require_finite_state(
             torch,
-            [parameter.grad for parameter in model.parameters()],
+            [
+                (name, parameter.grad)
+                for name, parameter in model.named_parameters()
+            ],
             seed=seed,
             arm=arm,
             step=cell_step,
@@ -1220,13 +1295,71 @@ def synthetic_training_cell(
             label="synthetic_ema_teacher_state",
         )
         completed_iterations += 1
-        if completed_iterations in {1, PROBE_ITERATIONS // 2, PROBE_ITERATIONS}:
+        if (
+            completed_iterations == 1
+            or completed_iterations % CONTRACT_HEARTBEAT_ITERATIONS == 0
+            or completed_iterations == PROBE_ITERATIONS
+        ):
             write_contract_progress(
                 context,
                 completed_iterations=completed_iterations,
                 total_iterations=PROBE_ITERATIONS,
                 stage="multiseed_synthetic_fixed_linear_probe",
             )
+    model.eval()
+    with torch.no_grad():
+        for scene_index in range(PROBE_EVALUATION_SCENES):
+            clear = torch.rand(
+                (1, 3, EVAL_CROP, EVAL_CROP),
+                device=context.device,
+            )
+            airlight = 0.7 + 0.3 * torch.rand(
+                (1, 3, 1, 1),
+                device=context.device,
+            )
+            observations = [
+                clear * transmission + airlight * (1.0 - transmission)
+                for transmission in (0.30, 0.45, 0.65, 0.85)
+            ]
+            observation_scores = []
+            for observation_index, observation in enumerate(observations):
+                observation_scores.append(
+                    psnr(
+                        torch,
+                        unwrap_prediction(model(observation)),
+                        clear,
+                        seed=seed,
+                        arm=arm,
+                        step=(
+                            scene_index * OBSERVATIONS_PER_SCENE
+                            + observation_index
+                            + 1
+                        ),
+                    )
+                )
+                completed_iterations += 1
+                if (
+                    completed_iterations % CONTRACT_HEARTBEAT_ITERATIONS == 0
+                    or completed_iterations == PROBE_ITERATIONS
+                ):
+                    write_contract_progress(
+                        context,
+                        completed_iterations=completed_iterations,
+                        total_iterations=PROBE_ITERATIONS,
+                        stage="multiseed_synthetic_fixed_linear_probe",
+                    )
+            scene_score = float(
+                sum(observation_scores) / len(observation_scores)
+            )
+            if not math.isfinite(scene_score):
+                raise RuntimeError(
+                    finite_context(
+                        seed,
+                        arm,
+                        scene_index + 1,
+                        "synthetic_scene_mean_psnr",
+                    )
+                )
     return completed_iterations
 
 
@@ -1279,7 +1412,13 @@ def contract(context_path):
             "local_vgg_state_dict_verified": True,
             "synthetic_cuda_only": True,
             "first_frozen_seed_four_arm_path_exercised": True,
-            "representative_1000_step_cell_paths_exercised": True,
+            "representative_800_step_cell_paths_exercised": True,
+            "two_distinct_scene_batch_exercised": True,
+            "same_scene_four_observation_fixture_exercised": True,
+            "strictly_distinct_consistency_pair_exercised": True,
+            "full_ema_parameter_and_buffer_state_exercised": True,
+            "elementwise_finite_assertions_exercised": True,
+            "bounded_synthetic_evaluation_path_exercised": True,
             "cuda_tf32_explicitly_disabled": True,
             "all_declared_finite_assertions_passed": True,
         },
@@ -1357,6 +1496,7 @@ def run(context_path):
                 completed_units=len(load_completed_unit_ledger(context)),
                 stage="multiseed_evaluate",
             )
+            del model
         completed_seeds.append(seed)
         if seed_index + 1 == FIRST_LOOK_SEED_COUNT:
             first_look_summary = summarize(scores, completed_seeds)
@@ -1428,7 +1568,7 @@ def run(context_path):
         context,
         relpath=(
             "daytime_dehazing_density_consistency_carl_"
-            "multiseed_numerical_stability_v1_review_facts.json"
+            "multiseed_training_state_integrity_v1_review_facts.json"
         ),
         facts=[
             build_primary_review_fact(
