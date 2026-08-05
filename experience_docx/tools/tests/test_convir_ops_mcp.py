@@ -363,7 +363,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def test_ordinary_results_expose_runtime_source_identity(self):
         value = payload(OPS.typed_result(True, "IDENTITY_TEST"))
-        self.assertEqual("5.11.0", value["runtime_identity"]["server_version"])
+        self.assertEqual("5.12.0", value["runtime_identity"]["server_version"])
         self.assertEqual(
             OPS.SERVER_SOURCE_SHA256,
             value["runtime_identity"]["server_source_sha256"],
@@ -1323,7 +1323,8 @@ class ConvirOpsV4Tests(unittest.TestCase):
             self.assertIsNot(record.get("finalization_repair_attempted"), True)
             self.assertIsNone(record.get("engineering_failure_resolution"))
 
-    def discardable_receipt(self, **diagnostic_overrides):
+    def discardable_receipt(self, *, engineering_repair_history=None,
+                            **diagnostic_overrides):
         ctx = context()
         ctx.update({
             "remote_repo": OPS.derive_remote_repo("a1x", "a1x-s0-r1"),
@@ -1333,6 +1334,8 @@ class ConvirOpsV4Tests(unittest.TestCase):
         ctx["closeout_path"] = (
             f"{ctx['remote_repo']}/experience_docx/experiment_logs/a1x/s0_closeout.json"
         )
+        if engineering_repair_history is not None:
+            ctx["engineering_repair_history"] = engineering_repair_history
         diagnostic = {
             "failure_phase": "asset_preflight",
             "workload_started": False,
@@ -1366,10 +1369,10 @@ class ConvirOpsV4Tests(unittest.TestCase):
         return receipt
 
     def repairable_receipt(self, *, history=None, **diagnostic_overrides):
-        receipt = self.discardable_receipt(**diagnostic_overrides)
+        receipt = self.discardable_receipt(
+            engineering_repair_history=history, **diagnostic_overrides,
+        )
         with OPS.locked_record("receipt", receipt) as record:
-            if history is not None:
-                record["payload"]["context"]["engineering_repair_history"] = history
             closeout = record["terminal_closeout"]
             fingerprint = OPS.engineering_failure_fingerprint(closeout)
             record["engineering_failure_fingerprint_sha256"] = fingerprint
@@ -1427,12 +1430,17 @@ class ConvirOpsV4Tests(unittest.TestCase):
         )
 
     def test_repeat_root_and_distinct_root_limit_stop_automatic_repair(self):
-        receipt, closeout, fingerprint = self.repairable_receipt(
-            failure_phase="workload", exception_type="RuntimeError",
-            traceback_tail="same root at line 10", returncode=1,
+        diagnostic = {
+            "failure_phase": "workload", "exception_type": "RuntimeError",
+            "traceback_tail": "same root at line 10", "returncode": 1,
+        }
+        fingerprint = OPS.engineering_failure_fingerprint({
+            "engineering_diagnostic": diagnostic,
+        })
+        receipt, closeout, observed = self.repairable_receipt(
+            history=[fingerprint], **diagnostic,
         )
-        with OPS.locked_record("receipt", receipt) as record:
-            record["payload"]["context"]["engineering_repair_history"] = [fingerprint]
+        self.assertEqual(fingerprint, observed)
         state, observed_fingerprint = OPS.authorize_engineering_auto_repair(
             receipt, closeout,
         )
@@ -2242,7 +2250,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.11.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.12.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
