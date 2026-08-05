@@ -1,0 +1,53 @@
+{
+  "assurance": {
+    "method_id": "archived_cross_dataset_planning_sd_upper_bound_transfer",
+    "planning_sd_rule": "Use 0.632364322219979 dB, the larger archived 1.05-multiplied planning-SD upper bound from 1587-scene development-only RESIDE ITS/OTS continuous-utility evidence. This is a conservative feasibility transfer, not an observed Haze4K variance or a guarantee; actual Haze4K raw intervals own the inconclusive-only precision gate.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_density_consistency_carl_multiseed_factorial_rerun_precision_v1",
+  "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+  "confidence_level": 0.95,
+  "critical_value": 2.865,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FACTORIAL_RERUN_QUALIFY",
+  "primary_estimand_id": "multiseed_combined_vs_baseline_raw_scene_psnr_db",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-factorial-rerun-v1",
+  "schema_version": 2,
+  "source_reference": "Archived outcome-bound RESIDE development planning summary plus frozen Haze4K development capacity; no confirmation or sealed-final outcome is used.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "DENSITY_LOW",
+      "independent_groups_available": 50,
+      "independent_groups_planned": 50,
+      "independent_groups_required": 49,
+      "planning_sd": 0.632364322219979,
+      "planning_sd_upper_bound": 0.632364322219979,
+      "source_reference": "GitHub-main convir-existing-dataset-role-ledger-v1 summary supplies the conservative 0.632364322219979 dB planning upper bound; the frozen Haze4K role supplies 50 low-density development scenes."
+    },
+    {
+      "feasible": true,
+      "id": "DENSITY_MID",
+      "independent_groups_available": 50,
+      "independent_groups_planned": 50,
+      "independent_groups_required": 49,
+      "planning_sd": 0.632364322219979,
+      "planning_sd_upper_bound": 0.632364322219979,
+      "source_reference": "GitHub-main convir-existing-dataset-role-ledger-v1 summary supplies the conservative 0.632364322219979 dB planning upper bound; the frozen Haze4K role supplies 50 mid-density development scenes."
+    },
+    {
+      "feasible": true,
+      "id": "DENSITY_HIGH",
+      "independent_groups_available": 50,
+      "independent_groups_planned": 50,
+      "independent_groups_required": 49,
+      "planning_sd": 0.632364322219979,
+      "planning_sd_upper_bound": 0.632364322219979,
+      "source_reference": "GitHub-main convir-existing-dataset-role-ledger-v1 summary supplies the conservative 0.632364322219979 dB planning upper bound; the frozen Haze4K role supplies 50 high-density development scenes."
+    }
+  ],
+  "target_half_width": 0.26
+}
