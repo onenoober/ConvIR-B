@@ -34,6 +34,7 @@ test ! -e "$REPO"
 test -z "$(/usr/bin/git -C "$REPO" status --porcelain)"
 
 export PYTHONPATH=$REPO/experience_docx/tools:$REPO/experience_docx/tools/tests
+printf 'state=RUNNING_CONTROL_TESTS\ncommit=%s\n' "$CANDIDATE" > "$STATUS"
 "$PYTHON" -m unittest \
   test_convir_ops_mcp \
   test_validate_route_ready \
