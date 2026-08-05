@@ -48,7 +48,7 @@
     "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
     "code_path_sha256": "a42ecbd361567b526232e8efcf9f9fa9fc0bde0899ac5ed65f75ef637b96d951",
     "device_class": "cuda_sm89",
-    "input_contract_sha256": "ca3245e5749cff3020df1891769f78fa69be5be2d2c757181f3a11bab85b3c82",
+    "input_contract_sha256": "9face73022e5f8ff497186f55c075dcade38e81396ff83a5e6a87699b3f275b2",
     "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
     "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
   },

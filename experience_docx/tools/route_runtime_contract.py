@@ -58,6 +58,7 @@ ENGINEERING_WORKLOAD_CLASSES = {
 }
 PRECISION_MODES = {"formal_precision", "descriptive_capacity", "not_applicable"}
 COMPLETE_UNIT_LEDGER_ASSET_ID = "completed_unit_ledger"
+MAX_RUNTIME_SECONDS = 7 * 24 * 3600
 
 
 class ContractError(ValueError):
@@ -293,7 +294,10 @@ def _validate_engineering_contract(value: Any, *, legacy: bool) -> dict[str, Any
         )
     return {
         "mode": mode, "capability_profile_relpath": profile,
-        "max_seconds": require_int(value["max_seconds"], "engineering_contract.max_seconds", 1, 900),
+        "max_seconds": require_int(
+            value["max_seconds"], "engineering_contract.max_seconds",
+            1, MAX_RUNTIME_SECONDS,
+        ),
         "cost_contract": (
             _validate_cost_contract(value["cost_contract"])
             if value.get("cost_contract") is not None else None
@@ -375,7 +379,7 @@ def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: st
             asset_path, "asset_manifest_relpath",
             prefix="experience_docx/route_assets/", suffix=".json",
         )
-    timeout = require_int(value["timeout_seconds"], "timeout_seconds", 1, 7 * 24 * 3600)
+    timeout = require_int(value["timeout_seconds"], "timeout_seconds", 1, MAX_RUNTIME_SECONDS)
     expected_wall = require_int(
         value["expected_wall_seconds"], "expected_wall_seconds", 1, timeout,
     )
@@ -408,6 +412,8 @@ def validate_runtime_spec(value: Any, manifest: dict[str, Any], operation_id: st
     engineering = _validate_engineering_contract(
         value.get("engineering_contract"), legacy=legacy,
     )
+    if not legacy and engineering["max_seconds"] > timeout:
+        raise ContractError("engineering_contract.max_seconds exceeds timeout_seconds")
     if engineering["mode"] == "gpu_synthetic_no_data" and not operation.get("require_gpu"):
         raise ContractError("gpu synthetic contract requires a GPU operation")
     cost = engineering["cost_contract"]

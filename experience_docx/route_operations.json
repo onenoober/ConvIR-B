@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1.json",
-  "experiment_spec_sha256": "72ad8f1ffbe404fdba87ed381cc36f13b20e39e161fbbc7a0dda2be4d5a7cd74",
+  "experiment_spec_sha256": "fa940ff2feb0bc0244afdee6294ea71ceb73364bd206d1ea01a348dcaf713707",
   "operations": {
     "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 14000,
       "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
       "monitor_profile": "standard",
-      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r1",
+      "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,

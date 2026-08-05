@@ -614,7 +614,7 @@
       "expected_time_to_decision": "A non-finite or identity-invalid engineering state stops before scientific-data access with phase, seed, arm, step, and named state class. If the exact engineering map is finite and within cost, the unchanged nonbinding futility look after three scientific seed blocks can stop a non-material or directionally failed replication; otherwise the terminal five-seed look resolves the frozen decision table.",
       "shared_setup": "Engineering and scientific cells share the official ConvIR-B architecture, checkpoint, optimizer, two-distinct-scene batch, strictly distinct consistency pair, complete EMA state, VGG identity, losses, explicit TF32 disablement, named elementwise finite assertions, evaluation implementation, and bounded heartbeat path. The fixed-linear probe uses the exact shapes and code branches at 800 rather than 2000 training steps and 10 rather than 150 evaluation scenes per arm; scientific cells use only the unchanged Haze4K roles, full evaluation roster, and density strata.",
       "strategy": "group_sequential",
-      "worst_case_stopping_cost": "The protected-data-free qualification executes 3360 composite iterations: 3200 training iterations and 160 evaluation forwards, under the authoritative 900-second cap. If it passes, the formal worst case is 52000 composite iterations under a 21600-second mechanical bound. The three-seed futility boundary costs 24000 training iterations plus 7200 evaluation forwards before sixteen typed skipped units; the first non-finite, identity, coverage, or cost failure stops without filtering or retry."
+      "worst_case_stopping_cost": "The protected-data-free qualification executes 3360 composite iterations: 3200 training iterations and 160 evaluation forwards, under a route-specific 1800-second engineering maximum. If it passes, the formal worst case is 52000 composite iterations under a 43200-second mechanical bound and an 86400-second lifecycle timeout. The three-seed futility boundary costs 24000 training iterations plus 7200 evaluation forwards before sixteen typed skipped units; the first non-finite, identity, coverage, or cost failure stops without filtering or retry."
     },
     "hypotheses": [
       {
@@ -706,7 +706,7 @@
         "transferable_claim": "Distributional reporting across repeated runs is more informative than one point estimate."
       }
     ],
-    "snapshot_commit": "0a7a1762065cd7418e1966a58a2e06243d44d440",
+    "snapshot_commit": "2a23f3330c247a696d96343f61d6cafc900ec31b",
     "trigger_terminals": [
       {
         "route_id": "daytime-dehazing-density-consistency-carl-factorial-v1",

@@ -3,7 +3,7 @@
   "route_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1",
   "rules_commit": "c35c636a5616df27e4a53764aeada9094478cb11",
   "title": "Daytime Dehazing Density Consistency CARL Multiseed Training State Integrity v1",
-  "rationale": "The archived receipt-bound engineering contract failed before workload start at seed 20260803, arm b10_carl, step 427 with non-finite synthetic_parameter_state. GitHub-main commit 0a7a1762065cd7418e1966a58a2e06243d44d440 preserves the canonical closeout at SHA-256 c27a401a7240d5d8d8b615c3e0a82f0e4dffedd9ba00e740a6f9f66a962e189a, with decision null, authorizes=NONE, no scientific-data touch, and no protected-data touch. A source-bound review found five contract-integrity hazards that the failed diagnostic could not distinguish: batch size 2 duplicated one scene through a 1x1 BatchNorm path; FP32 L2 norms could overflow while their tensors remained elementwise finite; the consistency pair could equal the primary observation; EMA updated parameters but omitted BatchNorm buffers; and the fixed-linear cost map omitted all 12000 formal evaluation forwards and contradicted the declared wall bound. This formal amendment repairs those fixed factors together because leaving any one unresolved could invalidate the next run. The scientific 2x2 intervention, five seeds, Haze4K roles, 2000-step cell budget, optimizer, learning rate, CARL and consistency definitions and weights, raw estimands, uncertainty, gates, sequential boundaries, and 41-unit ledger remain unchanged. Under the authoritative 900-second qualification cap, the protected-data-free fixed-linear probe exercises 800 steps per arm and 10 synthetic scenes with four evaluation observations per arm, totaling 3360 exact-path composite iterations and extending beyond the archived step-427 failure point in every arm. It uses two distinct synthetic scenes per training batch, strictly distinct same-scene consistency observations, EMA over parameters and buffers, named elementwise finite checks, and bounded result-blind heartbeats. The formal cost map separately includes all 40000 training iterations and 12000 evaluation forwards. The qualification tests the corrected path as a whole and cannot attribute success to one repair or guarantee later scientific utility. Any non-finite value, identity mismatch, incomplete map, or cost violation fails without filtering, replacement, retry, or scientific interpretation. Development evidence cannot authorize confirmation, sealed-final access, promotion, deployment, publication, or another repair route.",
+  "rationale": "The archived receipt-bound engineering contract failed before workload start at seed 20260803, arm b10_carl, step 427 with non-finite synthetic_parameter_state. GitHub-main commit 0a7a1762065cd7418e1966a58a2e06243d44d440 preserves the canonical closeout at SHA-256 c27a401a7240d5d8d8b615c3e0a82f0e4dffedd9ba00e740a6f9f66a962e189a, with decision null, authorizes=NONE, no scientific-data touch, and no protected-data touch. A source-bound review found five contract-integrity hazards that the failed diagnostic could not distinguish: batch size 2 duplicated one scene through a 1x1 BatchNorm path; FP32 L2 norms could overflow while their tensors remained elementwise finite; the consistency pair could equal the primary observation; EMA updated parameters but omitted BatchNorm buffers; and the fixed-linear cost map omitted all 12000 formal evaluation forwards and contradicted the declared wall bound. This formal amendment repairs those fixed factors together because leaving any one unresolved could invalidate the next run. The scientific 2x2 intervention, five seeds, Haze4K roles, 2000-step cell budget, optimizer, learning rate, CARL and consistency definitions and weights, raw estimands, uncertainty, gates, sequential boundaries, and 41-unit ledger remain unchanged. The protected-data-free fixed-linear probe retains 800 steps per arm and 10 synthetic scenes with four evaluation observations per arm, totaling 3360 exact-path composite iterations and extending beyond the archived step-427 failure point in every arm. Its route-specific engineering maximum is 1800 seconds, with a conservative cost map of 0.36 seconds per iteration, 100 seconds fixed overhead, a 2.0 safety factor, a 43200-second formal bound, and an 86400-second lifecycle timeout. It uses two distinct synthetic scenes per training batch, strictly distinct same-scene consistency observations, EMA over parameters and buffers, named elementwise finite checks, and bounded result-blind heartbeats. The formal cost map separately includes all 40000 training iterations and 12000 evaluation forwards. The qualification tests the corrected path as a whole and cannot attribute success to one repair or guarantee later scientific utility. Any non-finite value, identity mismatch, incomplete map, or cost violation fails without filtering, replacement, retry, or scientific interpretation. Development evidence cannot authorize confirmation, sealed-final access, promotion, deployment, publication, or another repair route.",
   "first_operation": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY",
   "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
   "operations": {
@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_density_consistency_carl_multiseed_factorial",
         "require_gpu": true,
-        "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r1",
+        "output_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1-r2",
         "closeout_filename": "daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -559,7 +559,7 @@
           "using the transferred RESIDE planning-SD upper bound as an observed Haze4K variance result"
         ],
         "research_update_binding": {
-          "snapshot_commit": "0a7a1762065cd7418e1966a58a2e06243d44d440",
+          "snapshot_commit": "2a23f3330c247a696d96343f61d6cafc900ec31b",
           "trigger_type": "post_terminal",
           "trigger_terminals": [
             {
@@ -664,7 +664,7 @@
             "decision_value": "One route first tests the amended training-state path on a protected-data-free fixed-linear probe: all four 800-step arm trajectories, each beyond the archived step-427 failure point, plus 40 evaluation forwards per arm. Only after that probe passes does the unchanged full seed-blocked 2x2 scientific decision on raw utility and factorial attribution become eligible.",
             "expected_time_to_decision": "A non-finite or identity-invalid engineering state stops before scientific-data access with phase, seed, arm, step, and named state class. If the exact engineering map is finite and within cost, the unchanged nonbinding futility look after three scientific seed blocks can stop a non-material or directionally failed replication; otherwise the terminal five-seed look resolves the frozen decision table.",
             "shared_setup": "Engineering and scientific cells share the official ConvIR-B architecture, checkpoint, optimizer, two-distinct-scene batch, strictly distinct consistency pair, complete EMA state, VGG identity, losses, explicit TF32 disablement, named elementwise finite assertions, evaluation implementation, and bounded heartbeat path. The fixed-linear probe uses the exact shapes and code branches at 800 rather than 2000 training steps and 10 rather than 150 evaluation scenes per arm; scientific cells use only the unchanged Haze4K roles, full evaluation roster, and density strata.",
-            "worst_case_stopping_cost": "The protected-data-free qualification executes 3360 composite iterations: 3200 training iterations and 160 evaluation forwards, under the authoritative 900-second cap. If it passes, the formal worst case is 52000 composite iterations under a 21600-second mechanical bound. The three-seed futility boundary costs 24000 training iterations plus 7200 evaluation forwards before sixteen typed skipped units; the first non-finite, identity, coverage, or cost failure stops without filtering or retry."
+            "worst_case_stopping_cost": "The protected-data-free qualification executes 3360 composite iterations: 3200 training iterations and 160 evaluation forwards, under a route-specific 1800-second engineering maximum. If it passes, the formal worst case is 52000 composite iterations under a 43200-second mechanical bound and an 86400-second lifecycle timeout. The three-seed futility boundary costs 24000 training iterations plus 7200 evaluation forwards before sixteen typed skipped units; the first non-finite, identity, coverage, or cost failure stops without filtering or retry."
           },
           "decision_design": {
             "arms": [
@@ -791,8 +791,8 @@
       },
       "runtime": {
         "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1.py",
-        "timeout_seconds": 43200,
-        "expected_wall_seconds": 21600,
+        "timeout_seconds": 86400,
+        "expected_wall_seconds": 43200,
         "total_units": 41,
         "evidence_role": "development_screening",
         "resume_policy": "none",
@@ -833,16 +833,16 @@
         ],
         "engineering_contract": {
           "mode": "gpu_synthetic_no_data",
-          "max_seconds": 900,
+          "max_seconds": 1800,
           "cost_contract": {
             "strategy": "fixed_linear_extrapolation",
             "workload_class": "fixed_iteration_map",
             "formal_iterations": 52000,
             "probe_iterations": 3360,
-            "max_seconds_per_iteration": 0.2,
-            "fixed_overhead_seconds": 200,
+            "max_seconds_per_iteration": 0.36,
+            "fixed_overhead_seconds": 100,
             "safety_factor": 2.0,
-            "formal_max_wall_seconds": 21600,
+            "formal_max_wall_seconds": 43200,
             "memory_scaling": "constant",
             "batch_shape_policy": "fixed",
             "termination_policy": "fixed_count",

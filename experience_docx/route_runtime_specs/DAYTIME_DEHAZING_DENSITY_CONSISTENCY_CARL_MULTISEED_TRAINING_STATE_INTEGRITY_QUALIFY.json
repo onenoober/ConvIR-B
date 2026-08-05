@@ -5,11 +5,11 @@
     "cost_contract": {
       "batch_shape_policy": "fixed",
       "candidate_schedule": "none",
-      "fixed_overhead_seconds": 200,
+      "fixed_overhead_seconds": 100,
       "formal_iterations": 52000,
-      "formal_max_wall_seconds": 21600,
+      "formal_max_wall_seconds": 43200,
       "max_peak_memory_mib": 14000,
-      "max_seconds_per_iteration": 0.2,
+      "max_seconds_per_iteration": 0.36,
       "memory_scaling": "constant",
       "probe_iterations": 3360,
       "production_path": "exact",
@@ -18,7 +18,7 @@
       "termination_policy": "fixed_count",
       "workload_class": "fixed_iteration_map"
     },
-    "max_seconds": 900,
+    "max_seconds": 1800,
     "mode": "gpu_synthetic_no_data"
   },
   "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_density_consistency_carl_multiseed_training_state_integrity_v1.py",
@@ -53,7 +53,7 @@
     }
   ],
   "evidence_role": "development_screening",
-  "expected_wall_seconds": 21600,
+  "expected_wall_seconds": 43200,
   "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY",
   "precision_contract": {
     "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1__DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_TRAINING_STATE_INTEGRITY_QUALIFY.json",
@@ -68,6 +68,6 @@
   "resume_policy": "none",
   "route_id": "daytime-dehazing-density-consistency-carl-multiseed-training-state-integrity-v1",
   "schema_version": 2,
-  "timeout_seconds": 43200,
+  "timeout_seconds": 86400,
   "total_units": 41
 }
