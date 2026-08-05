@@ -156,14 +156,110 @@ class ConvirOpsV4Tests(unittest.TestCase):
         historical_context = {
             **context(), "route_manifest_schema_version": 5,
         }
-        with patch.object(
-            OPS, "load_operation",
-            return_value=(manifest(), "S0", historical_context),
+        with (
+            patch.object(OPS, "control_self_check", return_value={"ok": True}),
+            patch.object(
+                OPS, "load_operation",
+                return_value=(manifest(), "S0", historical_context),
+            ),
         ):
             result = payload(OPS.tool_plan_manifest({}))
         self.assertFalse(result["ok"])
         self.assertEqual("PLAN_REJECTED", result["operation_state"])
+        self.assertFalse(result["plan_attempt_consumed"])
         self.assertIn("read-only", result["mismatches"][0])
+
+    def test_control_plane_stale_stops_before_contract_and_does_not_consume_plan(self):
+        observed = {
+            "loaded_control_commit": "a" * 40,
+            "configured_worktree_head": "a" * 40,
+            "live_main_commit": "b" * 40,
+        }
+        error = OPS.ControlPlaneError(
+            "CONTROL_PLANE_STALE",
+            "control commits differ",
+            observed=observed,
+        )
+        with (
+            patch.object(OPS, "control_self_check", side_effect=error),
+            patch.object(OPS, "load_operation") as load,
+        ):
+            result = payload(OPS.tool_plan_manifest({}))
+        self.assertEqual("CONTROL_PLANE_STALE", result["operation_state"])
+        self.assertEqual("control_plane", result["failure_class"])
+        self.assertEqual("CONTROL_SELF_CHECK", result["plan_state"])
+        self.assertFalse(result["plan_attempt_consumed"])
+        self.assertNotIn("plan_token", result)
+        load.assert_not_called()
+
+    def test_validator_bundle_mismatch_is_not_a_contract_rejection(self):
+        error = OPS.ControlPlaneError(
+            "VALIDATOR_BUNDLE_MISMATCH",
+            "validator identities differ",
+            observed={
+                "loaded_validator_bundle_sha256": "a" * 64,
+                "main_validator_bundle_sha256": "b" * 64,
+            },
+        )
+        with (
+            patch.object(OPS, "control_self_check", side_effect=error),
+            patch.object(OPS, "load_operation") as load,
+        ):
+            result = payload(OPS.tool_plan_manifest({}))
+        self.assertEqual("VALIDATOR_BUNDLE_MISMATCH", result["operation_state"])
+        self.assertEqual("control_plane", result["failure_class"])
+        self.assertFalse(result["plan_attempt_consumed"])
+        load.assert_not_called()
+
+    def test_control_self_check_reports_all_bound_identities(self):
+        commit = "b" * 40
+        bundle = "c" * 64
+        with (
+            patch.object(OPS, "LOADED_CONTROL_COMMIT", commit),
+            patch.object(OPS, "LOADED_VALIDATOR_BUNDLE_SHA256", bundle),
+            patch.object(OPS, "github_refs", return_value={"refs/heads/main": commit}),
+            patch.object(OPS, "run_local", return_value=commit),
+            patch.object(OPS, "_bundle_digest_from_files", return_value=bundle),
+            patch.object(OPS, "control_validator_bundle_digest", return_value=bundle),
+            patch.object(OPS, "LOADED_MODULE_ORIGIN_MANIFEST", [
+                {"module": "convir_ops_mcp", "origin_matches": True},
+            ]),
+        ):
+            result = OPS.control_self_check()
+        self.assertEqual(commit, result["loaded_control_commit"])
+        self.assertEqual(commit, result["configured_worktree_head"])
+        self.assertEqual(commit, result["live_main_commit"])
+        self.assertEqual(bundle, result["loaded_validator_bundle_sha256"])
+        self.assertEqual(bundle, result["configured_validator_bundle_sha256"])
+        self.assertEqual(bundle, result["main_validator_bundle_sha256"])
+        self.assertEqual(OPS.ENGINEERING_TIMEOUT_POLICY, result["engineering_timeout_policy"])
+        self.assertEqual(
+            OPS.MODULE_ORIGIN_MANIFEST_SHA256,
+            result["module_origin_manifest_sha256"],
+        )
+        self.assertTrue(result["module_origins_match"])
+
+    def test_successful_plan_seal_is_the_only_consumed_plan_attempt(self):
+        control_identity = {
+            "loaded_control_commit": "b" * 40,
+            "configured_worktree_head": "b" * 40,
+            "live_main_commit": "b" * 40,
+            "loaded_validator_bundle_sha256": "c" * 64,
+            "main_validator_bundle_sha256": "c" * 64,
+        }
+        with (
+            patch.object(OPS, "control_self_check", return_value=control_identity),
+            patch.object(
+                OPS, "load_operation",
+                return_value=(manifest(), "S0", context()),
+            ),
+        ):
+            result = payload(OPS.tool_plan_manifest({}))
+        self.assertEqual("PLAN_SEALED", result["operation_state"])
+        self.assertEqual("PLAN_SEALED", result["plan_state"])
+        self.assertTrue(result["plan_attempt_consumed"])
+        self.assertRegex(result["plan_token"], r"^[0-9a-f]{64}$")
+        self.assertEqual(control_identity, result["observed"]["control_plane_identity"])
 
     def test_start_rejects_historical_unused_plan_without_remote_access(self):
         plan = {
@@ -266,10 +362,22 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def test_ordinary_results_expose_runtime_source_identity(self):
         value = payload(OPS.typed_result(True, "IDENTITY_TEST"))
-        self.assertEqual("5.9.0", value["runtime_identity"]["server_version"])
+        self.assertEqual("5.10.0", value["runtime_identity"]["server_version"])
         self.assertEqual(
             OPS.SERVER_SOURCE_SHA256,
             value["runtime_identity"]["server_source_sha256"],
+        )
+        self.assertEqual(
+            OPS.LOADED_CONTROL_COMMIT,
+            value["runtime_identity"]["loaded_control_commit"],
+        )
+        self.assertEqual(
+            OPS.LOADED_VALIDATOR_BUNDLE_SHA256,
+            value["runtime_identity"]["loaded_validator_bundle_sha256"],
+        )
+        self.assertEqual(
+            OPS.MODULE_ORIGIN_MANIFEST_SHA256,
+            value["runtime_identity"]["module_origin_manifest_sha256"],
         )
 
     def test_unknown_start_recovery_bodies_have_valid_bash_syntax(self):
@@ -1843,7 +1951,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.9.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.10.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

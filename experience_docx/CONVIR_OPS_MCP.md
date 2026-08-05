@@ -2,15 +2,27 @@
 
 Date: 2026-08-02
 
-Status: main-first snapshot server `5.9.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.10.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4/5 for status
 and evidence provenance, while plan accepts only compiled manifest schema 6 and
 runtime schema 2. New experiment specs and scientific contracts
 use schema 3; typed asset manifests and other supporting contracts remain schema
 2. Historical experiment/scientific schema 1/2 remains readable, is not
 migrated and cannot pass route-ready, plan or start.
-Every ordinary structured response exposes the loaded server version and exact
-server source SHA-256, so a stale long-lived stdio process is visible directly.
+Every ordinary structured response exposes the loaded server version, exact
+server source SHA-256, loaded control commit, complete validator-bundle SHA-256
+and module-origin-manifest SHA-256, so dependency or process drift is visible
+directly.
+
+Version 5.10.0 adds an internal pre-plan control self-check without adding a
+tool or caller step. Before route-contract parsing it compares the loaded
+control commit, configured worktree HEAD and live main; the loaded, configured
+and live-main validator bundle; module origins; and the engineering timeout
+policy. The bundle is the canonical nine-file runtime closure plus
+`convir_ops_mcp.py` and `validate_route_ready.py`. A stale commit, bundle
+mismatch or unavailable identity read returns a dedicated pre-plan state,
+creates no token and records `plan_attempt_consumed=false`. Only
+`PLAN_SEALED` consumes the route's single plan attempt.
 
 Version 5.9.0 adds a machine-enforced research-update binding for future routes:
 the exact GitHub-main snapshot; either 1-8 `post_terminal` records or a zero-
@@ -146,6 +158,13 @@ later operation binds one prior closeout and exact
 valid.
 
 ## Finite State
+
+Plan begins in `CONTROL_SELF_CHECK`. `CONTROL_PLANE_STALE`,
+`VALIDATOR_BUNDLE_MISMATCH` and `CONTROL_SELF_CHECK_FAILED` stop before manifest
+or scientific-contract parsing and cannot be represented as `PLAN_REJECTED`.
+They are retryable only as bounded control-plane correction and never consume a
+plan attempt. A successful self-check is sealed into the plan context; durable
+token creation transitions once to `PLAN_SEALED`.
 
 Start requires the planned route branch and GitHub main to remain exact; any
 main movement after plan requires one fresh plan, even when the rules remain
@@ -332,11 +351,13 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.9.0`, source SHA-256, exactly six tools,
+restart the host and verify version `5.10.0`, source SHA-256, loaded control
+commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/repair/discard states.
-The same version and source SHA-256 must appear in ordinary structured
-responses after restart, not only in MCP initialization metadata.
+The same version, source SHA-256, loaded commit, bundle SHA-256 and module-origin
+SHA-256 must appear in ordinary structured responses after restart, not only in
+MCP initialization metadata.
 
 The stdio server is a long-lived process and never hot-updates from Git. A
 running task may continue on its already loaded source. Normal host restart or a

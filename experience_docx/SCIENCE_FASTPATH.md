@@ -148,8 +148,14 @@ or coverage gate override all scientific outcomes to INCONCLUSIVE;
 `inconclusive_only` precision may block a provisional PASS but cannot hide a
 decisive FAIL; `descriptive` cannot affect the terminal.
 
-3. EXECUTE: run one staged route-ready gate, push one commit, plan once and
-   start once. Require one positive workload-progress observation. ETA remains
+3. EXECUTE: run one staged route-ready gate, push one commit, seal one plan and
+   start once. Plan first completes the built-in control self-check. It compares
+   the process-loaded control commit and validator bundle with the configured
+   control worktree and live main before reading a route contract. A stale
+   process, mismatched bundle/module origin, Git/path failure or main-read
+   failure returns a typed pre-plan state with no token and
+   `plan_attempt_consumed=false`; only `PLAN_SEALED` is the single plan attempt.
+   Require one positive workload-progress observation. ETA remains
    a frozen cost forecast, not a prohibition on human observation. A receipt
    holder may request a bounded result-blind progress snapshot, an early
    terminal probe, or explicit cancellation at any time. Every new scientific schema-3 run records each completed

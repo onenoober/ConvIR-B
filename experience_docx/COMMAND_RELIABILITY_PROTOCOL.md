@@ -49,9 +49,19 @@ pointers or authoring output; refresh the fixed ref once, then repeat the same
 bounded operation.
 Plan is also immutable across main movement: start requires a fresh plan rather
 than applying compatibility logic to the signed context. Ordinary structured
-MCP responses expose their loaded server version/source SHA-256; evidence review
+MCP responses expose their loaded server version/source SHA-256 plus loaded
+control commit, complete validator-bundle SHA-256 and module-origin-manifest
+SHA-256; evidence review
 also exposes catalog, inventory and transport source SHA-256, making a stale
 long-lived process an identity mismatch rather than a functional guess.
+
+Plan has a machine boundary before contract parsing. The control self-check
+reports loaded control commit, configured worktree HEAD, live main commit,
+loaded and main validator-bundle SHA-256, engineering timeout policy and module-
+origin-manifest SHA-256. Control/Git/path/network failures at this boundary are
+pre-plan failures with `plan_attempt_consumed=false`; they must not be wrapped
+as `PLAN_REJECTED` contract failures. A plan attempt exists only after the token
+is durably written and `PLAN_SEALED` is returned.
 
 ## Finite Recovery
 

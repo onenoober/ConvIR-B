@@ -5,7 +5,7 @@ Date: 2026-07-27
 ## Launch Order
 
 ```text
-one staged route-ready gate -> one exact route commit/push -> one MCP plan ->
+one staged route-ready gate -> one exact route commit/push -> one sealed MCP plan ->
 dynamic cloud preflight -> generic runner/contract -> bounded observation ->
 typed closeout -> one science-fastpath archive OR engineering review decision
 ```
@@ -40,6 +40,16 @@ For the default path, `validate_route_ready.py` performs the complete static
 check once before commit. MCP plan/start and the generic contract phase own the
 dynamic checks once after push. Do not insert another route-specific checklist,
 shell preflight, validator, or path wrapper between them.
+
+Before plan reads the route manifest or any scientific contract, its built-in
+control self-check compares `loaded_control_commit`,
+`configured_worktree_head`, `live_main_commit`, the loaded/configured/main
+validator bundle SHA-256 values, the module-origin manifest and the engineering
+timeout policy. A mismatch is `CONTROL_PLANE_STALE` or
+`VALIDATOR_BUNDLE_MISMATCH`; an unavailable identity read is
+`CONTROL_SELF_CHECK_FAILED`. These states create no plan token and consume no
+plan attempt. Only `PLAN_SEALED` is counted. They are never evidence that the
+experiment contract is invalid.
 
 ## Generic Runner
 

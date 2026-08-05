@@ -133,7 +133,7 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
-- `convir-ops` remains a separate six-tool lifecycle server at version `5.9.0`
+- `convir-ops` remains a separate six-tool lifecycle server at version `5.10.0`
   with protocol schema 4.
 
 ## P0 Project Completeness Receipt

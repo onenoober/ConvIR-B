@@ -96,8 +96,13 @@ hash changes.
    receipt. Route-ready verifies or deterministically reconstructs it, rejects
    source/generated-byte drift, and returns the cached report instead of
    rerunning when staged tree, main and operation set match.
-3. EXECUTE: run one route-ready gate, commit/push once, plan once and start
-   once. Confirm positive workload progress once. The frozen ETA is a cost
+3. EXECUTE: run one route-ready gate, commit/push once, seal one plan and start
+   once. Before contract parsing, plan performs one control self-check binding
+   the loaded control commit, configured worktree HEAD, live main, complete
+   validator bundle, module origins and timeout policy. A failed self-check is
+   a typed pre-plan control failure, creates no token and consumes no plan
+   attempt; only `PLAN_SEALED` counts as the one plan. Confirm positive workload
+   progress once. The frozen ETA is a cost
    estimate, not an observation embargo. At operator request, use only the
    receipt-bound result-blind progress refresh or terminal probe; each response
    must name its snapshot time and cached/current status. Explicit cancellation
@@ -254,7 +259,7 @@ or project/family memory.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.9.0 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.10.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.

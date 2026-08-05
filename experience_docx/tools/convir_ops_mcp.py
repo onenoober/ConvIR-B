@@ -23,6 +23,7 @@ import capability_registry
 import scientific_contract as science_contract
 from route_runtime_contract import (
     ContractError as RuntimeContractError,
+    RUNTIME_BUNDLE_RELPATHS,
     runtime_spec_relpath,
     validate_asset_manifest,
     validate_model_capability,
@@ -32,7 +33,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.9.0"
+SERVER_VERSION = "5.10.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -63,6 +64,18 @@ RULE_BUNDLE_RELPATHS = (
     "experience_docx/CONVIR_OPS_MCP.md",
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md",
 )
+CONTROL_SOURCE_ROOT = Path(__file__).resolve().parents[2]
+CONTROL_VALIDATOR_BUNDLE_RELPATHS = tuple(dict.fromkeys((
+    "experience_docx/tools/convir_ops_mcp.py",
+    "experience_docx/tools/validate_route_ready.py",
+    *RUNTIME_BUNDLE_RELPATHS,
+)))
+CONTROL_MODULE_RELPATHS = {
+    "convir_ops_mcp": "experience_docx/tools/convir_ops_mcp.py",
+    "capability_registry": "experience_docx/tools/capability_registry.py",
+    "scientific_contract": "experience_docx/tools/scientific_contract.py",
+    "route_runtime_contract": "experience_docx/tools/route_runtime_contract.py",
+}
 LOCAL_WORKSPACE_ROOT = Path(
     os.environ.get("CONVIR_OPS_LOCAL_WORKSPACE_ROOT", "/home/ubuntu/workspace")
 ).resolve()
@@ -76,6 +89,14 @@ STATE_DIR = Path(
     os.environ.get("CONVIR_OPS_STATE_DIR", "~/.codex/convir-ops-v4")
 ).expanduser().resolve()
 PLAN_TTL_SECONDS = 15 * 60
+ENGINEERING_TIMEOUT_POLICY = {
+    "plan_ttl_seconds": PLAN_TTL_SECONDS,
+    "control_self_check_timeout_seconds": 60,
+    "local_git_timeout_seconds": 30,
+    "remote_default_timeout_seconds": 120,
+    "contract_timeout_source": "runtime_spec.engineering_contract.max_seconds",
+    "workload_timeout_source": "runtime_spec.timeout_seconds",
+}
 MAX_FINISH_WINDOWS = 64
 MAX_OPERATOR_OBSERVATIONS = 256
 OPERATOR_OBSERVATION_MIN_INTERVAL_SECONDS = 15
@@ -108,11 +129,76 @@ OPERATOR_CANCEL_TERMINAL = {
 }
 
 
+def _bundle_digest_from_files(root, relpaths):
+    digest = hashlib.sha256()
+    for relpath in relpaths:
+        raw = (root / relpath).read_bytes()
+        digest.update(relpath.encode() + b"\0" + raw + b"\0")
+    return digest.hexdigest()
+
+
+def _loaded_git_head(root):
+    try:
+        result = subprocess.run(
+            ["/usr/bin/git", "-C", str(root), "rev-parse", "HEAD"],
+            text=True, capture_output=True, timeout=30, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    value = result.stdout.strip()
+    return value if result.returncode == 0 and SHA40.fullmatch(value) else None
+
+
+def _module_origin_manifest():
+    records = []
+    for module_name, relpath in sorted(CONTROL_MODULE_RELPATHS.items()):
+        if module_name == "convir_ops_mcp":
+            origin = Path(__file__).resolve()
+        else:
+            module = sys.modules.get(module_name)
+            origin_value = None if module is None else getattr(module, "__file__", None)
+            origin = None if origin_value is None else Path(origin_value).resolve()
+        expected = (CONTROL_SOURCE_ROOT / relpath).resolve()
+        records.append({
+            "module": module_name,
+            "relpath": relpath,
+            "origin_matches": origin == expected,
+            "source_sha256": (
+                hashlib.sha256(origin.read_bytes()).hexdigest()
+                if origin is not None and origin.is_file() else None
+            ),
+        })
+    return records
+
+
+LOADED_CONTROL_COMMIT = _loaded_git_head(CONTROL_SOURCE_ROOT)
+LOADED_VALIDATOR_BUNDLE_SHA256 = _bundle_digest_from_files(
+    CONTROL_SOURCE_ROOT, CONTROL_VALIDATOR_BUNDLE_RELPATHS,
+)
+LOADED_MODULE_ORIGIN_MANIFEST = _module_origin_manifest()
+MODULE_ORIGIN_MANIFEST_SHA256 = hashlib.sha256(json.dumps(
+    LOADED_MODULE_ORIGIN_MANIFEST, sort_keys=True, separators=(",", ":"),
+).encode()).hexdigest()
+
+
 class ToolError(RuntimeError):
     def __init__(self, message, *, failure_phase="unknown", failure_class="contract"):
         super().__init__(message)
         self.failure_phase = failure_phase
         self.failure_class = failure_class
+
+
+class ControlPlaneError(ToolError):
+    def __init__(self, state, message, *, observed, expected=None,
+                 failure_class="control_plane"):
+        super().__init__(
+            message,
+            failure_phase="control_self_check",
+            failure_class=failure_class,
+        )
+        self.operation_state = state
+        self.observed = observed
+        self.expected = expected or {}
 
 
 def emit(value):
@@ -127,12 +213,16 @@ def text_result(text, *, is_error=False, structured=None):
             "server_name": SERVER_NAME,
             "server_version": SERVER_VERSION,
             "server_source_sha256": SERVER_SOURCE_SHA256,
+            "loaded_control_commit": LOADED_CONTROL_COMMIT,
+            "loaded_validator_bundle_sha256": LOADED_VALIDATOR_BUNDLE_SHA256,
+            "module_origin_manifest_sha256": MODULE_ORIGIN_MANIFEST_SHA256,
         }
         keys = (
             "operation_state", "status", "state", "marker", "route_id",
             "operation_id", "run_id", "decision", "authorizes", "ok",
             "failure_class", "failure_phase", "audit_digest",
-            "plan_token", "receipt", "retry_after_seconds", "runtime_identity",
+            "plan_token", "plan_state", "plan_attempt_consumed", "receipt",
+            "retry_after_seconds", "runtime_identity",
         )
         summary = {key: structured[key] for key in keys if key in structured}
         summary["structured_content_available"] = True
@@ -752,6 +842,98 @@ def rule_bundle_digest(repo, commit):
     return digest.hexdigest()
 
 
+def control_validator_bundle_digest(repo, commit):
+    digest = hashlib.sha256()
+    for path in CONTROL_VALIDATOR_BUNDLE_RELPATHS:
+        raw = git_show_bytes(repo, commit, path)
+        digest.update(path.encode() + b"\0" + raw + b"\0")
+    return digest.hexdigest()
+
+
+def control_self_check():
+    observed = {
+        "loaded_control_commit": LOADED_CONTROL_COMMIT,
+        "configured_worktree_head": None,
+        "live_main_commit": None,
+        "loaded_validator_bundle_sha256": LOADED_VALIDATOR_BUNDLE_SHA256,
+        "configured_validator_bundle_sha256": None,
+        "main_validator_bundle_sha256": None,
+        "engineering_timeout_policy": ENGINEERING_TIMEOUT_POLICY,
+        "module_origin_manifest_sha256": MODULE_ORIGIN_MANIFEST_SHA256,
+    }
+    expected = {
+        "control_commits_equal": True,
+        "validator_bundles_equal": True,
+        "module_origins_match_configured_worktree": True,
+    }
+    try:
+        observed["live_main_commit"] = github_refs(["refs/heads/main"])[
+            "refs/heads/main"
+        ]
+        observed["configured_worktree_head"] = require_sha(
+            run_local(
+                ["/usr/bin/git", "-C", str(CONTROL_SOURCE_ROOT), "rev-parse", "HEAD"],
+                timeout=30, phase="control_self_check",
+            ),
+            "configured_worktree_head", SHA40,
+        )
+        observed["configured_validator_bundle_sha256"] = _bundle_digest_from_files(
+            CONTROL_SOURCE_ROOT, CONTROL_VALIDATOR_BUNDLE_RELPATHS,
+        )
+    except (OSError, ToolError) as exc:
+        failure_class = (
+            exc.failure_class
+            if isinstance(exc, ToolError) and exc.failure_class == "command_infra"
+            else "control_plane"
+        )
+        raise ControlPlaneError(
+            "CONTROL_SELF_CHECK_FAILED",
+            f"control-plane identity could not be read: {exc}",
+            observed=observed, expected=expected, failure_class=failure_class,
+        ) from exc
+
+    commits = {
+        observed["loaded_control_commit"],
+        observed["configured_worktree_head"],
+        observed["live_main_commit"],
+    }
+    if None in commits or len(commits) != 1:
+        raise ControlPlaneError(
+            "CONTROL_PLANE_STALE",
+            "loaded control commit, configured worktree HEAD, and live main differ",
+            observed=observed, expected=expected,
+        )
+
+    try:
+        observed["main_validator_bundle_sha256"] = control_validator_bundle_digest(
+            str(CONTROL_SOURCE_ROOT), observed["live_main_commit"],
+        )
+    except ToolError as exc:
+        raise ControlPlaneError(
+            "CONTROL_SELF_CHECK_FAILED",
+            f"live-main validator bundle could not be read: {exc}",
+            observed=observed, expected=expected,
+            failure_class=exc.failure_class,
+        ) from exc
+
+    bundle_identities = {
+        observed["loaded_validator_bundle_sha256"],
+        observed["configured_validator_bundle_sha256"],
+        observed["main_validator_bundle_sha256"],
+    }
+    origins_match = all(
+        record["origin_matches"] for record in LOADED_MODULE_ORIGIN_MANIFEST
+    )
+    if len(bundle_identities) != 1 or not origins_match:
+        raise ControlPlaneError(
+            "VALIDATOR_BUNDLE_MISMATCH",
+            "loaded, configured, and live-main validator identities differ",
+            observed={**observed, "module_origins_match": origins_match},
+            expected=expected,
+        )
+    return {**observed, "module_origins_match": True}
+
+
 def rule_compatibility_profile(repo, commit):
     try:
         value = json.loads(git_show_bytes(repo, commit, RULE_COMPATIBILITY_RELPATH))
@@ -1326,11 +1508,36 @@ def receipt_context(record):
 
 def tool_plan_manifest(args):
     try:
+        control_identity = control_self_check()
+    except ControlPlaneError as exc:
+        return typed_failure(
+            exc.operation_state,
+            exc.failure_class,
+            str(exc),
+            observed=exc.observed,
+            expected=exc.expected,
+            next_actions=["refresh_and_restart_control_plane"],
+            failure_phase=exc.failure_phase,
+            plan_state="CONTROL_SELF_CHECK",
+            plan_attempt_consumed=False,
+        )
+    except Exception as exc:
+        return typed_failure(
+            "CONTROL_SELF_CHECK_FAILED",
+            "command_infra",
+            type(exc).__name__,
+            next_actions=["retry_control_self_check_once"],
+            failure_phase="control_self_check",
+            plan_state="CONTROL_SELF_CHECK",
+            plan_attempt_consumed=False,
+        )
+    try:
         manifest, operation_id, context = load_operation(args)
         if context.get("route_manifest_schema_version") != 6:
             raise ToolError(
                 "historical manifest schema 4/5 is read-only and cannot be planned"
             )
+        context["control_plane_identity"] = control_identity
         now = int(time.time())
         payload = {
             "context": context,
@@ -1341,7 +1548,7 @@ def tool_plan_manifest(args):
         token = write_new_record("plan", payload, {"receipt": None})
         return typed_result(
             True,
-            "PLAN_READY",
+            "PLAN_SEALED",
             observed={
                 "operation_id": operation_id,
                 "manifest_digest": canonical_digest(manifest),
@@ -1350,6 +1557,7 @@ def tool_plan_manifest(args):
                 "output_path": context["output_path"],
                 "session": context["session"],
                 "rules_bundle_digest": context["rules_bundle_digest"],
+                "control_plane_identity": control_identity,
             },
             expected={
                 "route_commit": context["route_branch_commit"],
@@ -1359,11 +1567,31 @@ def tool_plan_manifest(args):
             next_actions=["convir_route_start"],
             plan_token=token,
             plan_expires_at=payload["expires_at"],
+            plan_state="PLAN_SEALED",
+            plan_attempt_consumed=True,
         )
     except (json.JSONDecodeError, TypeError) as exc:
-        return failure_result("PLAN_REJECTED", ToolError(str(exc)), "local_git_manifest")
+        return typed_failure(
+            "PLAN_REJECTED", "contract", str(exc),
+            failure_phase="local_git_manifest",
+            plan_state="CONTROL_SELF_CHECK_PASSED",
+            plan_attempt_consumed=False,
+        )
     except Exception as exc:
-        return failure_result("PLAN_REJECTED", exc, "github_ref_fetch")
+        if isinstance(exc, ToolError):
+            failure_class = exc.failure_class
+            failure_phase = exc.failure_phase
+            message = str(exc)
+        else:
+            failure_class = "command_infra"
+            failure_phase = "github_ref_fetch"
+            message = type(exc).__name__
+        return typed_failure(
+            "PLAN_REJECTED", failure_class, message,
+            failure_phase=failure_phase,
+            plan_state="CONTROL_SELF_CHECK_PASSED",
+            plan_attempt_consumed=False,
+        )
 
 
 def verify_live_context(context):
