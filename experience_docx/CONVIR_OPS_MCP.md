@@ -2,7 +2,7 @@
 
 Date: 2026-08-05
 
-Status: main-first snapshot server `5.11.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.12.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4/5 for status
 and evidence provenance, while plan accepts only compiled manifest schema 6 and
 runtime schema 2. New experiment specs and scientific contracts
@@ -14,6 +14,16 @@ server source SHA-256, loaded control commit, complete validator-bundle SHA-256
 and module-origin-manifest SHA-256, so dependency or process drift is visible
 directly.
 
+Version 5.12.0 adds one receipt-bound same-contract repair transaction to the
+existing finish tool. Given an already-pushed candidate commit, it performs the
+control self-check and conservative repair classification before creating any
+plan, requires the canonical next output id, durably seals one plan and invokes
+the unchanged start path. Identical calls reuse that plan/start state; a
+different candidate cannot replace it. The failure receipt also carries a
+normalized root fingerprint: a repeated root stops automatic repair, and at
+most three distinct roots may consume replacement generations. Pre-seal control
+or candidate failures consume neither plan nor transaction.
+
 Version 5.11.0 adds receipt-bound engineering diagnosis to the existing finish
 tool. It is an idempotent read of the validated control closeout, preserves
 repair authority, keeps evidence locked and adds no archive or caller workflow
@@ -24,7 +34,8 @@ tool or caller step. Before route-contract parsing it compares the loaded
 control commit, configured worktree HEAD and live main; the loaded, configured
 and live-main validator bundle; module origins; and the engineering timeout
 policy. The bundle is the canonical nine-file runtime closure plus
-`convir_ops_mcp.py` and `validate_route_ready.py`. A stale commit, bundle
+`convir_ops_mcp.py`, `validate_route_ready.py` and
+`validate_engineering_repair.py`. A stale commit, bundle
 mismatch or unavailable identity read returns a dedicated pre-plan state,
 creates no token and records `plan_attempt_consumed=false`. Only
 `PLAN_SEALED` consumes the route's single plan attempt.
@@ -55,7 +66,7 @@ route validator or a route-specific shell surface.
 | --- | --- |
 | `convir_route_plan` | validate and seal one committed operation; no cloud call |
 | `convir_route_start` | run one sealed plan and return verified, pending, or early-failure state with a receipt |
-| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation, read-only engineering diagnosis and one same-contract repair state machine |
+| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation, read-only engineering diagnosis and one same-contract repair transaction |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
 | `convir_git_status` | token-bounded GitHub-main project/route authority snapshot plus a separate local write binding; never a result reader |
@@ -263,6 +274,27 @@ coverage. It excludes verified-asset identities, metrics, outcomes, samples and
 partial scientific results. Reported progress is marked as non-ledger evidence;
 resume still requires the exact SHA-bound completed-unit ledger.
 
+For an automatically repairable closeout, finish also accepts
+`engineering_failure_resolution=repair` with one exact
+`engineering_repair_commit`. It verifies that the source receipt remains
+repairable, runs the full control self-check, loads the branch head and applies
+`validate_engineering_repair.py` against the failed commit. The classifier must
+return the canonical next output id and an unchanged scientific contract before
+the MCP writes a plan. The new plan context records the source fingerprint and
+bounded repair history, then the existing `convir_route_start` path owns every
+prelaunch, launch, unknown-state and observation transition. Repeating the same
+request reuses the plan token; another candidate is rejected after sealing.
+Any exception or typed rejection before sealing reports
+`repair_transaction_consumed=false` and creates no plan.
+
+The engineering fingerprint binds failure phase, exception type, normalized
+stack fingerprint, safe failed-check tokens and return code. Its history is
+carried by the replacement receipt. Repetition returns
+`ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED`; a fourth distinct failure after
+three automatic replacement generations returns
+`ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED`. Both remain diagnosable with
+general evidence locked and no automatic relaunch authorization.
+
 If the failure occurred after workload completion and its typed phase is only
 `evidence` or `finalize`, finish also accepts one finalization-only resolution.
 It validates the candidate before atomically consuming the receipt's single
@@ -367,7 +399,7 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.11.0`, source SHA-256, loaded control
+restart the host and verify version `5.12.0`, source SHA-256, loaded control
 commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/diagnose/repair/discard states.

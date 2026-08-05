@@ -38,6 +38,7 @@ class EngineeringRepairTests(unittest.TestCase):
 
     def _make_classifier_fixture(
         self, root: Path, *, changed_rationale: bool,
+        candidate_output_id: str = "repair-test-r2",
     ) -> tuple[Path, str, str]:
         operation = "REPAIR_TEST"
         repo = root / "repo"
@@ -72,7 +73,7 @@ class EngineeringRepairTests(unittest.TestCase):
         self._git(repo, "commit", "--quiet", "-m", "base")
         base = self._git(repo, "rev-parse", "HEAD")
 
-        manifest["operations"][operation]["output_id"] = "repair-test-r2"
+        manifest["operations"][operation]["output_id"] = candidate_output_id
         (repo / "experience_docx/route_operations.json").write_text(
             json.dumps(manifest), encoding="utf-8",
         )
@@ -278,6 +279,23 @@ def run(value):
             report = REPAIR.validate(repo, base, candidate, "REPAIR_TEST")
         self.assertEqual("AUTO_REPAIR_ELIGIBLE", report["status"])
         self.assertTrue(report["scientific_contract_unchanged"])
+        self.assertEqual("repair-test-r2", report["derived_output_id"])
+
+    def test_next_repair_output_id_is_deterministic(self):
+        self.assertEqual("run-r2", REPAIR.next_repair_output_id("run"))
+        self.assertEqual("run-r2", REPAIR.next_repair_output_id("run-r1"))
+        self.assertEqual("run-r10", REPAIR.next_repair_output_id("run-r9"))
+
+    def test_full_classifier_rejects_noncanonical_output_identity(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate = self._make_classifier_fixture(
+                Path(temporary), changed_rationale=False,
+                candidate_output_id="repair-test-r3",
+            )
+            with self.assertRaisesRegex(
+                REPAIR.RepairError, "canonical next id: repair-test-r2",
+            ):
+                REPAIR.validate(repo, base, candidate, "REPAIR_TEST")
 
     def test_full_classifier_rejects_scientific_rationale_change(self):
         with tempfile.TemporaryDirectory() as temporary:

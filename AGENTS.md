@@ -215,7 +215,9 @@ repair policy below and is not a scientific terminal archive.
   scoped task or a safety boundary.
 - One command-boundary class gets one deterministic correction. One engineering
   root cause gets one repair cycle. A repeated same-class/root failure stops
-  that operation with one blocker.
+  that operation with one blocker. The receipt carries the normalized failure
+  fingerprint across replacement outputs; at most three distinct engineering
+  roots may consume automatic same-contract repair generations before review.
 - Before any commit, push, plan or start, a pure local authoring task may apply
   one finite repair batch across distinct stable aggregate-lint
   `path/code/message` tuples. Repeating the same tuple stops authoring. This
@@ -236,6 +238,12 @@ repair policy below and is not a scientific terminal archive.
   explicit `archive` is the only path that unlocks general failure evidence.
   The repair gate's tool-owned temporary Git index is an isolated classifier
   input and is not real staging; it must leave the worktree index unchanged.
+  After an eligible candidate is committed and pushed, one receipt-bound
+  `convir_route_finish` repair transaction rechecks control identity and the
+  candidate, requires the canonical next output id, seals one plan and invokes
+  the existing start path. Classification/control failures before the seal
+  consume neither plan nor repair transaction. Repeating the same candidate
+  reuses the sealed plan/start state; a different candidate cannot replace it.
 - Finalization repair is a distinct single-use engineering resolution. It is
   unavailable for workload, data, metric, threshold, integrity or precision
   failures, and a failed finalization repair cannot be retried under the same
@@ -261,7 +269,7 @@ or project/family memory.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.10.0 with stable six-tool protocol
+- Standard route lifecycle uses `convir-ops` v5.12.0 with stable six-tool protocol
   schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.

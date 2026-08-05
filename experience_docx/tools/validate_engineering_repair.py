@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -28,6 +29,20 @@ REPAIR_NOTE_PREFIXES = (
 
 class RepairError(RuntimeError):
     pass
+
+
+def next_repair_output_id(output_id: str) -> str:
+    """Return the single canonical output identity for the next repair."""
+    try:
+        output_id = ops.require_token(output_id, "output_id")
+        match = re.fullmatch(r"(.+)-r([1-9][0-9]*)", output_id)
+        candidate = (
+            f"{match.group(1)}-r{int(match.group(2)) + 1}"
+            if match else f"{output_id}-r2"
+        )
+        return ops.require_token(candidate, "next repair output_id")
+    except ops.ToolError as exc:
+        raise RepairError(str(exc)) from exc
 
 
 def git(repo: Path, *args: str) -> str:
@@ -574,8 +589,13 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
     old_operation = old_manifest["operations"][operation_id]
     new_operation = new_manifest["operations"][operation_id]
     old_output, new_output = old_operation.get("output_id"), new_operation.get("output_id")
-    if not isinstance(old_output, str) or not isinstance(new_output, str) or old_output == new_output:
-        raise RepairError("repair requires one new output identity")
+    if not isinstance(old_output, str) or not isinstance(new_output, str):
+        raise RepairError("repair output identity is invalid")
+    required_output = next_repair_output_id(old_output)
+    if new_output != required_output:
+        raise RepairError(
+            f"repair output identity must be the canonical next id: {required_output}"
+        )
     if {key: value for key, value in old_operation.items() if key != "output_id"} != \
             {key: value for key, value in new_operation.items() if key != "output_id"}:
         raise RepairError("operation contract changed beyond output identity")
@@ -593,6 +613,7 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
             "operation_id": operation_id,
             "old_output_id": old_output,
             "new_output_id": new_output,
+            "derived_output_id": required_output,
             **schema6,
             "scientific_contract_unchanged": True,
             "sensitive_review_required": False,
@@ -640,6 +661,7 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
         "operation_id": operation_id,
         "old_output_id": old_output,
         "new_output_id": new_output,
+        "derived_output_id": required_output,
         "asset_path_repairs": asset_changes,
         **entrypoint_class,
         "scientific_contract_unchanged": True,

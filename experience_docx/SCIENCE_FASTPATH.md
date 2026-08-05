@@ -155,6 +155,12 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    process, mismatched bundle/module origin, Git/path failure or main-read
    failure returns a typed pre-plan state with no token and
    `plan_attempt_consumed=false`; only `PLAN_SEALED` is the single plan attempt.
+   For an automatically authorized same-contract engineering repair, the
+   already-classified and pushed candidate is supplied to the failed receipt in
+   one finish call. That transaction repeats the control and candidate checks,
+   enforces the canonical next output id, seals one plan and immediately uses
+   the existing start path. A failure before sealing creates no plan and consumes
+   no repair transaction; an identical repeat reuses the same plan/start state.
    Require one positive workload-progress observation. ETA remains
    a frozen cost forecast, not a prohibition on human observation. A receipt
    holder may request a bounded result-blind progress snapshot, an early
@@ -236,6 +242,13 @@ unlock evidence tools. The view omits scientific values and data identities;
 reported completed/total counts are explicitly not SHA-bound ledger proof and
 cannot authorize resume. Archive remains optional and is never required merely
 to understand or classify an engineering failure.
+
+Ordinary repair retry control is root-based rather than call-based. The receipt
+hashes phase, exception type, normalized stack, failed checks and exit status.
+The same fingerprint on a replacement run stops automatic repair immediately;
+distinct roots may use at most three automatic same-contract generations before
+review. Candidate rejection, stale control identity, Git/path/network failure
+and any other pre-seal failure do not enter that history.
 
 ## Read-Only Review Entry
 

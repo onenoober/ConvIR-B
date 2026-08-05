@@ -171,7 +171,9 @@ Perform at most one receipt-bound, read-only diagnosis and prepare one repair:
 ```text
 FAILED_ENGINEERING
   -> ENGINEERING_AUTO_REPAIR_AUTHORIZED
-  -> AUTO_REPAIR_ELIGIBLE -> one same-contract repair cycle
+  -> AUTO_REPAIR_ELIGIBLE -> one receipt-bound same-contract repair transaction
+  -> ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED -> user review
+  -> ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED -> user review
   -> SENSITIVE_REPAIR_REVIEW_REQUIRED -> user decision
   -> explicit archive -> ENGINEERING_ARCHIVE_AUTHORIZED
 ```
@@ -191,11 +193,23 @@ of synchronized entrypoint asset/capability identities. It rejects
 data-directory changes and any runtime
 spec, permission, seed/budget, algorithm constant/control-flow, model or asset
 identity change. An eligible repair uses the normal single route-ready gate,
-commit/push, plan and existing start authorization without another user repair
-prompt. A sensitive repair pauses before commit/push/start. `archive` unlocks
+commit/push boundary without another user repair prompt. The caller then sends
+the failed receipt and exact pushed candidate commit in one finish repair call.
+The MCP rechecks its complete control bundle and candidate classification,
+requires the single canonical next output identity, seals one plan and invokes
+the existing start path. Rejected or unavailable pre-seal checks create no plan
+and consume no repair transaction. Repeating the same call reuses the plan and
+unknown-start recovery state; a different candidate cannot replace a sealed
+transaction. A sensitive repair pauses before commit/push/start. `archive` unlocks
 only compact failure evidence. A repeated same-root failure stops for review.
 Before classification, `worktree-candidate` uses only an isolated temporary Git
 index and exact path allowlist; the real index must remain clean.
+
+The receipt derives a stable failure fingerprint from phase, exception type,
+normalized stack, failed-check tokens and return code. A replacement failure
+with the same fingerprint stops immediately. Distinct roots are limited to
+three automatic repair generations across the output chain; classification,
+control, transport and other failures before plan sealing do not increment it.
 
 A post-workload failure whose typed phase is only `evidence` or `finalize` has
 one narrower resolution: receipt-bound finalization repair. Candidate

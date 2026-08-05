@@ -1,5 +1,6 @@
 """Transport and lifecycle tests for the minimal convir-ops schema-v4 bridge."""
 
+import copy
 import importlib.util
 import json
 import os
@@ -1363,6 +1364,230 @@ class ConvirOpsV4Tests(unittest.TestCase):
             },
         )
         return receipt
+
+    def repairable_receipt(self, *, history=None, **diagnostic_overrides):
+        receipt = self.discardable_receipt(**diagnostic_overrides)
+        with OPS.locked_record("receipt", receipt) as record:
+            if history is not None:
+                record["payload"]["context"]["engineering_repair_history"] = history
+            closeout = record["terminal_closeout"]
+            fingerprint = OPS.engineering_failure_fingerprint(closeout)
+            record["engineering_failure_fingerprint_sha256"] = fingerprint
+            record["engineering_failure_resolution"] = "repair"
+            record["finish_closed"] = "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
+        return receipt, closeout, fingerprint
+
+    @staticmethod
+    def repair_candidate(commit="c" * 40):
+        candidate = context()
+        candidate.update({
+            "route_branch_commit": commit,
+            "output_id": "a1x-s0-r2",
+            "output_path": "/runs/a1x/a1x-s0-r2",
+            "remote_repo": "/remote/a1x-r2",
+            "session": "convir-a1x-s0-r2",
+        })
+        return candidate
+
+    @staticmethod
+    def repair_classification():
+        return {
+            "status": "AUTO_REPAIR_ELIGIBLE",
+            "old_output_id": "a1x-s0-r1",
+            "new_output_id": "a1x-s0-r2",
+            "derived_output_id": "a1x-s0-r2",
+            "scientific_contract_unchanged": True,
+            "sensitive_review_required": False,
+        }
+
+    def test_engineering_failure_fingerprint_is_stable_and_root_bound(self):
+        first = {"engineering_diagnostic": {
+            "failure_phase": "workload",
+            "exception_type": "RuntimeError",
+            "traceback_tail": "frame 348 object 0xABC failed",
+            "failed_contract_checks": ["finite_state", "asset_hash"],
+            "returncode": 1,
+        }}
+        equivalent = {"engineering_diagnostic": {
+            "failure_phase": "workload",
+            "exception_type": "RuntimeError",
+            "traceback_tail": "frame 999 object 0xDEF failed",
+            "failed_contract_checks": ["asset_hash", "finite_state", "finite_state"],
+            "returncode": 1,
+        }}
+        different = copy.deepcopy(equivalent)
+        different["engineering_diagnostic"]["exception_type"] = "ValueError"
+        self.assertEqual(
+            OPS.engineering_failure_fingerprint(first),
+            OPS.engineering_failure_fingerprint(equivalent),
+        )
+        self.assertNotEqual(
+            OPS.engineering_failure_fingerprint(first),
+            OPS.engineering_failure_fingerprint(different),
+        )
+
+    def test_repeat_root_and_distinct_root_limit_stop_automatic_repair(self):
+        receipt, closeout, fingerprint = self.repairable_receipt(
+            failure_phase="workload", exception_type="RuntimeError",
+            traceback_tail="same root at line 10", returncode=1,
+        )
+        with OPS.locked_record("receipt", receipt) as record:
+            record["payload"]["context"]["engineering_repair_history"] = [fingerprint]
+        state, observed_fingerprint = OPS.authorize_engineering_auto_repair(
+            receipt, closeout,
+        )
+        self.assertEqual("ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED", state)
+        self.assertEqual(fingerprint, observed_fingerprint)
+        diagnosis = payload(OPS.tool_finish({
+            "receipt": receipt, "engineering_failure_resolution": "diagnose",
+        }))
+        self.assertFalse(diagnosis["repair_authorized"])
+        self.assertFalse(diagnosis["repair_authority_preserved"])
+        blocked = payload(OPS.tool_evidence_manifest({"receipt": receipt}))
+        self.assertEqual("EVIDENCE_MANIFEST_FAILED", blocked["operation_state"])
+
+        history = [f"{index:064x}" for index in range(1, OPS.MAX_ENGINEERING_REPAIR_GENERATIONS + 1)]
+        limited_receipt, limited_closeout, _ = self.repairable_receipt(
+            history=history, failure_phase="workload",
+            exception_type="DistinctRoot", traceback_tail="new root", returncode=2,
+        )
+        limited_state, _ = OPS.authorize_engineering_auto_repair(
+            limited_receipt, limited_closeout,
+        )
+        self.assertEqual("ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED", limited_state)
+
+        allowed_receipt, allowed_closeout, _ = self.repairable_receipt(
+            history=history[:-1], failure_phase="workload",
+            exception_type="AnotherRoot", traceback_tail="another root", returncode=3,
+        )
+        allowed_state, _ = OPS.authorize_engineering_auto_repair(
+            allowed_receipt, allowed_closeout,
+        )
+        self.assertEqual("ENGINEERING_AUTO_REPAIR_AUTHORIZED", allowed_state)
+
+    def test_repair_transaction_rejects_before_plan_without_consuming_attempt(self):
+        receipt, _, _ = self.repairable_receipt()
+        with (
+            patch.object(OPS, "control_self_check", return_value={"ok": True}),
+            patch.object(
+                OPS, "load_operation",
+                return_value=({}, "S0", self.repair_candidate()),
+            ),
+            patch.object(
+                OPS, "classify_engineering_repair_candidate",
+                side_effect=OPS.ToolError(
+                    "candidate changed the scientific contract",
+                    failure_phase="engineering_repair", failure_class="contract",
+                ),
+            ),
+            patch.object(OPS, "tool_start") as start,
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "repair",
+                "engineering_repair_commit": "c" * 40,
+            }))
+        self.assertEqual("ENGINEERING_REPAIR_TRANSACTION_REJECTED", result["operation_state"])
+        self.assertFalse(result["repair_transaction_consumed"])
+        self.assertEqual([], list(OPS.STATE_DIR.glob("plan-*.json")))
+        start.assert_not_called()
+
+    def test_repair_commit_cannot_be_silently_ignored_by_other_resolutions(self):
+        receipt, _, _ = self.repairable_receipt()
+        with patch.object(OPS, "diagnose_engineering_failure") as diagnose:
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "diagnose",
+                "engineering_repair_commit": "c" * 40,
+            }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        diagnose.assert_not_called()
+        self.assertEqual([], list(OPS.STATE_DIR.glob("plan-*.json")))
+
+    def test_unexpected_classifier_failure_is_typed_and_creates_no_plan(self):
+        receipt, _, _ = self.repairable_receipt()
+        with (
+            patch.object(OPS, "control_self_check", return_value={"ok": True}),
+            patch.object(
+                OPS, "load_operation",
+                return_value=({}, "S0", self.repair_candidate()),
+            ),
+            patch.object(
+                OPS, "classify_engineering_repair_candidate",
+                side_effect=RuntimeError("private classifier detail"),
+            ),
+            patch.object(OPS, "tool_start") as start,
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "repair",
+                "engineering_repair_commit": "c" * 40,
+            }))
+        self.assertEqual("ENGINEERING_REPAIR_TRANSACTION_FAILED", result["operation_state"])
+        self.assertEqual("command_infra", result["failure_class"])
+        self.assertEqual("RuntimeError", result["mismatches"][0])
+        self.assertNotIn("private classifier detail", json.dumps(result))
+        self.assertFalse(result["repair_transaction_consumed"])
+        self.assertEqual([], list(OPS.STATE_DIR.glob("plan-*.json")))
+        start.assert_not_called()
+
+    def test_repair_transaction_seals_one_plan_and_reuses_start_state(self):
+        receipt, _, fingerprint = self.repairable_receipt()
+        launch = OPS.typed_result(
+            True, "LAUNCH_PENDING_VERIFICATION",
+            observed={"runner_started": True},
+            next_actions=["convir_route_finish"],
+        )
+        with (
+            patch.object(OPS, "control_self_check", return_value={"ok": True}),
+            patch.object(
+                OPS, "load_operation",
+                return_value=({}, "S0", self.repair_candidate()),
+            ),
+            patch.object(
+                OPS, "classify_engineering_repair_candidate",
+                return_value=self.repair_classification(),
+            ),
+            patch.object(OPS, "tool_start", return_value=launch) as start,
+        ):
+            first = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "repair",
+                "engineering_repair_commit": "c" * 40,
+            }))
+            second = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "repair",
+                "engineering_repair_commit": "c" * 40,
+            }))
+            rejected = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "repair",
+                "engineering_repair_commit": "d" * 40,
+            }))
+        first_transaction = first["repair_transaction"]
+        second_transaction = second["repair_transaction"]
+        self.assertEqual(first_transaction["plan_token"], second_transaction["plan_token"])
+        self.assertFalse(first_transaction["idempotent_reuse"])
+        self.assertTrue(second_transaction["idempotent_reuse"])
+        self.assertTrue(first["repair_transaction_consumed"])
+        self.assertTrue(second["repair_transaction_consumed"])
+        self.assertEqual(2, start.call_count)
+        self.assertEqual(
+            first_transaction["plan_token"], start.call_args_list[0].args[0]["plan_token"],
+        )
+        self.assertEqual(1, len(list(OPS.STATE_DIR.glob("plan-*.json"))))
+        with OPS.read_record("plan", first_transaction["plan_token"]) as plan:
+            self.assertEqual([fingerprint], plan["payload"]["context"]["engineering_repair_history"])
+            self.assertEqual(
+                "a" * 40,
+                plan["payload"]["context"]["engineering_repair_parent"]["source_route_commit"],
+            )
+        self.assertEqual("ENGINEERING_REPAIR_TRANSACTION_REJECTED", rejected["operation_state"])
+        self.assertTrue(rejected["repair_transaction_consumed"])
+
+        schema = OPS.TOOLS["convir_route_finish"]["inputSchema"]
+        self.assertIn("engineering_repair_commit", schema["properties"])
 
     def test_engineering_diagnosis_is_read_only_idempotent_and_keeps_evidence_locked(self):
         receipt = self.discardable_receipt(

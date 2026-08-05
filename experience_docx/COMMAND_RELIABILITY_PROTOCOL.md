@@ -63,6 +63,15 @@ pre-plan failures with `plan_attempt_consumed=false`; they must not be wrapped
 as `PLAN_REJECTED` contract failures. A plan attempt exists only after the token
 is durably written and `PLAN_SEALED` is returned.
 
+The same boundary applies inside a receipt-bound engineering repair
+transaction. Control identity, candidate branch/commit and conservative repair
+classification must all pass before its plan record is written. Those failures
+return `repair_transaction_consumed=false`; they are correctable control or
+contract failures, not failed launches. After sealing, repeating the same
+receipt/candidate calls the existing idempotent start path with the same plan
+token. A different candidate is rejected, and `START_STATE_UNKNOWN` retains its
+single metadata-inspection rule rather than creating another launch.
+
 ## Finite Recovery
 
 Cross-shell metacharacters, BOM/CRLF, stdin loss, wrong WSL/Windows binary,
@@ -101,6 +110,12 @@ A finalization-repair candidate is classified before its one execution slot is
 reserved. Rejected identity, commit or adapter candidates remain command/
 contract errors and do not consume that slot. Once reserved, remote timeout is
 unknown state and the receipt cannot launch or retry the finalizer blindly.
+
+Ordinary engineering retries are counted by a normalized root fingerprint, not
+by failed control calls. The same root stops after one repair cycle. At most
+three distinct roots may create replacement-plan generations; candidate,
+control, Git/path/network and transport failures before plan sealing do not
+enter that count.
 
 Receipt-bound compact evidence is read inline by default. Its opaque
 continuation is a stateless HMAC binding of receipt, allowlist identities and

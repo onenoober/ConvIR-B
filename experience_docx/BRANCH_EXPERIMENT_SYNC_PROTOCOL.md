@@ -19,7 +19,12 @@ Before commit or push, run
 `validate_engineering_repair.py --snapshot worktree-candidate` with every exact
 changed path named by `--candidate-path`. Its isolated temporary index is not
 real staging and must leave the real index clean. `AUTO_REPAIR_ELIGIBLE` permits the normal
-one-gate, one-commit, one-push repair path without another user decision.
+one-gate, one-commit, one-push repair path without another user decision. After
+the push, one `convir_route_finish` repair call supplies the failed receipt and
+exact candidate commit; MCP reclassifies it, requires the canonical next output
+id, seals one plan and invokes start. A pre-seal failure consumes no repair
+transaction. Repeating the same call reuses its plan/start state, and a
+different candidate cannot replace a sealed transaction.
 `SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses for user review before commit, push,
 plan or start. Keep failed-run compact evidence cloud-only. After an eligible
 repair passes, sync the successful replacement evidence; do not also sync the
@@ -55,6 +60,10 @@ Never silently auto-repair population/data roles, protected-data permissions,
 model structure or initialization, checkpoint/asset identity, metrics,
 thresholds, seed, optimizer, epoch/budget, scientific question, or algorithmic
 constants/control flow. A repeated same-root failure requires user review.
+The root comparison uses a receipt-bound normalized fingerprint of failure
+phase, exception type, stack, failed checks and exit status. At most three
+distinct roots may consume automatic replacement generations; rejected
+candidate/control/transport calls before plan sealing are not generations.
 
 For normal scientific terminals, run `prepare_terminal_archive.py` once into one
 clean reusable main archive worktree. By default it always uses the receipt to

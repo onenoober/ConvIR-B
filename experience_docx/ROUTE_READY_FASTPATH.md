@@ -287,7 +287,12 @@ This is classifier input, not staging; real staging remains forbidden until the
 gate returns `AUTO_REPAIR_ELIGIBLE`.
 
 `AUTO_REPAIR_ELIGIBLE` proceeds without another repair prompt through the
-normal route-ready/commit/push/plan/start path.
+normal route-ready/commit/push boundary. Then call `convir_route_finish` once
+with the failed receipt, `engineering_failure_resolution=repair`, and the exact
+pushed `engineering_repair_commit`. The receipt-bound transaction reruns the
+control/candidate classification, requires the canonical next output id, seals
+one plan and invokes start. Pre-seal failures consume no transaction; an
+identical repeat reuses that plan, while a different commit cannot replace it.
 `SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses before state-changing actions.
 `archive` permits compact failure evidence sync but no repair/relaunch. The
 explicit discard resolution is narrower: it requires a receipt-bound validated
@@ -300,6 +305,10 @@ gates, or scientific scope. Re-run the staged gate only when the card,
 manifest, runtime spec, entrypoint, asset manifest, or canonical runtime bundle
 changed. A cloud contract pass is not repeated for unchanged code, and it
 never constitutes a scientific result.
+The repair chain records one normalized failure fingerprint per launched
+generation. A repeated fingerprint stops automatically; no more than three
+distinct roots may receive automatic repair before review. Failed classifier,
+control, transport or prelaunch calls do not add a fingerprint generation.
 
 Current authoring represents an evidence-bound operational fixed-factor change
 with `fixed_factor.<factor>.from_<value>.to_<value>` in the existing amendment

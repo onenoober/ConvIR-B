@@ -33,7 +33,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.11.0"
+SERVER_VERSION = "5.12.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -68,6 +68,7 @@ CONTROL_SOURCE_ROOT = Path(__file__).resolve().parents[2]
 CONTROL_VALIDATOR_BUNDLE_RELPATHS = tuple(dict.fromkeys((
     "experience_docx/tools/convir_ops_mcp.py",
     "experience_docx/tools/validate_route_ready.py",
+    "experience_docx/tools/validate_engineering_repair.py",
     *RUNTIME_BUNDLE_RELPATHS,
 )))
 CONTROL_MODULE_RELPATHS = {
@@ -106,6 +107,7 @@ MAX_EVIDENCE_BYTES = 1024 * 1024
 MAX_MANIFEST_BYTES = 16 * 1024
 MAX_CLOSEOUT_BYTES = 64 * 1024
 MAX_DIAGNOSTIC_TEXT_BYTES = 4096
+MAX_ENGINEERING_REPAIR_GENERATIONS = 3
 GPU_SUMMARY_LIMIT = 8
 GPU_PROBE_RETRY_DELAY_SECONDS = 2
 CONCLUSION_SCHEMA_VERSION = 3
@@ -321,6 +323,49 @@ def engineering_stack_fingerprint(value):
     normalized = re.sub(r"0x[0-9a-fA-F]+", "0x#", safe)
     normalized = re.sub(r"\b\d+\b", "#", normalized)
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest() if normalized else None
+
+
+def engineering_failure_fingerprint(closeout):
+    diagnostic = closeout.get("engineering_diagnostic") \
+        if isinstance(closeout, dict) else None
+    if not isinstance(diagnostic, dict):
+        raise ToolError("engineering diagnostic is unavailable", failure_class="evidence")
+    phase = diagnostic.get("failure_phase")
+    exception_type = diagnostic.get("exception_type")
+    failed = diagnostic.get("failed_contract_checks")
+    if not isinstance(phase, str) or not SAFE_TOKEN.fullmatch(phase):
+        phase = "unknown"
+    if not isinstance(exception_type, str) or not SAFE_TOKEN.fullmatch(exception_type):
+        exception_type = "unknown"
+    if not isinstance(failed, list):
+        failed = []
+    failed = sorted(set(
+        item for item in failed[:32]
+        if isinstance(item, str) and SAFE_TOKEN.fullmatch(item)
+    ))
+    traceback_tail = diagnostic.get("traceback_tail")
+    return canonical_digest({
+        "schema_version": 1,
+        "failure_phase": phase,
+        "exception_type": exception_type,
+        "stack_fingerprint_sha256": engineering_stack_fingerprint(traceback_tail)
+        if isinstance(traceback_tail, str) else None,
+        "failed_check_tokens": failed,
+        "returncode": diagnostic.get("returncode")
+        if type(diagnostic.get("returncode")) is int else None,
+    })
+
+
+def extend_structured_result(result, **extra):
+    value = dict(result["structuredContent"])
+    value.pop("runtime_identity", None)
+    value.pop("audit_digest", None)
+    value.update(extra)
+    value["audit_digest"] = canonical_digest(value)
+    return text_result(
+        json.dumps(value, sort_keys=True),
+        is_error=not value.get("ok", False), structured=value,
+    )
 
 
 def reported_progress_coverage(last_status):
@@ -1373,6 +1418,65 @@ def load_operation(args):
     return manifest, operation_id, context
 
 
+def engineering_repair_history(context):
+    history = context.get("engineering_repair_history", [])
+    if not isinstance(history, list) or len(history) > MAX_ENGINEERING_REPAIR_GENERATIONS \
+            or len(history) != len(set(history)) \
+            or any(not isinstance(item, str) or not SHA256.fullmatch(item) for item in history):
+        raise ToolError(
+            "engineering repair history is invalid",
+            failure_phase="engineering_repair", failure_class="contract",
+        )
+    return list(history)
+
+
+def classify_engineering_repair_candidate(source_context, candidate_context):
+    stable = ("branch", "route_id", "operation_id")
+    if any(source_context.get(key) != candidate_context.get(key) for key in stable):
+        raise ToolError(
+            "engineering repair candidate changed route identity",
+            failure_phase="engineering_repair", failure_class="contract",
+        )
+    source_commit = source_context["route_branch_commit"]
+    candidate_commit = candidate_context["route_branch_commit"]
+    branch_ref = f"refs/heads/{source_context['branch']}"
+    refs = github_refs([branch_ref, "refs/heads/main"])
+    if refs[branch_ref] != candidate_commit:
+        raise ToolError(
+            "engineering repair candidate is not the exact route branch head",
+            failure_phase="engineering_repair", failure_class="contract",
+        )
+    with tempfile.TemporaryDirectory(prefix="convir-engineering-repair-") as temporary:
+        bare_repo = str(Path(temporary) / "repo.git")
+        prepare_seeded_bare(bare_repo)
+        fetch_verified_refs(
+            bare_repo, branch_ref, candidate_commit, refs["refs/heads/main"],
+        )
+        ensure_commit(bare_repo, source_commit)
+        import validate_engineering_repair as repair_validator
+        try:
+            report = repair_validator.validate(
+                Path(bare_repo), source_commit, candidate_commit,
+                source_context["operation_id"],
+            )
+        except repair_validator.RepairError as exc:
+            raise ToolError(
+                f"engineering repair classifier rejected the candidate: {exc}",
+                failure_phase="engineering_repair", failure_class="contract",
+            ) from exc
+    if report.get("status") != "AUTO_REPAIR_ELIGIBLE" \
+            or report.get("old_output_id") != source_context.get("output_id") \
+            or report.get("new_output_id") != candidate_context.get("output_id") \
+            or report.get("derived_output_id") != candidate_context.get("output_id") \
+            or report.get("scientific_contract_unchanged") is not True \
+            or report.get("sensitive_review_required") is not False:
+        raise ToolError(
+            "engineering repair classifier returned an invalid authorization",
+            failure_phase="engineering_repair", failure_class="contract",
+        )
+    return report
+
+
 def state_secret():
     ensure_state_directory()
     path = STATE_DIR / "hmac.key"
@@ -2231,9 +2335,13 @@ def evidence_context(args):
                 "engineering failure requires an explicit repair-or-archive decision before evidence access",
                 failure_phase="engineering_review", failure_class="engineering_runtime",
             )
-        if closed in {"ENGINEERING_REPAIR_AUTHORIZED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED"}:
+        if closed in {
+            "ENGINEERING_REPAIR_AUTHORIZED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+            "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED",
+            "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED",
+        }:
             raise ToolError(
-                "engineering repair was selected; failed-run evidence remains cloud-only unless archive is separately chosen",
+                "engineering failure evidence remains cloud-only unless archive is separately chosen",
                 failure_phase="engineering_review", failure_class="engineering_runtime",
             )
         if closed not in {"CLOSEOUT_VALIDATED", "ENGINEERING_ARCHIVE_AUTHORIZED"}:
@@ -2343,9 +2451,42 @@ def validated_scientific_result(token, closeout, observed, *, manifest=None):
 
 def authorize_engineering_auto_repair(token, closeout):
     with locked_record("receipt", token) as record:
+        history = engineering_repair_history(receipt_context(record))
+        fingerprint = engineering_failure_fingerprint(closeout)
         record["terminal_closeout"] = closeout
-        record["engineering_failure_resolution"] = "repair"
-        record["finish_closed"] = "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
+        record["engineering_failure_fingerprint_sha256"] = fingerprint
+        if fingerprint in history:
+            state = "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED"
+            record["engineering_failure_resolution"] = None
+        elif len(history) >= MAX_ENGINEERING_REPAIR_GENERATIONS:
+            state = "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED"
+            record["engineering_failure_resolution"] = None
+        else:
+            state = "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
+            record["engineering_failure_resolution"] = "repair"
+        record["finish_closed"] = state
+        return state, fingerprint
+
+
+def engineering_terminal_result(token, state, fingerprint, closeout, observed, message):
+    failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
+    auto_repair = state == "ENGINEERING_AUTO_REPAIR_AUTHORIZED"
+    if state == "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED":
+        message = "the same engineering root fingerprint repeated; automatic repair stopped"
+    elif state == "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED":
+        message = "the bounded distinct-root engineering repair budget is exhausted"
+    return typed_failure(
+        state, engineering_failure_class(failure_phase), message,
+        observed={**observed, "closeout": closeout},
+        next_actions=(
+            ["diagnose_or_prepare_repair_candidate", "repair_transaction"]
+            if auto_repair else ["diagnose", "operator_review_or_archive"]
+        ),
+        failure_phase=failure_phase,
+        failure_fingerprint_sha256=fingerprint,
+        repair_authorized=auto_repair,
+        archive_authorized=False, relaunch_authorized=False, receipt=token,
+    )
 
 
 def prepare_finalization_repair(context, repair_commit):
@@ -2636,8 +2777,15 @@ def resolve_engineering_failure(token, resolution):
                 next_actions=["inspect_failure_once", "prepare_one_same_contract_engineering_repair"],
                 archive_authorized=False, relaunch_authorized=False,
             )
+        if current_state in {
+            "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED",
+            "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED",
+        } and resolution == "repair":
+            raise ToolError("automatic repair is stopped for this engineering receipt")
         if current_state not in {
             "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+            "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED",
+            "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED",
         } and not migrated_archive_repair:
             raise ToolError("receipt is not awaiting an engineering failure decision")
         closeout = record.get("terminal_closeout")
@@ -2703,6 +2851,144 @@ def resolve_engineering_failure(token, resolution):
         )
 
 
+def engineering_repair_source(token):
+    with read_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        if record.get("finish_closed") != "ENGINEERING_AUTO_REPAIR_AUTHORIZED":
+            raise ToolError("receipt does not authorize an automatic engineering repair")
+        closeout = record.get("terminal_closeout")
+        if not isinstance(closeout, dict) \
+                or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING":
+            raise ToolError("receipt has no validated engineering closeout", failure_class="evidence")
+        source_context = dict(receipt_context(record))
+        fingerprint = record.get("engineering_failure_fingerprint_sha256")
+        if not isinstance(fingerprint, str) or not SHA256.fullmatch(fingerprint):
+            fingerprint = engineering_failure_fingerprint(closeout)
+        history = engineering_repair_history(source_context)
+        if fingerprint in history or len(history) >= MAX_ENGINEERING_REPAIR_GENERATIONS:
+            raise ToolError("receipt engineering repair history requires operator review")
+        transaction = record.get("engineering_repair_transaction")
+    return source_context, closeout, fingerprint, history, transaction
+
+
+def execute_engineering_repair_transaction(token, repair_commit):
+    transaction_sealed = False
+    try:
+        repair_commit = require_sha(
+            repair_commit, "engineering_repair_commit", SHA40,
+        )
+        source_context, closeout, fingerprint, history, existing = \
+            engineering_repair_source(token)
+        if isinstance(existing, dict):
+            transaction_sealed = True
+            if existing.get("repair_commit") != repair_commit \
+                    or not isinstance(existing.get("plan_token"), str) \
+                    or not SHA256.fullmatch(existing["plan_token"]):
+                raise ToolError(
+                    "receipt is already bound to a different engineering repair transaction"
+                )
+            launch = tool_start({"plan_token": existing["plan_token"]})
+            return extend_structured_result(
+                launch,
+                repair_transaction={**existing, "idempotent_reuse": True},
+                repair_transaction_consumed=True,
+            )
+        control_identity = control_self_check()
+        _, operation_id, candidate_context = load_operation({
+            "schema_version": SCHEMA_VERSION,
+            "branch": source_context["branch"],
+            "route_branch_commit": repair_commit,
+            "operation_id": source_context["operation_id"],
+        })
+        if candidate_context.get("route_manifest_schema_version") != 6:
+            raise ToolError(
+                "historical manifest schema 4/5 is read-only and cannot be repaired"
+            )
+        classification = classify_engineering_repair_candidate(
+            source_context, candidate_context,
+        )
+        candidate_context["control_plane_identity"] = control_identity
+        candidate_context["engineering_repair_history"] = history + [fingerprint]
+        candidate_context["engineering_repair_parent"] = {
+            "source_route_commit": source_context["route_branch_commit"],
+            "source_output_id": source_context["output_id"],
+            "failure_fingerprint_sha256": fingerprint,
+            "classification_sha256": canonical_digest(classification),
+        }
+        now = int(time.time())
+        payload = {
+            "context": candidate_context,
+            "issued_at": now,
+            "expires_at": now + PLAN_TTL_SECONDS,
+            "nonce": uuid.uuid4().hex,
+        }
+        with locked_record("receipt", token) as record:
+            if record.get("finish_closed") != "ENGINEERING_AUTO_REPAIR_AUTHORIZED" \
+                    or record.get("terminal_closeout") != closeout:
+                raise ToolError("engineering failure state changed during repair classification")
+            current_fingerprint = record.get("engineering_failure_fingerprint_sha256")
+            if current_fingerprint is not None and current_fingerprint != fingerprint:
+                raise ToolError("engineering failure fingerprint changed during repair classification")
+            existing = record.get("engineering_repair_transaction")
+            if existing is not None:
+                if not isinstance(existing, dict) \
+                        or existing.get("repair_commit") != repair_commit \
+                        or not isinstance(existing.get("plan_token"), str) \
+                        or not SHA256.fullmatch(existing["plan_token"]):
+                    raise ToolError("a different engineering repair transaction won the race")
+                plan_token = existing["plan_token"]
+                transaction = {**existing, "idempotent_reuse": True}
+            else:
+                plan_token = write_new_record("plan", payload, {"receipt": None})
+                transaction = {
+                    "repair_commit": repair_commit,
+                    "plan_token": plan_token,
+                    "source_failure_fingerprint_sha256": fingerprint,
+                    "old_output_id": classification["old_output_id"],
+                    "new_output_id": classification["new_output_id"],
+                    "classification_sha256": canonical_digest(classification),
+                    "sealed_at_unix": now,
+                    "operation_id": operation_id,
+                    "scientific_contract_unchanged": True,
+                    "repair_history_depth": len(history) + 1,
+                    "idempotent_reuse": False,
+                }
+                record["engineering_repair_transaction"] = dict(transaction)
+                record["engineering_failure_resolution"] = "repair"
+            transaction_sealed = True
+        launch = tool_start({"plan_token": plan_token})
+        return extend_structured_result(
+            launch,
+            repair_transaction=transaction,
+            repair_transaction_consumed=True,
+        )
+    except ControlPlaneError as exc:
+        return typed_failure(
+            exc.operation_state, exc.failure_class, str(exc),
+            observed=exc.observed, expected=exc.expected,
+            next_actions=["refresh_and_restart_control_plane"],
+            failure_phase=exc.failure_phase,
+            repair_transaction_consumed=transaction_sealed,
+        )
+    except ToolError as exc:
+        return typed_failure(
+            "ENGINEERING_REPAIR_TRANSACTION_REJECTED", exc.failure_class, str(exc),
+            next_actions=["correct_candidate_once_or_request_review"],
+            failure_phase=exc.failure_phase,
+            repair_transaction_consumed=transaction_sealed,
+        )
+    except Exception as exc:
+        return typed_failure(
+            "ENGINEERING_REPAIR_TRANSACTION_FAILED", "command_infra",
+            type(exc).__name__,
+            next_actions=["retry_same_transaction_or_request_review"]
+            if transaction_sealed else ["correct_control_plane_once_or_request_review"],
+            failure_phase="engineering_repair",
+            repair_transaction_consumed=transaction_sealed,
+        )
+
+
 def diagnose_engineering_failure(token):
     """Return an idempotent, receipt-bound control view without changing state."""
     with read_record("receipt", token) as record:
@@ -2712,6 +2998,8 @@ def diagnose_engineering_failure(token):
         if current_state not in {
             "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
             "ENGINEERING_REPAIR_AUTHORIZED",
+            "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED",
+            "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED",
         }:
             raise ToolError("receipt is not a diagnosable engineering terminal")
         closeout = record.get("terminal_closeout")
@@ -2766,9 +3054,19 @@ def diagnose_engineering_failure(token):
             if isinstance(diagnostic.get("protected_data_touched"), bool) else None,
         }
         closeout_sha256 = closeout.get("closeout_sha256")
+        failure_fingerprint = record.get("engineering_failure_fingerprint_sha256")
     repair_authorized = current_state in {
         "ENGINEERING_AUTO_REPAIR_AUTHORIZED", "ENGINEERING_REPAIR_AUTHORIZED",
     }
+    if repair_authorized:
+        next_actions = ["prepare_one_same_contract_engineering_repair"]
+    elif current_state in {
+        "ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED",
+        "ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED",
+    }:
+        next_actions = ["operator_review_or_archive"]
+    else:
+        next_actions = ["choose_repair_archive_or_discard"]
     return typed_result(
         True, "ENGINEERING_DIAGNOSIS_READY",
         observed={
@@ -2777,11 +3075,11 @@ def diagnose_engineering_failure(token):
             "diagnosis": diagnosis,
             "receipt_state_before": current_state,
             "receipt_state_after": current_state,
+            "failure_fingerprint_sha256": failure_fingerprint,
         },
-        next_actions=["prepare_one_same_contract_engineering_repair"]
-        if repair_authorized else ["choose_repair_archive_or_discard"],
+        next_actions=next_actions,
         receipt=token, diagnosis_read_only=True, state_changed=False,
-        evidence_access_unlocked=False, repair_authority_preserved=True,
+        evidence_access_unlocked=False, repair_authority_preserved=repair_authorized,
         repair_authorized=repair_authorized, archive_authorized=False,
         relaunch_authorized=False,
     )
@@ -3695,16 +3993,10 @@ def cancel_operator_route(token):
         return operator_cancel_result(token, closeout, request_id)
     if terminal["state"] == "FAILED_ENGINEERING":
         closeout["engineering_diagnostic"]["last_status"] = None
-        authorize_engineering_auto_repair(token, closeout)
-        failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
-        return typed_failure(
-            "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
-            engineering_failure_class(failure_phase),
+        state, fingerprint = authorize_engineering_auto_repair(token, closeout)
+        return engineering_terminal_result(
+            token, state, fingerprint, closeout, observed,
             "the route reached an engineering terminal before cancellation took effect",
-            observed={"closeout": closeout, **observed},
-            next_actions=["inspect_failure_once", "prepare_one_same_contract_engineering_repair"],
-            failure_phase=failure_phase, archive_authorized=False,
-            relaunch_authorized=False, receipt=token,
         )
     return validated_scientific_result(
         token, closeout, {"closeout": closeout, **observed},
@@ -3727,20 +4019,38 @@ def tool_finish(args):
                 "engineering failure resolution cannot be combined with operator control"
             )
         if resolution is not None:
+            if args.get("engineering_repair_commit") is not None \
+                    and args.get("finalization_repair_commit") is not None:
+                raise ToolError("engineering and finalization repair commits are exclusive")
+            if args.get("engineering_repair_commit") is not None \
+                    and resolution != "repair":
+                raise ToolError(
+                    "engineering_repair_commit requires resolution=repair"
+                )
+            if args.get("finalization_repair_commit") is not None \
+                    and resolution != "finalize":
+                raise ToolError(
+                    "finalization_repair_commit requires resolution=finalize"
+                )
             if resolution == "diagnose":
                 return diagnose_engineering_failure(token)
+            if resolution == "repair" \
+                    and args.get("engineering_repair_commit") is not None:
+                return execute_engineering_repair_transaction(
+                    token, args.get("engineering_repair_commit"),
+                )
             if resolution == "finalize":
                 return resolve_finalization_repair(
                     token, args.get("finalization_repair_commit"),
-                )
-            if args.get("finalization_repair_commit") is not None:
-                raise ToolError(
-                    "finalization_repair_commit requires resolution=finalize"
                 )
             return resolve_engineering_failure(token, resolution)
         if args.get("finalization_repair_commit") is not None:
             raise ToolError(
                 "finalization_repair_commit requires an engineering resolution"
+            )
+        if args.get("engineering_repair_commit") is not None:
+            raise ToolError(
+                "engineering_repair_commit requires an engineering resolution"
             )
         if operator_action == "cancel":
             if observation_mode != "sealed":
@@ -3772,15 +4082,10 @@ def tool_finish(args):
                 closeout["engineering_diagnostic"]["last_status"] = safe_status_summary(
                     monitor["status"],
                 )
-                authorize_engineering_auto_repair(token, closeout)
-                failure_phase = closeout["engineering_diagnostic"]["failure_phase"]
-                return typed_failure(
-                    "ENGINEERING_AUTO_REPAIR_AUTHORIZED", engineering_failure_class(failure_phase),
+                state, fingerprint = authorize_engineering_auto_repair(token, closeout)
+                return engineering_terminal_result(
+                    token, state, fingerprint, closeout, {"monitor": monitor},
                     "engineering failure was detected before a healthy workload claim; one same-contract repair is authorized automatically, while sensitive changes still require review",
-                    observed={"monitor": monitor, "closeout": closeout},
-                    next_actions=["inspect_failure_once", "prepare_one_same_contract_engineering_repair"],
-                    failure_phase=failure_phase,
-                    archive_authorized=False, relaunch_authorized=False, receipt=token,
                 )
             return validated_scientific_result(
                 token, closeout, {"monitor": monitor, "closeout": closeout},
@@ -4851,7 +5156,7 @@ TOOLS = {
         "handler": tool_start,
     },
     "convir_route_finish": {
-        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, perform receipt-bound operator cancellation, or read a bounded engineering diagnosis; validate every closeout and keep scientific decisions explicit.",
+        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, perform receipt-bound operator cancellation, read a bounded engineering diagnosis, or execute one classified same-contract repair transaction; validate every closeout and keep scientific decisions explicit.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
             "properties": {
@@ -4860,6 +5165,9 @@ TOOLS = {
                     "enum": ["diagnose", "repair", "archive", "discard", "finalize"],
                 },
                 "finalization_repair_commit": {
+                    "type": "string", "pattern": "^[0-9a-f]{40}$",
+                },
+                "engineering_repair_commit": {
                     "type": "string", "pattern": "^[0-9a-f]{40}$",
                 },
                 "operator_action": {
