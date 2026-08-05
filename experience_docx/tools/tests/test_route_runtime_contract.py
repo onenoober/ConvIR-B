@@ -200,6 +200,18 @@ class RuntimeContractTests(unittest.TestCase):
         normalized = CONTRACT.validate_runtime_spec(self.schema2(), manifest(), "S0")
         self.assertIsNone(normalized["engineering_contract"]["cost_contract"])
 
+    def test_engineering_limit_uses_the_route_timeout(self):
+        value = self.schema2()
+        value["timeout_seconds"] = 1800
+        value["expected_wall_seconds"] = 1500
+        value["engineering_contract"]["max_seconds"] = 1200
+        normalized = CONTRACT.validate_runtime_spec(value, manifest(), "S0")
+        self.assertEqual(1200, normalized["engineering_contract"]["max_seconds"])
+
+        value["engineering_contract"]["max_seconds"] = 1801
+        with self.assertRaisesRegex(CONTRACT.ContractError, "exceeds timeout_seconds"):
+            CONTRACT.validate_runtime_spec(value, manifest(), "S0")
+
     def test_fixed_linear_cost_contract_is_mechanically_bounded(self):
         value = self.schema2()
         value["engineering_contract"]["cost_contract"] = {
