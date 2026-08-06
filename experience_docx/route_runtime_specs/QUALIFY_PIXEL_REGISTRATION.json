@@ -1,0 +1,60 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-sots-indoor-pixel-registration-qualification-v1__QUALIFY_PIXEL_REGISTRATION.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/reside-sots-indoor-pixel-registration-qualification-v1__QUALIFY_PIXEL_REGISTRATION.json",
+    "cost_contract": {
+      "batch_shape_policy": "bounded",
+      "candidate_schedule": "none",
+      "fixed_overhead_seconds": 180,
+      "formal_iterations": 500,
+      "formal_max_wall_seconds": 3000,
+      "max_peak_memory_mib": 512,
+      "max_seconds_per_iteration": 4,
+      "memory_scaling": "constant",
+      "probe_iterations": 3,
+      "production_path": "exact",
+      "safety_factor": 1.25,
+      "strategy": "fixed_linear_extrapolation",
+      "termination_policy": "fixed_count",
+      "workload_class": "fixed_iteration_map"
+    },
+    "max_seconds": 300,
+    "mode": "cpu_exact"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_reside_sots_indoor_pixel_registration_v1.py",
+  "environment": {
+    "CONVIR_ROUTE_ASSET_SOTS_ROOT": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_sots_indoor_pixel_registration_qualification_v1_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/reside_sots_indoor_pixel_registration_qualification_v1_summary.json"
+    },
+    {
+      "destination_filename": "reside_sots_indoor_pixel_registration_qualification_v1_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/reside_sots_indoor_pixel_registration_qualification_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "engineering_debug",
+  "expected_wall_seconds": 3000,
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "precision_contract": {
+    "certificate_relpath": null,
+    "mode": "not_applicable",
+    "rationale": "The route performs an exact finite census of the complete bound asset with thresholds frozen before outcome access and does not estimate sampled model performance."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v1",
+  "schema_version": 2,
+  "timeout_seconds": 3300,
+  "total_units": 1
+}

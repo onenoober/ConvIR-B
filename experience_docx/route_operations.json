@@ -1,0 +1,52 @@
+{
+  "experiment_spec_relpath": "experience_docx/experiment_specs/reside-sots-indoor-pixel-registration-qualification-v1.json",
+  "experiment_spec_sha256": "e38e6d273899ed6b8b4a77a7080881e8e992f11381bbb2d840d817dfae322d0d",
+  "operations": {
+    "QUALIFY_PIXEL_REGISTRATION": {
+      "allowed_terminal_tuples": [
+        {
+          "authorizes": "CENTER_CROPPED_MODEL_REVIEW_PLANNING_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        },
+        {
+          "authorizes": "PIXEL_REGISTRATION_EVIDENCE_REVIEW_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        },
+        {
+          "authorizes": "NONE",
+          "decision": null,
+          "state": "FAILED_ENGINEERING"
+        }
+      ],
+      "closeout_filename": "reside_sots_indoor_pixel_registration_qualification_v1_closeout.json",
+      "heartbeat_timeout_seconds": 300,
+      "max_gpu_utilization_pct": 100,
+      "min_free_gpu_mib": 0,
+      "mode": "sots_indoor_pixel_registration_qualification",
+      "monitor_profile": "short",
+      "output_id": "reside-sots-indoor-pixel-registration-qualification-v1-r1",
+      "output_policy": "new",
+      "prior_closeout_relpath": null,
+      "prior_terminal_tuple": null,
+      "require_gpu": false,
+      "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+      "workspace_policy": "fresh_route"
+    }
+  },
+  "program_contract_relpath": "experience_docx/research_programs/reside_sots_indoor_asset_qualification_v3.json",
+  "program_contract_sha256": "0bf9fb70547758f205204d48a16fc89a367f4edbe84bebee3dfd7f7f0d591999",
+  "route_card_relpath": "experience_docx/experiment_cards/reside-sots-indoor-pixel-registration-qualification-v1.md",
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v1",
+  "rules_commit": "dea4c31dbc14245ee15eb461d2a5b5088741399a",
+  "schema_version": 6,
+  "scientific_contract_relpaths": {
+    "QUALIFY_PIXEL_REGISTRATION": "experience_docx/scientific_contracts/reside-sots-indoor-pixel-registration-qualification-v1__QUALIFY_PIXEL_REGISTRATION.json"
+  }
+}
