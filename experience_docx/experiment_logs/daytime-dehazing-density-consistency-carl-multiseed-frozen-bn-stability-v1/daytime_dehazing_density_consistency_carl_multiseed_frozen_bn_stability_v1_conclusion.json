@@ -1,0 +1,40 @@
+{
+  "schema_version": 3,
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY",
+  "run_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1-r1",
+  "state": "COMPLETED_GATE_FAIL",
+  "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_FAIL",
+  "authorizes": "NONE",
+  "primary_result": "The identity-valid and coverage-complete Haze4K development-screening route reached its predeclared three-seed look with a raw seed-blocked b11_combined-minus-b00_baseline scene PSNR effect of -5.1417193325311334 dB and a 95% simultaneous interval of [-6.069338566091783, -4.2141000989704835] dB, wholly below both zero and the frozen +0.10 dB materiality threshold. The combined_materiality gate was unfavorable, the combined_decisive_fail rule produced COMPLETED_GATE_FAIL, and the terminal authorizes no scientific next stage or engineering retry.",
+  "gate_reasons": [
+    "identity_integrity=pass and workload_coverage=pass: all declared finite assertions passed, the checkpoint-frozen BatchNorm policy remained bound, and the ledger covered all 41 completed or predeclared-skipped units.",
+    "combined_materiality=unfavorable: the raw combined-versus-baseline point estimate was -5.1417193325311334 dB with a 95% simultaneous interval of [-6.069338566091783, -4.2141000989704835] dB, far below the required +0.10 dB material effect.",
+    "seed_robustness=unfavorable: all three completed seed-specific effects were negative, with points -5.885794294717401, -5.170865401808442, and -4.368498301067556 dB and upper interval bounds below zero.",
+    "worst_stratum_safety=unsafe: DENSITY_LOW was -9.204165571120768 dB with interval [-9.916969353238093, -8.491361789003443], and DENSITY_MID was -5.557003541797991 dB with interval [-6.024405745227435, -5.0896013383685474], both wholly below the frozen -0.10 dB safety floor.",
+    "mechanism_separation=indeterminate: the CARL main effect was materially negative at -5.201424420620486 dB with interval [-6.17930157529937, -4.223547265941603], while the consistency main effect and CARL-by-consistency interaction intervals crossed unresolved regions.",
+    "primary_precision=unmet because every density-stratum half-width exceeded 0.260 dB. This gate is inconclusive_only and cannot hide the decisive unfavorable combined effect, seed instability, or unsafe strata.",
+    "The frozen nonbinding futility rule fired at seed_look_060 after three completed seed blocks. The two remaining seed blocks were represented by typed skipped units rather than executed, preserving exact 41-unit coverage without result-adaptive replacement."
+  ],
+  "competing_explanation": "The combined penalty closely tracks the materially negative CARL main effect, whereas the consistency main effect was +0.0597050880893519 dB with interval [-0.014962481025401396, 0.13437265720410518] and the interaction was +0.18347054643347027 dB with interval [-0.011211748332958182, 0.3781528411998987]. Those latter terms remain unresolved and cannot offset or explain away the decisive combined loss. The protected-data-free engineering qualification passed 10560 exact-path iterations, all finite assertions passed during scientific execution, and BatchNorm running statistics were checkpoint-frozen, so the observed terminal is not classified as the prior non-finite engineering failure. The evidence supports rejection of this frozen CARL-plus-consistency configuration, not a universal claim that every contrastive or consistency objective must fail.",
+  "limitations": [
+    "The evidence role is Haze4K development_screening only; confirmation, canary, locked-test, sealed-final, promotion, deployment, and publication claims remain prohibited.",
+    "The predeclared futility rule stopped after three of five frozen seed blocks, so the last two seed-specific scientific outcomes were not observed and cannot be estimated.",
+    "Primary precision was unmet and consistency and interaction mechanism classifications remained unresolved, although those limitations cannot reverse the decisive scientific FAIL.",
+    "The result is bound to the official ConvIR-B architecture and checkpoint, the declared CARL and consistency definitions and weights, 2000-step budget, optimizer, Haze4K roles, and checkpoint-frozen BatchNorm policy.",
+    "The five seeds were frozen paired blocks and are not a random sample proving behavior over every possible training seed; original clear scenes remain the independent units.",
+    "Passing the bounded engineering qualification and finite assertions rules out the declared failure classes for this run but does not prove absence of every possible numerical or optimization pathology."
+  ],
+  "primary_fact_ids": [
+    "multiseed_combined_vs_baseline_raw_point"
+  ],
+  "gate_fact_ids": [
+    "combined_materiality",
+    "identity_integrity",
+    "mechanism_separation",
+    "primary_precision",
+    "seed_robustness",
+    "workload_coverage",
+    "worst_stratum_safety"
+  ]
+}

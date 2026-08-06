@@ -1,0 +1,128 @@
+{
+  "authorizes": "NONE",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "daytime_dehazing_density_consistency_carl_multiseed_frozen_bn_stability_v1_capability_qualification.json",
+    "identity_sha256": "6b1ea534ab0b092d0ebcae1d505469dd27ecd6530cf7dadd33bd3da000dba286",
+    "qualification_id": "cap_6b1ea534ab0b092d0ebcae1d",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "6b1ea534ab0b092d0ebcae1d505469dd27ecd6530cf7dadd33bd3da000dba286",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_FAIL",
+  "decision_rule_id": "combined_decisive_fail",
+  "details": {
+    "comparison_family": "multiseed_factorial_raw_terms_density_and_seed_stability",
+    "early_futility": true,
+    "gate_summary_filename": "multiseed_gate_summary.json",
+    "look_id": "seed_look_060",
+    "summary_filename": "multiseed_summary.json"
+  },
+  "evidence_role": "development_screening",
+  "evidence_sha256": {
+    "daytime_dehazing_density_consistency_carl_multiseed_frozen_bn_stability_v1_capability_qualification.json": "30b2b096a2e01669cae5b2c667de728cb13958444468247db7e092495676a017",
+    "daytime_dehazing_density_consistency_carl_multiseed_frozen_bn_stability_v1_raw_artifact_receipt.json": "371c844198dae6d2b766e098525c5bf29249d02562644fe4c3db93442c807b05",
+    "daytime_dehazing_density_consistency_carl_multiseed_frozen_bn_stability_v1_review_facts.json": "f55ee6bbfbd275c8531be00fd82bd4be90f810348c123492726c5cd886287809",
+    "multiseed_completed_unit_ledger.txt": "d21df84223d15e5892cdd58beb4a5841da07b983824cd8644722ccaaabee8a62",
+    "multiseed_gate_summary.json": "099f4fcf0649fbae0e564904c8918887b5d28ff5aef72778d5702b9cb4a30888",
+    "multiseed_summary.json": "a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d"
+  },
+  "failure_phase": null,
+  "family_effect": "stop",
+  "gate_outcomes": {
+    "combined_materiality": "unfavorable",
+    "identity_integrity": "pass",
+    "mechanism_separation": "indeterminate",
+    "primary_precision": "unmet",
+    "seed_robustness": "unfavorable",
+    "workload_coverage": "pass",
+    "worst_stratum_safety": "unsafe"
+  },
+  "locked_test_touched": false,
+  "next_action_id": null,
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY",
+  "returncode": 0,
+  "route_commit": "b9c8a3ab24189d8b743931749a2d2050a6fbaa3e",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_FAIL",
+  "terminal_label": "fail",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "frozen_bn_stability_entrypoint",
+      "kind": "file",
+      "sha256": "170f434c46d4fad38b1ffc2e7062d5081f4fbf2b56ed2c6be5fd3b5917ec4e67"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_test",
+      "kind": "directory"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "haze4k_train",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_layers",
+      "kind": "file",
+      "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "model_source",
+      "kind": "file",
+      "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "official_checkpoint",
+      "kind": "file",
+      "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "development_screening",
+      "contract_access": false,
+      "id": "s0_scene_role_ledger",
+      "kind": "file",
+      "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "vgg19_imagenet1k_v1",
+      "kind": "file",
+      "sha256": "dcbb9e9dad569fff7a846263a77324fc34978fea2bfb039c012d710e1776ae44"
+    }
+  ]
+}

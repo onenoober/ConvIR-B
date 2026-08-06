@@ -1,0 +1,27 @@
+{
+  "all_declared_finite_assertions_passed": true,
+  "batch_norm_policy": "checkpoint_running_statistics_frozen_affine_trainable",
+  "completed_seed_count": 3,
+  "completed_units": 41,
+  "early_futility": true,
+  "gate_outcomes": {
+    "combined_materiality": "unfavorable",
+    "identity_integrity": "pass",
+    "mechanism_separation": "indeterminate",
+    "primary_precision": "unmet",
+    "seed_robustness": "unfavorable",
+    "workload_coverage": "pass",
+    "worst_stratum_safety": "unsafe"
+  },
+  "look_id": "seed_look_060",
+  "mechanism_classification": {
+    "carl_main_effect": "material_negative",
+    "consistency_main_effect": "unresolved",
+    "interaction": "unresolved"
+  },
+  "numerical_mode": "cuda_tf32_disabled_checkpoint_frozen_batch_norm",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY",
+  "planned_seed_count": 5,
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1",
+  "total_units": 41
+}

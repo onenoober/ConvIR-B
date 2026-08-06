@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 45
+  },
+  "entry_count": 46,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "892f6433a61ef18b5fbc45f5f06fa19bc3f9cd0ee1c5ae9de3c3ed67e5775502",
+  "operation_id": "DAYTIME_DEHAZING_DENSITY_CONSISTENCY_CARL_MULTISEED_FROZEN_BN_STABILITY_QUALIFY",
+  "route_commit": "b9c8a3ab24189d8b743931749a2d2050a6fbaa3e",
+  "route_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1",
+  "run_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 418181455
+}
