@@ -1,0 +1,33 @@
+{
+  "schema_version": 3,
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "operation_id": "QUALIFY",
+  "run_id": "reside-sots-indoor-asset-qualification-v1-r1",
+  "state": "COMPLETED_INCONCLUSIVE",
+  "decision": "RESIDE_SOTS_INDOOR_ASSET_QUALIFICATION_INCONCLUSIVE",
+  "authorizes": "ASSET_REPAIR_REVIEW_ONLY",
+  "primary_result": "The requested SOTS Indoor tree contained exactly 50 clear PNG files and 500 hazy PNG files, every clear scene had exactly ten named hazy variants, and all 550 files decoded as RGB PNG. However, none of the 500 mapped hazy-clear pairs had equal raw dimensions, so the frozen equal-dimension qualification was vetoed and the asset cannot yet be registered as fully qualified.",
+  "gate_reasons": [
+    "asset_identity=pass: the exact requested root was present, all 550 intended files were direct regular PNG entries, and the combined aggregate SHA-256 was 31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4.",
+    "pairing_coverage=pass: 50 unique clear stems mapped all 500 hazy files with exactly ten variants per clear scene, zero unmapped hazy files, and zero unused clear files.",
+    "decode_dimensions=fail: all 550 files decoded successfully, but dimension_matched_pair_count was 0 against the required 500 and dimension_mismatch_count was 500.",
+    "isolation=safe: model loads, checkpoint reads, training calls, inference calls, restoration metric calls, image display calls, and protected-data operations were all zero."
+  ],
+  "competing_explanation": "The uniform 500-of-500 mismatch may reflect an intentional official SOTS Indoor border-crop relationship between clear and hazy files rather than corruption or incorrect pairing, but this route did not freeze or record the exact size and crop geometry needed to distinguish those explanations.",
+  "limitations": [
+    "The compact evidence records mismatch counts and mismatch-name digest, not the clear and hazy dimension histograms or per-pair crop offsets.",
+    "The result does not establish that a center crop, resize, or any other geometry transform is scientifically valid; a new outcome-blind geometry qualification must freeze and test that rule.",
+    "No model, checkpoint, inference, training, restoration metric, image display, model-quality conclusion, promotion, or deployment authorization is present.",
+    "This is a measurement-validity INCONCLUSIVE, not evidence that the local files are corrupt and not a scientific model-performance FAIL."
+  ],
+  "primary_fact_ids": [
+    "dimension_matched_pair_count"
+  ],
+  "gate_fact_ids": [
+    "gt_image_count",
+    "hazy_image_count",
+    "decoded_image_count",
+    "dimension_matched_pair_count",
+    "forbidden_operation_count"
+  ]
+}

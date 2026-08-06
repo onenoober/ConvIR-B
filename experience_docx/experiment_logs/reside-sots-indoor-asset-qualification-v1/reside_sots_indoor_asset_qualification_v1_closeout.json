@@ -1,0 +1,48 @@
+{
+  "authorizes": "ASSET_REPAIR_REVIEW_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "RESIDE_SOTS_INDOOR_ASSET_QUALIFICATION_INCONCLUSIVE",
+  "decision_rule_id": "decode_veto_after_pairing",
+  "details": {
+    "combined_asset_sha256": "31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+    "model_or_checkpoint_accessed": false,
+    "protected_data_touched": false,
+    "restoration_metrics_computed": false,
+    "summary_file": "reside_sots_indoor_asset_qualification_v1_summary.json",
+    "training_or_inference_occurred": false
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "reside_sots_indoor_asset_qualification_v1_raw_artifact_receipt.json": "8fe0b34a334b5b2c4086092300933e5befc23db23652235f29954a38569d3351",
+    "reside_sots_indoor_asset_qualification_v1_review_facts.json": "25beb0d05a74f01149723a1ddb1c8938bc5e9d26839ecc08b81e669af114e770",
+    "reside_sots_indoor_asset_qualification_v1_summary.json": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea"
+  },
+  "failure_phase": null,
+  "family_effect": "allow_predeclared_evidence",
+  "gate_outcomes": {
+    "asset_identity": "pass",
+    "decode_dimensions": "fail",
+    "isolation": "safe",
+    "pairing_coverage": "pass"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "inspect_sots_indoor_asset",
+  "operation_id": "QUALIFY",
+  "returncode": 0,
+  "route_commit": "472ab207f028d7ef37257ce22268ed55c85d103b",
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "run_id": "reside-sots-indoor-asset-qualification-v1-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_INCONCLUSIVE",
+  "terminal_label": "inconclusive",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "sots_root",
+      "kind": "directory"
+    }
+  ]
+}

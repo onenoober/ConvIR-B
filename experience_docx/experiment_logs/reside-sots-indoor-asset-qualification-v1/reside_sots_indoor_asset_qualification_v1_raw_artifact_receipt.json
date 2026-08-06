@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 4
+  },
+  "entry_count": 5,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "739ec0754a6e501372692058023f00bb05e06cd134a8d44c71358b1bbc260dc5",
+  "operation_id": "QUALIFY",
+  "route_commit": "472ab207f028d7ef37257ce22268ed55c85d103b",
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "run_id": "reside-sots-indoor-asset-qualification-v1-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 9128
+}

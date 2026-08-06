@@ -1,0 +1,133 @@
+{
+  "facts": [
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_exact_counts",
+      "confidence_level": null,
+      "fact_id": "gt_image_count",
+      "gate_outcome": "pass",
+      "grouping": "file",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/pairing_coverage",
+        "point": "/qualification/observed_gt_images",
+        "threshold": "/qualification/expected_gt_images"
+      },
+      "metric": "clear PNG file count",
+      "point": 50,
+      "population": "direct children of SOTS Indoor gt",
+      "source_filename": "reside_sots_indoor_asset_qualification_v1_summary.json",
+      "source_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+      "threshold": 50,
+      "threshold_operator": "==",
+      "unit": "files"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_exact_counts",
+      "confidence_level": null,
+      "fact_id": "hazy_image_count",
+      "gate_outcome": "pass",
+      "grouping": "file",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/pairing_coverage",
+        "point": "/qualification/observed_hazy_images",
+        "threshold": "/qualification/expected_hazy_images"
+      },
+      "metric": "hazy PNG file count",
+      "point": 500,
+      "population": "direct children of SOTS Indoor hazy",
+      "source_filename": "reside_sots_indoor_asset_qualification_v1_summary.json",
+      "source_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+      "threshold": 500,
+      "threshold_operator": "==",
+      "unit": "files"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_decode_integrity",
+      "confidence_level": null,
+      "fact_id": "decoded_image_count",
+      "gate_outcome": "fail",
+      "grouping": "file",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/decode_dimensions",
+        "point": "/qualification/decoded_images",
+        "threshold": "/qualification/expected_decoded_images"
+      },
+      "metric": "fully decoded image count",
+      "point": 550,
+      "population": "all SOTS Indoor gt and hazy PNG files",
+      "source_filename": "reside_sots_indoor_asset_qualification_v1_summary.json",
+      "source_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+      "threshold": 550,
+      "threshold_operator": "==",
+      "unit": "files"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_pair_dimensions",
+      "confidence_level": null,
+      "fact_id": "dimension_matched_pair_count",
+      "gate_outcome": "fail",
+      "grouping": "hazy_variant",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/decode_dimensions",
+        "point": "/qualification/dimension_matched_pairs",
+        "threshold": "/qualification/expected_dimension_matched_pairs"
+      },
+      "metric": "dimension-matched hazy-clear pair count",
+      "point": 0,
+      "population": "all mapped SOTS Indoor hazy-clear pairs",
+      "source_filename": "reside_sots_indoor_asset_qualification_v1_summary.json",
+      "source_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+      "threshold": 500,
+      "threshold_operator": "==",
+      "unit": "pairs"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "model_free_asset_qualification",
+      "confidence_level": null,
+      "fact_id": "forbidden_operation_count",
+      "gate_outcome": "safe",
+      "grouping": "run",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/isolation",
+        "point": "/isolation/forbidden_operation_count",
+        "threshold": "/isolation/forbidden_operation_limit"
+      },
+      "metric": "forbidden operation count",
+      "point": 0,
+      "population": "one SOTS Indoor asset qualification run",
+      "source_filename": "reside_sots_indoor_asset_qualification_v1_summary.json",
+      "source_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+      "threshold": 0,
+      "threshold_operator": "==",
+      "unit": "operations"
+    }
+  ],
+  "operation_id": "QUALIFY",
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "run_id": "reside-sots-indoor-asset-qualification-v1-r1",
+  "schema_version": 2
+}
