@@ -1,0 +1,109 @@
+{
+  "authorizes": "CENTER_CROPPED_MODEL_REVIEW_PLANNING_ONLY",
+  "canary_touched": false,
+  "capability_qualification": {
+    "evidence_filename": "reside_sots_indoor_pixel_registration_qualification_v2_capability_qualification.json",
+    "identity_sha256": "f65d1e41526a76ec3861cdbdd037b22b5f14324860d8b48637838e3c5cea7462",
+    "qualification_id": "cap_f65d1e41526a76ec3861cdbd",
+    "scientific_authorization": "NONE",
+    "status": "PASSED_ENGINEERING"
+  },
+  "capability_reuse": {
+    "engineering_reuse_authorized": false,
+    "identity_sha256": "f65d1e41526a76ec3861cdbdd037b22b5f14324860d8b48637838e3c5cea7462",
+    "scientific_authorization": "NONE",
+    "status": "CAPABILITY_REUSE_MISS"
+  },
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_PASS",
+  "decision_rule_id": "qualified_registration_passes",
+  "details": {
+    "combined_asset_sha256": "31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+    "geometry_closeout_sha256": "92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80",
+    "geometry_summary_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+    "geometry_terminal_record_sha256": "a457021296d6487af55e58e2b3c07dcc38fe454f5785db04567a18eff4d298da",
+    "images_displayed_or_archived": false,
+    "model_or_checkpoint_accessed": false,
+    "protected_data_touched": false,
+    "restoration_metrics_computed": false,
+    "summary_file": "reside_sots_indoor_pixel_registration_qualification_v2_summary.json",
+    "training_or_inference_occurred": false
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "reside_sots_indoor_pixel_registration_qualification_v2_capability_qualification.json": "dc6ddd3be21b0477078367ea5aabb15984d79e5921f704e0fbd0b0d32b047a52",
+    "reside_sots_indoor_pixel_registration_qualification_v2_raw_artifact_receipt.json": "d9a752c1d278910a33731953df8310616bbdfa29f6ffb573ac0d6aa5a5c134a3",
+    "reside_sots_indoor_pixel_registration_qualification_v2_review_facts.json": "2ee3bb9c4a399e52bd276b2ccd111608700568545d86485bfad62f4fb058903f",
+    "reside_sots_indoor_pixel_registration_qualification_v2_summary.json": "abc6d0c5a4f6c35225afd94be57b69f46e55707b204effcbce1a7f3fa801b293"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "current_asset_identity": "pass",
+    "geometry_evidence_identity": "pass",
+    "isolation": "safe",
+    "negative_control_validity": "met",
+    "pixel_registration": "favorable"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "plan_minimum_cost_center_cropped_model_review",
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "returncode": 0,
+  "route_commit": "397bbdc35ae32b306fa92d44a136f765be28be64",
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "run_id": "reside-sots-indoor-pixel-registration-qualification-v2-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": [
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "geometry_closeout",
+      "kind": "file",
+      "sha256": "92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "geometry_conclusion",
+      "kind": "file",
+      "sha256": "ef50912db082fdf10ec89838642f3b9939ddaa508b41b669be1cbfebbf8ec85d"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "geometry_summary",
+      "kind": "file",
+      "sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3"
+    },
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "registration_entrypoint",
+      "kind": "file",
+      "sha256": "6f5453edd1d79d108d22031c5c4ac627eec03348b57a0e7daff8f1bf971a47e9"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "sots_root",
+      "kind": "directory"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "aggregate_identity": {
+    "combined_sha256": "31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+    "file_count": 550,
+    "gt_sha256": "f87015ecff62c83a7286017fb1641589df6445556e35737196d81e4fb7dda950",
+    "hazy_sha256": "18543d375ac814208b71844748e85ca8685317da4a52403dfb172ecfeee6f3ee",
+    "matches_geometry_v2": true
+  },
+  "decode": {
+    "decode_failure_count": 0,
+    "unexpected_entry_count": 0
+  },
+  "design": {
+    "clear_center_crop_per_side_pixels": 10,
+    "far_shift_control_pixels": 8,
+    "independent_clear_scenes": 50,
+    "independent_unit": "clear_scene",
+    "minimum_effective_pixels": 4096,
+    "minimum_far_shift_margin": 0.05,
+    "minimum_nonzero_peak_margin": 0.04,
+    "minimum_structure_score": 0.45,
+    "minimum_wrong_clear_margin": 0.1,
+    "minimum_zero_peak_margin": 0.015,
+    "nested_variants_per_scene": 10,
+    "pair_census_size": 500,
+    "search_radius_pixels": 4,
+    "wrong_clear_control": "next clear scene in sorted cyclic order"
+  },
+  "gate_outcomes": {
+    "current_asset_identity": "pass",
+    "geometry_evidence_identity": "pass",
+    "isolation": "safe",
+    "negative_control_validity": "met",
+    "pixel_registration": "favorable"
+  },
+  "geometry_v2_binding": {
+    "closeout_sha256": "92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80",
+    "conclusion_sha256": "ef50912db082fdf10ec89838642f3b9939ddaa508b41b669be1cbfebbf8ec85d",
+    "evidence_matches": true,
+    "route_id": "reside-sots-indoor-geometry-qualification-v2",
+    "summary_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+    "terminal_record_sha256": "a457021296d6487af55e58e2b3c07dcc38fe454f5785db04567a18eff4d298da"
+  },
+  "isolation": {
+    "checkpoint_reads": 0,
+    "forbidden_operation_count": 0,
+    "forbidden_operation_limit": 0,
+    "image_archive_calls": 0,
+    "image_display_calls": 0,
+    "inference_calls": 0,
+    "model_loads": 0,
+    "per_pair_evidence_rows_archived": 0,
+    "protected_data_operations": 0,
+    "restoration_metric_calls": 0,
+    "training_calls": 0
+  },
+  "limitations": [
+    "This qualification tests spatial correspondence only after the frozen ten-pixel center crop.",
+    "Gradient-structure correspondence is not a restoration-quality metric and does not measure model performance.",
+    "Ambiguous evidence and insufficient negative-control separation cannot be converted to PASS or FAIL.",
+    "No model, checkpoint, training, inference, restoration metric, image display, image archive, or protected-data access occurs."
+  ],
+  "marker": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_V2_COMPLETE",
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "registration": {
+    "ambiguous_pair_count": 0,
+    "best_shift_histogram": {
+      "dx=0,dy=0": 500
+    },
+    "classification_histogram": {
+      "supportive": 500
+    },
+    "contradictory_pair_count": 0,
+    "contradictory_scene_count": 0,
+    "control_valid_pair_count": 500,
+    "control_valid_scene_count": 50,
+    "far_shift_margin_histogram": {
+      "ge_0.10": 500
+    },
+    "minimum_effective_pixels_observed": 63936,
+    "modal_contradictory_nonzero_shift": null,
+    "modal_contradictory_shift_count": 0,
+    "modal_contradictory_shift_fraction": 0.0,
+    "scene_control_histogram": {
+      "10": 50
+    },
+    "scene_support_histogram": {
+      "10": 50
+    },
+    "scored_pair_count": 500,
+    "supportive_pair_count": 500,
+    "supportive_scene_count": 50,
+    "thresholds": {
+      "fail_minimum_contradictory_pairs": 50,
+      "fail_minimum_contradictory_scenes": 10,
+      "fail_minimum_modal_shift_fraction": 0.8,
+      "minimum_control_valid_pairs": 475,
+      "minimum_control_valid_scenes": 48,
+      "minimum_supportive_pairs": 475,
+      "minimum_supportive_scenes": 48,
+      "minimum_supportive_variants_per_scene": 9,
+      "pass_maximum_contradictory_pairs": 0
+    },
+    "wrong_clear_margin_histogram": {
+      "ge_0.10": 500
+    },
+    "zero_nonzero_margin_histogram": {
+      "0.04_to_lt_0.10": 80,
+      "ge_0.10": 420
+    },
+    "zero_score_histogram": {
+      "ge_0.80": 500
+    }
+  },
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "run_id": "reside-sots-indoor-pixel-registration-qualification-v2-r1",
+  "schema_version": 1,
+  "scope": "model-free RESIDE SOTS Indoor center-crop pixel-registration qualification",
+  "synthetic_fixture": {
+    "case_count": 3,
+    "exact_shift_recovery_count": 3,
+    "minimum_best_score": 0.9937515707773917,
+    "minimum_peak_margin": 0.05352865703788834,
+    "passed": true,
+    "valid_control_count": 3
+  }
+}

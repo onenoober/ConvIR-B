@@ -1,0 +1,38 @@
+{
+  "schema_version": 3,
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "run_id": "reside-sots-indoor-pixel-registration-qualification-v2-r1",
+  "state": "COMPLETED_GATE_PASS",
+  "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_PASS",
+  "authorizes": "CENTER_CROPPED_MODEL_REVIEW_PLANNING_ONLY",
+  "primary_result": "The identity-valid complete census found that all 500 SOTS Indoor clear-hazy pairs and all 50 independent clear scenes supported zero displacement after the frozen ten-pixel-per-side clear-image center crop. All 500 pairs and 50 scenes passed the cyclic wrong-clear and fixed eight-pixel shift controls, every best displacement was dx=0,dy=0, and there were zero contradictory or ambiguous pairs. The predeclared pixel-registration and isolation gates were therefore favorable, authorizing only planning of a center-cropped model review.",
+  "gate_reasons": [
+    "current_asset_identity=pass: all 550 files decoded without failure or unexpected entries, and the GT, hazy, and combined aggregate SHA-256 identities exactly matched geometry-v2.",
+    "geometry_evidence_identity=pass: the route bound terminal record a457021296d6487af55e58e2b3c07dcc38fe454f5785db04567a18eff4d298da, summary 194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3, closeout 92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80, and conclusion ef50912db082fdf10ec89838642f3b9939ddaa508b41b669be1cbfebbf8ec85d.",
+    "negative_control_validity=met: 500 of 500 pairs exceeded both the deterministic cyclic wrong-clear and fixed eight-pixel shift separation gates, above the frozen minimum of 475, and all 50 scenes were control-valid, above the frozen minimum of 48.",
+    "pixel_registration=favorable: 500 supportive pairs exceeded the frozen minimum of 475, all 50 supportive scenes exceeded the frozen minimum of 48, every scene had ten supportive variants, every best shift was dx=0,dy=0, and the contradictory and ambiguous pair counts were both zero.",
+    "The data-free engineering fixture recovered all three known integer shifts exactly with valid controls, so the scoring path could distinguish zero and nonzero displacement before dataset scoring.",
+    "isolation=safe: the forbidden-operation count was zero; no model or checkpoint was loaded, and no training, inference, restoration metric, protected-data operation, image display, image archive, or per-pair evidence archive occurred."
+  ],
+  "competing_explanation": "Equal image dimensions or generic natural-image correlation alone cannot establish pixel registration. The observed zero-displacement result was accompanied by valid cyclic wrong-clear controls for every pair, valid fixed eight-pixel shift controls for every pair, and exact recovery of three data-free known-shift fixtures through the same scoring path. These controls reject the predeclared size-only and broad-correlation explanations within the tested integer-displacement design, but they do not establish photometric equivalence or subpixel calibration.",
+  "limitations": [
+    "This qualification establishes spatial correspondence only after the frozen ten-pixel center crop of each clear image; it does not authorize uncropped clear-hazy scoring.",
+    "The displacement search covered integer dx and dy from -4 through +4 with fixed eight-pixel negative controls; subpixel offsets and deformations outside that design were not estimated.",
+    "The Rec.709 luminance-gradient score is a registration qualification signal, not PSNR, SSIM, restoration quality, or model performance.",
+    "The evidence role is engineering_debug and the terminal authorizes only planning of a center-cropped model review, not confirmation, promotion, deployment, publication, or protected-data access.",
+    "No model, checkpoint, training, inference, restoration metric, image display, image archive, or protected-data access occurred, so this route provides no evidence about any restoration model."
+  ],
+  "primary_fact_ids": [
+    "supportive_pair_count",
+    "supportive_scene_count",
+    "contradictory_pair_count"
+  ],
+  "gate_fact_ids": [
+    "control_valid_pair_count",
+    "supportive_pair_count",
+    "supportive_scene_count",
+    "contradictory_pair_count",
+    "forbidden_operation_count"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 4
+  },
+  "entry_count": 5,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "a50731a23b79aad8743ac47af5c82a2b06ed5fd9fec9652458f801043dd3914f",
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "route_commit": "397bbdc35ae32b306fa92d44a136f765be28be64",
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "run_id": "reside-sots-indoor-pixel-registration-qualification-v2-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 12897
+}

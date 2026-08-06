@@ -1,0 +1,133 @@
+{
+  "facts": [
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_pixel_registration_qualification",
+      "confidence_level": null,
+      "fact_id": "control_valid_pair_count",
+      "gate_outcome": "met",
+      "grouping": "clear scene with ten nested hazy variants",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/negative_control_validity",
+        "point": "/registration/control_valid_pair_count",
+        "threshold": "/registration/thresholds/minimum_control_valid_pairs"
+      },
+      "metric": "pairs with both cyclic wrong-clear and fixed far-shift separation",
+      "point": 500,
+      "population": "all 50 clear scenes and 500 nested SOTS Indoor hazy variants",
+      "source_filename": "reside_sots_indoor_pixel_registration_qualification_v2_summary.json",
+      "source_sha256": "abc6d0c5a4f6c35225afd94be57b69f46e55707b204effcbce1a7f3fa801b293",
+      "threshold": 475,
+      "threshold_operator": ">=",
+      "unit": "pairs"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_pixel_registration_qualification",
+      "confidence_level": null,
+      "fact_id": "supportive_pair_count",
+      "gate_outcome": "favorable",
+      "grouping": "clear scene with ten nested hazy variants",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/pixel_registration",
+        "point": "/registration/supportive_pair_count",
+        "threshold": "/registration/thresholds/minimum_supportive_pairs"
+      },
+      "metric": "pairs supporting zero displacement under all score and control gates",
+      "point": 500,
+      "population": "all 50 clear scenes and 500 nested SOTS Indoor hazy variants",
+      "source_filename": "reside_sots_indoor_pixel_registration_qualification_v2_summary.json",
+      "source_sha256": "abc6d0c5a4f6c35225afd94be57b69f46e55707b204effcbce1a7f3fa801b293",
+      "threshold": 475,
+      "threshold_operator": ">=",
+      "unit": "pairs"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_pixel_registration_qualification",
+      "confidence_level": null,
+      "fact_id": "supportive_scene_count",
+      "gate_outcome": "favorable",
+      "grouping": "clear scene with ten nested hazy variants",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/pixel_registration",
+        "point": "/registration/supportive_scene_count",
+        "threshold": "/registration/thresholds/minimum_supportive_scenes"
+      },
+      "metric": "clear scenes with at least nine supportive variants and no contradictory variant",
+      "point": 50,
+      "population": "all 50 clear scenes and 500 nested SOTS Indoor hazy variants",
+      "source_filename": "reside_sots_indoor_pixel_registration_qualification_v2_summary.json",
+      "source_sha256": "abc6d0c5a4f6c35225afd94be57b69f46e55707b204effcbce1a7f3fa801b293",
+      "threshold": 48,
+      "threshold_operator": ">=",
+      "unit": "clear scenes"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_pixel_registration_qualification",
+      "confidence_level": null,
+      "fact_id": "contradictory_pair_count",
+      "gate_outcome": "favorable",
+      "grouping": "clear scene with ten nested hazy variants",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/pixel_registration",
+        "point": "/registration/contradictory_pair_count",
+        "threshold": "/registration/thresholds/pass_maximum_contradictory_pairs"
+      },
+      "metric": "control-valid pairs with a decisive nonzero displacement peak",
+      "point": 0,
+      "population": "all 50 clear scenes and 500 nested SOTS Indoor hazy variants",
+      "source_filename": "reside_sots_indoor_pixel_registration_qualification_v2_summary.json",
+      "source_sha256": "abc6d0c5a4f6c35225afd94be57b69f46e55707b204effcbce1a7f3fa801b293",
+      "threshold": 0,
+      "threshold_operator": "==",
+      "unit": "pairs"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_pixel_registration_qualification",
+      "confidence_level": null,
+      "fact_id": "forbidden_operation_count",
+      "gate_outcome": "safe",
+      "grouping": "clear scene with ten nested hazy variants",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/isolation",
+        "point": "/isolation/forbidden_operation_count",
+        "threshold": "/isolation/forbidden_operation_limit"
+      },
+      "metric": "model, metric, display, archive, per-pair archive, or protected operation count",
+      "point": 0,
+      "population": "all 50 clear scenes and 500 nested SOTS Indoor hazy variants",
+      "source_filename": "reside_sots_indoor_pixel_registration_qualification_v2_summary.json",
+      "source_sha256": "abc6d0c5a4f6c35225afd94be57b69f46e55707b204effcbce1a7f3fa801b293",
+      "threshold": 0,
+      "threshold_operator": "==",
+      "unit": "operations"
+    }
+  ],
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "run_id": "reside-sots-indoor-pixel-registration-qualification-v2-r1",
+  "schema_version": 2
+}
