@@ -1,0 +1,133 @@
+{
+  "facts": [
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_geometry_qualification",
+      "confidence_level": null,
+      "fact_id": "geometry_qualified_clear_scene_count",
+      "gate_outcome": "favorable",
+      "grouping": "hazy-clear pair",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/geometry_compatibility",
+        "point": "/geometry/geometry_qualified_clear_scene_count",
+        "threshold": "/geometry/expected_clear_scene_count"
+      },
+      "metric": "clear scenes whose ten variants satisfy the complete dataset-wide geometry contract",
+      "point": 50,
+      "population": "all 500 mapped SOTS Indoor hazy-clear pairs",
+      "source_filename": "reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "source_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+      "threshold": 50,
+      "threshold_operator": "==",
+      "unit": "clear scenes"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_geometry_qualification",
+      "confidence_level": null,
+      "fact_id": "geometry_qualified_pair_count",
+      "gate_outcome": "favorable",
+      "grouping": "hazy-clear pair",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/geometry_compatibility",
+        "point": "/geometry/geometry_qualified_pair_count",
+        "threshold": "/geometry/expected_pair_count"
+      },
+      "metric": "pairs satisfying the complete bounded center-crop geometry contract",
+      "point": 500,
+      "population": "all 500 mapped SOTS Indoor hazy-clear pairs",
+      "source_filename": "reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "source_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+      "threshold": 500,
+      "threshold_operator": "==",
+      "unit": "pairs"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_geometry_qualification",
+      "confidence_level": null,
+      "fact_id": "crop_delta_class_count",
+      "gate_outcome": "favorable",
+      "grouping": "hazy-clear pair",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/geometry_compatibility",
+        "point": "/geometry/crop_delta_class_count",
+        "threshold": "/geometry/expected_crop_delta_class_count"
+      },
+      "metric": "distinct clear-minus-hazy dimension delta classes",
+      "point": 1,
+      "population": "all 500 mapped SOTS Indoor hazy-clear pairs",
+      "source_filename": "reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "source_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+      "threshold": 1,
+      "threshold_operator": "==",
+      "unit": "classes"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_geometry_qualification",
+      "confidence_level": null,
+      "fact_id": "max_per_side_crop_pixels",
+      "gate_outcome": "favorable",
+      "grouping": "hazy-clear pair",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/geometry_compatibility",
+        "point": "/geometry/max_per_side_crop_pixels",
+        "threshold": "/geometry/max_crop_per_side_limit_pixels"
+      },
+      "metric": "maximum implied symmetric crop on any image side",
+      "point": 10.0,
+      "population": "all 500 mapped SOTS Indoor hazy-clear pairs",
+      "source_filename": "reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "source_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+      "threshold": 32,
+      "threshold_operator": "<=",
+      "unit": "pixels"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "claim_id": "sots_indoor_geometry_qualification",
+      "confidence_level": null,
+      "fact_id": "forbidden_operation_count",
+      "gate_outcome": "safe",
+      "grouping": "hazy-clear pair",
+      "json_pointers": {
+        "ci_lower": null,
+        "ci_upper": null,
+        "confidence_level": null,
+        "gate_outcome": "/gate_outcomes/isolation",
+        "point": "/isolation/forbidden_operation_count",
+        "threshold": "/isolation/forbidden_operation_limit"
+      },
+      "metric": "model, metric, display, or protected-data operation count",
+      "point": 0,
+      "population": "all 500 mapped SOTS Indoor hazy-clear pairs",
+      "source_filename": "reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "source_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+      "threshold": 0,
+      "threshold_operator": "==",
+      "unit": "operations"
+    }
+  ],
+  "operation_id": "QUALIFY_GEOMETRY",
+  "route_id": "reside-sots-indoor-geometry-qualification-v2",
+  "run_id": "reside-sots-indoor-geometry-qualification-v2-r1",
+  "schema_version": 2
+}

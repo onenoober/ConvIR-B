@@ -1,0 +1,30 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "sots_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "v1_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-sots-indoor-asset-qualification-v1/reside_sots_indoor_asset_qualification_v1_summary.json",
+      "sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "v1_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-sots-indoor-asset-qualification-v1/reside_sots_indoor_asset_qualification_v1_closeout.json",
+      "sha256": "fb9cca354bbbd2987b0a4c415f518fe1456d1443fa9f54e03418643c361f58c1"
+    }
+  ],
+  "operation_id": "QUALIFY_GEOMETRY",
+  "route_id": "reside-sots-indoor-geometry-qualification-v2",
+  "schema_version": 2
+}

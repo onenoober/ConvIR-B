@@ -1,0 +1,95 @@
+{
+  "aggregate_identity": {
+    "combined_sha256": "31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+    "file_count": 550,
+    "gt_sha256": "f87015ecff62c83a7286017fb1641589df6445556e35737196d81e4fb7dda950",
+    "hazy_sha256": "18543d375ac814208b71844748e85ca8685317da4a52403dfb172ecfeee6f3ee",
+    "matches_v1": true,
+    "method": "SHA-256 over sorted UTF-8 records: relative_path TAB byte_size TAB file_sha256 LF"
+  },
+  "gate_outcomes": {
+    "current_asset_identity": "pass",
+    "geometry_compatibility": "favorable",
+    "isolation": "safe",
+    "v1_evidence_identity": "pass"
+  },
+  "geometry": {
+    "bounded_crop_pair_count": 500,
+    "clear_size_histogram": {
+      "640x480": 50
+    },
+    "crop_delta_class_count": 1,
+    "crop_delta_histogram": {
+      "20x20": 500
+    },
+    "even_delta_pair_count": 500,
+    "expected_clear_scene_count": 50,
+    "expected_crop_delta_class_count": 1,
+    "expected_pair_count": 500,
+    "geometry_qualified_clear_scene_count": 50,
+    "geometry_qualified_pair_count": 500,
+    "hazy_size_histogram": {
+      "620x460": 500
+    },
+    "locally_compatible_pair_count": 500,
+    "max_crop_per_side_limit_pixels": 32,
+    "max_per_side_crop_pixels": 10.0,
+    "nonnegative_delta_pair_count": 500,
+    "pair_metadata_count": 500,
+    "per_side_crop_histogram": {
+      "10x10": 500
+    },
+    "positive_delta_pair_count": 500,
+    "uniform_crop_delta": true
+  },
+  "isolation": {
+    "checkpoint_reads": 0,
+    "forbidden_operation_count": 0,
+    "forbidden_operation_limit": 0,
+    "image_display_calls": 0,
+    "inference_calls": 0,
+    "model_loads": 0,
+    "protected_data_operations": 0,
+    "restoration_metric_calls": 0,
+    "training_calls": 0
+  },
+  "limitations": [
+    "This route qualifies only exact asset identity and bounded symmetric center-crop dimension compatibility.",
+    "It does not compare pixel content, prove pixel registration, or authorize a restoration-quality claim.",
+    "No model, checkpoint, inference, training, restoration metric, image display, or protected-data access occurs."
+  ],
+  "marker": "RESIDE_SOTS_INDOOR_GEOMETRY_QUALIFICATION_V2_COMPLETE",
+  "metadata_profile": {
+    "format_histogram": {
+      "PNG": 550
+    },
+    "metadata_failure_count": 0,
+    "metadata_failure_name_digest_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mode_histogram": {
+      "RGB": 550
+    }
+  },
+  "operation_id": "QUALIFY_GEOMETRY",
+  "pairing": {
+    "observed_clear_source_groups": 50,
+    "observed_gt_images": 50,
+    "observed_hazy_images": 500,
+    "unexpected_image_entry_count": 0,
+    "unmapped_hazy_count": 0,
+    "unused_gt_count": 0,
+    "variant_count_histogram": {
+      "10": 50
+    }
+  },
+  "route_id": "reside-sots-indoor-geometry-qualification-v2",
+  "run_id": "reside-sots-indoor-geometry-qualification-v2-r1",
+  "schema_version": 1,
+  "scope": "model-free RESIDE SOTS Indoor bounded center-crop geometry qualification",
+  "target_root": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor",
+  "v1_evidence_binding": {
+    "closeout_sha256": "fb9cca354bbbd2987b0a4c415f518fe1456d1443fa9f54e03418643c361f58c1",
+    "evidence_matches": true,
+    "summary_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+    "terminal_record_sha256": "f2d26c3af6fbfb4a294c6e6b1e745d87f6b69b6e66ced4e15936fd81ee12d460"
+  }
+}

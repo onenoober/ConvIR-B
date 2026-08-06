@@ -1,0 +1,64 @@
+{
+  "authorizes": "DATASET_ASSET_REGISTRY_ENTRY_ONLY",
+  "canary_touched": false,
+  "confirmation_images_targets_outcomes_touched": false,
+  "decision": "RESIDE_SOTS_INDOOR_GEOMETRY_QUALIFICATION_PASS",
+  "decision_rule_id": "qualified_geometry_passes",
+  "details": {
+    "combined_asset_sha256": "31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+    "model_or_checkpoint_accessed": false,
+    "protected_data_touched": false,
+    "restoration_metrics_computed": false,
+    "summary_file": "reside_sots_indoor_geometry_qualification_v2_summary.json",
+    "training_or_inference_occurred": false,
+    "v1_closeout_sha256": "fb9cca354bbbd2987b0a4c415f518fe1456d1443fa9f54e03418643c361f58c1",
+    "v1_summary_sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea"
+  },
+  "evidence_role": "engineering_debug",
+  "evidence_sha256": {
+    "reside_sots_indoor_geometry_qualification_v2_raw_artifact_receipt.json": "0fc1739c4a4117e516a47065f8b17635b8bdb75b4b2b686be2dae1f1d5534146",
+    "reside_sots_indoor_geometry_qualification_v2_review_facts.json": "d69e630c57a6b4754cb2095878ab75d85e8b0e80538d6dcee2e2f0e68cd34943",
+    "reside_sots_indoor_geometry_qualification_v2_summary.json": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3"
+  },
+  "failure_phase": null,
+  "family_effect": "advance",
+  "gate_outcomes": {
+    "current_asset_identity": "pass",
+    "geometry_compatibility": "favorable",
+    "isolation": "safe",
+    "v1_evidence_identity": "pass"
+  },
+  "locked_test_touched": false,
+  "next_action_id": "register_sots_indoor_asset_geometry",
+  "operation_id": "QUALIFY_GEOMETRY",
+  "returncode": 0,
+  "route_commit": "020722dfbb67924843737329826fc7d2e2697cfd",
+  "route_id": "reside-sots-indoor-geometry-qualification-v2",
+  "run_id": "reside-sots-indoor-geometry-qualification-v2-r1",
+  "runner_sha256": "336c7e1beccb793229beb533ba12367261e702866497c388ee2a4fa88d12718b",
+  "schema_version": 2,
+  "state": "COMPLETED_GATE_PASS",
+  "terminal_label": "pass",
+  "verified_assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "sots_root",
+      "kind": "directory"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "v1_closeout",
+      "kind": "file",
+      "sha256": "fb9cca354bbbd2987b0a4c415f518fe1456d1443fa9f54e03418643c361f58c1"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "v1_summary",
+      "kind": "file",
+      "sha256": "f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea"
+    }
+  ]
+}

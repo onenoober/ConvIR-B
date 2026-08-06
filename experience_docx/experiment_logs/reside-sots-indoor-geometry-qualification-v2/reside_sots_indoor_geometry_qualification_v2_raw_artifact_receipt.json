@@ -1,0 +1,25 @@
+{
+  "category_counts": {
+    "contract_output": 1,
+    "workload_output": 4
+  },
+  "entry_count": 5,
+  "excluded_paths": [
+    "control",
+    "heartbeat.json",
+    "runtime.log",
+    "status.txt"
+  ],
+  "manifest_relative_path": "control/raw_artifact_manifest.jsonl",
+  "manifest_sha256": "21aee6a74569598cbc9cd18b7f7e82d93195ddcc560703be6dd6ab755716ca94",
+  "operation_id": "QUALIFY_GEOMETRY",
+  "route_commit": "020722dfbb67924843737329826fc7d2e2697cfd",
+  "route_id": "reside-sots-indoor-geometry-qualification-v2",
+  "run_id": "reside-sots-indoor-geometry-qualification-v2-r1",
+  "schema_version": 2,
+  "scope_roots": [
+    "contract",
+    "workload"
+  ],
+  "total_bytes": 10729
+}

@@ -1,0 +1,393 @@
+{
+  "competing_explanation": "Uniform file counts and successful decoding can coexist with heterogeneous, negative, odd, excessive, or otherwise unusable pair geometry; dimension compatibility also does not by itself prove pixel registration.",
+  "controls": [
+    "exact SHA-256 identity of the archived v1 summary and closeout",
+    "exact reproduction of v1 GT, hazy, and combined aggregate file SHA-256 identities",
+    "exact 50-clear, 500-hazy, ten-variants-per-clear filename mapping",
+    "PNG format, RGB mode, and positive width-height metadata for all 550 exact files",
+    "one dataset-wide clear-minus-hazy delta class",
+    "nonnegative, even, positive, and at-most-32-pixels-per-side crop constraints",
+    "zero model, checkpoint, training, inference, restoration metric, image display, pixel comparison, and protected-data operations"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "v1_evidence_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "v1_evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "current_asset_veto_after_v1",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "fail",
+            "invalid"
+          ],
+          "v1_evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "valid_geometry_failure",
+        "terminal": "fail",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_compatibility": [
+            "unfavorable"
+          ],
+          "v1_evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_geometry",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_compatibility": [
+            "indeterminate",
+            "invalid"
+          ],
+          "v1_evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unsafe_geometry_operation",
+        "terminal": "fail",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_compatibility": [
+            "favorable"
+          ],
+          "isolation": [
+            "unsafe"
+          ],
+          "v1_evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_isolation",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_compatibility": [
+            "favorable"
+          ],
+          "isolation": [
+            "indeterminate",
+            "invalid"
+          ],
+          "v1_evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "qualified_geometry_passes",
+        "terminal": "pass",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_compatibility": [
+            "favorable"
+          ],
+          "isolation": [
+            "safe"
+          ],
+          "v1_evidence_identity": [
+            "pass"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_sots_indoor_geometry_registration",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "RESIDE_SOTS_INDOOR_GEOMETRY_QUALIFICATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "inspect_sots_indoor_geometry_evidence",
+        "terminal": {
+          "authorizes": "ASSET_GEOMETRY_REVIEW_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_GEOMETRY_QUALIFICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "register_sots_indoor_asset_geometry",
+        "terminal": {
+          "authorizes": "DATASET_ASSET_REGISTRY_ENTRY_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_GEOMETRY_QUALIFICATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "model or checkpoint load",
+    "training or inference",
+    "PSNR, SSIM, perceptual, or restoration metric computation",
+    "pixel-content comparison or pixel-registration claim",
+    "image display or human visual inspection",
+    "per-sample evidence archive",
+    "scientific model-quality, promotion, or deployment conclusion",
+    "confirmation, canary, or locked-test access"
+  ],
+  "gates": [
+    {
+      "comparison_family": "sots_indoor_geometry_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "geometry_qualified_clear_scene_fraction",
+      "id": "v1_evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "the exact archived v1 summary and closeout prove 50 clear, 500 hazy, ten variants per clear, 550 full RGB PNG decodes, 500 raw-dimension mismatches, and the frozen aggregate identities",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_complete_geometry_census"
+    },
+    {
+      "comparison_family": "sots_indoor_geometry_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "geometry_qualified_clear_scene_fraction",
+      "id": "current_asset_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "the current registered asset exactly reproduces the v1 root, direct PNG counts, filename mapping, and three aggregate SHA-256 identities",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_complete_geometry_census"
+    },
+    {
+      "comparison_family": "sots_indoor_geometry_qualification",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "geometry_qualified_clear_scene_fraction",
+      "id": "geometry_compatibility",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "all 50 clear scenes and all 500 paired hazy variants form one positive, even, nonnegative clear-minus-hazy delta with at most 32 pixels cropped per side",
+      "threshold": "all_50_scenes_and_500_pairs_share_one_bounded_symmetric_crop_delta",
+      "type": "materiality",
+      "uncertainty_id": "deterministic_complete_geometry_census"
+    },
+    {
+      "comparison_family": "sots_indoor_geometry_qualification",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "geometry_qualified_clear_scene_fraction",
+      "id": "isolation",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "zero model, checkpoint, training, inference, restoration metric, image display, pixel comparison, and protected-data operations",
+      "threshold": 0,
+      "type": "safety",
+      "uncertainty_id": "deterministic_complete_geometry_census"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the requested Indoor root is /sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor",
+      "the v1 summary SHA-256 is f08eb4738ba13b7f20256a5e95fade8834f44842e0d5dfa4df35b1fc199527ea",
+      "the v1 closeout SHA-256 is fb9cca354bbbd2987b0a4c415f518fe1456d1443fa9f54e03418643c361f58c1",
+      "the exact combined asset SHA-256 is 31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+      "hazy source identity remains the filename stem before the first underscore and exactly ten variants are required per clear scene",
+      "clear width and height must each be at least the paired hazy width and height",
+      "clear-minus-hazy width and height deltas must be even and all 500 pairs must share exactly one delta",
+      "the dimension delta must be positive in at least one axis and imply no more than 32 cropped pixels on any side",
+      "only aggregate dimension and crop histograms may be published; no per-sample table is produced",
+      "no model, checkpoint, inference, training, restoration metric, image display, pixel comparison, or protected-data access"
+    ],
+    "matched_budget": "one current SHA-256 pass and one PNG-header metadata pass over exactly 50 clear and 500 hazy files",
+    "primary_variable": "bounded symmetric center-crop dimension compatibility of the exact v1 SOTS Indoor pairs",
+    "reference": "the archived v1 aggregate file identities, counts, filename pairing, and full RGB PNG decode result"
+  },
+  "operation_id": "QUALIFY_GEOMETRY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "engineering_debug",
+    "grouping_unit": "clear_scene",
+    "independent_group_count": 50,
+    "strata": [
+      {
+        "id": "sots_indoor",
+        "independent_group_count": 50
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "clear scenes for which all ten named hazy variants satisfy the one dataset-wide positive, even, nonnegative and at-most-32-pixels-per-side crop delta, divided by 50",
+    "direction": "higher",
+    "id": "geometry_qualified_clear_scene_fraction",
+    "metric_id": "clear_scenes_with_all_variants_satisfying_uniform_bounded_center_crop_fraction",
+    "strata": [
+      "sots_indoor"
+    ],
+    "unit": "clear_scene"
+  },
+  "question": "For the exact SOTS Indoor files qualified in v1, do all 50 clear scenes and their 500 named hazy variants have one uniform, positive, even, nonnegative clear-minus-hazy dimension delta that supports a symmetric center crop of no more than 32 pixels per side?",
+  "research_update_binding": {
+    "bottleneck_class": "measurement",
+    "bottleneck_statement": "V1 established exact file identity, counts, pairing, and full RGB PNG decodability, but its equal-dimension gate failed for all 500 pairs and did not record the geometry needed to distinguish a uniform official border crop from heterogeneous or invalid pairing.",
+    "decision_design": {
+      "alias_structure": "Not applicable; one explicit evidence-source factor is checked without interactions.",
+      "arms": [
+        {
+          "description": "The archived v1 counts, pairing, full-decode result, and aggregate file identities.",
+          "id": "v1_frozen_identity",
+          "role": "reference"
+        },
+        {
+          "description": "The current exact-file PNG dimensions and derived center-crop deltas.",
+          "id": "current_geometry_census",
+          "role": "observed"
+        }
+      ],
+      "estimable_terms": [
+        "current exact-file geometry equality to the frozen bounded center-crop contract"
+      ],
+      "factors": [
+        {
+          "id": "geometry_evidence_source",
+          "levels": [
+            "v1_frozen_identity",
+            "current_geometry_census"
+          ]
+        }
+      ],
+      "mechanism_estimands": [
+        {
+          "falsifier": "At least one clear scene contains a variant outside the uniform bounded crop contract.",
+          "hypothesis_id": "uniform_official_crop_geometry",
+          "id": "uniform_crop_geometry",
+          "metric_id": "geometry_qualified_clear_scene_fraction",
+          "prediction": "All ten variants of every clear scene share the one bounded symmetric crop delta."
+        },
+        {
+          "falsifier": "All 500 pairs form exactly one positive, even, nonnegative, bounded dimension-delta class.",
+          "hypothesis_id": "heterogeneous_or_invalid_geometry",
+          "id": "heterogeneous_geometry_detection",
+          "metric_id": "crop_delta_class_and_invalid_pair_count",
+          "prediction": "At least one invalid pair or more than one dimension-delta class is observed."
+        }
+      ],
+      "multiplicity_control": "Closed deterministic conjunction: the geometry claim passes only if every predeclared identity, metadata, uniformity, sign, parity, positivity, and crop-bound condition passes.",
+      "sequential_plan": {
+        "alpha_spending": {
+          "familywise_alpha": 0.05,
+          "method": "not_applicable"
+        },
+        "boundaries": {
+          "futility": "A valid current census with any heterogeneous, negative, odd, zero, or over-limit geometry fails the qualification.",
+          "precision": "Not applicable because the complete finite asset is censused.",
+          "success": "All exact identity and bounded uniform center-crop geometry gates pass.",
+          "validity": "Any v1 evidence, current byte identity, pairing, or PNG metadata failure yields an inconclusive qualification."
+        },
+        "looks": [
+          {
+            "id": "terminal",
+            "information_fraction": 1.0
+          }
+        ],
+        "outcome_access": "terminal_only"
+      }
+    },
+    "design_selection": {
+      "decision_value": "One fixed metadata census directly separates uniform bounded crop geometry from heterogeneous or invalid geometry while preserving the v1 byte identities.",
+      "expected_time_to_decision": "One CPU-only file-hash and PNG-header pass over the same 550 files.",
+      "shared_setup": "Both hypotheses use the same v1 evidence files, registered root, filename mapping, and one current aggregate-identity pass.",
+      "strategy": "single_factor",
+      "worst_case_stopping_cost": "Hash 550 files, read 550 PNG headers, write two compact JSON files and one completed-unit ledger row, then stop."
+    },
+    "hypotheses": [
+      {
+        "discriminating_prediction": "All pairs have the same positive, nonnegative, even clear-minus-hazy width-height delta and each implied per-side crop is at most 32 pixels.",
+        "falsifier": "Any pair has missing metadata, negative or odd delta, zero delta, excessive crop, or a delta different from another pair.",
+        "id": "uniform_official_crop_geometry",
+        "statement": "The 500 v1 dimension mismatches are explained by one bounded symmetric center-crop dimension relationship shared by every named hazy-clear pair."
+      },
+      {
+        "discriminating_prediction": "The metadata census produces multiple delta classes or at least one negative, odd, zero, missing, or over-limit pair geometry.",
+        "falsifier": "All 500 pairs reproduce one positive, even, nonnegative and bounded clear-minus-hazy delta under the exact v1 file identities.",
+        "id": "heterogeneous_or_invalid_geometry",
+        "statement": "The v1 mismatch reflects heterogeneous dimensions or an invalid mapping that cannot be represented by one bounded symmetric center crop."
+      }
+    ],
+    "literature_basis": [
+      {
+        "applicability_limit": "The publication does not prove the byte identity, local directory layout, exact crop delta, or pixel registration of this filesystem copy.",
+        "identifier": "doi:10.1109/TIP.2018.2867951",
+        "source_status": "peer_reviewed",
+        "task": "RESIDE paired synthetic dehazing benchmark organization",
+        "transferable_claim": "SOTS Indoor is distributed as paired synthetic hazy and clear benchmark imagery for single-image dehazing evaluation."
+      }
+    ],
+    "snapshot_commit": "4ca658a9c818abf850341e323b44e637aa9828cf",
+    "trigger_terminals": [
+      {
+        "route_id": "reside-sots-indoor-asset-qualification-v1",
+        "terminal_record_sha256": "f2d26c3af6fbfb4a294c6e6b1e745d87f6b69b6e66ced4e15936fd81ee12d460"
+      }
+    ],
+    "trigger_type": "post_terminal"
+  },
+  "route_id": "reside-sots-indoor-geometry-qualification-v2",
+  "schema_version": 3,
+  "uncertainty": {
+    "comparison_family": "sots_indoor_geometry_qualification",
+    "confidence_level": 0.95,
+    "id": "deterministic_complete_geometry_census",
+    "independent_unit": "clear_scene",
+    "method_id": "exact_frozen_boolean_checks_over_complete_asset"
+  }
+}
