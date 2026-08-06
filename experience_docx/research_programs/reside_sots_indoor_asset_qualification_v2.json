@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "program_id": "reside_sots_indoor_asset_qualification_v1",
+  "objective": "Establish one compact, model-free identity and pairing qualification for the local RESIDE SOTS Indoor asset before any route relies on it.",
+  "source_anchors": [
+    {
+      "id": "sots_outdoor_asset_terminal",
+      "reference": "SOTS Outdoor asset audit terminal record b04a85dad4559743e31c6a963274f5a979a7b1f576bfefec3546eee71446fe51.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "dataset_asset_registry_v2",
+      "reference": "GitHub-main dataset asset registry at commit 4ca658a9c818abf850341e323b44e637aa9828cf.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    },
+    {
+      "id": "sots_indoor_v1_terminal",
+      "reference": "SOTS Indoor v1 qualification terminal record f2d26c3af6fbfb4a294c6e6b1e745d87f6b69b6e66ced4e15936fd81ee12d460.",
+      "allowed_uses": [
+        "diagnostic"
+      ]
+    }
+  ],
+  "dependency_roles": {
+    "asset_layout_evidence": [
+      "diagnostic"
+    ],
+    "asset_location_registry": [
+      "diagnostic"
+    ],
+    "asset_qualification_evidence": [
+      "diagnostic"
+    ]
+  },
+  "stages": {
+    "asset_qualification": {
+      "evidence_roles": [
+        "engineering_debug"
+      ],
+      "protected_permissions": {
+        "allow_confirmation": false,
+        "allow_canary": false,
+        "allow_locked_test": false
+      },
+      "route_families": [
+        "sots_indoor_asset_identity"
+      ]
+    }
+  },
+  "route_families": {
+    "sots_indoor_asset_identity": {
+      "core_assumption": "The local SOTS Indoor tree is the official 50-clear, 500-hazy paired asset and can be bound without model execution or restoration metrics.",
+      "adjacent_budget": 1,
+      "attempts_used": 0,
+      "state": "open",
+      "close_condition": "Close after the predeclared SOTS Indoor asset qualification reaches a typed terminal.",
+      "reopen_evidence_types": [
+        "new_dataset_copy"
+      ]
+    }
+  },
+  "orthogonal_dimensions": [
+    "dataset_asset_identity"
+  ],
+  "amendments": [
+    {
+      "id": "sots_indoor_v1_geometry_amendment",
+      "reason": "V1 verified exact counts, pairing, decoding, and aggregate identity but found a uniform-class raw dimension mismatch for all 500 pairs; the next route must qualify bounded symmetric crop geometry rather than repeat the invalid equal-dimension assumption.",
+      "evidence_refs": [
+        "experience_docx/experiment_logs/reside-sots-indoor-asset-qualification-v1/reside_sots_indoor_asset_qualification_v1_conclusion.json"
+      ],
+      "approved_scope": "Record the consumed v1 adjacent attempt, close the equal-dimension path, and allow one orthogonal dataset-geometry qualification.",
+      "changes": [
+        {
+          "kind": "attempts_used",
+          "target": "sots_indoor_asset_identity",
+          "value": 1
+        },
+        {
+          "kind": "family_state",
+          "target": "sots_indoor_asset_identity",
+          "value": "closed"
+        },
+        {
+          "kind": "orthogonal_dimensions",
+          "target": "reside_sots_indoor_asset_qualification_v1",
+          "value": [
+            "dataset_asset_identity",
+            "dataset_asset_geometry"
+          ]
+        }
+      ]
+    }
+  ]
+}
