@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import stat
 import subprocess
 import tempfile
@@ -27,7 +28,9 @@ from route_runtime_contract import (
     PRECISION_CERTIFICATE_DIRECTORY,
     RUNTIME_BUNDLE_RELPATHS,
     RUNTIME_SPEC_DIRECTORY,
+    SAFE_ENV_KEY,
     capability_input_contract_sha256,
+    require_asset_path,
     repository_asset_identity_errors,
     validate_asset_manifest,
     validate_model_capability,
@@ -47,8 +50,10 @@ ASSET_DIRECTORY = "experience_docx/route_assets"
 CARD_DIRECTORY = "experience_docx/experiment_cards"
 MANIFEST_RELPATH = "experience_docx/route_operations.json"
 DEFAULT_AUTHORITATIVE_MAIN = "refs/remotes/github/main"
+DATASET_ASSET_REGISTRY_RELPATH = "experience_docx/DATASET_ASSET_REGISTRY.json"
 AUTHORING_RECEIPT_SCHEMA = 1
-SHA40 = __import__("re").compile(r"^[0-9a-f]{40}$")
+SHA40 = re.compile(r"^[0-9a-f]{40}$")
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
 SOURCE_FIELDS = {
     "schema_version", "route_id", "rules_commit", "title", "rationale",
     "first_operation", "program_contract_relpath", "operations",
@@ -86,6 +91,21 @@ RUNTIME_SOURCE_FIELDS = {
 }
 ENGINEERING_SOURCE_FIELDS = {"mode", "max_seconds", "cost_contract"}
 PRECISION_CONTRACT_SOURCE_FIELDS = {"mode", "rationale"}
+DATASET_REGISTRY_REFERENCE_FIELDS = {
+    "id", "registry_id", "access_role", "contract_access",
+}
+DATASET_REGISTRY_FIELDS = {
+    "schema_version", "registry_id", "scope", "access_role_policy",
+    "verification_source", "assets",
+}
+DATASET_REGISTRY_SOURCE_FIELDS = {
+    "route_id", "run_id", "terminal_state", "terminal_record_sha256",
+    "closeout_path", "closeout_sha256", "summary_path", "summary_sha256",
+}
+DATASET_REGISTRY_ASSET_FIELDS = {"kind", "path", "verification"}
+DATASET_REGISTRY_VERIFICATIONS = {
+    "parent_of_verified_layout", "verified_clear_root", "verified_haze_root",
+}
 
 
 def json_bytes(value: Any) -> bytes:
@@ -134,6 +154,140 @@ def _safe_repo_relpath(value: Any, name: str) -> str:
     if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
         raise ExperimentSpecError(f"{name} must be a safe repository-relative path")
     return path.as_posix()
+
+
+def validate_dataset_asset_registry(raw: bytes) -> dict[str, dict[str, str]]:
+    """Validate the location-only dataset registry from authoritative main."""
+    try:
+        value = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ExperimentSpecError(f"dataset asset registry is invalid JSON: {exc}") from exc
+    registry = _object(value, DATASET_REGISTRY_FIELDS, "dataset asset registry")
+    if registry["schema_version"] != 1:
+        raise ExperimentSpecError("dataset asset registry schema_version must equal 1")
+    _token(registry["registry_id"], "dataset asset registry id")
+    if registry["scope"] != "location_only_no_scientific_authorization" \
+            or registry["access_role_policy"] != "assigned_by_each_route_contract":
+        raise ExperimentSpecError("dataset asset registry authority boundary is invalid")
+    source = _object(
+        registry["verification_source"], DATASET_REGISTRY_SOURCE_FIELDS,
+        "dataset asset registry verification_source",
+    )
+    _token(source["route_id"], "dataset asset registry source route_id")
+    _token(source["run_id"], "dataset asset registry source run_id")
+    if source["terminal_state"] != "COMPLETED_GATE_PASS":
+        raise ExperimentSpecError("dataset asset registry source must be a gate PASS")
+    for field in ("terminal_record_sha256", "closeout_sha256", "summary_sha256"):
+        if not isinstance(source[field], str) or not SHA256.fullmatch(source[field]):
+            raise ExperimentSpecError(f"dataset asset registry {field} is invalid")
+    for field in ("closeout_path", "summary_path"):
+        path = _safe_repo_relpath(source[field], f"dataset asset registry {field}")
+        expected_prefix = f"experience_docx/experiment_logs/{source['route_id']}/"
+        if not path.startswith(expected_prefix) or not path.endswith(".json"):
+            raise ExperimentSpecError(f"dataset asset registry {field} is invalid")
+    assets = registry["assets"]
+    if not isinstance(assets, dict) or not 1 <= len(assets) <= 256:
+        raise ExperimentSpecError("dataset asset registry assets must be a non-empty object")
+    result: dict[str, dict[str, str]] = {}
+    paths = set()
+    for registry_id, item in assets.items():
+        _token(registry_id, "dataset registry asset id")
+        item = _object(
+            item, DATASET_REGISTRY_ASSET_FIELDS,
+            f"dataset asset registry assets.{registry_id}",
+        )
+        if item["kind"] != "directory":
+            raise ExperimentSpecError("dataset asset registry currently accepts directories only")
+        try:
+            path = require_asset_path(
+                item["path"], f"dataset asset registry assets.{registry_id}.path",
+            )
+        except ContractError as exc:
+            raise ExperimentSpecError(str(exc)) from exc
+        if "{" in path or not Path(path).is_absolute():
+            raise ExperimentSpecError("registered dataset paths must be absolute")
+        if path in paths:
+            raise ExperimentSpecError("dataset asset registry paths must be unique")
+        paths.add(path)
+        if item["verification"] not in DATASET_REGISTRY_VERIFICATIONS:
+            raise ExperimentSpecError("dataset asset registry verification is invalid")
+        result[registry_id] = {
+            "kind": item["kind"], "path": path,
+            "verification": item["verification"],
+        }
+    return result
+
+
+def registered_asset_environment_key(asset_id: str) -> str:
+    identifier = _token(asset_id, "registered asset id")
+    suffix = re.sub(r"[^A-Za-z0-9]", "_", identifier).upper()
+    key = f"CONVIR_ROUTE_ASSET_{suffix}"
+    if not SAFE_ENV_KEY.fullmatch(key):
+        raise ExperimentSpecError(f"registered asset id cannot form a runtime key: {asset_id}")
+    return key
+
+
+def expand_registered_assets(
+    assets: Any, *, spec_schema: int,
+    read_authoritative_file: Callable[[str], bytes] | None,
+) -> tuple[Any, dict[str, str]]:
+    """Expand schema-3 registry references and derive workload environment paths."""
+    if not isinstance(assets, list) or not any(
+        isinstance(item, dict) and "registry_id" in item for item in assets
+    ):
+        return assets, {}
+    if spec_schema != 3 or read_authoritative_file is None:
+        raise ExperimentSpecError(
+            "dataset registry references require schema-3 authoritative compilation"
+        )
+    try:
+        registry_raw = read_authoritative_file(DATASET_ASSET_REGISTRY_RELPATH)
+    except (OSError, KeyError, RuntimeError) as exc:
+        raise ExperimentSpecError(f"dataset asset registry is unavailable: {exc}") from exc
+    registry = validate_dataset_asset_registry(registry_raw)
+    expanded = []
+    environment: dict[str, str] = {}
+    for index, item in enumerate(assets):
+        if not isinstance(item, dict) or "registry_id" not in item:
+            expanded.append(item)
+            continue
+        reference = _object(
+            item, DATASET_REGISTRY_REFERENCE_FIELDS,
+            f"assets[{index}] dataset registry reference",
+        )
+        asset_id = _token(reference["id"], f"assets[{index}].id")
+        registry_id = _token(reference["registry_id"], f"assets[{index}].registry_id")
+        if registry_id not in registry:
+            raise ExperimentSpecError(f"unknown dataset registry id: {registry_id}")
+        registered = registry[registry_id]
+        expanded.append({
+            "id": asset_id,
+            "kind": registered["kind"],
+            "path": registered["path"],
+            "access_role": reference["access_role"],
+            "contract_access": reference["contract_access"],
+        })
+        key = registered_asset_environment_key(asset_id)
+        if key in environment:
+            raise ExperimentSpecError(f"registered asset environment key collision: {key}")
+        environment[key] = registered["path"]
+    return expanded, environment
+
+
+def runtime_with_registered_asset_environment(
+    runtime: dict[str, Any], environment: dict[str, str], *, name: str,
+) -> dict[str, Any]:
+    if not environment:
+        return runtime
+    existing = runtime.get("environment")
+    if not isinstance(existing, dict):
+        raise ExperimentSpecError(f"{name}.environment must be an object")
+    conflicts = sorted(set(existing) & set(environment))
+    if conflicts:
+        raise ExperimentSpecError(
+            f"{name}.environment uses compiler-owned registered asset keys: {conflicts}"
+        )
+    return {**runtime, "environment": {**existing, **environment}}
 
 
 def _repo_member(repo: Path, relpath: str, name: str, *, must_be_file: bool = False) -> Path:
@@ -599,12 +753,28 @@ def _lint_operation_components(
         if spec_schema in {2, 3}:
             operation = None
 
+    expanded_assets = item["assets"]
+    registered_environment: dict[str, str] = {}
+    try:
+        expanded_assets, registered_environment = expand_registered_assets(
+            item["assets"], spec_schema=spec_schema,
+            read_authoritative_file=read_authoritative_file,
+        )
+    except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
+        expanded_assets = None
+        _append_lint(
+            errors, f"{prefix}.assets", exc, "DATASET_ASSET_REGISTRY_INVALID",
+        )
+
     runtime_source = None
     engineering = None
     precision_contract_source = None
     try:
         runtime_source = _object(
             item["runtime"], RUNTIME_SOURCE_FIELDS, f"{prefix}.runtime",
+        )
+        runtime_source = runtime_with_registered_asset_environment(
+            runtime_source, registered_environment, name=f"{prefix}.runtime",
         )
     except (ExperimentSpecError, KeyError, TypeError, ValueError) as exc:
         _append_lint(errors, f"{prefix}.runtime", exc, "RUNTIME_CONTRACT_INVALID")
@@ -669,11 +839,11 @@ def _lint_operation_components(
 
     if validated_runtime is not None:
         supporting_schema = _supporting_contract_schema(spec_schema)
-        if item["assets"] is not None:
+        if item["assets"] is not None and expanded_assets is not None:
             try:
                 asset = validate_asset_manifest({
                     "schema_version": supporting_schema, "route_id": route_id,
-                    "operation_id": operation_id, "assets": item["assets"],
+                    "operation_id": operation_id, "assets": expanded_assets,
                 }, validated_runtime)
                 if read_repo_file is not None:
                     for message in repository_asset_identity_errors(asset, read_repo_file):
@@ -1002,8 +1172,16 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         manifest_operations[operation_id] = operation
         scientific_path = _scientific_path(route_id, operation_id)
         scientific_paths[operation_id] = scientific_path
+        expanded_assets, registered_environment = expand_registered_assets(
+            item["assets"], spec_schema=spec_schema,
+            read_authoritative_file=read_authoritative_file,
+        )
         runtime_source = _object(
             item["runtime"], RUNTIME_SOURCE_FIELDS, f"operations.{operation_id}.runtime",
+        )
+        runtime_source = runtime_with_registered_asset_environment(
+            runtime_source, registered_environment,
+            name=f"operations.{operation_id}.runtime",
         )
         engineering = _object(
             runtime_source["engineering_contract"], ENGINEERING_SOURCE_FIELDS,
@@ -1040,7 +1218,7 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             if item["assets"] is not None:
                 asset = validate_asset_manifest({
                     "schema_version": supporting_schema, "route_id": route_id,
-                    "operation_id": operation_id, "assets": item["assets"],
+                    "operation_id": operation_id, "assets": expanded_assets,
                 }, validated_runtime)
                 generated[asset_path] = json_bytes(asset)
             if item["capability"] is not None:

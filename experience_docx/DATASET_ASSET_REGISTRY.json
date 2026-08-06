@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "registry_id": "convir_dataset_asset_registry_v1",
+  "scope": "location_only_no_scientific_authorization",
+  "access_role_policy": "assigned_by_each_route_contract",
+  "verification_source": {
+    "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+    "run_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
+    "terminal_state": "COMPLETED_GATE_PASS",
+    "terminal_record_sha256": "6742213ba1f0d6cab8931ab9e4eb3afa0bbcea2216fcbc813200ed2d03808965",
+    "closeout_path": "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_closeout.json",
+    "closeout_sha256": "915d98b1dae5847cdb1166610e16ade96b5fb656373587d08895e2a7863492b9",
+    "summary_path": "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_summary.json",
+    "summary_sha256": "d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699"
+  },
+  "assets": {
+    "reside.root": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
+      "verification": "parent_of_verified_layout"
+    },
+    "reside.official": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official",
+      "verification": "parent_of_verified_layout"
+    },
+    "reside.its.train.clear": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_clear",
+      "verification": "verified_clear_root"
+    },
+    "reside.its.train.haze": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_haze",
+      "verification": "verified_haze_root"
+    },
+    "reside.its.val.clear": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/clear",
+      "verification": "verified_clear_root"
+    },
+    "reside.its.val.haze": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/haze",
+      "verification": "verified_haze_root"
+    },
+    "reside.ots_alpha.clear": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/clear_images",
+      "verification": "verified_clear_root"
+    },
+    "reside.ots_alpha.haze": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/OTS",
+      "verification": "verified_haze_root"
+    }
+  }
+}

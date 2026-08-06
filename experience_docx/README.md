@@ -17,6 +17,7 @@ Read only the source needed for the next decision.
 | compact AI rule routing | `AI_POLICY_SNAPSHOT.json` first, then every full authority file routed by its change class |
 | route-rule compatibility | `RULE_COMPATIBILITY.json`; machine decision only, never policy authority |
 | exact engineering qualification reuse | `capability_registry.jsonl` and `tools/capability_registry.py`; engineering-only, six-field exact identity |
+| verified dataset locations | `DATASET_ASSET_REGISTRY.json`; schema-3 specs reference a registry id and use the compiler-generated `CONVIR_ROUTE_ASSET_<ID>` path instead of duplicating absolute paths |
 | complete-unit recovery | `ROUTE_READY_FASTPATH.md`; hash-bound ledger asset plus verified unit outputs in a fresh run |
 | cloud launch/monitor/closeout | `MODEL_RUN_OPERATIONS_PROTOCOL.md` and `CONVIR_OPS_MCP.md` |
 | low-cost generic liveness telemetry | `GENERIC_RUN_MONITORING_PROTOCOL.md` |

@@ -219,6 +219,15 @@ def archived_program_snapshot(program_id="restoration_program"):
     }
 
 
+def schema3_authoritative_reader(raw_index):
+    registry_raw = (SOURCE_REPO / COMPILER.DATASET_ASSET_REGISTRY_RELPATH).read_bytes()
+    return lambda path: (
+        registry_raw
+        if path == COMPILER.DATASET_ASSET_REGISTRY_RELPATH
+        else raw_index
+    )
+
+
 class ExperimentSpecCompilerTests(unittest.TestCase):
     def git(self, repo, *args):
         return subprocess.run(
@@ -302,6 +311,84 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         ][0]["terminal_record_sha256"])
         self.assertEqual(2, precision["schema_version"])
         self.assertEqual(2, route_assets["schema_version"])
+
+    def test_main_dataset_registry_binds_verified_reside_layout(self):
+        registry = COMPILER.validate_dataset_asset_registry(
+            (SOURCE_REPO / COMPILER.DATASET_ASSET_REGISTRY_RELPATH).read_bytes()
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_haze",
+            registry["reside.its.train.haze"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/haze",
+            registry["reside.its.val.haze"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/OTS",
+            registry["reside.ots_alpha.haze"]["path"],
+        )
+
+    def test_schema3_expands_dataset_registry_asset_and_runtime_environment(self):
+        raw_index, terminal_sha = terminal_index_bytes()
+        program, spec = sources_v3(terminal_record_sha256=terminal_sha)
+        spec["operations"]["ACCEPT"]["assets"].append({
+            "id": "its_train_haze",
+            "registry_id": "reside.its.train.haze",
+            "access_role": "development_screening",
+            "contract_access": False,
+        })
+        bundle = COMPILER.compile_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec),
+            program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            authoritative_snapshot_commit="a" * 40,
+            read_authoritative_file=schema3_authoritative_reader(raw_index),
+        )
+        route_assets = json.loads(
+            bundle["experience_docx/route_assets/final_slim__ACCEPT.json"]
+        )
+        registered = next(
+            item for item in route_assets["assets"] if item["id"] == "its_train_haze"
+        )
+        self.assertEqual("directory", registered["kind"])
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_haze",
+            registered["path"],
+        )
+        self.assertNotIn("registry_id", registered)
+        runtime = json.loads(
+            bundle["experience_docx/route_runtime_specs/ACCEPT.json"]
+        )
+        self.assertEqual(
+            registered["path"],
+            runtime["environment"]["CONVIR_ROUTE_ASSET_ITS_TRAIN_HAZE"],
+        )
+
+    def test_schema3_lint_rejects_unknown_dataset_registry_id(self):
+        raw_index, terminal_sha = terminal_index_bytes()
+        program, spec = sources_v3(terminal_record_sha256=terminal_sha)
+        spec["operations"]["ACCEPT"]["assets"].append({
+            "id": "missing_dataset",
+            "registry_id": "reside.missing",
+            "access_role": "development_screening",
+            "contract_access": False,
+        })
+        lint = COMPILER.lint_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec),
+            program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            authoritative_snapshot_commit="a" * 40,
+            read_authoritative_file=schema3_authoritative_reader(raw_index),
+        )
+        self.assertEqual("EXPERIMENT_SPEC_INVALID", lint["status"])
+        self.assertIn({
+            "path": "operations.ACCEPT.assets",
+            "code": "DATASET_ASSET_REGISTRY_INVALID",
+            "message": "unknown dataset registry id: reside.missing",
+        }, lint["errors"])
 
     def test_schema3_lint_rejects_wrong_terminal_record_sha(self):
         raw_index, _ = terminal_index_bytes()
