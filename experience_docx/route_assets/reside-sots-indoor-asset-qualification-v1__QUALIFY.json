@@ -1,0 +1,14 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "sots_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS"
+    }
+  ],
+  "operation_id": "QUALIFY",
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "schema_version": 2
+}

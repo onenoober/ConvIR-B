@@ -1,0 +1,45 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/reside-sots-indoor-asset-qualification-v1__QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": null,
+    "cost_contract": null,
+    "max_seconds": 30,
+    "mode": "metadata_only"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_reside_sots_indoor_asset_v1.py",
+  "environment": {
+    "CONVIR_ROUTE_ASSET_SOTS_ROOT": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS"
+  },
+  "evidence_files": [
+    {
+      "destination_filename": "reside_sots_indoor_asset_qualification_v1_summary.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/reside_sots_indoor_asset_qualification_v1_summary.json"
+    },
+    {
+      "destination_filename": "reside_sots_indoor_asset_qualification_v1_review_facts.json",
+      "max_bytes": 65536,
+      "required": true,
+      "source_relpath": "workload/reside_sots_indoor_asset_qualification_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "engineering_debug",
+  "expected_wall_seconds": 45,
+  "operation_id": "QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": null,
+    "mode": "not_applicable",
+    "rationale": "The qualification is an exact finite asset census and integrity check, not a sampled performance estimate."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "schema_version": 2,
+  "timeout_seconds": 300,
+  "total_units": 1
+}

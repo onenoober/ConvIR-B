@@ -1,0 +1,369 @@
+{
+  "competing_explanation": "Historical extraction counts alone can appear complete while the current path contains corrupted images, incorrect pair names, dimension mismatches, or changed file bytes.",
+  "controls": [
+    "schema-3 authoritative dataset registry expansion",
+    "exact absolute target path",
+    "nonrecursive direct-child PNG census",
+    "source-stem pairing with ten variants per clear scene",
+    "full Pillow decode without image display",
+    "paired width and height equality",
+    "sorted path-size-file-SHA aggregate identity",
+    "zero model, checkpoint, inference, training, and restoration metric calls"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "asset_identity_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "asset_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "pairing_veto_after_identity",
+        "terminal": "inconclusive",
+        "when": {
+          "asset_identity": [
+            "pass"
+          ],
+          "pairing_coverage": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "decode_veto_after_pairing",
+        "terminal": "inconclusive",
+        "when": {
+          "asset_identity": [
+            "pass"
+          ],
+          "decode_dimensions": [
+            "fail",
+            "invalid"
+          ],
+          "pairing_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unsafe_operation_fails",
+        "terminal": "fail",
+        "when": {
+          "asset_identity": [
+            "pass"
+          ],
+          "decode_dimensions": [
+            "pass"
+          ],
+          "isolation": [
+            "unsafe"
+          ],
+          "pairing_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "qualified_asset_passes",
+        "terminal": "pass",
+        "when": {
+          "asset_identity": [
+            "pass"
+          ],
+          "decode_dimensions": [
+            "pass"
+          ],
+          "isolation": [
+            "safe"
+          ],
+          "pairing_coverage": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "unresolved_isolation_is_inconclusive",
+        "terminal": "inconclusive",
+        "when": {
+          "asset_identity": [
+            "pass"
+          ],
+          "decode_dimensions": [
+            "pass"
+          ],
+          "isolation": [
+            "indeterminate",
+            "invalid"
+          ],
+          "pairing_coverage": [
+            "pass"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_sots_indoor_qualification",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "RESIDE_SOTS_INDOOR_ASSET_ISOLATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "inspect_sots_indoor_asset",
+        "terminal": {
+          "authorizes": "ASSET_REPAIR_REVIEW_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_ASSET_QUALIFICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "register_sots_indoor_asset",
+        "terminal": {
+          "authorizes": "DATASET_ASSET_REGISTRY_ENTRY_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_ASSET_QUALIFICATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "model or checkpoint load",
+    "training or inference",
+    "PSNR, SSIM, perceptual, or restoration metric computation",
+    "image display or human visual inspection",
+    "per-sample evidence archive",
+    "scientific model-quality conclusion",
+    "confirmation, canary, or locked-test access"
+  ],
+  "gates": [
+    {
+      "comparison_family": "sots_indoor_asset_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "qualified_asset_fraction",
+      "id": "asset_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exact requested root, direct regular PNG files, and complete aggregate SHA-256 construction",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_asset_validation"
+    },
+    {
+      "comparison_family": "sots_indoor_asset_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "qualified_asset_fraction",
+      "id": "pairing_coverage",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "exactly 50 unique clear stems, 500 mapped hazy files, ten variants per clear, no unmapped or unused scene",
+      "threshold": true,
+      "type": "coverage",
+      "uncertainty_id": "deterministic_asset_validation"
+    },
+    {
+      "comparison_family": "sots_indoor_asset_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "qualified_asset_fraction",
+      "id": "decode_dimensions",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "all 550 files fully decode and all 500 mapped hazy-clear pairs have identical dimensions",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_asset_validation"
+    },
+    {
+      "comparison_family": "sots_indoor_asset_qualification",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "qualified_asset_fraction",
+      "id": "isolation",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "zero model, checkpoint, inference, training, restoration metric, image display, and protected-data operations",
+      "threshold": 0,
+      "type": "safety",
+      "uncertainty_id": "deterministic_asset_validation"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "requested Indoor root is /sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor",
+      "clear files are direct PNG children of gt",
+      "hazy files are direct PNG children of hazy",
+      "hazy source identity is the filename stem before the first underscore",
+      "each clear scene requires exactly ten hazy variants",
+      "aggregate SHA-256 uses sorted relative path, byte size, and file SHA-256 records",
+      "no model, checkpoint, inference, training, restoration metric, or image display"
+    ],
+    "matched_budget": "one fixed census, SHA-256 pass, and decode pass over 50 clear plus 500 hazy PNG files",
+    "primary_variable": "local SOTS Indoor asset identity and pairing integrity",
+    "reference": "registered RESIDE SOTS root at the frozen GitHub-main snapshot"
+  },
+  "operation_id": "QUALIFY",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "engineering_debug",
+    "grouping_unit": "clear_scene",
+    "independent_group_count": 50,
+    "strata": [
+      {
+        "id": "sots_indoor",
+        "independent_group_count": 50
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "clear scenes satisfying the exact ten-variant pairing, decode, and dimension contract, subject to dataset-wide identity and isolation gates, divided by 50",
+    "direction": "higher",
+    "id": "qualified_asset_fraction",
+    "metric_id": "deterministic_asset_checks_passed_fraction",
+    "strata": [
+      "sots_indoor"
+    ],
+    "unit": "clear_scene"
+  },
+  "question": "Does the registered local RESIDE SOTS tree contain one decodable, dimension-matched SOTS Indoor paired asset with exactly 50 clear scenes and 500 hazy variants?",
+  "research_update_binding": {
+    "bottleneck_class": "data_scope",
+    "bottleneck_statement": "SOTS Indoor has historical preparation count checks but no current GitHub-main terminal binding its exact local files, pairing, decodability, dimensions, and aggregate identity.",
+    "decision_design": {
+      "alias_structure": "Not applicable; one explicit identity-source factor is checked without interactions.",
+      "arms": [
+        {
+          "description": "The frozen requested path, counts, pairing rule, decode rule, and dimension rule.",
+          "id": "reference_contract",
+          "role": "reference"
+        },
+        {
+          "description": "The registered local SOTS Indoor directory observed by one fixed CPU-only qualification pass.",
+          "id": "observed_local_asset",
+          "role": "observed"
+        }
+      ],
+      "estimable_terms": [
+        "observed local asset equality to the frozen qualification contract"
+      ],
+      "factors": [
+        {
+          "id": "asset_identity_source",
+          "levels": [
+            "reference_contract",
+            "observed_local_asset"
+          ]
+        }
+      ],
+      "mechanism_estimands": [
+        {
+          "falsifier": "Any path, file-type, count, or aggregate-identity construction check fails.",
+          "hypothesis_id": "exact_local_layout",
+          "id": "layout_identity_mechanism",
+          "metric_id": "exact_layout_and_aggregate_identity",
+          "prediction": "The observed path and fixed census equal the reference contract and produce complete aggregate identities."
+        },
+        {
+          "falsifier": "Any mapping, variant-count, decode, or paired-dimension check fails.",
+          "hypothesis_id": "paired_decode_integrity",
+          "id": "paired_decode_mechanism",
+          "metric_id": "paired_decode_dimension_integrity",
+          "prediction": "All clear scenes have ten mapped variants, all images decode, and all pair dimensions match."
+        }
+      ],
+      "multiplicity_control": "Closed deterministic family: both predeclared mechanism estimands must pass, so no selective success claim is possible.",
+      "sequential_plan": {
+        "alpha_spending": {
+          "familywise_alpha": 0.05,
+          "method": "not_applicable"
+        },
+        "boundaries": {
+          "futility": "Not applicable; this is one fixed terminal-only qualification.",
+          "precision": "Not applicable; no sampled performance estimand is used.",
+          "success": "All predeclared deterministic asset gates pass.",
+          "validity": "Any identity, pairing, decode, or dimension failure yields an inconclusive qualification."
+        },
+        "looks": [
+          {
+            "id": "terminal",
+            "information_fraction": 1.0
+          }
+        ],
+        "outcome_access": "terminal_only"
+      }
+    },
+    "design_selection": {
+      "decision_value": "One fixed asset pass establishes all location, count, pairing, decode, dimension, and aggregate-hash facts needed for registration.",
+      "expected_time_to_decision": "One CPU-only sequential read and decode of 550 PNG files.",
+      "shared_setup": "All checks reuse the same registered SOTS root and in-memory file census without model or checkpoint setup.",
+      "strategy": "single_factor",
+      "worst_case_stopping_cost": "Read and decode at most 550 PNG files, write one compact summary and one completed-unit record, then stop."
+    },
+    "hypotheses": [
+      {
+        "discriminating_prediction": "A fixed nonrecursive census produces the exact frozen counts and three reproducible aggregate SHA-256 identities.",
+        "falsifier": "The path, directory type, file type, count, or aggregate identity construction is incomplete or ambiguous.",
+        "id": "exact_local_layout",
+        "statement": "The registered SOTS root resolves to the requested Indoor tree with exactly 50 clear and 500 hazy PNG files."
+      },
+      {
+        "discriminating_prediction": "The source-stem mapping covers all 50 clear scenes, has a uniform variant count of ten, and yields 550 decodes plus 500 matched dimensions.",
+        "falsifier": "Any file is unmapped, duplicated, undecodable, missing, or dimensionally inconsistent with its paired clear image.",
+        "id": "paired_decode_integrity",
+        "statement": "Every clear scene has exactly ten named hazy variants, all 550 files fully decode, and every hazy-clear pair has identical pixel dimensions."
+      }
+    ],
+    "literature_basis": [
+      {
+        "applicability_limit": "The publication does not prove the identity, completeness, decodability, pairing, or dimensions of this local filesystem copy.",
+        "identifier": "doi:10.1109/TIP.2018.2867951",
+        "source_status": "peer_reviewed",
+        "task": "RESIDE benchmark dataset organization",
+        "transferable_claim": "SOTS provides paired synthetic indoor benchmark images for single-image dehazing evaluation."
+      }
+    ],
+    "snapshot_commit": "7a94c29e90866aba9d309ea5401c38d3b66bcbe2",
+    "trigger_terminals": [],
+    "trigger_type": "program_foundation"
+  },
+  "route_id": "reside-sots-indoor-asset-qualification-v1",
+  "schema_version": 3,
+  "uncertainty": {
+    "comparison_family": "sots_indoor_asset_qualification",
+    "confidence_level": 0.95,
+    "id": "deterministic_asset_validation",
+    "independent_unit": "clear_scene",
+    "method_id": "exact_frozen_boolean_checks"
+  }
+}
