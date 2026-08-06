@@ -6,7 +6,7 @@
     },
     {
       "id": "registration_entrypoint",
-      "identity": "9ac690c0f448918fa6b848c40f3d3d5ca5b13fb856c34cc7409053b2c1e33f54"
+      "identity": "6f8c1ab70bbddf8bb6d2601f685eff467ed3690f276835ae2fdd682a759e0575"
     },
     {
       "id": "geometry_summary",
@@ -29,17 +29,17 @@
   "minimum_fixture": {
     "batch": 1,
     "channels": 3,
-    "height": 128,
-    "width": 128
+    "height": 192,
+    "width": 192
   },
   "production_path_statement": "The exact float64 Rec.709 luminance conversion, centered gradients, fixed-support upper-quartile normalized gradient correlation, complete integer displacement grid, cyclic wrong-clear control, fixed far-shift control, classification logic, aggregate histograms, typed gates, compact evidence finalization, and one-unit census ledger execute on three deterministic synthetic known-shift RGB arrays without scientific data.",
   "profile_id": "reside_sots_indoor_pixel_registration_cpu_v1",
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
-    "code_path_sha256": "9ac690c0f448918fa6b848c40f3d3d5ca5b13fb856c34cc7409053b2c1e33f54",
+    "code_path_sha256": "6f8c1ab70bbddf8bb6d2601f685eff467ed3690f276835ae2fdd682a759e0575",
     "device_class": "cpu",
-    "input_contract_sha256": "1c3b7bf1c818554736015313bfab08e86d508f8cd57485431d8fe87cfc86fb50",
+    "input_contract_sha256": "cab2f9f37febaeda139ce3651b30854270a502a2ea29a105aebbacfbb7b20b9d",
     "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
     "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
   },

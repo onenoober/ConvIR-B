@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "sots_indoor_pixel_registration_qualification",
         "require_gpu": false,
-        "output_id": "reside-sots-indoor-pixel-registration-qualification-v1-r1",
+        "output_id": "reside-sots-indoor-pixel-registration-qualification-v1-r2",
         "closeout_filename": "reside_sots_indoor_pixel_registration_qualification_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -615,7 +615,7 @@
           "id": "registration_entrypoint",
           "kind": "file",
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_reside_sots_indoor_pixel_registration_v1.py",
-          "sha256": "9ac690c0f448918fa6b848c40f3d3d5ca5b13fb856c34cc7409053b2c1e33f54",
+          "sha256": "6f8c1ab70bbddf8bb6d2601f685eff467ed3690f276835ae2fdd682a759e0575",
           "access_role": "engineering_debug",
           "contract_access": true
         },
@@ -658,8 +658,8 @@
         "minimum_fixture": {
           "batch": 1,
           "channels": 3,
-          "height": 128,
-          "width": 128
+          "height": 192,
+          "width": 192
         },
         "bound_assets": [
           {
@@ -668,7 +668,7 @@
           },
           {
             "id": "registration_entrypoint",
-            "identity": "9ac690c0f448918fa6b848c40f3d3d5ca5b13fb856c34cc7409053b2c1e33f54"
+            "identity": "6f8c1ab70bbddf8bb6d2601f685eff467ed3690f276835ae2fdd682a759e0575"
           },
           {
             "id": "geometry_summary",
@@ -693,7 +693,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "9ac690c0f448918fa6b848c40f3d3d5ca5b13fb856c34cc7409053b2c1e33f54",
+          "code_path_sha256": "6f8c1ab70bbddf8bb6d2601f685eff467ed3690f276835ae2fdd682a759e0575",
           "checkpoint_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
           "runtime_environment_sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b",
           "device_class": "cpu"

@@ -294,7 +294,7 @@ def analyze_pair(
 
 
 def synthetic_fixture() -> dict[str, Any]:
-    height = width = 128
+    height = width = 192
     yy, xx = np.mgrid[0:height, 0:width]
     base = (
         0.35
@@ -454,8 +454,8 @@ def contract(context_path: Path) -> None:
             "fixture": {
                 "batch": 1,
                 "channels": 3,
-                "height": 128,
-                "width": 128,
+                "height": 192,
+                "width": 192,
             },
             "cost": {
                 "observed_iterations": fixture["case_count"],

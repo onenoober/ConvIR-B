@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/reside-sots-indoor-pixel-registration-qualification-v1.json",
-  "experiment_spec_sha256": "e38e6d273899ed6b8b4a77a7080881e8e992f11381bbb2d840d817dfae322d0d",
+  "experiment_spec_sha256": "c7c1c37664b97a2316201cfb262ae657f26a1b5bc4c65c0c6d1c603a7bb369e3",
   "operations": {
     "QUALIFY_PIXEL_REGISTRATION": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 0,
       "mode": "sots_indoor_pixel_registration_qualification",
       "monitor_profile": "short",
-      "output_id": "reside-sots-indoor-pixel-registration-qualification-v1-r1",
+      "output_id": "reside-sots-indoor-pixel-registration-qualification-v1-r2",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
