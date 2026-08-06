@@ -9,7 +9,7 @@ on_error() {
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/dataset-asset-registry
-baseline=d1c8e6b52d0365c0eca17fc82d666fadfb1ae86a
+baseline=acb3ca5c9f20b913d488ee997a5481be49536bfd
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python

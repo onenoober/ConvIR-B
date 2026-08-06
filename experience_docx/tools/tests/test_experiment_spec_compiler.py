@@ -341,6 +341,22 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             registry["reside.sots.outdoor"]["verification_source_id"],
         )
         self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor",
+            registry["reside.sots.indoor"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor/gt",
+            registry["reside.sots.indoor.clear"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor/hazy",
+            registry["reside.sots.indoor.haze"]["path"],
+        )
+        self.assertEqual(
+            "reside_sots_indoor_geometry_v2",
+            registry["reside.sots.indoor"]["verification_source_id"],
+        )
+        self.assertEqual(
             "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
             registry["haze4k.train"]["path"],
         )

@@ -33,6 +33,16 @@
       "closeout_sha256": "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56",
       "summary_path": "experience_docx/experiment_logs/sots-ots-asset-audit-v1/sots_ots_asset_audit_v1_summary.json",
       "summary_sha256": "2c4ac338bbe63a6768420cbd9b249273ad229d1933b5d2425a9dd7ccd8ea7b59"
+    },
+    "reside_sots_indoor_geometry_v2": {
+      "route_id": "reside-sots-indoor-geometry-qualification-v2",
+      "run_id": "reside-sots-indoor-geometry-qualification-v2-r1",
+      "terminal_state": "COMPLETED_GATE_PASS",
+      "terminal_record_sha256": "a457021296d6487af55e58e2b3c07dcc38fe454f5785db04567a18eff4d298da",
+      "closeout_path": "experience_docx/experiment_logs/reside-sots-indoor-geometry-qualification-v2/reside_sots_indoor_geometry_qualification_v2_closeout.json",
+      "closeout_sha256": "92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80",
+      "summary_path": "experience_docx/experiment_logs/reside-sots-indoor-geometry-qualification-v2/reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "summary_sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3"
     }
   },
   "assets": {
@@ -89,6 +99,24 @@
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS",
       "verification": "parent_of_verified_layout",
       "verification_source_id": "sots_ots_asset_audit_v1"
+    },
+    "reside.sots.indoor": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor",
+      "verification": "verified_paired_dataset_root",
+      "verification_source_id": "reside_sots_indoor_geometry_v2"
+    },
+    "reside.sots.indoor.clear": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor/gt",
+      "verification": "verified_clear_root",
+      "verification_source_id": "reside_sots_indoor_geometry_v2"
+    },
+    "reside.sots.indoor.haze": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor/hazy",
+      "verification": "verified_haze_root",
+      "verification_source_id": "reside_sots_indoor_geometry_v2"
     },
     "reside.sots.outdoor": {
       "kind": "directory",
