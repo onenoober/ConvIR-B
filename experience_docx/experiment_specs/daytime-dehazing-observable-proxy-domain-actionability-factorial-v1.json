@@ -1,0 +1,875 @@
+{
+  "schema_version": 3,
+  "route_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1",
+  "rules_commit": "dea4c31dbc14245ee15eb461d2a5b5088741399a",
+  "title": "Daytime Dehazing Observable Proxy Domain Actionability Factorial v1",
+  "rationale": "The terminal C1 route decisively rejected aligned inference-observable physics conditioning against its global-pooled sham at the frozen 50% futility look, so another inference-only shuffle or global-sham comparison would repeat a closed factorization. The later five-seed Frozen-BN terminal also decisively rejected density-consistency plus CARL on raw scene PSNR, so this route removes both objectives. Candidate 1 instead asks whether spatial alignment is actionable during optimization, not merely during inference. Four independently trained, equal-capacity final-decoder adapters form a proxy-class by training-and-evaluation alignment full factorial: physics or frozen-model transformation-disagreement proxy, each aligned or deterministically permuted within scene. A shared official ConvIR-B baseline supplies absolute utility and safety references. Five frozen training seeds and 55 independent clear scenes in each of four development-only domains prevent a single seed or large domain from dominating. Haze observations and seed blocks are nested within scene; raw scene-PSNR differences are never clipped. One terminal-only outcome look removes optional stopping. A 16-interval simultaneous Bonferroni family covers both proxy-specific alignment effects overall and by domain, both aligned-versus-official effects, and four domain interactions. The primary precision certificate uses the terminal historical raw-PSNR SD upper bound inflated by 50%; 55 scenes per stratum exceeds the frozen requirement of 52 at a 0.39 dB half-width. Identity, integrity, and exact 1501-unit coverage are a validity veto. Proxy actionability and selected-proxy safety are decisive. Precision is inconclusive-only and cannot hide a decisive scientific FAIL. Confirmation, sealed-final data, CARL, consistency, clipping, post-processing, result-adaptive extension, promotion, deployment, images, checkpoints, arrays, and per-scene GitHub tables remain prohibited.",
+  "first_operation": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY",
+  "program_contract_relpath": "experience_docx/research_programs/daytime_dehazing_spatially_adaptive_restoration_v1.json",
+  "operations": {
+    "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY": {
+      "operation": {
+        "runner_relpath": "experience_docx/tools/run_route_operation.sh",
+        "mode": "daytime_dehazing_observable_proxy_domain_actionability_factorial",
+        "require_gpu": true,
+        "output_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1-r1",
+        "closeout_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_closeout.json",
+        "prior_closeout_relpath": null,
+        "prior_terminal_tuple": null,
+        "workspace_policy": "fresh_route",
+        "output_policy": "new",
+        "monitor_profile": "standard",
+        "heartbeat_timeout_seconds": 900,
+        "min_free_gpu_mib": 14000,
+        "max_gpu_utilization_pct": 10
+      },
+      "program_authorization": {
+        "program_id": "daytime_dehazing_spatially_adaptive_restoration_v1",
+        "stage_id": "utility_qualification",
+        "family_id": "local_restoration_need_qualification",
+        "mechanism_type": "orthogonal",
+        "evidence_role": "development_screening",
+        "protected_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "dependencies": [
+          {
+            "role": "parent_authorization",
+            "use": "diagnostic",
+            "anchor_id": "s0_program_foundation_pass"
+          },
+          {
+            "role": "program_role_ledger",
+            "use": "evaluation",
+            "anchor_id": "s0_scene_role_ledger"
+          },
+          {
+            "role": "archived_route_evidence",
+            "use": "evaluation",
+            "anchor_id": "s1_v3_valid_operationalization_fail"
+          },
+          {
+            "role": "baseline_model",
+            "use": "baseline",
+            "anchor_id": "official_architecture_anchor"
+          },
+          {
+            "role": "baseline_model",
+            "use": "initialization",
+            "anchor_id": "official_haze4k_checkpoint"
+          },
+          {
+            "role": "dataset_structure",
+            "use": "diagnostic",
+            "anchor_id": "haze4k_train_scene_identity"
+          },
+          {
+            "role": "overlap_membership",
+            "use": "diagnostic",
+            "anchor_id": "its_verified_overlap_membership"
+          },
+          {
+            "role": "overlap_membership",
+            "use": "diagnostic",
+            "anchor_id": "ots_verified_overlap_membership"
+          }
+        ],
+        "adjacent_sequence": null,
+        "orthogonal_changes": [
+          {
+            "dimension": "observable_proxy_domain_actionability_factorial",
+            "reason": "Replace C1's global-sham and inference-only shuffle factorization with four independently trained proxy-class by alignment cells, five seed blocks, raw scene estimands, and equal four-domain scope."
+          }
+        ],
+        "reopen_evidence": []
+      },
+      "scientific_contract": {
+        "question": "Does spatially aligned inference-observable proxy information improve frozen-ConvIR daytime dehazing because its location is actionable during training, and is that effect transferable across proxy classes, five training seeds, and four development-only domains without near-clear or negative-tail harm?",
+        "research_update_binding": {
+          "snapshot_commit": "5a687608a7c58c81c4d8ee329443c78b8a7e1a04",
+          "trigger_type": "post_terminal",
+          "trigger_terminals": [
+            {
+              "route_id": "daytime-dehazing-density-consistency-carl-multiseed-frozen-bn-stability-v1",
+              "terminal_record_sha256": "48aee67a31ec761d524e6767693101a6d60faf1b4575b3fe878435781bc4b920"
+            },
+            {
+              "route_id": "daytime-dehazing-bidirectional-local-error-operationalization-v1",
+              "terminal_record_sha256": "e66d466b36c58fa950b7179a547029bee020566ce0a207f68e3aa81f124cb343"
+            },
+            {
+              "route_id": "daytime-dehazing-observable-signal-domain-factorial-v1",
+              "terminal_record_sha256": "9174e6793caab67ba0ed73293ce8b3268bde290162d9dbdd2925a143cbacf1ff"
+            },
+            {
+              "route_id": "convir-existing-dataset-role-ledger-v1",
+              "terminal_record_sha256": "68f572d1315f3f5266a35abb7ea76e1058ea2e702c93f0b1f20be93d1ed540f5"
+            }
+          ],
+          "bottleneck_class": "scientific_hypothesis",
+          "bottleneck_statement": "Archived evidence rejects C1's aligned-versus-global-sham factorization and the Frozen-BN density-consistency-CARL intervention but does not identify whether an observable proxy's spatial location becomes useful when both aligned and distribution-preserving permuted conditions are independently optimized across seeds and domains.",
+          "literature_basis": [
+            {
+              "identifier": "doi:10.1109/CVPRW50498.2020.00230",
+              "source_status": "peer_reviewed",
+              "task": "nonhomogeneous daytime dehazing benchmark construction",
+              "transferable_claim": "Spatially nonuniform haze is a real daytime-dehazing condition for which region-sensitive mechanisms and evaluation are scientifically relevant.",
+              "applicability_limit": "NH-HAZE does not establish that either frozen proxy or this adapter is actionable, transferable, or safe."
+            },
+            {
+              "identifier": "doi:10.1109/CVPR.2018.00070",
+              "source_status": "peer_reviewed",
+              "task": "conditional spatial feature modulation",
+              "transferable_claim": "Aligned spatial side information can modulate intermediate restoration features through a conditional transform.",
+              "applicability_limit": "The super-resolution result does not establish a dehazing effect or validate this factorial contrast."
+            },
+            {
+              "identifier": "doi:10.1109/CVPR.2009.5206515",
+              "source_status": "peer_reviewed",
+              "task": "single-image haze observation modeling",
+              "transferable_claim": "Dark-channel statistics motivate an observable physics-related haze proxy under stated scene assumptions.",
+              "applicability_limit": "Dark-channel exceptions remain, and the paper does not prove local correction direction or adapter utility."
+            },
+            {
+              "identifier": "doi:10.1016/j.knosys.2023.110306",
+              "source_status": "peer_reviewed",
+              "task": "uncertainty-guided image restoration",
+              "transferable_claim": "Observable prediction disagreement can motivate uncertainty-aware modulation and explicit risk evaluation in restoration.",
+              "applicability_limit": "The publication does not validate horizontal-transformation disagreement, the frozen ConvIR-B proxy, or this route's thresholds."
+            }
+          ],
+          "hypotheses": [
+            {
+              "id": "training_time_spatial_actionability",
+              "statement": "For at least one frozen proxy class, preserving spatial location during both training and evaluation yields material utility beyond an independently trained within-scene joint permutation with the same four-channel marginal distribution.",
+              "discriminating_prediction": "A proxy-specific aligned-minus-permuted equal-domain lower bound exceeds 0.10 dB, at least three domain lower bounds exceed zero, no domain upper bound is negative, the aligned arm exceeds official ConvIR-B by more than 0.05 dB, and at least four of five seed-block effects are positive with none at or below -0.10 dB.",
+              "falsifier": "For both proxies, any frozen impossibility condition holds: the actionability upper bound is at most 0.10 dB, the aligned-versus-official upper bound is at most 0.05 dB, a domain upper bound is negative, no more than two seed blocks are positive, or a seed block is at or below -0.10 dB."
+            },
+            {
+              "id": "proxy_class_moderation",
+              "statement": "Physics and frozen-model transformation-disagreement proxies can differ in spatial actionability because they expose different observable aspects of degradation while holding adapter capacity and alignment manipulation fixed.",
+              "discriminating_prediction": "The physics-minus-uncertainty actionability interaction and the two simultaneous simple effects identify whether actionability is shared, physics-dominant, or uncertainty-dominant without attributing a selected gain to parameter count.",
+              "falsifier": "Both simultaneous simple-effect intervals exclude material actionability, or their apparent difference disappears under the frozen interaction and domain summaries."
+            },
+            {
+              "id": "transferable_safe_observable_mechanism",
+              "statement": "Any selected aligned-proxy gain repeats across seeds and domains and does not arise by sacrificing near-clear fidelity or creating a substantial negative tail relative to official ConvIR-B.",
+              "discriminating_prediction": "The selected proxy satisfies the seed and domain controls, its near-clear equal-domain lower bound is at least -0.05 dB, and every domain's near-clear and overall below--0.10 dB harm-prevalence upper bound is at most 0.10.",
+              "falsifier": "The selected proxy has a decisive negative domain or seed effect, a near-clear mean upper bound below -0.05 dB, or a harm-prevalence lower bound above 0.10 in any domain."
+            }
+          ],
+          "design_selection": {
+            "strategy": "full_factorial",
+            "decision_value": "Four independently trained proxy-class by alignment cells separate proxy content, spatial location, and their interaction; the official baseline, five seed blocks, four equal-weight domains, and safety summaries discriminate optimization artifacts, domain concentration, and harm.",
+            "expected_time_to_decision": "One protected-data-free exact-production capability phase followed, only if later authorized, by one bounded development run and one terminal outcome look; no interim scientific outcome access or result-adaptive extension is permitted.",
+            "shared_setup": "All four trained cells share the frozen official backbone and checkpoint, adapter architecture and initialization, Haze4K roster, distinct-scene batches, optimizer, loss, step count, crops, five seeds, evaluation rosters, nesting, and uncertainty method.",
+            "worst_case_stopping_cost": "The capability contract executes the exact 41100-iteration production map within 43200 seconds; a later scientific run, if separately authorized, is capped at 259200 seconds and 1501 SHA-bound workload units. There is no earlier scientific stopping look."
+          },
+          "decision_design": {
+            "arms": [
+              {
+                "id": "a0_official",
+                "role": "reference",
+                "description": "Official frozen ConvIR-B without an adapter."
+              },
+              {
+                "id": "a1_physics_permuted",
+                "role": "factorial_control",
+                "description": "Physics-proxy adapter independently trained and evaluated with deterministic within-scene joint spatial permutation."
+              },
+              {
+                "id": "a2_physics_aligned",
+                "role": "factorial_intervention",
+                "description": "Physics-proxy adapter independently trained and evaluated with aligned dark-channel, saturation, local-contrast, and gradient maps."
+              },
+              {
+                "id": "a3_uncertainty_permuted",
+                "role": "factorial_control",
+                "description": "Transformation-disagreement adapter independently trained and evaluated with deterministic within-scene joint spatial permutation."
+              },
+              {
+                "id": "a4_uncertainty_aligned",
+                "role": "factorial_intervention",
+                "description": "Transformation-disagreement adapter independently trained and evaluated with aligned frozen-ConvIR RGB disagreement plus disagreement luminance."
+              }
+            ],
+            "factors": [
+              {
+                "id": "proxy_class",
+                "levels": [
+                  "physics",
+                  "uncertainty"
+                ]
+              },
+              {
+                "id": "training_and_evaluation_alignment",
+                "levels": [
+                  "permuted",
+                  "aligned"
+                ]
+              }
+            ],
+            "estimable_terms": [
+              "physics_aligned_minus_permuted_equal_domain_scene_psnr_db",
+              "uncertainty_aligned_minus_permuted_equal_domain_scene_psnr_db",
+              "physics_minus_uncertainty_actionability_interaction_by_domain",
+              "physics_aligned_minus_official_equal_domain_scene_psnr_db",
+              "uncertainty_aligned_minus_official_equal_domain_scene_psnr_db",
+              "selected_proxy_near_clear_and_negative_tail_safety"
+            ],
+            "alias_structure": "The official baseline is outside the 2x2 trained factorial. Within the four trained cells, proxy-class and alignment main effects, their interaction, and both proxy-specific simple alignment effects are fully estimable and unaliased. The scientific primary is the two simple alignment effects because a nonzero interaction makes an averaged alignment main effect insufficient. Each aligned-versus-official contrast bundles proxy content with aligned training and is an absolute-utility control, not a substitute for the actionability contrast.",
+            "mechanism_estimands": [
+              {
+                "id": "physics_spatial_actionability",
+                "hypothesis_id": "training_time_spatial_actionability",
+                "metric_id": "physics_aligned_minus_permuted_equal_domain_scene_psnr_db",
+                "prediction": "The simultaneous overall lower bound exceeds 0.10 dB with at least three positive domain lower bounds, no negative domain upper bound, absolute aligned utility, and four-of-five positive seed support.",
+                "falsifier": "Any frozen physics impossibility condition is reached."
+              },
+              {
+                "id": "uncertainty_spatial_actionability",
+                "hypothesis_id": "training_time_spatial_actionability",
+                "metric_id": "uncertainty_aligned_minus_permuted_equal_domain_scene_psnr_db",
+                "prediction": "The simultaneous overall lower bound exceeds 0.10 dB with at least three positive domain lower bounds, no negative domain upper bound, absolute aligned utility, and four-of-five positive seed support.",
+                "falsifier": "Any frozen uncertainty-proxy impossibility condition is reached."
+              },
+              {
+                "id": "proxy_actionability_interaction",
+                "hypothesis_id": "proxy_class_moderation",
+                "metric_id": "physics_minus_uncertainty_actionability_interaction_by_domain",
+                "prediction": "The simultaneous interaction summaries distinguish common spatial actionability from proxy-specific or domain-specific actionability.",
+                "falsifier": "Neither simple actionability effect is material and interaction summaries provide no surviving differentiated mechanism."
+              },
+              {
+                "id": "selected_proxy_transfer_and_safety",
+                "hypothesis_id": "transferable_safe_observable_mechanism",
+                "metric_id": "selected_proxy_seed_domain_near_clear_and_tail_controls",
+                "prediction": "The predeclared selected favorable proxy passes all frozen domain, seed, near-clear, and tail-risk controls.",
+                "falsifier": "Any decisive domain, seed, near-clear, or tail-risk condition is unfavorable or unsafe."
+              }
+            ],
+            "multiplicity_control": "One terminal family contains exactly 16 simultaneous two-sided intervals: for each proxy, its aligned-minus-permuted overall interval and four domain intervals (10); for each proxy, its aligned-minus-official overall interval (2); and the physics-minus-uncertainty actionability interaction in each domain (4). Bonferroni familywise alpha 0.05 gives critical value 2.9551668474978343. Safety uses conservative componentwise intersection-union decisions at the same critical value; no safety component can rescue a failed scientific gate.",
+            "sequential_plan": {
+              "looks": [
+                {
+                  "id": "terminal_100",
+                  "information_fraction": 1
+                }
+              ],
+              "alpha_spending": {
+                "method": "bonferroni_single_terminal_16_family",
+                "familywise_alpha": 0.05
+              },
+              "boundaries": {
+                "success": "Only the completed terminal look may produce favorable actionability, and every decisive gate plus formal precision must satisfy its frozen condition for PASS.",
+                "futility": "There is no interim scientific futility look. At terminal, both proxies satisfying an impossibility condition is a decisive scientific FAIL.",
+                "precision": "At terminal, any of the 16 simultaneous interval half-widths above 0.39 dB is inconclusive-only and cannot change a decisive scientific FAIL.",
+                "validity": "Any trigger, program, role, protected-access, model, asset, roster, scene, unit, output, integrity, or exact-ledger failure activates the validity veto and yields an inconclusive terminal rather than scientific FAIL."
+              },
+              "outcome_access": "terminal_only"
+            }
+          }
+        },
+        "population": {
+          "evidence_role": "development_screening",
+          "grouping_unit": "original_clear_scene",
+          "independent_group_count": 220,
+          "strata": [
+            {
+              "id": "HAZE4K_INTERNAL",
+              "independent_group_count": 55
+            },
+            {
+              "id": "ITS_UNASSIGNED",
+              "independent_group_count": 55
+            },
+            {
+              "id": "OTS_UNASSIGNED",
+              "independent_group_count": 55
+            },
+            {
+              "id": "NHHAZE_HISTORICAL",
+              "independent_group_count": 55
+            }
+          ],
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "intervention": {
+          "primary_variable": "observable proxy class by training-and-evaluation spatial alignment",
+          "reference": "The independently trained same-proxy permuted cell is the primary actionability reference; official ConvIR-B is the absolute-utility and safety reference.",
+          "matched_budget": "four equal-capacity adapters, each trained for 2000 steps in each of five frozen seed blocks on the same 600 Haze4K training-role scenes; all cells and the official baseline evaluated on 55 development-only original clear scenes in each of four domains",
+          "fixed_factors": [
+            "the official ConvIR-B architecture, source, layers, Haze4K checkpoint, parameter count 8630665, backbone weights, and evaluation mode remain frozen",
+            "all adapters are inserted after the final decoder 32-channel feature and before the final RGB projection",
+            "all adapters use a 4-to-16 3-by-3 convolution, GELU, and zero-initialized 16-to-64 1-by-1 convolution with bounded gamma and beta modulation",
+            "physics uses dark-channel, saturation, local-contrast, and gradient maps computed only from the hazy observation",
+            "uncertainty uses frozen ConvIR-B direct-versus-horizontal-flip-self-ensemble RGB disagreement plus its luminance, computed only from the hazy observation and frozen predictions",
+            "permuted cells use one deterministic within-scene spatial index applied jointly to all four proxy channels during both training and evaluation; aligned cells preserve location",
+            "all cells use AdamW learning rate 0.0002, betas 0.9 and 0.999, zero weight decay, batch two with distinct scenes, 256 training crops, and exactly 2000 steps for seeds 20260803, 20260817, 20260831, 20260914, and 20260928",
+            "training loss is Charbonnier reconstruction plus 0.1 edge fidelity plus 0.01 modulation regularization; CARL and consistency losses are absent",
+            "GPU admission uses a 14000 MiB capability-bound floor and the protected-data-free exact-production same-scale contract must pass before scientific data access",
+            "evaluation uses one deterministic crop per original clear scene, up to 512 pixels with dimensions divisible by 32, shared across observations and arms",
+            "Haze4K training uses only 600 training-role scenes; Haze4K evaluation uses the frozen first 55 internal-development scenes",
+            "ITS and OTS use allocation ranks 0 through 54 from role unassigned_known_overlap_quarantined and remain separate equal-weight strata",
+            "NH-HAZE contributes all 55 historical-development scenes and cannot supply confirmation evidence",
+            "raw scene PSNR is not clipped; nested haze observations are averaged within scene-seed, then five seed blocks are averaged within original clear scene",
+            "the original clear scene is the only independent unit; haze observations, seed blocks, pixels, crops, steps, and arms are nested or repeated measures",
+            "when both proxies are favorable, uncertainty is selected only if its actionability point estimate exceeds physics by more than 0.005 dB; if only one is favorable, that proxy is selected",
+            "no output image, published checkpoint, array, raw prediction, feature map, proxy map, or per-scene GitHub table is permitted"
+          ]
+        },
+        "primary_estimand": {
+          "id": "observable_proxy_spatial_actionability",
+          "metric_id": "proxy_specific_equal_domain_raw_scene_delta_psnr_db",
+          "direction": "higher",
+          "aggregation": "For physics and uncertainty separately, average nested haze observations within each scene-seed, subtract the independently trained permuted-cell PSNR from aligned-cell PSNR without clipping, average the five frozen seed effects within original clear scene, compute each of four domain scene means, then average the four means equally. Selection uses only the frozen favorable and 0.005 dB near-tie rule.",
+          "unit": "original_clear_scene",
+          "strata": [
+            "HAZE4K_INTERNAL",
+            "ITS_UNASSIGNED",
+            "OTS_UNASSIGNED",
+            "NHHAZE_HISTORICAL"
+          ]
+        },
+        "controls": [
+          "four trigger terminal identities, the terminal-bound program contract, formal amendment, S0 role ledger, and dataset-role ledger remain SHA-bound",
+          "strict official architecture checkout, entrypoint, runtime environment, checkpoint, model source, and model layers identities",
+          "synthetic-only exact-production device-aware capability phase runs without scientific or protected-data assets",
+          "official ConvIR-B supplies the absolute-utility, near-clear, and negative-tail reference",
+          "independently trained aligned and permuted cells have equal architecture, initialization, roster, batch composition, optimizer, loss, step count, crops, and five seed blocks",
+          "the deterministic within-scene permutation preserves the four proxy channels' joint marginal distribution while destroying location in training and evaluation",
+          "all four development domains contain 55 independent original clear scenes and remain separate before equal-domain aggregation",
+          "raw scene contrasts are not clipped and five seed blocks are repeated measures rather than independent samples",
+          "the simultaneous 16-interval family, proxy selection, materiality margins, seed rules, safety thresholds, precision target, and terminal-only access are frozen before outcomes",
+          "the generic SHA-bound ledger must cover exactly 1501 unique contract, training-block, scene-seed evaluation, and aggregate units before finalization",
+          "confirmation, sealed-final, canary, locked-test, promotion, deployment, post-processing, result-adaptive tuning, and a second scientific look remain disabled"
+        ],
+        "uncertainty": {
+          "id": "scene_grouped_seed_nested_single_look_bonferroni_uncertainty",
+          "method_id": "equal_domain_scene_normal_intervals_and_simultaneous_wilson",
+          "confidence_level": 0.95,
+          "independent_unit": "original_clear_scene",
+          "comparison_family": "proxy_factorial_16_interval_terminal_family"
+        },
+        "gates": [
+          {
+            "id": "evidence_identity_integrity_coverage",
+            "type": "integrity",
+            "estimand_id": "observable_proxy_spatial_actionability",
+            "reference": "all trigger, program, amendment, asset, role-ledger, dataset-role, protected-access, roster, parameter-count, scene, seed, unit-identity, output-hash, and exact 1501-unit ledger checks pass",
+            "direction": "equal",
+            "threshold": true,
+            "uncertainty_id": "scene_grouped_seed_nested_single_look_bonferroni_uncertainty",
+            "comparison_family": "proxy_factorial_16_interval_terminal_family",
+            "decision_role": "validity_veto",
+            "outcomes": [
+              "pass",
+              "fail",
+              "invalid"
+            ],
+            "neutral_outcome": "pass"
+          },
+          {
+            "id": "scientific_proxy_actionability",
+            "type": "materiality",
+            "estimand_id": "observable_proxy_spatial_actionability",
+            "reference": "favorable when at least one proxy has aligned-minus-permuted equal-domain LCB above 0.10 dB, at least three domain LCBs above zero, no negative domain UCB, aligned-minus-official equal-domain LCB above 0.05 dB, at least four positive seed-block effects, and minimum seed effect above -0.10 dB; unfavorable when both proxies satisfy at least one frozen impossibility condition",
+            "direction": "min",
+            "threshold": 0.1,
+            "uncertainty_id": "scene_grouped_seed_nested_single_look_bonferroni_uncertainty",
+            "comparison_family": "proxy_factorial_16_interval_terminal_family",
+            "decision_role": "decisive",
+            "outcomes": [
+              "favorable",
+              "unfavorable",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "favorable"
+          },
+          {
+            "id": "selected_proxy_safety",
+            "type": "safety",
+            "estimand_id": "observable_proxy_spatial_actionability",
+            "reference": "safe when the selected aligned proxy versus official ConvIR-B has near-clear equal-domain mean LCB at least -0.05 dB and every domain has both near-clear and overall below--0.10 dB harm-prevalence UCB at most 0.10; unsafe when the mean UCB is below -0.05 dB or any corresponding prevalence LCB exceeds 0.10",
+            "direction": "equal",
+            "threshold": "near_clear_mean_lcb_ge_minus_0.05_and_all_domain_tail_ucb_le_0.10",
+            "uncertainty_id": "scene_grouped_seed_nested_single_look_bonferroni_uncertainty",
+            "comparison_family": "proxy_factorial_16_interval_terminal_family",
+            "decision_role": "decisive",
+            "outcomes": [
+              "safe",
+              "unsafe",
+              "indeterminate",
+              "invalid"
+            ],
+            "neutral_outcome": "safe"
+          },
+          {
+            "id": "primary_precision",
+            "type": "precision",
+            "estimand_id": "observable_proxy_spatial_actionability",
+            "reference": "maximum half-width among the 16 frozen simultaneous overall, domain, absolute-utility, and interaction intervals",
+            "direction": "max",
+            "threshold": 0.39,
+            "uncertainty_id": "scene_grouped_seed_nested_single_look_bonferroni_uncertainty",
+            "comparison_family": "proxy_factorial_16_interval_terminal_family",
+            "decision_role": "inconclusive_only",
+            "outcomes": [
+              "met",
+              "unmet",
+              "invalid"
+            ],
+            "neutral_outcome": "met"
+          }
+        ],
+        "competing_explanation": "An apparent gain could arise from adapter capacity, proxy marginal distributions without correct spatial location, one training seed, one dataset, outcome-adaptive proxy selection, baseline sacrifice, near-clear damage, tail risk, pseudoreplication, or the previously failed C1 or CARL-consistency factorization rather than transferable training-time spatial actionability.",
+        "decision_table": {
+          "terminal_actions": {
+            "pass": {
+              "terminal": {
+                "state": "COMPLETED_GATE_PASS",
+                "decision": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_PASS",
+                "authorizes": "AUTHOR_INTERNAL_ADAPTIVE_RESTORATION_CONTRACT_ONLY"
+              },
+              "next_action_id": "author_internal_adaptive_restoration_contract",
+              "family_effect": "advance"
+            },
+            "fail": {
+              "terminal": {
+                "state": "COMPLETED_GATE_FAIL",
+                "decision": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_FAIL",
+                "authorizes": "NONE"
+              },
+              "next_action_id": "stop_observable_proxy_actionability_route",
+              "family_effect": "stop"
+            },
+            "inconclusive": {
+              "terminal": {
+                "state": "COMPLETED_INCONCLUSIVE",
+                "decision": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_INCONCLUSIVE",
+                "authorizes": "PROXY_FACTORIAL_MEASUREMENT_VALIDITY_OR_PRECISION_REVIEW_ONLY"
+              },
+              "next_action_id": "review_proxy_factorial_measurement_validity_or_precision_only",
+              "family_effect": "allow_predeclared_evidence"
+            }
+          },
+          "rules": [
+            {
+              "id": "validity_veto",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "fail",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "actionability_decisive_fail",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "pass"
+                ],
+                "scientific_proxy_actionability": [
+                  "unfavorable"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "safety_decisive_fail",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "pass"
+                ],
+                "scientific_proxy_actionability": [
+                  "favorable",
+                  "indeterminate",
+                  "invalid"
+                ],
+                "selected_proxy_safety": [
+                  "unsafe"
+                ]
+              },
+              "terminal": "fail"
+            },
+            {
+              "id": "actionability_unresolved_without_decisive_fail",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "pass"
+                ],
+                "scientific_proxy_actionability": [
+                  "indeterminate",
+                  "invalid"
+                ],
+                "selected_proxy_safety": [
+                  "safe",
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "safety_unresolved_without_decisive_fail",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "pass"
+                ],
+                "scientific_proxy_actionability": [
+                  "favorable"
+                ],
+                "selected_proxy_safety": [
+                  "indeterminate",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            },
+            {
+              "id": "all_decisive_gates_pass_with_precision",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "pass"
+                ],
+                "scientific_proxy_actionability": [
+                  "favorable"
+                ],
+                "selected_proxy_safety": [
+                  "safe"
+                ],
+                "primary_precision": [
+                  "met"
+                ]
+              },
+              "terminal": "pass"
+            },
+            {
+              "id": "all_decisive_gates_pass_without_precision",
+              "when": {
+                "evidence_identity_integrity_coverage": [
+                  "pass"
+                ],
+                "scientific_proxy_actionability": [
+                  "favorable"
+                ],
+                "selected_proxy_safety": [
+                  "safe"
+                ],
+                "primary_precision": [
+                  "unmet",
+                  "invalid"
+                ]
+              },
+              "terminal": "inconclusive"
+            }
+          ]
+        },
+        "disabled_actions": [
+          "confirmation, sealed-final, canary, locked-test, or any non-development evidence access",
+          "unfreezing or fine-tuning the official ConvIR-B backbone",
+          "using ground truth, privileged oracle actions, CARL targets, or outcome-derived labels as inference inputs",
+          "using a global-pooled sham or inference-only shuffle as a substitute for independently training all four factorial cells",
+          "unequal cell architectures, initialization, training budgets, losses, optimizers, schedules, crops, seeds, rosters, or result-adaptive tuning",
+          "changing scene roles, allocation ranks, domain weights, nesting, raw estimand, proxy selection, margins, gates, critical value, family, terminal look, safety rule, or precision target after outcome access",
+          "treating haze observations, seed blocks, pixels, crops, optimization steps, arms, or proxy maps as independent samples",
+          "publishing images, arrays, raw outputs, checkpoints, feature maps, proxy maps, or per-scene, per-seed, and per-feature tables to GitHub",
+          "interpreting this development-only route as confirmation, sealed-final evidence, candidate promotion, deployment authorization, or a post-processing method",
+          "reopening or retrying C1, Frozen-BN, CARL-consistency, or local-restoration-need without a separate evidence-bound amendment"
+        ]
+      },
+      "runtime": {
+        "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_observable_proxy_domain_actionability_factorial_v1.py",
+        "timeout_seconds": 259200,
+        "expected_wall_seconds": 172800,
+        "total_units": 1501,
+        "evidence_role": "development_screening",
+        "resume_policy": "none",
+        "protected_data_permissions": {
+          "allow_confirmation": false,
+          "allow_canary": false,
+          "allow_locked_test": false
+        },
+        "environment": {},
+        "evidence_files": [
+          {
+            "source_relpath": "workload/daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_summary.json",
+            "destination_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_summary.json",
+            "required": true,
+            "max_bytes": 262144
+          },
+          {
+            "source_relpath": "workload/daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_gate_summary.json",
+            "destination_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_gate_summary.json",
+            "required": true,
+            "max_bytes": 131072
+          },
+          {
+            "source_relpath": "workload/daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_review_facts.json",
+            "destination_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_review_facts.json",
+            "required": true,
+            "max_bytes": 131072
+          }
+        ],
+        "engineering_contract": {
+          "mode": "gpu_synthetic_no_data",
+          "max_seconds": 43200,
+          "cost_contract": {
+            "strategy": "same_scale_probe",
+            "workload_class": "variable_graph_or_matrix",
+            "formal_iterations": 41100,
+            "max_peak_memory_mib": 14000,
+            "max_wall_seconds": 43200
+          }
+        },
+        "precision_contract": {
+          "mode": "formal_precision",
+          "rationale": "The terminal-bound Frozen-BN raw scene-PSNR evidence supplies planning SD 0.632364322219979 dB; a frozen 1.5 safety inflation gives upper bound 0.9485464833299684 dB. Critical value 2.9551668474978343 and target half-width 0.39 dB require ceil((2.9551668474978343*0.9485464833299684/0.39)^2)=52 independent scenes in each stratum. Each planned stratum has 55. Precision is inconclusive-only."
+        }
+      },
+      "assets": [
+        {
+          "id": "official_anchor_checkout",
+          "kind": "git_checkout",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+          "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "require_clean": true,
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "observable_proxy_actionability_entrypoint",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_observable_proxy_domain_actionability_factorial_v1.py",
+          "sha256": "cf6517463af3f1caa5296eec53661cd33cb9877e5d7ab6b2d52aec117445e010",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "runtime_environment",
+          "kind": "file",
+          "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_proxy_actionability_factorial_v1.json",
+          "sha256": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216",
+          "access_role": "engineering_debug",
+          "contract_access": true
+        },
+        {
+          "id": "official_checkpoint",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/checkpoints/official/Haze4K/haze4k-base.pkl",
+          "sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_source",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/ConvIR.py",
+          "sha256": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "model_layers",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor/Dehazing/ITS/models/layers.py",
+          "sha256": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4",
+          "access_role": "unrestricted",
+          "contract_access": true
+        },
+        {
+          "id": "s0_scene_role_ledger",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/daytime-dehazing-haze4k-identity-v1/daytime-dehazing-haze4k-identity-v1-r1/workload/daytime_dehazing_haze4k_identity_v1_scene_role_ledger.jsonl",
+          "sha256": "4cff8e7aecea5d8e19165ac4e725f69746342521115a3ab1f03ea1474f280960",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "reside_role_ledger",
+          "kind": "file",
+          "path": "/sda/home/wangyuxin/ConvIR-B/runs/convir-existing-dataset-role-ledger-v1/convir-existing-dataset-role-ledger-v1-r1/workload/reside_scene_role_ledger.jsonl",
+          "sha256": "2f387c0992c1f0717b75cdfacea0c39d6d11e8b98ad8a8d3e5c513d572b001b2",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "haze4k_train",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "its_train_clear",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_clear",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "its_train_haze",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_haze",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "its_val_clear",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/clear",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "its_val_haze",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/haze",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "ots_clear",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/clear_images",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "ots_haze",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/OTS",
+          "access_role": "development_screening",
+          "contract_access": false
+        },
+        {
+          "id": "nhhaze",
+          "kind": "directory",
+          "path": "/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE",
+          "access_role": "development_screening",
+          "contract_access": false
+        }
+      ],
+      "capability": {
+        "profile_id": "daytime_dehazing_observable_proxy_domain_actionability_factorial_gpu_v1",
+        "contract_mode": "gpu_synthetic_no_data",
+        "minimum_fixture": {
+          "batch": 2,
+          "channels": 3,
+          "height": 256,
+          "width": 256
+        },
+        "bound_assets": [
+          {
+            "id": "official_anchor_checkout",
+            "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+          },
+          {
+            "id": "observable_proxy_actionability_entrypoint",
+            "identity": "cf6517463af3f1caa5296eec53661cd33cb9877e5d7ab6b2d52aec117445e010"
+          },
+          {
+            "id": "runtime_environment",
+            "identity": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216"
+          },
+          {
+            "id": "official_checkpoint",
+            "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+          },
+          {
+            "id": "model_source",
+            "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+          },
+          {
+            "id": "model_layers",
+            "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+          }
+        ],
+        "compatibility_imports": [
+          "numpy",
+          "PIL",
+          "torch"
+        ],
+        "production_path_statement": "The exact frozen ConvIR-B graph, checkpoint load, four independently initialized proxy-by-alignment adapters, physics and horizontal-transformation-disagreement proxy construction, deterministic joint spatial permutation, final-decoder modulation, training loss, optimizer, five seed blocks, official and four-cell evaluation, raw scene summaries, 16-interval simultaneous family, proxy selection, safety summaries, and four typed gates run on device-aware synthetic CUDA tensors for the full 41100 production iterations without dataset or protected-data access.",
+        "protected_data_prohibited": true,
+        "scientific_output_prohibited": true,
+        "scientific_training_prohibited": true,
+        "reuse_identity": {
+          "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+          "code_path_sha256": "cf6517463af3f1caa5296eec53661cd33cb9877e5d7ab6b2d52aec117445e010",
+          "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+          "runtime_environment_sha256": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216",
+          "device_class": "cuda_sm89"
+        }
+      },
+      "precision": {
+        "certificate_id": "daytime_dehazing_observable_proxy_domain_actionability_factorial_precision_v1",
+        "route_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1",
+        "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY",
+        "primary_estimand_id": "observable_proxy_spatial_actionability",
+        "independent_unit": "original_clear_scene",
+        "comparison_family": "proxy_factorial_16_interval_terminal_family",
+        "method": "normal_mean",
+        "confidence_level": 0.95,
+        "critical_value": 2.9551668474978343,
+        "target_half_width": 0.39,
+        "assurance": {
+          "method_id": "terminal_historical_raw_psnr_sd_with_frozen_safety_inflation",
+          "probability": 0.95,
+          "planning_sd_rule": "The terminal-bound Frozen-BN multiseed summary reports a maximum eligible raw scene-PSNR planning SD of 0.632364322219979 dB. Multiplying by the predeclared 1.5 safety factor freezes 0.9485464833299684 dB as the upper bound; no C1 partial outcome or future route result is reused."
+        },
+        "strata": [
+          {
+            "id": "HAZE4K_INTERNAL",
+            "independent_groups_available": 55,
+            "independent_groups_planned": 55,
+            "planning_sd": 0.9485464833299684,
+            "planning_sd_upper_bound": 0.9485464833299684,
+            "independent_groups_required": 52,
+            "feasible": true,
+            "source_reference": "Frozen S0 Haze4K role ledger capacity; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+          },
+          {
+            "id": "ITS_UNASSIGNED",
+            "independent_groups_available": 55,
+            "independent_groups_planned": 55,
+            "planning_sd": 0.9485464833299684,
+            "planning_sd_upper_bound": 0.9485464833299684,
+            "independent_groups_required": 52,
+            "feasible": true,
+            "source_reference": "SHA-bound dataset-role ledger ranks 0 through 54 from unassigned known-overlap-quarantined ITS; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+          },
+          {
+            "id": "OTS_UNASSIGNED",
+            "independent_groups_available": 55,
+            "independent_groups_planned": 55,
+            "planning_sd": 0.9485464833299684,
+            "planning_sd_upper_bound": 0.9485464833299684,
+            "independent_groups_required": 52,
+            "feasible": true,
+            "source_reference": "SHA-bound dataset-role ledger ranks 0 through 54 from unassigned known-overlap-quarantined OTS; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+          },
+          {
+            "id": "NHHAZE_HISTORICAL",
+            "independent_groups_available": 55,
+            "independent_groups_planned": 55,
+            "planning_sd": 0.9485464833299684,
+            "planning_sd_upper_bound": 0.9485464833299684,
+            "independent_groups_required": 52,
+            "feasible": true,
+            "source_reference": "SHA-bound dataset-role ledger identifies all 55 NH-HAZE scenes as historical development; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+          }
+        ],
+        "feasible": true,
+        "source_role": "development_screening",
+        "source_reference": "Frozen S0 and unified dataset-role capacities plus terminal-bound Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d; required groups are frozen before this route accesses outcomes."
+      }
+    }
+  }
+}

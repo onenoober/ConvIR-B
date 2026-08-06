@@ -1,0 +1,55 @@
+{
+  "asset_manifest_relpath": "experience_docx/route_assets/daytime-dehazing-observable-proxy-domain-actionability-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY.json",
+  "engineering_contract": {
+    "capability_profile_relpath": "experience_docx/model_capabilities/daytime-dehazing-observable-proxy-domain-actionability-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY.json",
+    "cost_contract": {
+      "formal_iterations": 41100,
+      "max_peak_memory_mib": 14000,
+      "max_wall_seconds": 43200,
+      "strategy": "same_scale_probe",
+      "workload_class": "variable_graph_or_matrix"
+    },
+    "max_seconds": 43200,
+    "mode": "gpu_synthetic_no_data"
+  },
+  "entrypoint_relpath": "experience_docx/tools/qualify_daytime_dehazing_observable_proxy_domain_actionability_factorial_v1.py",
+  "environment": {},
+  "evidence_files": [
+    {
+      "destination_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_summary.json",
+      "max_bytes": 262144,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_gate_summary.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_gate_summary.json"
+    },
+    {
+      "destination_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_review_facts.json",
+      "max_bytes": 131072,
+      "required": true,
+      "source_relpath": "workload/daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_review_facts.json"
+    }
+  ],
+  "evidence_role": "development_screening",
+  "expected_wall_seconds": 172800,
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY",
+  "precision_contract": {
+    "certificate_relpath": "experience_docx/precision_certificates/daytime-dehazing-observable-proxy-domain-actionability-factorial-v1__DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY.json",
+    "mode": "formal_precision",
+    "rationale": "The terminal-bound Frozen-BN raw scene-PSNR evidence supplies planning SD 0.632364322219979 dB; a frozen 1.5 safety inflation gives upper bound 0.9485464833299684 dB. Critical value 2.9551668474978343 and target half-width 0.39 dB require ceil((2.9551668474978343*0.9485464833299684/0.39)^2)=52 independent scenes in each stratum. Each planned stratum has 55. Precision is inconclusive-only."
+  },
+  "protected_data_permissions": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false
+  },
+  "resume_policy": "none",
+  "route_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1",
+  "schema_version": 2,
+  "timeout_seconds": 259200,
+  "total_units": 1501
+}

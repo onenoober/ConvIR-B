@@ -1,0 +1,54 @@
+{
+  "bound_assets": [
+    {
+      "id": "official_anchor_checkout",
+      "identity": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+    },
+    {
+      "id": "observable_proxy_actionability_entrypoint",
+      "identity": "cf6517463af3f1caa5296eec53661cd33cb9877e5d7ab6b2d52aec117445e010"
+    },
+    {
+      "id": "runtime_environment",
+      "identity": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216"
+    },
+    {
+      "id": "official_checkpoint",
+      "identity": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088"
+    },
+    {
+      "id": "model_source",
+      "identity": "9681defa95c6602d0e0abae05e635771bd65d48a18555198ff00d573242a0005"
+    },
+    {
+      "id": "model_layers",
+      "identity": "ac8a05bd626d9adda16308dedb9466f36d7ff44cfb666f64e7e14ddf8cdf43a4"
+    }
+  ],
+  "compatibility_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "contract_mode": "gpu_synthetic_no_data",
+  "minimum_fixture": {
+    "batch": 2,
+    "channels": 3,
+    "height": 256,
+    "width": 256
+  },
+  "production_path_statement": "The exact frozen ConvIR-B graph, checkpoint load, four independently initialized proxy-by-alignment adapters, physics and horizontal-transformation-disagreement proxy construction, deterministic joint spatial permutation, final-decoder modulation, training loss, optimizer, five seed blocks, official and four-cell evaluation, raw scene summaries, 16-interval simultaneous family, proxy selection, safety summaries, and four typed gates run on device-aware synthetic CUDA tensors for the full 41100 production iterations without dataset or protected-data access.",
+  "profile_id": "daytime_dehazing_observable_proxy_domain_actionability_factorial_gpu_v1",
+  "protected_data_prohibited": true,
+  "reuse_identity": {
+    "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
+    "code_path_sha256": "cf6517463af3f1caa5296eec53661cd33cb9877e5d7ab6b2d52aec117445e010",
+    "device_class": "cuda_sm89",
+    "input_contract_sha256": "28d76bfa09c5ae5a34edabc8b559c4608bb73d079907406157ff08366756f6b5",
+    "runtime_environment_sha256": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216",
+    "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898"
+  },
+  "schema_version": 2,
+  "scientific_output_prohibited": true,
+  "scientific_training_prohibited": true
+}

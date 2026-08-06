@@ -1,0 +1,63 @@
+{
+  "assurance": {
+    "method_id": "terminal_historical_raw_psnr_sd_with_frozen_safety_inflation",
+    "planning_sd_rule": "The terminal-bound Frozen-BN multiseed summary reports a maximum eligible raw scene-PSNR planning SD of 0.632364322219979 dB. Multiplying by the predeclared 1.5 safety factor freezes 0.9485464833299684 dB as the upper bound; no C1 partial outcome or future route result is reused.",
+    "probability": 0.95
+  },
+  "certificate_id": "daytime_dehazing_observable_proxy_domain_actionability_factorial_precision_v1",
+  "comparison_family": "proxy_factorial_16_interval_terminal_family",
+  "confidence_level": 0.95,
+  "critical_value": 2.9551668474978343,
+  "feasible": true,
+  "independent_unit": "original_clear_scene",
+  "method": "normal_mean",
+  "operation_id": "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY",
+  "primary_estimand_id": "observable_proxy_spatial_actionability",
+  "route_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1",
+  "schema_version": 2,
+  "source_reference": "Frozen S0 and unified dataset-role capacities plus terminal-bound Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d; required groups are frozen before this route accesses outcomes.",
+  "source_role": "development_screening",
+  "strata": [
+    {
+      "feasible": true,
+      "id": "HAZE4K_INTERNAL",
+      "independent_groups_available": 55,
+      "independent_groups_planned": 55,
+      "independent_groups_required": 52,
+      "planning_sd": 0.9485464833299684,
+      "planning_sd_upper_bound": 0.9485464833299684,
+      "source_reference": "Frozen S0 Haze4K role ledger capacity; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+    },
+    {
+      "feasible": true,
+      "id": "ITS_UNASSIGNED",
+      "independent_groups_available": 55,
+      "independent_groups_planned": 55,
+      "independent_groups_required": 52,
+      "planning_sd": 0.9485464833299684,
+      "planning_sd_upper_bound": 0.9485464833299684,
+      "source_reference": "SHA-bound dataset-role ledger ranks 0 through 54 from unassigned known-overlap-quarantined ITS; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+    },
+    {
+      "feasible": true,
+      "id": "OTS_UNASSIGNED",
+      "independent_groups_available": 55,
+      "independent_groups_planned": 55,
+      "independent_groups_required": 52,
+      "planning_sd": 0.9485464833299684,
+      "planning_sd_upper_bound": 0.9485464833299684,
+      "source_reference": "SHA-bound dataset-role ledger ranks 0 through 54 from unassigned known-overlap-quarantined OTS; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+    },
+    {
+      "feasible": true,
+      "id": "NHHAZE_HISTORICAL",
+      "independent_groups_available": 55,
+      "independent_groups_planned": 55,
+      "independent_groups_required": 52,
+      "planning_sd": 0.9485464833299684,
+      "planning_sd_upper_bound": 0.9485464833299684,
+      "source_reference": "SHA-bound dataset-role ledger identifies all 55 NH-HAZE scenes as historical development; planning SD source is Frozen-BN multiseed summary SHA-256 a51f4a24f474c7da59a454616676f54fe7756f3004325735d7e52063b426ae4d."
+    }
+  ],
+  "target_half_width": 0.39
+}

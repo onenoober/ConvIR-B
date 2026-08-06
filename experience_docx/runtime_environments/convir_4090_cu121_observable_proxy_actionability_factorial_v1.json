@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "environment_id": "convir_4090_cu121_observable_proxy_actionability_factorial_v1",
+  "execution_host": "convir-4090",
+  "python": "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python",
+  "device_class": "cuda_sm89",
+  "required_imports": [
+    "numpy",
+    "PIL",
+    "torch"
+  ],
+  "production_contract": "Frozen official ConvIR-B inference with four equal-capacity final-decoder adapters in a physics-or-transformation-disagreement proxy by aligned-or-within-scene-permuted full factorial, five frozen training-seed blocks, four development-only strata, one terminal analysis, and exact SHA-bound unit-ledger coverage."
+}
