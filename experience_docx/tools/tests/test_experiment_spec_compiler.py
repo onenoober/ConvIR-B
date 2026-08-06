@@ -312,7 +312,7 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         self.assertEqual(2, precision["schema_version"])
         self.assertEqual(2, route_assets["schema_version"])
 
-    def test_main_dataset_registry_binds_verified_reside_layout(self):
+    def test_main_dataset_registry_binds_verified_dataset_layouts(self):
         registry = COMPILER.validate_dataset_asset_registry(
             (SOURCE_REPO / COMPILER.DATASET_ASSET_REGISTRY_RELPATH).read_bytes()
         )
@@ -327,6 +327,26 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         self.assertEqual(
             "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/OTS",
             registry["reside.ots_alpha.haze"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+            registry["haze4k.train"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test",
+            registry["haze4k.test"]["path"],
+        )
+        self.assertEqual(
+            "/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE",
+            registry["nh_haze.root"]["path"],
+        )
+        self.assertEqual(
+            "daytime_haze4k_identity_v1",
+            registry["haze4k.root"]["verification_source_id"],
+        )
+        self.assertEqual(
+            "reside_pairing_v2",
+            registry["reside.its.train.haze"]["verification_source_id"],
         )
 
     def test_schema3_expands_dataset_registry_asset_and_runtime_environment(self):

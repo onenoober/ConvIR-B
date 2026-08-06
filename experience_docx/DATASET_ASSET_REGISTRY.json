@@ -1,58 +1,102 @@
 {
-  "schema_version": 1,
-  "registry_id": "convir_dataset_asset_registry_v1",
+  "schema_version": 2,
+  "registry_id": "convir_dataset_asset_registry_v2",
   "scope": "location_only_no_scientific_authorization",
   "access_role_policy": "assigned_by_each_route_contract",
-  "verification_source": {
-    "route_id": "daytime-dehazing-reside-pairing-contract-v2",
-    "run_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
-    "terminal_state": "COMPLETED_GATE_PASS",
-    "terminal_record_sha256": "6742213ba1f0d6cab8931ab9e4eb3afa0bbcea2216fcbc813200ed2d03808965",
-    "closeout_path": "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_closeout.json",
-    "closeout_sha256": "915d98b1dae5847cdb1166610e16ade96b5fb656373587d08895e2a7863492b9",
-    "summary_path": "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_summary.json",
-    "summary_sha256": "d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699"
+  "verification_sources": {
+    "reside_pairing_v2": {
+      "route_id": "daytime-dehazing-reside-pairing-contract-v2",
+      "run_id": "daytime-dehazing-reside-pairing-contract-v2-r1",
+      "terminal_state": "COMPLETED_GATE_PASS",
+      "terminal_record_sha256": "6742213ba1f0d6cab8931ab9e4eb3afa0bbcea2216fcbc813200ed2d03808965",
+      "closeout_path": "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_closeout.json",
+      "closeout_sha256": "915d98b1dae5847cdb1166610e16ade96b5fb656373587d08895e2a7863492b9",
+      "summary_path": "experience_docx/experiment_logs/daytime-dehazing-reside-pairing-contract-v2/daytime_dehazing_reside_pairing_contract_v2_summary.json",
+      "summary_sha256": "d7e4900fab8701e7ae764775cd527510795cf0c357964a7e7cf0f1b2254c3699"
+    },
+    "daytime_haze4k_identity_v1": {
+      "route_id": "daytime-dehazing-haze4k-identity-v1",
+      "run_id": "daytime-dehazing-haze4k-identity-v1-r1",
+      "terminal_state": "COMPLETED_GATE_PASS",
+      "terminal_record_sha256": "ebe39beb757a42df0375f6834a671c97d3f2cd042069324af20ae462a9d914e5",
+      "closeout_path": "experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_closeout.json",
+      "closeout_sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346",
+      "summary_path": "experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_identity_summary.json",
+      "summary_sha256": "bde7dc3a96e4cbc57d33289fd58752325fe3113cd2a0cd48e57145819883fe65"
+    }
   },
   "assets": {
     "reside.root": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE",
-      "verification": "parent_of_verified_layout"
+      "verification": "parent_of_verified_layout",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.official": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official",
-      "verification": "parent_of_verified_layout"
+      "verification": "parent_of_verified_layout",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.its.train.clear": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_clear",
-      "verification": "verified_clear_root"
+      "verification": "verified_clear_root",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.its.train.haze": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/train/ITS_haze",
-      "verification": "verified_haze_root"
+      "verification": "verified_haze_root",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.its.val.clear": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/clear",
-      "verification": "verified_clear_root"
+      "verification": "verified_clear_root",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.its.val.haze": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/val/haze",
-      "verification": "verified_haze_root"
+      "verification": "verified_haze_root",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.ots_alpha.clear": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/clear_images",
-      "verification": "verified_clear_root"
+      "verification": "verified_clear_root",
+      "verification_source_id": "reside_pairing_v2"
     },
     "reside.ots_alpha.haze": {
       "kind": "directory",
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/OTS",
-      "verification": "verified_haze_root"
+      "verification": "verified_haze_root",
+      "verification_source_id": "reside_pairing_v2"
+    },
+    "haze4k.root": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K",
+      "verification": "verified_paired_dataset_root",
+      "verification_source_id": "daytime_haze4k_identity_v1"
+    },
+    "haze4k.train": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/train",
+      "verification": "verified_paired_split_root",
+      "verification_source_id": "daytime_haze4k_identity_v1"
+    },
+    "haze4k.test": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K/test",
+      "verification": "verified_paired_split_root",
+      "verification_source_id": "daytime_haze4k_identity_v1"
+    },
+    "nh_haze.root": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/NH-HAZE",
+      "verification": "verified_paired_dataset_root",
+      "verification_source_id": "daytime_haze4k_identity_v1"
     }
   }
 }

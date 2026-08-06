@@ -96,15 +96,18 @@ DATASET_REGISTRY_REFERENCE_FIELDS = {
 }
 DATASET_REGISTRY_FIELDS = {
     "schema_version", "registry_id", "scope", "access_role_policy",
-    "verification_source", "assets",
+    "verification_sources", "assets",
 }
 DATASET_REGISTRY_SOURCE_FIELDS = {
     "route_id", "run_id", "terminal_state", "terminal_record_sha256",
     "closeout_path", "closeout_sha256", "summary_path", "summary_sha256",
 }
-DATASET_REGISTRY_ASSET_FIELDS = {"kind", "path", "verification"}
+DATASET_REGISTRY_ASSET_FIELDS = {
+    "kind", "path", "verification", "verification_source_id",
+}
 DATASET_REGISTRY_VERIFICATIONS = {
     "parent_of_verified_layout", "verified_clear_root", "verified_haze_root",
+    "verified_paired_dataset_root", "verified_paired_split_root",
 }
 
 
@@ -163,28 +166,35 @@ def validate_dataset_asset_registry(raw: bytes) -> dict[str, dict[str, str]]:
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ExperimentSpecError(f"dataset asset registry is invalid JSON: {exc}") from exc
     registry = _object(value, DATASET_REGISTRY_FIELDS, "dataset asset registry")
-    if registry["schema_version"] != 1:
-        raise ExperimentSpecError("dataset asset registry schema_version must equal 1")
+    if registry["schema_version"] != 2:
+        raise ExperimentSpecError("dataset asset registry schema_version must equal 2")
     _token(registry["registry_id"], "dataset asset registry id")
     if registry["scope"] != "location_only_no_scientific_authorization" \
             or registry["access_role_policy"] != "assigned_by_each_route_contract":
         raise ExperimentSpecError("dataset asset registry authority boundary is invalid")
-    source = _object(
-        registry["verification_source"], DATASET_REGISTRY_SOURCE_FIELDS,
-        "dataset asset registry verification_source",
-    )
-    _token(source["route_id"], "dataset asset registry source route_id")
-    _token(source["run_id"], "dataset asset registry source run_id")
-    if source["terminal_state"] != "COMPLETED_GATE_PASS":
-        raise ExperimentSpecError("dataset asset registry source must be a gate PASS")
-    for field in ("terminal_record_sha256", "closeout_sha256", "summary_sha256"):
-        if not isinstance(source[field], str) or not SHA256.fullmatch(source[field]):
-            raise ExperimentSpecError(f"dataset asset registry {field} is invalid")
-    for field in ("closeout_path", "summary_path"):
-        path = _safe_repo_relpath(source[field], f"dataset asset registry {field}")
-        expected_prefix = f"experience_docx/experiment_logs/{source['route_id']}/"
-        if not path.startswith(expected_prefix) or not path.endswith(".json"):
-            raise ExperimentSpecError(f"dataset asset registry {field} is invalid")
+    sources = registry["verification_sources"]
+    if not isinstance(sources, dict) or not 1 <= len(sources) <= 32:
+        raise ExperimentSpecError(
+            "dataset asset registry verification_sources must be a non-empty object"
+        )
+    for source_id, source_value in sources.items():
+        _token(source_id, "dataset asset registry verification source id")
+        source = _object(
+            source_value, DATASET_REGISTRY_SOURCE_FIELDS,
+            f"dataset asset registry verification_sources.{source_id}",
+        )
+        _token(source["route_id"], "dataset asset registry source route_id")
+        _token(source["run_id"], "dataset asset registry source run_id")
+        if source["terminal_state"] != "COMPLETED_GATE_PASS":
+            raise ExperimentSpecError("dataset asset registry source must be a gate PASS")
+        for field in ("terminal_record_sha256", "closeout_sha256", "summary_sha256"):
+            if not isinstance(source[field], str) or not SHA256.fullmatch(source[field]):
+                raise ExperimentSpecError(f"dataset asset registry {field} is invalid")
+        for field in ("closeout_path", "summary_path"):
+            path = _safe_repo_relpath(source[field], f"dataset asset registry {field}")
+            expected_prefix = f"experience_docx/experiment_logs/{source['route_id']}/"
+            if not path.startswith(expected_prefix) or not path.endswith(".json"):
+                raise ExperimentSpecError(f"dataset asset registry {field} is invalid")
     assets = registry["assets"]
     if not isinstance(assets, dict) or not 1 <= len(assets) <= 256:
         raise ExperimentSpecError("dataset asset registry assets must be a non-empty object")
@@ -211,9 +221,18 @@ def validate_dataset_asset_registry(raw: bytes) -> dict[str, dict[str, str]]:
         paths.add(path)
         if item["verification"] not in DATASET_REGISTRY_VERIFICATIONS:
             raise ExperimentSpecError("dataset asset registry verification is invalid")
+        source_id = _token(
+            item["verification_source_id"],
+            f"dataset asset registry assets.{registry_id}.verification_source_id",
+        )
+        if source_id not in sources:
+            raise ExperimentSpecError(
+                f"dataset asset registry source is unknown: {source_id}"
+            )
         result[registry_id] = {
             "kind": item["kind"], "path": path,
             "verification": item["verification"],
+            "verification_source_id": source_id,
         }
     return result
 

@@ -9,7 +9,7 @@ on_error() {
 trap 'on_error "$LINENO" "$BASH_COMMAND"' ERR
 
 branch=codex/dataset-asset-registry
-baseline=4052b63b60d4e288b30f2e47395b4dbf527fca46
+baseline=6d74a1edbad7b2ad2077f9220f5d2112f58ba3c5
 github=git@github.com:onenoober/ConvIR-B.git
 seed=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor
 python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
@@ -26,7 +26,7 @@ git -C "$work/repo" checkout --quiet --detach "$candidate"
 test -z "$(git -C "$work/repo" status --porcelain)"
 
 changed=$(git -C "$work/repo" diff --name-only "$baseline" "$candidate")
-expected=$'experience_docx/DATASET_ASSET_REGISTRY.json\nexperience_docx/README.md\nexperience_docx/tools/experiment_spec_compiler.py\nexperience_docx/tools/tests/test_experiment_spec_compiler.py\nexperience_docx/tools/validate_dataset_asset_registry_cloud.sh'
+expected=$'experience_docx/DATASET_ASSET_REGISTRY.json\nexperience_docx/tools/experiment_spec_compiler.py\nexperience_docx/tools/tests/test_experiment_spec_compiler.py\nexperience_docx/tools/validate_dataset_asset_registry_cloud.sh'
 [[ "$changed" == "$expected" ]]
 
 "$python" -m py_compile \
