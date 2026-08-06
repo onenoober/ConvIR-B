@@ -23,6 +23,16 @@
       "closeout_sha256": "9e132828fb98615241d5e8dea0b0fecffa542397f4ff71bf686a901ca8959346",
       "summary_path": "experience_docx/experiment_logs/daytime-dehazing-haze4k-identity-v1/daytime_dehazing_haze4k_identity_v1_identity_summary.json",
       "summary_sha256": "bde7dc3a96e4cbc57d33289fd58752325fe3113cd2a0cd48e57145819883fe65"
+    },
+    "sots_ots_asset_audit_v1": {
+      "route_id": "sots-ots-asset-audit-v1",
+      "run_id": "sots-ots-asset-audit-v1-r1",
+      "terminal_state": "COMPLETED_GATE_PASS",
+      "terminal_record_sha256": "b04a85dad4559743e31c6a963274f5a979a7b1f576bfefec3546eee71446fe51",
+      "closeout_path": "experience_docx/experiment_logs/sots-ots-asset-audit-v1/sots_ots_asset_audit_v1_closeout.json",
+      "closeout_sha256": "2772599de94979be9486b752b2bfc6fc3cb887e49c498a5d70249681b4db6c56",
+      "summary_path": "experience_docx/experiment_logs/sots-ots-asset-audit-v1/sots_ots_asset_audit_v1_summary.json",
+      "summary_sha256": "2c4ac338bbe63a6768420cbd9b249273ad229d1933b5d2425a9dd7ccd8ea7b59"
     }
   },
   "assets": {
@@ -73,6 +83,30 @@
       "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/OTS_ALPHA/OTS",
       "verification": "verified_haze_root",
       "verification_source_id": "reside_pairing_v2"
+    },
+    "reside.sots.root": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS",
+      "verification": "parent_of_verified_layout",
+      "verification_source_id": "sots_ots_asset_audit_v1"
+    },
+    "reside.sots.outdoor": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor",
+      "verification": "verified_paired_dataset_root",
+      "verification_source_id": "sots_ots_asset_audit_v1"
+    },
+    "reside.sots.outdoor.clear": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor/gt",
+      "verification": "verified_clear_root",
+      "verification_source_id": "sots_ots_asset_audit_v1"
+    },
+    "reside.sots.outdoor.haze": {
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/outdoor/hazy",
+      "verification": "verified_haze_root",
+      "verification_source_id": "sots_ots_asset_audit_v1"
     },
     "haze4k.root": {
       "kind": "directory",
