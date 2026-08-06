@@ -1,0 +1,491 @@
+{
+  "competing_explanation": "Correct dimensions and filename pairing can coexist with spatial offset, while ordinary natural-image correlation can make wrong pairs or shifted pairs appear similar; the frozen wrong-clear, far-shift, and known-shift controls prevent a registration claim based only on size or generic correlation.",
+  "controls": [
+    "exact SHA-256 identity and typed PASS content of geometry-v2 summary, closeout, and conclusion",
+    "exact reproduction of geometry-v2 GT, hazy, and combined aggregate identities",
+    "exact 50-clear, 500-hazy, ten-variants-per-clear mapping and 640x480 to 620x460 crop geometry",
+    "three data-free synthetic known-shift cases through the exact scoring path",
+    "deterministic sorted cyclic wrong-clear negative control for every hazy observation",
+    "fixed horizontal and vertical plus-or-minus-eight-pixel negative controls",
+    "zero model, checkpoint, training, inference, restoration metric, image display, image archive, per-pair archive, and protected-data operations"
+  ],
+  "decision_table": {
+    "rules": [
+      {
+        "id": "geometry_evidence_veto",
+        "terminal": "inconclusive",
+        "when": {
+          "geometry_evidence_identity": [
+            "fail",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "current_asset_veto_after_geometry",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "fail",
+            "invalid"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ]
+        }
+      },
+      {
+        "id": "controlled_stable_nonzero_failure",
+        "terminal": "fail",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ],
+          "pixel_registration": [
+            "unfavorable"
+          ]
+        }
+      },
+      {
+        "id": "negative_controls_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ],
+          "isolation": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_control_validity": [
+            "unmet",
+            "invalid"
+          ],
+          "pixel_registration": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "registration_unresolved_with_valid_controls",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ],
+          "isolation": [
+            "safe",
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_control_validity": [
+            "met"
+          ],
+          "pixel_registration": [
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "unsafe_registration_operation",
+        "terminal": "fail",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ],
+          "isolation": [
+            "unsafe"
+          ],
+          "pixel_registration": [
+            "favorable",
+            "indeterminate",
+            "invalid"
+          ]
+        }
+      },
+      {
+        "id": "isolation_unresolved",
+        "terminal": "inconclusive",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ],
+          "isolation": [
+            "indeterminate",
+            "invalid"
+          ],
+          "negative_control_validity": [
+            "met"
+          ],
+          "pixel_registration": [
+            "favorable"
+          ]
+        }
+      },
+      {
+        "id": "qualified_registration_passes",
+        "terminal": "pass",
+        "when": {
+          "current_asset_identity": [
+            "pass"
+          ],
+          "geometry_evidence_identity": [
+            "pass"
+          ],
+          "isolation": [
+            "safe"
+          ],
+          "negative_control_validity": [
+            "met"
+          ],
+          "pixel_registration": [
+            "favorable"
+          ]
+        }
+      }
+    ],
+    "terminal_actions": {
+      "fail": {
+        "family_effect": "stop",
+        "next_action_id": "stop_sots_indoor_pixel_registration_use",
+        "terminal": {
+          "authorizes": "NONE",
+          "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_FAIL",
+          "state": "COMPLETED_GATE_FAIL"
+        }
+      },
+      "inconclusive": {
+        "family_effect": "allow_predeclared_evidence",
+        "next_action_id": "inspect_compact_registration_evidence",
+        "terminal": {
+          "authorizes": "PIXEL_REGISTRATION_EVIDENCE_REVIEW_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_INCONCLUSIVE",
+          "state": "COMPLETED_INCONCLUSIVE"
+        }
+      },
+      "pass": {
+        "family_effect": "advance",
+        "next_action_id": "plan_minimum_cost_center_cropped_model_review",
+        "terminal": {
+          "authorizes": "CENTER_CROPPED_MODEL_REVIEW_PLANNING_ONLY",
+          "decision": "RESIDE_SOTS_INDOOR_PIXEL_REGISTRATION_QUALIFICATION_PASS",
+          "state": "COMPLETED_GATE_PASS"
+        }
+      }
+    }
+  },
+  "disabled_actions": [
+    "model or checkpoint load",
+    "training or inference",
+    "PSNR, SSIM, perceptual, or any restoration-quality metric computation",
+    "image display, image archive, or human visual inspection",
+    "per-pair or per-image evidence archive",
+    "protected confirmation, canary, or locked-test access",
+    "threshold or method changes after outcome access",
+    "model-quality, promotion, deployment, or external-evaluation conclusion"
+  ],
+  "gates": [
+    {
+      "comparison_family": "sots_indoor_pixel_registration_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "supportive_clear_scene_fraction",
+      "id": "geometry_evidence_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "the exact geometry-v2 terminal record, summary, closeout, conclusion, PASS gates, crop, and aggregate identities",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_complete_registration_census"
+    },
+    {
+      "comparison_family": "sots_indoor_pixel_registration_qualification",
+      "decision_role": "validity_veto",
+      "direction": "equal",
+      "estimand_id": "supportive_clear_scene_fraction",
+      "id": "current_asset_identity",
+      "neutral_outcome": "pass",
+      "outcomes": [
+        "pass",
+        "fail",
+        "invalid"
+      ],
+      "reference": "the current asset exactly reproduces the frozen root, counts, mapping, sizes, encodings, and three aggregate identities",
+      "threshold": true,
+      "type": "integrity",
+      "uncertainty_id": "deterministic_complete_registration_census"
+    },
+    {
+      "comparison_family": "sots_indoor_pixel_registration_qualification",
+      "decision_role": "inconclusive_only",
+      "direction": "min",
+      "estimand_id": "supportive_clear_scene_fraction",
+      "id": "negative_control_validity",
+      "neutral_outcome": "met",
+      "outcomes": [
+        "met",
+        "unmet",
+        "invalid"
+      ],
+      "reference": "the known-shift fixture passes and cyclic wrong-clear plus fixed far-shift controls separate for at least 475 pairs and 48 scenes",
+      "threshold": "fixture_pass_and_controls_valid_for_at_least_475_pairs_and_48_scenes",
+      "type": "precision",
+      "uncertainty_id": "deterministic_complete_registration_census"
+    },
+    {
+      "comparison_family": "sots_indoor_pixel_registration_qualification",
+      "decision_role": "decisive",
+      "direction": "equal",
+      "estimand_id": "supportive_clear_scene_fraction",
+      "id": "pixel_registration",
+      "neutral_outcome": "favorable",
+      "outcomes": [
+        "favorable",
+        "unfavorable",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "the mutually exclusive frozen zero-displacement PASS, stable-nonzero FAIL, and ambiguity conjunctions",
+      "threshold": "pass_or_controlled_stable_nonzero_fail_conjunction",
+      "type": "materiality",
+      "uncertainty_id": "deterministic_complete_registration_census"
+    },
+    {
+      "comparison_family": "sots_indoor_pixel_registration_qualification",
+      "decision_role": "decisive",
+      "direction": "min",
+      "estimand_id": "supportive_clear_scene_fraction",
+      "id": "isolation",
+      "neutral_outcome": "safe",
+      "outcomes": [
+        "safe",
+        "unsafe",
+        "indeterminate",
+        "invalid"
+      ],
+      "reference": "zero model, checkpoint, training, inference, restoration metric, image display, image archive, per-pair archive, and protected-data operations",
+      "threshold": 0,
+      "type": "safety",
+      "uncertainty_id": "deterministic_complete_registration_census"
+    }
+  ],
+  "intervention": {
+    "fixed_factors": [
+      "the exact Indoor root is /sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS/indoor",
+      "geometry-v2 terminal record SHA-256 is a457021296d6487af55e58e2b3c07dcc38fe454f5785db04567a18eff4d298da",
+      "geometry-v2 summary SHA-256 is 194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3",
+      "geometry-v2 closeout SHA-256 is 92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80",
+      "GT, hazy, and combined aggregate identities remain f87015ecff62c83a7286017fb1641589df6445556e35737196d81e4fb7dda950, 18543d375ac814208b71844748e85ca8685317da4a52403dfb172ecfeee6f3ee, and 31efa342c4224585772ff15eaad9285e1d4134f9dd3f355eb70e689e19fdbfb4",
+      "crop ten pixels from each clear-image side and do not crop hazy images",
+      "use fixed Rec.709 luminance and centered horizontal and vertical gradients",
+      "score the upper clear-gradient quartile with normalized gradient-vector correlation",
+      "search every integer dx and dy from -4 through +4 on one fixed interior support",
+      "require at least 4096 effective gradient pixels",
+      "support requires zero score at least 0.45 and zero-over-best-nonzero margin at least 0.015",
+      "contradiction requires a nonzero best score at least 0.45 and best-over-zero margin at least 0.04",
+      "controls require best-true over cyclic-wrong-clear margin at least 0.10 and over best fixed eight-pixel shift margin at least 0.05",
+      "PASS requires at least 475 supportive pairs, 48 supportive scenes with at least nine supportive variants and no contradictory variant, at least 475 control-valid pairs, 48 control-valid scenes, and zero contradictory pairs",
+      "FAIL requires favorable controls, at least 50 contradictory pairs across at least ten scenes, and one nonzero modal shift covering at least 0.80 of contradictory pairs",
+      "all cases outside the exact PASS and FAIL conjunctions are INCONCLUSIVE",
+      "only aggregate count and predeclared score-band histograms may be published; no per-pair table is produced",
+      "no model, checkpoint, training, inference, restoration metric, image display, image archive, or protected-data access"
+    ],
+    "matched_budget": "one exact identity pass and one fixed scoring map over 50 clear scenes with ten nested haze variants each",
+    "primary_variable": "zero versus nonzero spatial displacement after the exact ten-pixel center crop",
+    "reference": "the exact geometry-v2 asset identities, mapping, and crop geometry"
+  },
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "population": {
+    "allow_canary": false,
+    "allow_confirmation": false,
+    "allow_locked_test": false,
+    "evidence_role": "engineering_debug",
+    "grouping_unit": "clear_scene",
+    "independent_group_count": 50,
+    "strata": [
+      {
+        "id": "sots_indoor",
+        "independent_group_count": 50
+      }
+    ]
+  },
+  "primary_estimand": {
+    "aggregation": "clear scenes with at least nine supportive nested variants and zero contradictory variants divided by 50, jointly gated by pair coverage and negative controls",
+    "direction": "higher",
+    "id": "supportive_clear_scene_fraction",
+    "metric_id": "clear_scenes_with_at_least_nine_controlled_zero_displacement_variants_and_no_contradiction_fraction",
+    "strata": [
+      "sots_indoor"
+    ],
+    "unit": "clear_scene"
+  },
+  "question": "After applying the exact geometry-v2 ten-pixel crop to each clear image, do the 50 clear scenes and all 500 nested hazy variants show sufficiently controlled spatial correspondence at zero displacement rather than a stable nonzero displacement?",
+  "research_update_binding": {
+    "bottleneck_class": "measurement",
+    "bottleneck_statement": "Geometry-v2 passed exact asset identity, pairing, and one uniform ten-pixel-per-side center crop, but explicitly did not compare pixel content or establish whether corresponding clear and hazy pixels are spatially registered.",
+    "decision_design": {
+      "alias_structure": "The ten haze variants are nested within each of 50 independent clear scenes; pair counts cannot be treated as 500 independent scenes.",
+      "arms": [
+        {
+          "description": "The named hazy-clear pair after the frozen ten-pixel clear-image center crop at zero displacement.",
+          "id": "named_zero_displacement",
+          "role": "observed"
+        },
+        {
+          "description": "The same named pair across every integer displacement in the frozen plus-or-minus-four-pixel grid.",
+          "id": "local_integer_displacements",
+          "role": "counterfactual"
+        },
+        {
+          "description": "The next clear scene in deterministic sorted cyclic order scored against the hazy observation.",
+          "id": "cyclic_wrong_clear",
+          "role": "negative_control"
+        },
+        {
+          "description": "The named pair at horizontal and vertical plus-or-minus-eight-pixel displacements.",
+          "id": "fixed_far_shifts",
+          "role": "negative_control"
+        },
+        {
+          "description": "Three data-free synthetic fixtures with known zero and nonzero integer shifts through the exact scoring path.",
+          "id": "synthetic_known_shifts",
+          "role": "engineering_control"
+        }
+      ],
+      "estimable_terms": [
+        "controlled zero-displacement support count by pair and independent clear scene",
+        "controlled decisive nonzero-displacement contradiction count and modal-shift stability"
+      ],
+      "factors": [
+        {
+          "id": "spatial_correspondence_candidate",
+          "levels": [
+            "zero_displacement",
+            "local_nonzero_displacement",
+            "wrong_clear",
+            "far_shift"
+          ]
+        }
+      ],
+      "mechanism_estimands": [
+        {
+          "falsifier": "The conjunction is not met.",
+          "hypothesis_id": "zero_displacement_registration",
+          "id": "zero_displacement_support",
+          "metric_id": "supportive_clear_scene_and_pair_counts",
+          "prediction": "At least 48 scenes and 475 pairs meet all zero-peak, score, wrong-clear, far-shift, and effective-pixel gates, with zero contradictory pairs."
+        },
+        {
+          "falsifier": "The controlled stable-nonzero conjunction is not met.",
+          "hypothesis_id": "systematic_nonzero_misregistration",
+          "id": "stable_nonzero_displacement",
+          "metric_id": "controlled_modal_nonzero_shift_counts",
+          "prediction": "At least 50 controlled contradictory pairs across at least ten scenes share a modal nonzero shift fraction of at least 0.80."
+        },
+        {
+          "falsifier": "Either the complete PASS conjunction or the complete controlled stable-nonzero FAIL conjunction is satisfied.",
+          "hypothesis_id": "insufficient_spatial_signal",
+          "id": "insufficient_spatial_signal_ambiguity",
+          "metric_id": "ambiguous_pair_and_control_coverage_counts",
+          "prediction": "The evidence satisfies neither the controlled zero-displacement PASS conjunction nor the controlled stable-nonzero FAIL conjunction."
+        }
+      ],
+      "multiplicity_control": "Closed deterministic conjunctions. PASS requires every identity, control, coverage, zero-displacement, contradiction-absence, and isolation condition. FAIL requires every identity, control, stable-nonzero, cross-scene, and isolation-precondition condition. No pairwise p-values are produced.",
+      "sequential_plan": {
+        "alpha_spending": {
+          "familywise_alpha": 0.05,
+          "method": "not_applicable"
+        },
+        "boundaries": {
+          "futility": "With valid identities and favorable controls, at least 50 contradictory pairs across ten scenes share one nonzero modal displacement for at least 80 percent of contradictory pairs.",
+          "precision": "Any evidence satisfying neither frozen conjunction is inconclusive; thresholds cannot be changed after outcome access.",
+          "success": "All identities pass, controls are favorable for at least 475 pairs and 48 scenes, at least 475 pairs and 48 scenes support zero displacement, no pair is contradictory, and isolation is safe.",
+          "validity": "Any geometry evidence identity, current asset identity, decode, synthetic fixture, or negative-control coverage failure is inconclusive rather than scientific failure."
+        },
+        "looks": [
+          {
+            "id": "terminal",
+            "information_fraction": 1.0
+          }
+        ],
+        "outcome_access": "terminal_only"
+      }
+    },
+    "design_selection": {
+      "decision_value": "One fixed complete-pair spatial census with two dataset-derived negative controls and one data-free known-shift fixture separates supported zero displacement, controlled stable nonzero displacement, and ambiguity without model execution.",
+      "expected_time_to_decision": "One CPU-only file-identity pass and one bounded fixed-count gradient registration pass over 500 pairs.",
+      "shared_setup": "All hypotheses use the same geometry-v2 identities, ten-pixel crop, luminance-gradient transform, displacement grid, controls, and aggregate-only evidence writer.",
+      "strategy": "single_factor",
+      "worst_case_stopping_cost": "Hash 550 files, decode 50 clear and 500 hazy RGB PNGs, score 500 fixed-shape pairs plus deterministic controls, write two compact JSON files and one completed-unit ledger row, then stop."
+    },
+    "hypotheses": [
+      {
+        "discriminating_prediction": "For at least 475 pairs and 48 clear scenes, zero displacement is the controlled gradient-structure peak, with no pair showing decisive controlled nonzero displacement.",
+        "falsifier": "Valid negative controls accompany a stable decisive nonzero displacement in at least 50 pairs across at least ten scenes, with one nonzero displacement accounting for at least 80 percent of contradictory pairs.",
+        "id": "zero_displacement_registration",
+        "statement": "The geometry-v2 crop places each hazy variant in the same spatial coordinate system as its named clear scene."
+      },
+      {
+        "discriminating_prediction": "After valid wrong-clear and fixed-shift controls, the same nonzero displacement decisively exceeds zero in at least 50 pairs across at least ten scenes and covers at least 80 percent of contradictory pairs.",
+        "falsifier": "At least 475 pairs and 48 scenes support zero displacement, with no contradictory pair.",
+        "id": "systematic_nonzero_misregistration",
+        "statement": "The geometry-v2 crop preserves a stable spatial offset between named clear and hazy pixels."
+      },
+      {
+        "discriminating_prediction": "The evidence satisfies neither the zero-displacement PASS conjunction nor the controlled stable-nonzero FAIL conjunction.",
+        "falsifier": "Either the complete PASS conjunction or the complete controlled stable-nonzero FAIL conjunction is satisfied.",
+        "id": "insufficient_spatial_signal",
+        "statement": "Photometric haze variation, weak local structure, or inadequate negative-control separation prevents a reliable spatial-registration decision."
+      }
+    ],
+    "literature_basis": [
+      {
+        "applicability_limit": "The publication does not prove the byte identity, local crop convention, or pixel registration of this filesystem copy.",
+        "identifier": "doi:10.1109/TIP.2018.2867951",
+        "source_status": "peer_reviewed",
+        "task": "RESIDE paired synthetic dehazing benchmark organization",
+        "transferable_claim": "SOTS Indoor is distributed as paired synthetic hazy and clear benchmark imagery for single-image dehazing evaluation."
+      }
+    ],
+    "snapshot_commit": "caca35e5a5ef9ac55a20824dd0f930fd966ba812",
+    "trigger_terminals": [
+      {
+        "route_id": "reside-sots-indoor-geometry-qualification-v2",
+        "terminal_record_sha256": "a457021296d6487af55e58e2b3c07dcc38fe454f5785db04567a18eff4d298da"
+      }
+    ],
+    "trigger_type": "post_terminal"
+  },
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "schema_version": 3,
+  "uncertainty": {
+    "comparison_family": "sots_indoor_pixel_registration_qualification",
+    "confidence_level": 0.95,
+    "id": "deterministic_complete_registration_census",
+    "independent_unit": "clear_scene",
+    "method_id": "exact_frozen_thresholds_over_complete_asset_with_nested_scene_accounting"
+  }
+}

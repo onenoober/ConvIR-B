@@ -1,0 +1,63 @@
+{
+  "assets": [
+    {
+      "access_role": "engineering_debug",
+      "commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
+      "contract_access": true,
+      "id": "official_anchor_checkout",
+      "kind": "git_checkout",
+      "path": "/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-official-arch-anchor",
+      "require_clean": true
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": false,
+      "id": "sots_root",
+      "kind": "directory",
+      "path": "/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/SOTS"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "registration_entrypoint",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/tools/qualify_reside_sots_indoor_pixel_registration_v2.py",
+      "sha256": "6f5453edd1d79d108d22031c5c4ac627eec03348b57a0e7daff8f1bf971a47e9"
+    },
+    {
+      "access_role": "engineering_debug",
+      "contract_access": true,
+      "id": "runtime_environment",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/runtime_environments/convir_4090_cu121_observable_utility_v1.json",
+      "sha256": "35600a8354cfca6c0f3ed3c6159a362377e5c558795208f325e59d74b59b569b"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "geometry_summary",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-sots-indoor-geometry-qualification-v2/reside_sots_indoor_geometry_qualification_v2_summary.json",
+      "sha256": "194d8cd661eed78c16dd7cb353f5dc45573cac774c1d74f951826f4dd6f066a3"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "geometry_closeout",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-sots-indoor-geometry-qualification-v2/reside_sots_indoor_geometry_qualification_v2_closeout.json",
+      "sha256": "92fd1fda2ae9e66f6dd3fa8ae7f93e6cab83bc91605bd185495ec94b066f3e80"
+    },
+    {
+      "access_role": "unrestricted",
+      "contract_access": true,
+      "id": "geometry_conclusion",
+      "kind": "file",
+      "path": "{REMOTE_REPO}/experience_docx/experiment_logs/reside-sots-indoor-geometry-qualification-v2/reside_sots_indoor_geometry_qualification_v2_conclusion.json",
+      "sha256": "ef50912db082fdf10ec89838642f3b9939ddaa508b41b669be1cbfebbf8ec85d"
+    }
+  ],
+  "operation_id": "QUALIFY_PIXEL_REGISTRATION",
+  "route_id": "reside-sots-indoor-pixel-registration-qualification-v2",
+  "schema_version": 2
+}
