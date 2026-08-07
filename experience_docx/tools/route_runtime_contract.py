@@ -211,7 +211,9 @@ def engineering_contract_result_profile(
     }
     if profile["mode"] not in ENGINEERING_CONTRACT_MODES:
         raise ContractError("engineering contract mode is invalid")
-    if profile["mode"] != "metadata_only" and not isinstance(minimum_fixture, dict):
+    if not profile["legacy_implicit_contract"] \
+            and profile["mode"] != "metadata_only" \
+            and not isinstance(minimum_fixture, dict):
         raise ContractError("engineering capability minimum fixture is unavailable")
     # A validated runtime spec/capability is the source of this profile. Copy it
     # through canonical JSON so later proof records cannot retain mutable aliases.

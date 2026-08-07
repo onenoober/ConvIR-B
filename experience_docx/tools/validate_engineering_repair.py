@@ -23,6 +23,7 @@ from route_runtime_contract import (
     RUNTIME_BUNDLE_RELPATHS,
     engineering_contract_result_profile,
     runtime_spec_relpath,
+    validate_runtime_spec,
 )
 
 
@@ -587,10 +588,19 @@ def _normalize_schema6_source(source: dict[str, Any], operation_id: str,
 def _receipt_contract_reuse_bindings(
     repo: Path, base: str, snapshot: str, operation_id: str,
     source_entrypoint_sha256: str, candidate_entrypoint_sha256: str,
+    source_manifest: dict[str, Any], candidate_manifest: dict[str, Any],
 ) -> dict[str, Any]:
     runtime_path = runtime_spec_relpath(operation_id)
-    source_runtime = load_json(repo, base, runtime_path)
-    candidate_runtime = load_json(repo, snapshot, runtime_path)
+    try:
+        source_runtime = validate_runtime_spec(
+            load_json(repo, base, runtime_path), source_manifest, operation_id,
+        )
+        candidate_runtime = validate_runtime_spec(
+            load_json(repo, snapshot, runtime_path), candidate_manifest,
+            operation_id,
+        )
+    except ContractError as exc:
+        raise RepairError(f"reviewed runtime contract is invalid: {exc}") from exc
     source_profile_path = source_runtime["engineering_contract"][
         "capability_profile_relpath"
     ]
@@ -713,6 +723,7 @@ def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: 
     if reviewed_workload:
         receipt_bindings = _receipt_contract_reuse_bindings(
             repo, base, snapshot, operation_id, old_sha, new_sha,
+            old_manifest, new_manifest,
         )
     return {
         "asset_path_repairs": [],

@@ -2562,7 +2562,10 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual(4, plan["inputSchema"]["properties"]["schema_version"]["const"])
         finish = next(item for item in tools if item["name"] == "convir_route_finish")
         self.assertEqual(
-            ["diagnose", "repair", "archive", "discard", "finalize"],
+            [
+                "diagnose", "repair", "reviewed_repair", "archive",
+                "discard", "finalize",
+            ],
             finish["inputSchema"]["properties"]["engineering_failure_resolution"]["enum"],
         )
         self.assertEqual(
