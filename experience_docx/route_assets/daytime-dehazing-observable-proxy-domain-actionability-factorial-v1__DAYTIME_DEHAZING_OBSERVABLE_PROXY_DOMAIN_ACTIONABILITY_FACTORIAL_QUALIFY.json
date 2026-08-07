@@ -15,7 +15,7 @@
       "id": "observable_proxy_actionability_entrypoint",
       "kind": "file",
       "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_observable_proxy_domain_actionability_factorial_v1.py",
-      "sha256": "cf6517463af3f1caa5296eec53661cd33cb9877e5d7ab6b2d52aec117445e010"
+      "sha256": "7f88cd35d4de59395f4b5c60cdf6c26d0cafbadf38d24845828dcd9677874b82"
     },
     {
       "access_role": "engineering_debug",

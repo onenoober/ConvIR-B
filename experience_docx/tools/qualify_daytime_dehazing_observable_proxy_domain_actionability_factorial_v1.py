@@ -907,9 +907,10 @@ def contract(context_path: Path) -> None:
         "mode": "gpu_synthetic_no_data",
         "device": context.device,
         "fixture": {
-            "batch": 2, "channels": 3,
-            "training_height": TRAIN_CROP, "training_width": TRAIN_CROP,
-            "evaluation_height": MAX_EVAL_CROP, "evaluation_width": MAX_EVAL_CROP,
+            "batch": 2,
+            "channels": 3,
+            "height": TRAIN_CROP,
+            "width": TRAIN_CROP,
         },
         "production_path_exercised": True,
         "protected_data_touched": False,
