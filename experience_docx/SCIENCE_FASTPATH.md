@@ -161,6 +161,20 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    enforces the canonical next output id, seals one plan and immediately uses
    the existing start path. A failure before sealing creates no plan and consumes
    no repair transaction; an identical repeat reuses the same plan/start state.
+   A user-authorized sensitive repair may instead use the explicit reviewed
+   workload-only gate and `engineering_failure_resolution=reviewed_repair`.
+   This is available only after a receipt-bound contract PASS followed by a
+   workload-phase engineering terminal. Before commit it proves that every
+   changed top-level symbol is reachable from `run` and unreachable from
+   `contract`, that the contract-reachable AST slice is unchanged in canonical
+   form, that the six-field capability identity changes only in its code-path
+   SHA, and that the route runtime bundle equals authoritative main. MCP and
+   lifecycle then rehash and revalidate the original contract context, result,
+   lifecycle identity and closeout. A repair chain preserves the original PASS
+   receipt plus each immediate parent receipt/proof digest and never reruns the
+   contract. This control optimization supplies `scientific_authorization=NONE`,
+   does not register capability evidence and stays within the ordinary
+   three-generation repair bound.
    Require one positive workload-progress observation. ETA remains
    a frozen cost forecast, not a prohibition on human observation. A receipt
    holder may request a bounded result-blind progress snapshot, an early

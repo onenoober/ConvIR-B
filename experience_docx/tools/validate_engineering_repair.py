@@ -16,8 +16,14 @@ from pathlib import Path
 from typing import Any
 
 import convir_ops_mcp as ops
+import capability_registry
 import experiment_spec_compiler as compiler
-from route_runtime_contract import runtime_spec_relpath
+from route_runtime_contract import (
+    ContractError,
+    RUNTIME_BUNDLE_RELPATHS,
+    engineering_contract_result_profile,
+    runtime_spec_relpath,
+)
 
 
 GIT = "/usr/bin/git"
@@ -299,6 +305,170 @@ def classify_entrypoint_change(old_raw: bytes, new_raw: bytes) -> dict[str, bool
     }
 
 
+DYNAMIC_CONTRACT_NAMES = {
+    "eval", "exec", "globals", "locals", "__import__",
+}
+DYNAMIC_CONTRACT_ATTRIBUTES = {"import_module"}
+
+
+def _assignment_names(node: ast.AST) -> set[str]:
+    targets: list[ast.AST] = []
+    if isinstance(node, ast.Assign):
+        targets = list(node.targets)
+    elif isinstance(node, ast.AnnAssign):
+        targets = [node.target]
+    names: set[str] = set()
+    for target in targets:
+        names.update(
+            item.id for item in ast.walk(target) if isinstance(item, ast.Name)
+        )
+    return names
+
+
+def _entrypoint_definition_state(raw: bytes) -> dict[str, Any]:
+    try:
+        tree = ast.parse(raw.decode("utf-8"))
+    except (UnicodeDecodeError, SyntaxError) as exc:
+        raise RepairError(f"entrypoint is not valid UTF-8 Python: {exc}") from exc
+    definitions: dict[str, ast.AST] = {}
+    imports: list[str] = []
+    executable: list[str] = []
+    for node in tree.body:
+        names: set[str] = set()
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            names = {node.name}
+        elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+            names = _assignment_names(node)
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            imports.append(ast.dump(node, include_attributes=False))
+            continue
+        else:
+            executable.append(ast.dump(node, include_attributes=False))
+            continue
+        for name in names:
+            if name in definitions and definitions[name] is not node:
+                raise RepairError(f"entrypoint redefines top-level symbol: {name}")
+            definitions[name] = node
+    return {
+        "tree": tree,
+        "definitions": definitions,
+        "imports": imports,
+        "executable": executable,
+    }
+
+
+def _reachable_definition_names(state: dict[str, Any], root: str) -> set[str]:
+    definitions = state["definitions"]
+    if root not in definitions or not isinstance(
+            definitions[root], (ast.FunctionDef, ast.AsyncFunctionDef)):
+        raise RepairError(f"entrypoint requires one top-level {root} function")
+    reachable: set[str] = set()
+    pending = [root]
+    while pending:
+        name = pending.pop()
+        if name in reachable:
+            continue
+        reachable.add(name)
+        node = definitions[name]
+        referenced = {
+            item.id for item in ast.walk(node)
+            if isinstance(item, ast.Name) and item.id in definitions
+        }
+        pending.extend(sorted(referenced - reachable))
+    selected_nodes = {id(definitions[name]): definitions[name] for name in reachable}
+    dynamic: set[str] = set()
+    for node in selected_nodes.values():
+        for item in ast.walk(node):
+            if isinstance(item, ast.Call) and isinstance(item.func, ast.Name) \
+                    and item.func.id in DYNAMIC_CONTRACT_NAMES:
+                dynamic.add(item.func.id)
+            elif isinstance(item, ast.Call) and isinstance(item.func, ast.Name) \
+                    and item.func.id == "vars" and not item.args \
+                    and not item.keywords:
+                dynamic.add("vars")
+            elif isinstance(item, ast.Attribute) \
+                    and item.attr in DYNAMIC_CONTRACT_ATTRIBUTES:
+                dynamic.add(item.attr)
+            elif isinstance(item, ast.Attribute) and item.attr == "modules" \
+                    and isinstance(item.value, ast.Name) \
+                    and item.value.id == "sys":
+                dynamic.add("sys.modules")
+    dynamic = sorted(dynamic)
+    if root == "contract" and dynamic:
+        raise RepairError(
+            "contract slice contains dynamic name resolution: " + ", ".join(dynamic)
+        )
+    return reachable
+
+
+def _reachable_slice_digest(state: dict[str, Any], names: set[str]) -> str:
+    definitions = state["definitions"]
+    nodes = {id(definitions[name]): definitions[name] for name in names}
+    ordered = sorted(nodes.values(), key=lambda node: (node.lineno, node.col_offset))
+    payload = {
+        "imports": state["imports"],
+        "module_executable": state["executable"],
+        "definitions": [ast.dump(node, include_attributes=False) for node in ordered],
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+
+
+def _definition_interface(node: ast.AST) -> str:
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        value = copy.deepcopy(node)
+        value.body = []
+        return ast.dump(value, include_attributes=False)
+    return type(node).__name__
+
+
+def classify_reviewed_workload_entrypoint_change(
+    old_raw: bytes, new_raw: bytes,
+) -> dict[str, Any]:
+    """Prove that a reviewed change is reachable from run but not contract."""
+    old = _entrypoint_definition_state(old_raw)
+    new = _entrypoint_definition_state(new_raw)
+    if old["imports"] != new["imports"] or old["executable"] != new["executable"]:
+        raise RepairError("reviewed workload repair changed imports or module control")
+    if set(old["definitions"]) != set(new["definitions"]):
+        raise RepairError("reviewed workload repair changed the top-level symbol set")
+    old_contract = _reachable_definition_names(old, "contract")
+    new_contract = _reachable_definition_names(new, "contract")
+    old_run = _reachable_definition_names(old, "run")
+    new_run = _reachable_definition_names(new, "run")
+    source_contract_sha = _reachable_slice_digest(old, old_contract)
+    candidate_contract_sha = _reachable_slice_digest(new, new_contract)
+    if old_contract != new_contract or source_contract_sha != candidate_contract_sha:
+        raise RepairError("reviewed workload repair changed the contract-reachable slice")
+    changed = sorted(
+        name for name in old["definitions"]
+        if ast.dump(old["definitions"][name], include_attributes=False)
+        != ast.dump(new["definitions"][name], include_attributes=False)
+    )
+    if not changed:
+        raise RepairError("reviewed workload repair did not change run-only code")
+    if any(name in old_contract or name in new_contract for name in changed):
+        raise RepairError("reviewed workload repair changed a contract-reachable symbol")
+    if any(name not in old_run or name not in new_run for name in changed):
+        raise RepairError("reviewed workload repair changed code outside the run slice")
+    if any(
+            _definition_interface(old["definitions"][name])
+            != _definition_interface(new["definitions"][name])
+            for name in changed):
+        raise RepairError("reviewed workload repair changed a run symbol interface")
+    return {
+        "entrypoint_symbol_binding_only": False,
+        "terminal_adapter_only": False,
+        "scientific_kernel_unchanged": False,
+        "contract_reachable_slice_unchanged": True,
+        "workload_only_change": True,
+        "changed_run_symbols": changed,
+        "source_contract_slice_sha256": source_contract_sha,
+        "candidate_contract_slice_sha256": candidate_contract_sha,
+    }
+
+
 def normalize_card(raw: bytes, old_output: str, new_output: str) -> str:
     try:
         lines = raw.decode("utf-8").splitlines()
@@ -414,9 +584,64 @@ def _normalize_schema6_source(source: dict[str, Any], operation_id: str,
     return value
 
 
+def _receipt_contract_reuse_bindings(
+    repo: Path, base: str, snapshot: str, operation_id: str,
+    source_entrypoint_sha256: str, candidate_entrypoint_sha256: str,
+) -> dict[str, Any]:
+    runtime_path = runtime_spec_relpath(operation_id)
+    source_runtime = load_json(repo, base, runtime_path)
+    candidate_runtime = load_json(repo, snapshot, runtime_path)
+    source_profile_path = source_runtime["engineering_contract"][
+        "capability_profile_relpath"
+    ]
+    candidate_profile_path = candidate_runtime["engineering_contract"][
+        "capability_profile_relpath"
+    ]
+    if not isinstance(source_profile_path, str) or source_profile_path != candidate_profile_path:
+        raise RepairError("reviewed workload repair changed the capability profile path")
+    source_capability = load_json(repo, base, source_profile_path)
+    candidate_capability = load_json(repo, snapshot, candidate_profile_path)
+    if source_capability.get("schema_version") != 2 \
+            or candidate_capability.get("schema_version") != 2:
+        raise RepairError("receipt-bound reuse requires capability profile schema 2")
+    try:
+        source_identity = capability_registry.validate_identity(
+            source_capability.get("reuse_identity")
+        )
+        candidate_identity = capability_registry.validate_identity(
+            candidate_capability.get("reuse_identity")
+        )
+        source_result_profile = engineering_contract_result_profile(
+            source_runtime, source_capability,
+        )
+        candidate_result_profile = engineering_contract_result_profile(
+            candidate_runtime, candidate_capability,
+        )
+    except (capability_registry.CapabilityRegistryError, ContractError) as exc:
+        raise RepairError(f"receipt contract identity is invalid: {exc}") from exc
+    stable_identity_fields = capability_registry.IDENTITY_FIELDS - {"code_path_sha256"}
+    if any(source_identity[key] != candidate_identity[key] for key in stable_identity_fields):
+        raise RepairError("reviewed workload repair changed a stable capability identity")
+    if source_identity["code_path_sha256"] != source_entrypoint_sha256 \
+            or candidate_identity["code_path_sha256"] != candidate_entrypoint_sha256:
+        raise RepairError("entrypoint and capability code identities disagree")
+    if source_result_profile != candidate_result_profile:
+        raise RepairError("reviewed workload repair changed the contract result profile")
+    return {
+        "source_capability_identity": source_identity,
+        "candidate_capability_identity": candidate_identity,
+        "contract_result_profile": source_result_profile,
+        "contract_result_profile_sha256": hashlib.sha256(json.dumps(
+            source_result_profile, sort_keys=True, separators=(",", ":"),
+        ).encode()).hexdigest(),
+    }
+
+
 def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: str,
                             old_manifest: dict[str, Any], new_manifest: dict[str, Any],
-                            old_output: str, new_output: str) -> dict[str, Any]:
+                            old_output: str, new_output: str,
+                            *, reviewed_workload: bool = False,
+                            authoritative_commit: str | None = None) -> dict[str, Any]:
     stable_manifest_fields = {
         "schema_version", "route_id", "rules_commit", "route_card_relpath",
         "scientific_contract_relpaths", "program_contract_relpath",
@@ -445,8 +670,13 @@ def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: 
     new_entrypoint_raw = show(repo, snapshot, new_entrypoint)
     if old_entrypoint_raw == new_entrypoint_raw:
         raise RepairError("schema-6 repair did not change the entrypoint binding")
-    entrypoint_class = classify_entrypoint_change(
-        old_entrypoint_raw, new_entrypoint_raw,
+    entrypoint_class = (
+        classify_reviewed_workload_entrypoint_change(
+            old_entrypoint_raw, new_entrypoint_raw,
+        )
+        if reviewed_workload else classify_entrypoint_change(
+            old_entrypoint_raw, new_entrypoint_raw,
+        )
     )
     old_sha, new_sha = _sha256(old_entrypoint_raw), _sha256(new_entrypoint_raw)
     if _normalize_schema6_source(old_source, operation_id, old_output, old_sha) != \
@@ -467,13 +697,29 @@ def validate_schema6_repair(repo: Path, base: str, snapshot: str, operation_id: 
         raise RepairError("schema-6 generated bundle is not deterministic: " + "; ".join(mismatches))
     changed_paths = set(filter(None, git(repo, "diff", "--name-only", base, snapshot).splitlines()))
     allowed = set(bundle) | {spec_path, old_entrypoint}
+    runtime_bundle_synced = False
+    if reviewed_workload and authoritative_commit is not None:
+        for relpath in RUNTIME_BUNDLE_RELPATHS:
+            if show(repo, snapshot, relpath) != show(repo, authoritative_commit, relpath):
+                raise RepairError(
+                    f"reviewed workload repair runtime bundle differs from main: {relpath}"
+                )
+        allowed.update(RUNTIME_BUNDLE_RELPATHS)
+        runtime_bundle_synced = True
     unexpected = sorted(changed_paths - allowed)
     if unexpected:
         raise RepairError(f"unexpected schema-6 repair paths: {unexpected}")
+    receipt_bindings = {}
+    if reviewed_workload:
+        receipt_bindings = _receipt_contract_reuse_bindings(
+            repo, base, snapshot, operation_id, old_sha, new_sha,
+        )
     return {
         "asset_path_repairs": [],
         **entrypoint_class,
+        **receipt_bindings,
         "schema6_compiler_regeneration_verified": True,
+        "runtime_bundle_synced_to_authoritative_main": runtime_bundle_synced,
     }
 
 
@@ -574,7 +820,11 @@ def validate_finalization_repair(
     }
 
 
-def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[str, Any]:
+def _validate(
+    repo: Path, base: str, snapshot: str, operation_id: str,
+    *, reviewed_workload: bool = False,
+    authoritative_commit: str | None = None,
+) -> dict[str, Any]:
     base = git(repo, "rev-parse", f"{base}^{{commit}}")
     manifest_path = ops.ROUTE_OPERATIONS_RELPATH
     old_manifest = load_json(repo, base, manifest_path)
@@ -603,11 +853,15 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
     if old_manifest.get("schema_version") == 6 and new_manifest.get("schema_version") == 6:
         schema6 = validate_schema6_repair(
             repo, base, snapshot, operation_id, old_manifest, new_manifest,
-            old_output, new_output,
+            old_output, new_output, reviewed_workload=reviewed_workload,
+            authoritative_commit=authoritative_commit,
         )
         return {
             "schema_version": 1,
-            "status": "AUTO_REPAIR_ELIGIBLE",
+            "status": (
+                "REVIEWED_WORKLOAD_REPAIR_ELIGIBLE"
+                if reviewed_workload else "AUTO_REPAIR_ELIGIBLE"
+            ),
             "base_commit": base,
             "snapshot_commit": snapshot,
             "operation_id": operation_id,
@@ -616,8 +870,11 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
             "derived_output_id": required_output,
             **schema6,
             "scientific_contract_unchanged": True,
-            "sensitive_review_required": False,
+            "sensitive_review_required": reviewed_workload,
         }
+
+    if reviewed_workload:
+        raise RepairError("receipt-bound reviewed workload repair requires manifest schema 6")
 
     spec_path = runtime_spec_relpath(operation_id)
     if show(repo, base, spec_path) != show(repo, snapshot, spec_path):
@@ -669,6 +926,20 @@ def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[st
     }
 
 
+def validate(repo: Path, base: str, snapshot: str, operation_id: str) -> dict[str, Any]:
+    return _validate(repo, base, snapshot, operation_id, reviewed_workload=False)
+
+
+def validate_reviewed_workload_repair(
+    repo: Path, base: str, snapshot: str, operation_id: str,
+    authoritative_commit: str | None = None,
+) -> dict[str, Any]:
+    return _validate(
+        repo, base, snapshot, operation_id, reviewed_workload=True,
+        authoritative_commit=authoritative_commit,
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path.cwd())
@@ -679,6 +950,8 @@ def main() -> None:
         default="staged",
     )
     parser.add_argument("--candidate-path", action="append", default=[])
+    parser.add_argument("--reviewed-workload", action="store_true")
+    parser.add_argument("--authoritative-main")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     repo = args.repo.resolve()
@@ -689,7 +962,24 @@ def main() -> None:
             snapshot = worktree_candidate_snapshot(repo, args.candidate_path)
         else:
             snapshot = git(repo, "rev-parse", "HEAD")
-        report = validate(repo, args.base, snapshot, args.operation)
+        if args.reviewed_workload:
+            if not args.authoritative_main:
+                raise RepairError(
+                    "reviewed workload repair requires --authoritative-main"
+                )
+            authoritative_main = git(
+                repo, "rev-parse", f"{args.authoritative_main}^{{commit}}",
+            )
+            report = validate_reviewed_workload_repair(
+                repo, args.base, snapshot, args.operation,
+                authoritative_commit=authoritative_main,
+            )
+        else:
+            if args.authoritative_main:
+                raise RepairError(
+                    "--authoritative-main requires --reviewed-workload"
+                )
+            report = validate(repo, args.base, snapshot, args.operation)
     except (RepairError, KeyError, TypeError, ValueError) as exc:
         report = {
             "schema_version": 1, "status": "SENSITIVE_REPAIR_REVIEW_REQUIRED",
@@ -705,7 +995,7 @@ def main() -> None:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, sort_keys=True))
-    print(f"AUTO_REPAIR_ELIGIBLE snapshot_commit={snapshot}")
+    print(f"{report['status']} snapshot_commit={snapshot}")
 
 
 if __name__ == "__main__":

@@ -95,7 +95,7 @@ class EngineeringRepairTests(unittest.TestCase):
     def _make_schema6_fixture(
         self, root: Path, *, change_run: bool = False,
         change_adapter: bool = False, same_output: bool = False,
-        commit_candidate: bool = True,
+        commit_candidate: bool = True, preserve_contract: bool = False,
     ) -> tuple[Path, str, str | None, list[str]]:
         repo = root / "schema6-repo"
         repo.mkdir()
@@ -147,13 +147,17 @@ class EngineeringRepairTests(unittest.TestCase):
         candidate_operation["operation"]["output_id"] = (
             "final-slim-r1" if same_output else "final-slim-r2"
         )
+        candidate_contract = (
+            "    payload = {'reference_checks': {}}\n"
+            "    return payload\n"
+            if preserve_contract else "    return {}\n"
+        )
         after = (
-            "def contract(context_path):\n"
-            "    return {}\n"
-            "def run(context_path):\n"
-            f"    return {2 if change_run else 1}\n"
-            "def finalize_existing(context_path):\n"
-            f"    return {repr('new-facts' if change_adapter else 'old-facts')}\n"
+            "def contract(context_path):\n" + candidate_contract
+            + "def run(context_path):\n"
+            + f"    return {2 if change_run else 1}\n"
+            + "def finalize_existing(context_path):\n"
+            + f"    return {repr('new-facts' if change_adapter else 'old-facts')}\n"
         ).encode()
         new_sha = hashlib.sha256(after).hexdigest()
         next(
@@ -322,6 +326,57 @@ def run(value):
             )
             with self.assertRaisesRegex(REPAIR.RepairError, "scientific kernel/control/constants"):
                 REPAIR.validate(repo, base, candidate, "ACCEPT")
+
+    def test_reviewed_workload_repair_binds_contract_slice_and_capability(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate, _ = self._make_schema6_fixture(
+                Path(temporary), change_run=True, preserve_contract=True,
+            )
+            report = REPAIR.validate_reviewed_workload_repair(
+                repo, base, candidate, "ACCEPT",
+            )
+        self.assertEqual("REVIEWED_WORKLOAD_REPAIR_ELIGIBLE", report["status"])
+        self.assertTrue(report["contract_reachable_slice_unchanged"])
+        self.assertEqual(
+            report["source_contract_slice_sha256"],
+            report["candidate_contract_slice_sha256"],
+        )
+        self.assertEqual(["run"], report["changed_run_symbols"])
+        self.assertTrue(report["sensitive_review_required"])
+        self.assertNotEqual(
+            report["source_capability_identity"]["code_path_sha256"],
+            report["candidate_capability_identity"]["code_path_sha256"],
+        )
+
+    def test_reviewed_workload_repair_rejects_contract_slice_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo, base, candidate, _ = self._make_schema6_fixture(
+                Path(temporary), change_run=True,
+            )
+            with self.assertRaisesRegex(REPAIR.RepairError, "contract-reachable"):
+                REPAIR.validate_reviewed_workload_repair(
+                    repo, base, candidate, "ACCEPT",
+                )
+
+    def test_reviewed_workload_repair_rejects_dead_code_change(self):
+        before = (
+            b"def contract(path):\n return 1\n"
+            b"def run(path):\n return 2\n"
+            b"def helper(value):\n return value\n"
+        )
+        after = before.replace(b"return value", b"return value + 1")
+        with self.assertRaisesRegex(REPAIR.RepairError, "outside the run slice"):
+            REPAIR.classify_reviewed_workload_entrypoint_change(before, after)
+
+    def test_reviewed_workload_repair_rejects_dynamic_contract_resolution(self):
+        before = (
+            b"def contract(path):\n return globals()['helper'](path)\n"
+            b"def run(path):\n return helper(path)\n"
+            b"def helper(value):\n return value\n"
+        )
+        after = before.replace(b"return value\n", b"return value + 1\n")
+        with self.assertRaisesRegex(REPAIR.RepairError, "dynamic name resolution"):
+            REPAIR.classify_reviewed_workload_entrypoint_change(before, after)
 
     def test_terminal_adapter_change_is_separate_from_scientific_kernel(self):
         before = (

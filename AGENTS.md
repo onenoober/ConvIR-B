@@ -244,6 +244,19 @@ repair policy below and is not a scientific terminal archive.
   the existing start path. Classification/control failures before the seal
   consume neither plan nor repair transaction. Repeating the same candidate
   reuses the sealed plan/start state; a different candidate cannot replace it.
+- A separately user-reviewed workload-only repair may use
+  `engineering_failure_resolution=reviewed_repair` only when the source receipt
+  proves that its engineering contract passed before a workload-phase failure.
+  The reviewed gate binds the original PASS receipt and every repair-parent
+  receipt, preserves the five stable capability fields while allowing only the
+  entrypoint code-path SHA to change, proves an identical contract-reachable AST
+  slice, and requires the candidate runtime bundle to equal current GitHub main.
+  The lifecycle independently rehashes and revalidates the original contract
+  evidence, then records `contract_receipt_reuse` instead of running the
+  contract. Chained reuse carries the original evidence and parent-proof digest
+  and remains inside the three-generation engineering limit. It never creates a
+  capability-registry qualification or carries scientific, data, promotion or
+  deployment authorization.
 - Finalization repair is a distinct single-use engineering resolution. It is
   unavailable for workload, data, metric, threshold, integrity or precision
   failures, and a failed finalization repair cannot be retried under the same

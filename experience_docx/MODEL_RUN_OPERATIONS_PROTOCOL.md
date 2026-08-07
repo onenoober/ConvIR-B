@@ -175,6 +175,7 @@ FAILED_ENGINEERING
   -> ENGINEERING_REPEAT_ROOT_REVIEW_REQUIRED -> user review
   -> ENGINEERING_REPAIR_LIMIT_REVIEW_REQUIRED -> user review
   -> SENSITIVE_REPAIR_REVIEW_REQUIRED -> user decision
+  -> REVIEWED_WORKLOAD_REPAIR_ELIGIBLE -> receipt-bound contract reuse transaction
   -> explicit archive -> ENGINEERING_ARCHIVE_AUTHORIZED
 ```
 
@@ -204,6 +205,21 @@ transaction. A sensitive repair pauses before commit/push/start. `archive` unloc
 only compact failure evidence. A repeated same-root failure stops for review.
 Before classification, `worktree-candidate` uses only an isolated temporary Git
 index and exact path allowlist; the real index must remain clean.
+
+After explicit user authorization, a workload-phase sensitive candidate may be
+classified with `--reviewed-workload` and an exact `--authoritative-main` ref.
+The classifier rejects contract-reachable or dead-code changes, dynamic contract
+name resolution, function-interface drift, capability changes outside the
+code-path SHA, and any runtime-bundle byte that differs from main. A pushed
+eligible commit is applied with `engineering_failure_resolution=reviewed_repair`.
+MCP reattests the original source files on the cloud, validates the original
+contract PASS under the unchanged frozen profile, and gives the lifecycle a
+closed receipt proof. The lifecycle redoes those evidence checks and emits
+`contract_receipt_reuse`; it must not emit `contract_start`. If a replacement
+later fails in workload, the next reviewed repair may chain the same original
+PASS only by binding the immediate parent receipt and preceding proof digest.
+This path retains `scientific_authorization=NONE` and cannot publish a capability
+qualification.
 
 The receipt derives a stable failure fingerprint from phase, exception type,
 normalized stack, failed-check tokens and return code. A replacement failure

@@ -65,9 +65,279 @@ class ContractError(ValueError):
     pass
 
 
+class EngineeringContractResultError(ContractError):
+    def __init__(self, message: str, *, failed_checks: list[str] | None = None):
+        super().__init__(message)
+        self.failed_checks = list(failed_checks or [])
+
+
+class ReceiptContractReuseError(ContractError):
+    pass
+
+
 def canonical_digest(value: Any) -> str:
     raw = json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(raw).hexdigest()
+
+
+RECEIPT_CONTRACT_REUSE_FIELDS = {
+    "schema_version", "source_receipt_sha256",
+    "repair_parent_receipt_sha256", "reuse_depth",
+    "parent_reuse_proof_sha256", "source_route_id",
+    "source_operation_id", "source_route_commit", "source_output_id",
+    "source_runner_sha256", "source_remote_repo",
+    "source_closeout_filename", "source_closeout_path",
+    "source_closeout_sha256", "source_lifecycle_identity_sha256",
+    "source_contract_context_sha256", "source_contract_result_sha256",
+    "source_capability_identity", "candidate_capability_identity",
+    "source_entrypoint_sha256", "candidate_entrypoint_sha256",
+    "source_contract_slice_sha256", "candidate_contract_slice_sha256",
+    "contract_result_profile_sha256", "classification_sha256",
+    "candidate_route_commit", "candidate_output_id", "source_device_class",
+    "scientific_authorization",
+}
+
+
+def validate_receipt_contract_reuse_proof(value: Any) -> dict[str, Any]:
+    """Validate the closed receipt-reuse proof schema and identity invariants."""
+    if not isinstance(value, dict) or set(value) != RECEIPT_CONTRACT_REUSE_FIELDS \
+            or value.get("schema_version") != 1:
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof has an invalid field contract"
+        )
+    sha_fields = {
+        "source_receipt_sha256", "repair_parent_receipt_sha256",
+        "source_runner_sha256", "source_closeout_sha256",
+        "source_lifecycle_identity_sha256", "source_contract_context_sha256",
+        "source_contract_result_sha256", "source_entrypoint_sha256",
+        "candidate_entrypoint_sha256", "source_contract_slice_sha256",
+        "candidate_contract_slice_sha256", "contract_result_profile_sha256",
+        "classification_sha256",
+    }
+    if any(
+            not isinstance(value.get(key), str) or not SHA256.fullmatch(value[key])
+            for key in sha_fields):
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof has an invalid SHA-256 binding"
+        )
+    if any(
+            not isinstance(value.get(key), str) or not SHA40.fullmatch(value[key])
+            for key in ("source_route_commit", "candidate_route_commit")):
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof has an invalid commit binding"
+        )
+    token_fields = (
+        "source_route_id", "source_operation_id", "source_output_id",
+        "candidate_output_id", "source_device_class", "source_closeout_filename",
+    )
+    if any(
+            not isinstance(value.get(key), str) or not SAFE_TOKEN.fullmatch(value[key])
+            for key in token_fields):
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof has an invalid token binding"
+        )
+    if not value["source_closeout_filename"].endswith("_closeout.json"):
+        raise ReceiptContractReuseError(
+            "receipt contract reuse source closeout filename is invalid"
+        )
+    if any(
+            not isinstance(value.get(key), str) or not Path(value[key]).is_absolute()
+            for key in ("source_remote_repo", "source_closeout_path")):
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof has an invalid absolute path binding"
+        )
+    depth = value.get("reuse_depth")
+    parent_digest = value.get("parent_reuse_proof_sha256")
+    if not isinstance(depth, int) or isinstance(depth, bool) or not 1 <= depth <= 3 \
+            or parent_digest is not None and (
+                not isinstance(parent_digest, str) or not SHA256.fullmatch(parent_digest)
+            ) \
+            or (depth == 1) != (parent_digest is None) \
+            or (depth == 1) != (
+                value["source_receipt_sha256"] == value["repair_parent_receipt_sha256"]
+            ):
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof has an invalid lineage binding"
+        )
+    if value.get("scientific_authorization") != "NONE" \
+            or value["source_output_id"] == value["candidate_output_id"]:
+        raise ReceiptContractReuseError(
+            "receipt contract reuse proof crosses an authorization boundary"
+        )
+    try:
+        source_identity = capability_registry.validate_identity(
+            value["source_capability_identity"]
+        )
+        candidate_identity = capability_registry.validate_identity(
+            value["candidate_capability_identity"]
+        )
+    except capability_registry.CapabilityRegistryError as exc:
+        raise ReceiptContractReuseError(str(exc)) from exc
+    stable_fields = capability_registry.IDENTITY_FIELDS - {"code_path_sha256"}
+    if any(source_identity[key] != candidate_identity[key] for key in stable_fields) \
+            or source_identity["code_path_sha256"] != value["source_entrypoint_sha256"] \
+            or candidate_identity["code_path_sha256"] \
+            != value["candidate_entrypoint_sha256"] \
+            or value["source_contract_slice_sha256"] \
+            != value["candidate_contract_slice_sha256"] \
+            or value["source_device_class"] != source_identity["device_class"]:
+        raise ReceiptContractReuseError(
+            "receipt contract reuse capability or contract slice changed"
+        )
+    return json.loads(json.dumps(value, sort_keys=True))
+
+
+def engineering_contract_result_profile(
+    spec: dict[str, Any], capability: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Return the minimal frozen contract used to validate engineering evidence."""
+    engineering = spec.get("engineering_contract")
+    if not isinstance(engineering, dict):
+        raise ContractError("engineering contract is unavailable")
+    minimum_fixture = None
+    if isinstance(capability, dict):
+        minimum_fixture = capability.get("minimum_fixture")
+    profile = {
+        "schema_version": 1,
+        "route_id": require_token(spec.get("route_id"), "route_id"),
+        "operation_id": require_token(spec.get("operation_id"), "operation_id"),
+        "legacy_implicit_contract": require_bool(
+            engineering.get("legacy_implicit_contract"),
+            "engineering_contract.legacy_implicit_contract",
+        ),
+        "mode": require_token(engineering.get("mode"), "engineering_contract.mode"),
+        "cost_contract": engineering.get("cost_contract"),
+        "minimum_fixture": minimum_fixture,
+    }
+    if profile["mode"] not in ENGINEERING_CONTRACT_MODES:
+        raise ContractError("engineering contract mode is invalid")
+    if profile["mode"] != "metadata_only" and not isinstance(minimum_fixture, dict):
+        raise ContractError("engineering capability minimum fixture is unavailable")
+    # A validated runtime spec/capability is the source of this profile. Copy it
+    # through canonical JSON so later proof records cannot retain mutable aliases.
+    return json.loads(json.dumps(profile, sort_keys=True))
+
+
+def validate_engineering_contract_result(
+    value: Any, profile: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate one contract result against an identity-bound minimal profile."""
+    expected_profile = {
+        "schema_version", "route_id", "operation_id", "legacy_implicit_contract",
+        "mode", "cost_contract", "minimum_fixture",
+    }
+    if not isinstance(profile, dict) or set(profile) != expected_profile \
+            or profile.get("schema_version") != 1:
+        raise EngineeringContractResultError("engineering result profile is invalid")
+    legacy_expected = {
+        "schema_version", "route_id", "operation_id", "phase", "ok", "checks",
+        "output_contract_checked", "finalizer_contract_checked",
+        "confirmation_images_targets_outcomes_touched", "canary_touched",
+        "locked_test_touched",
+    }
+    expected = legacy_expected if profile["legacy_implicit_contract"] \
+        else legacy_expected | {"engineering"}
+    if not isinstance(value, dict) or set(value) != expected:
+        raise EngineeringContractResultError(
+            "contract result has an invalid field contract"
+        )
+    required_true = (
+        value["schema_version"] == 1,
+        value["route_id"] == profile["route_id"],
+        value["operation_id"] == profile["operation_id"],
+        value["phase"] == "contract",
+        value["ok"] is True,
+        value["output_contract_checked"] is True,
+        value["finalizer_contract_checked"] is True,
+        value["confirmation_images_targets_outcomes_touched"] is False,
+        value["canary_touched"] is False,
+        value["locked_test_touched"] is False,
+        isinstance(value["checks"], dict) and bool(value["checks"])
+        and all(item is True for item in value["checks"].values()),
+    )
+    if not all(required_true):
+        failed = []
+        if isinstance(value.get("checks"), dict):
+            failed = sorted(
+                key for key, passed in value["checks"].items()
+                if isinstance(key, str) and passed is False
+            )
+        raise EngineeringContractResultError(
+            "contract result did not pass", failed_checks=failed,
+        )
+    if "engineering" not in expected:
+        return value
+    engineering = value["engineering"]
+    if not isinstance(engineering, dict):
+        raise EngineeringContractResultError("engineering evidence is invalid")
+    if engineering.get("mode") != profile["mode"]:
+        raise EngineeringContractResultError("engineering mode mismatch")
+    if engineering.get("device") not in {"cpu", "cuda"}:
+        raise EngineeringContractResultError("engineering device is invalid")
+    expected_device = "cuda" if profile["mode"] == "gpu_synthetic_no_data" else "cpu"
+    if engineering.get("device") != expected_device:
+        raise EngineeringContractResultError(
+            "engineering device differs from the frozen mode"
+        )
+    if engineering.get("protected_data_touched") is not False \
+            or engineering.get("scientific_output_created") is not False \
+            or engineering.get("scientific_training_occurred") is not False:
+        raise EngineeringContractResultError(
+            "engineering contract crossed a scientific boundary"
+        )
+    if profile["mode"] != "metadata_only":
+        fixture = engineering.get("fixture")
+        minimum = profile["minimum_fixture"]
+        if not isinstance(fixture, dict) or not isinstance(minimum, dict) \
+                or any(fixture.get(key, 0) < minimum[key] for key in minimum):
+            raise EngineeringContractResultError(
+                "engineering fixture is below the capability minimum"
+            )
+        if engineering.get("production_path_exercised") is not True:
+            raise EngineeringContractResultError(
+                "engineering contract did not exercise the production path"
+            )
+    cost_contract = profile["cost_contract"]
+    if cost_contract is not None:
+        cost = engineering.get("cost")
+        if not isinstance(cost, dict) or set(cost) != {
+            "observed_iterations", "observed_wall_seconds", "observed_peak_memory_mib",
+        }:
+            raise EngineeringContractResultError(
+                "engineering cost evidence is invalid"
+            )
+        expected_iterations = (
+            cost_contract["formal_iterations"]
+            if cost_contract["strategy"] == "same_scale_probe"
+            else cost_contract["probe_iterations"]
+        )
+        if cost.get("observed_iterations") != expected_iterations:
+            raise EngineeringContractResultError(
+                "engineering cost iteration count mismatch"
+            )
+        wall = cost.get("observed_wall_seconds")
+        peak = cost.get("observed_peak_memory_mib")
+        if not isinstance(wall, (int, float)) or isinstance(wall, bool) or wall < 0 \
+                or not isinstance(peak, (int, float)) or isinstance(peak, bool) or peak < 0:
+            raise EngineeringContractResultError(
+                "engineering cost measurements are invalid"
+            )
+        wall_limit = (
+            cost_contract["max_wall_seconds"]
+            if cost_contract["strategy"] == "same_scale_probe"
+            else cost_contract["fixed_overhead_seconds"]
+            + cost_contract["probe_iterations"]
+            * cost_contract["max_seconds_per_iteration"]
+        )
+        if wall > wall_limit + 1e-9:
+            raise EngineeringContractResultError(
+                "engineering cost wall-time bound failed"
+            )
+        if peak > cost_contract["max_peak_memory_mib"]:
+            raise EngineeringContractResultError(
+                "engineering cost memory bound failed"
+            )
+    return value
 
 
 def require_token(value: Any, name: str) -> str:

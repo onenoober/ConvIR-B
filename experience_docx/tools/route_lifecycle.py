@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -26,12 +27,18 @@ from route_program_api import (
 )
 from route_runtime_contract import (
     ContractError,
+    EngineeringContractResultError,
     GENERIC_RUNNER_RELPATH,
+    ReceiptContractReuseError,
     RUNTIME_SPEC_DIRECTORY,
+    canonical_digest,
+    engineering_contract_result_profile,
     safe_join,
     validate_asset_manifest,
+    validate_engineering_contract_result,
     validate_model_capability,
     validate_precision_certificate,
+    validate_receipt_contract_reuse_proof,
     validate_runtime_spec,
 )
 
@@ -52,6 +59,7 @@ MAX_RAW_ARTIFACT_FILES = 25_000
 MAX_RAW_ARTIFACT_PATH_BYTES = 16 * 1024 * 1024
 VERIFIED_ASSETS: list[dict[str, Any]] = []
 WORKLOAD_STARTED = False
+RECEIPT_CONTRACT_REUSE: dict[str, Any] | None = None
 ACTIVE_PROGRAM: subprocess.Popen | None = None
 OPERATOR_CANCEL_REQUEST_PATH: Path | None = None
 
@@ -631,97 +639,21 @@ def run_program(*, phase: str, context_path: Path, entrypoint: Path,
 
 def validate_contract_result(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
     value = load_json(path)
-    legacy_expected = {
-        "schema_version", "route_id", "operation_id", "phase", "ok", "checks",
-        "output_contract_checked", "finalizer_contract_checked",
-        "confirmation_images_targets_outcomes_touched", "canary_touched", "locked_test_touched",
-    }
-    expected = legacy_expected if spec["engineering_contract"]["legacy_implicit_contract"] \
-        else legacy_expected | {"engineering"}
-    if not isinstance(value, dict) or set(value) != expected:
-        raise LifecycleError("contract result has an invalid field contract", phase="contract")
-    required_true = (
-        value["schema_version"] == 1,
-        value["route_id"] == spec["route_id"],
-        value["operation_id"] == spec["operation_id"],
-        value["phase"] == "contract",
-        value["ok"] is True,
-        value["output_contract_checked"] is True,
-        value["finalizer_contract_checked"] is True,
-        value["confirmation_images_targets_outcomes_touched"] is False,
-        value["canary_touched"] is False,
-        value["locked_test_touched"] is False,
-        isinstance(value["checks"], dict) and bool(value["checks"])
-        and all(item is True for item in value["checks"].values()),
-    )
-    if not all(required_true):
-        failed = []
-        if isinstance(value.get("checks"), dict):
-            failed = [
-                key for key, passed in value["checks"].items()
-                if isinstance(key, str) and passed is False
-            ]
+    try:
+        profile = engineering_contract_result_profile(
+            spec, spec.get("_validated_capability_profile"),
+        )
+        return validate_engineering_contract_result(value, profile)
+    except EngineeringContractResultError as exc:
+        diagnostic = (
+            {"failed_contract_checks": exc.failed_checks}
+            if exc.failed_checks else None
+        )
         raise LifecycleError(
-            "contract result did not pass", phase="contract",
-            control_diagnostic={"failed_contract_checks": failed},
-        )
-    if "engineering" in expected:
-        engineering = value["engineering"]
-        capability = spec.get("_validated_capability_profile")
-        if engineering.get("mode") != spec["engineering_contract"]["mode"]:
-            raise LifecycleError("engineering mode mismatch", phase="contract")
-        if engineering.get("device") not in {"cpu", "cuda"}:
-            raise LifecycleError("engineering device is invalid", phase="contract")
-        expected_device = (
-            "cuda" if spec["engineering_contract"]["mode"] == "gpu_synthetic_no_data"
-            else "cpu"
-        )
-        if engineering.get("device") != expected_device:
-            raise LifecycleError("engineering device differs from the frozen mode", phase="contract")
-        if engineering.get("protected_data_touched") is not False \
-                or engineering.get("scientific_output_created") is not False \
-                or engineering.get("scientific_training_occurred") is not False:
-            raise LifecycleError("engineering contract crossed a scientific boundary", phase="contract")
-        if spec["engineering_contract"]["mode"] != "metadata_only":
-            fixture = engineering.get("fixture")
-            minimum = capability.get("minimum_fixture") if isinstance(capability, dict) else None
-            if not isinstance(fixture, dict) or not isinstance(minimum, dict) \
-                    or any(fixture.get(key, 0) < minimum[key] for key in minimum):
-                raise LifecycleError("engineering fixture is below the capability minimum", phase="contract")
-            if engineering.get("production_path_exercised") is not True:
-                raise LifecycleError("engineering contract did not exercise the production path", phase="contract")
-        cost_contract = spec["engineering_contract"].get("cost_contract")
-        if cost_contract is not None:
-            cost = engineering.get("cost")
-            if not isinstance(cost, dict) or set(cost) != {
-                "observed_iterations", "observed_wall_seconds",
-                "observed_peak_memory_mib",
-            }:
-                raise LifecycleError("engineering cost evidence is invalid", phase="contract")
-            expected_iterations = (
-                cost_contract["formal_iterations"]
-                if cost_contract["strategy"] == "same_scale_probe"
-                else cost_contract["probe_iterations"]
-            )
-            if cost.get("observed_iterations") != expected_iterations:
-                raise LifecycleError("engineering cost iteration count mismatch", phase="contract")
-            wall = cost.get("observed_wall_seconds")
-            peak = cost.get("observed_peak_memory_mib")
-            if not isinstance(wall, (int, float)) or isinstance(wall, bool) or wall < 0 \
-                    or not isinstance(peak, (int, float)) or isinstance(peak, bool) or peak < 0:
-                raise LifecycleError("engineering cost measurements are invalid", phase="contract")
-            wall_limit = (
-                cost_contract["max_wall_seconds"]
-                if cost_contract["strategy"] == "same_scale_probe"
-                else cost_contract["fixed_overhead_seconds"]
-                + cost_contract["probe_iterations"]
-                * cost_contract["max_seconds_per_iteration"]
-            )
-            if wall > wall_limit + 1e-9:
-                raise LifecycleError("engineering cost wall-time bound failed", phase="contract")
-            if peak > cost_contract["max_peak_memory_mib"]:
-                raise LifecycleError("engineering cost memory bound failed", phase="contract")
-    return value
+            str(exc), phase="contract", control_diagnostic=diagnostic,
+        ) from exc
+    except ContractError as exc:
+        raise LifecycleError(str(exc), phase="contract") from exc
 
 
 def validate_lifecycle_scientific_contract(
@@ -910,6 +842,7 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
                    returncode: int = 0,
                    verified_assets: list[dict[str, Any]] | None = None,
                    capability_reuse: dict[str, Any] | None = None,
+                   receipt_contract_reuse: dict[str, Any] | None = None,
                    capability_qualification: dict[str, Any] | None = None,
                    write_local_copy: bool = True) -> Path:
     asset_identities = verified_asset_identities(verified_assets)
@@ -937,6 +870,8 @@ def write_closeout(*, env: dict[str, str], spec: dict[str, Any], operation: dict
     }
     if capability_reuse is not None:
         closeout["capability_reuse"] = capability_reuse
+    if receipt_contract_reuse is not None:
+        closeout["receipt_contract_reuse"] = receipt_contract_reuse
     if capability_qualification is not None:
         closeout["capability_qualification"] = capability_qualification
     for key in (
@@ -1027,6 +962,206 @@ def observed_device_class(env: dict[str, str], capability: dict[str, Any]) -> st
     return observed
 
 
+def _bounded_regular_bytes(path: Path, label: str) -> bytes:
+    flags = os.O_RDONLY | os.O_CLOEXEC
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as exc:
+        raise LifecycleError(
+            f"{label} is unavailable or insecure", phase="contract_reuse",
+        ) from exc
+    try:
+        observed = os.fstat(descriptor)
+        if not stat.S_ISREG(observed.st_mode):
+            raise LifecycleError(
+                f"{label} is not a regular file", phase="contract_reuse",
+            )
+        if observed.st_size > MAX_CLOSEOUT_BYTES:
+            raise LifecycleError(
+                f"{label} exceeds its size bound", phase="contract_reuse",
+            )
+        with os.fdopen(descriptor, "rb", closefd=False) as handle:
+            raw = handle.read(MAX_CLOSEOUT_BYTES + 1)
+        if len(raw) != observed.st_size:
+            raise LifecycleError(
+                f"{label} changed while it was read", phase="contract_reuse",
+            )
+        return raw
+    finally:
+        os.close(descriptor)
+
+
+def validate_receipt_contract_reuse(
+    env: dict[str, str], spec: dict[str, Any], capability: dict[str, Any] | None,
+    run_root: Path, *, expected_candidate_commit: str | None = None,
+    allow_adapter_code_path: bool = False,
+) -> dict[str, Any] | None:
+    """Revalidate a reviewed receipt-bound contract PASS without rerunning it."""
+    encoded = os.environ.get("CONVIR_RECEIPT_CONTRACT_REUSE_B64")
+    if encoded is None:
+        return None
+    if not encoded or len(encoded) > 48 * 1024:
+        raise LifecycleError("receipt contract reuse proof is invalid", phase="contract_reuse")
+    try:
+        raw = base64.b64decode(encoded, validate=True)
+        proof = json.loads(raw)
+    except (ValueError, json.JSONDecodeError) as exc:
+        raise LifecycleError(
+            "receipt contract reuse proof is not canonical JSON", phase="contract_reuse",
+        ) from exc
+    try:
+        proof = validate_receipt_contract_reuse_proof(proof)
+    except ReceiptContractReuseError as exc:
+        raise LifecycleError(str(exc), phase="contract_reuse") from exc
+    canonical = json.dumps(proof, sort_keys=True, separators=(",", ":")).encode()
+    if raw != canonical:
+        raise LifecycleError(
+            "receipt contract reuse proof is not canonical JSON",
+            phase="contract_reuse",
+        )
+    candidate_commit = expected_candidate_commit or env["EXPECTED_ROUTE_COMMIT"]
+    if proof["source_route_id"] != spec["route_id"] \
+            or proof["source_operation_id"] != spec["operation_id"] \
+            or proof["candidate_route_commit"] != candidate_commit \
+            or proof["candidate_output_id"] != env["RUN_ID"]:
+        raise LifecycleError(
+            "receipt contract reuse identity does not match this run",
+            phase="contract_reuse",
+        )
+    try:
+        source_identity = capability_registry.validate_identity(
+            proof["source_capability_identity"]
+        )
+        candidate_identity = capability_registry.validate_identity(
+            proof["candidate_capability_identity"]
+        )
+    except capability_registry.CapabilityRegistryError as exc:
+        raise LifecycleError(str(exc), phase="contract_reuse") from exc
+    current_identity = capability.get("reuse_identity") \
+        if isinstance(capability, dict) else None
+    stable_identity_fields = capability_registry.IDENTITY_FIELDS - {
+        "code_path_sha256"
+    }
+    candidate_matches = current_identity == candidate_identity
+    if allow_adapter_code_path and isinstance(current_identity, dict):
+        try:
+            current_identity = capability_registry.validate_identity(current_identity)
+        except capability_registry.CapabilityRegistryError as exc:
+            raise LifecycleError(str(exc), phase="contract_reuse") from exc
+        candidate_matches = all(
+            current_identity[key] == candidate_identity[key]
+            for key in stable_identity_fields
+        )
+    if not isinstance(capability, dict) or capability.get("schema_version") != 2 \
+            or not candidate_matches:
+        raise LifecycleError(
+            "candidate capability identity is not proof-bound",
+            phase="contract_reuse",
+        )
+    profile = engineering_contract_result_profile(spec, capability)
+    if canonical_digest(profile) != proof["contract_result_profile_sha256"]:
+        raise LifecycleError(
+            "receipt contract result profile changed", phase="contract_reuse",
+        )
+
+    remote_repo = Path(env["REMOTE_REPO"]).resolve()
+    source_seed = (
+        f"{proof['source_route_id']}\0{proof['source_output_id']}".encode()
+    )
+    source_digest = hashlib.sha256(source_seed).hexdigest()[:16]
+    source_prefix = (
+        f"{proof['source_route_id'][:32]}-{proof['source_output_id'][:24]}"[:56]
+    )
+    expected_source_repo = remote_repo.parent / f"{source_prefix}-{source_digest}"
+    expected_closeout = (
+        expected_source_repo / "experience_docx/experiment_logs"
+        / proof["source_route_id"] / proof["source_closeout_filename"]
+    )
+    if Path(proof["source_remote_repo"]) != expected_source_repo \
+            or Path(proof["source_closeout_path"]) != expected_closeout:
+        raise LifecycleError(
+            "source receipt workspace or closeout path is not canonical",
+            phase="contract_reuse",
+        )
+    source_output = (run_root / proof["source_output_id"]).resolve()
+    try:
+        source_output.relative_to(run_root.resolve())
+    except ValueError as exc:
+        raise LifecycleError(
+            "source output escapes the run root", phase="contract_reuse",
+        ) from exc
+    lifecycle_path = source_output / "control/lifecycle_identity.json"
+    context_path = source_output / "control/contract_context.json"
+    result_path = source_output / "contract/contract_result.json"
+    lifecycle_raw = _bounded_regular_bytes(lifecycle_path, "source lifecycle identity")
+    context_raw = _bounded_regular_bytes(context_path, "source contract context")
+    result_raw = _bounded_regular_bytes(result_path, "source contract result")
+    closeout_path = expected_closeout
+    closeout_raw = _bounded_regular_bytes(closeout_path, "source closeout")
+    observed_hashes = {
+        "source_lifecycle_identity_sha256": hashlib.sha256(lifecycle_raw).hexdigest(),
+        "source_contract_context_sha256": hashlib.sha256(context_raw).hexdigest(),
+        "source_contract_result_sha256": hashlib.sha256(result_raw).hexdigest(),
+        "source_closeout_sha256": hashlib.sha256(closeout_raw).hexdigest(),
+    }
+    if any(proof[key] != value for key, value in observed_hashes.items()):
+        raise LifecycleError(
+            "source receipt contract evidence changed", phase="contract_reuse",
+        )
+    try:
+        lifecycle_identity_value = json.loads(lifecycle_raw)
+        source_closeout = json.loads(closeout_raw)
+        contract_context = load_context(context_path, "contract")
+        contract_result = json.loads(result_raw)
+    except (json.JSONDecodeError, ContractError) as exc:
+        raise LifecycleError(
+            "source receipt contract evidence is invalid", phase="contract_reuse",
+        ) from exc
+    expected_lifecycle_identity = {
+        "schema_version": 1,
+        "route_id": spec["route_id"],
+        "operation_id": spec["operation_id"],
+        "run_id": proof["source_output_id"],
+        "route_commit": proof["source_route_commit"],
+        "runner_sha256": proof["source_runner_sha256"],
+    }
+    if lifecycle_identity_value != expected_lifecycle_identity \
+            or contract_context.route_id != spec["route_id"] \
+            or contract_context.operation_id != spec["operation_id"] \
+            or contract_context.run_id != proof["source_output_id"] \
+            or contract_context.route_commit != proof["source_route_commit"] \
+            or contract_context.runner_sha256 != proof["source_runner_sha256"] \
+            or Path(contract_context.result_path).resolve() != result_path:
+        raise LifecycleError(
+            "source contract context provenance mismatch", phase="contract_reuse",
+        )
+    closeout_details = source_closeout.get("details") \
+        if isinstance(source_closeout, dict) else None
+    if not isinstance(closeout_details, dict) \
+            or source_closeout.get("route_id") != spec["route_id"] \
+            or source_closeout.get("operation_id") != spec["operation_id"] \
+            or source_closeout.get("run_id") != proof["source_output_id"] \
+            or source_closeout.get("route_commit") != proof["source_route_commit"] \
+            or source_closeout.get("runner_sha256") != proof["source_runner_sha256"] \
+            or source_closeout.get("state") != "FAILED_ENGINEERING" \
+            or source_closeout.get("failure_phase") != "workload" \
+            or closeout_details.get("workload_started") is not True:
+        raise LifecycleError(
+            "source closeout is not a workload-only engineering terminal",
+            phase="contract_reuse",
+        )
+    try:
+        validate_engineering_contract_result(contract_result, profile)
+    except EngineeringContractResultError as exc:
+        raise LifecycleError(
+            f"source contract PASS cannot be revalidated: {exc}",
+            phase="contract_reuse",
+        ) from exc
+    return json.loads(json.dumps(proof, sort_keys=True))
+
+
 def publish_capability_qualification(
     *, evidence_root: Path, operation: dict[str, Any], env: dict[str, str],
     spec: dict[str, Any], capability: dict[str, Any],
@@ -1070,9 +1205,11 @@ def publish_capability_qualification(
 
 def lifecycle() -> int:
     global VERIFIED_ASSETS, WORKLOAD_STARTED, OPERATOR_CANCEL_REQUEST_PATH
+    global RECEIPT_CONTRACT_REUSE
     VERIFIED_ASSETS = []
     WORKLOAD_STARTED = False
     OPERATOR_CANCEL_REQUEST_PATH = None
+    RECEIPT_CONTRACT_REUSE = None
     env = require_environment()
     repo, run_root, output = validate_lifecycle_paths(env)
     manifest_path = repo / "experience_docx/route_operations.json"
@@ -1160,6 +1297,15 @@ def lifecycle() -> int:
     precision_path = spec["precision_contract"]["certificate_relpath"]
     if precision_path is not None:
         validate_precision_certificate(load_json(repo / precision_path), spec, scientific)
+    RECEIPT_CONTRACT_REUSE = validate_receipt_contract_reuse(
+        env, spec, capability, run_root,
+    )
+    if RECEIPT_CONTRACT_REUSE is not None and capability_reuse is not None \
+            and capability_reuse.get("engineering_reuse_authorized") is True:
+        raise LifecycleError(
+            "receipt and registry contract reuse authorizations are mutually exclusive",
+            phase="contract_reuse",
+        )
     strict_phased_assets = spec["schema_version"] >= 2
     assets = verify_assets(
         asset_manifest, repo=repo, run_root=run_root, output=output,
@@ -1173,7 +1319,13 @@ def lifecycle() -> int:
         lifecycle_identity(env, spec),
     )
     contract_result = None
-    if capability_reuse is not None \
+    if RECEIPT_CONTRACT_REUSE is not None:
+        atomic_json(
+            output / "control/receipt_contract_reuse.json",
+            RECEIPT_CONTRACT_REUSE,
+        )
+        telemetry(repo, env, status, "contract", "contract_receipt_reuse", 1, 1)
+    elif capability_reuse is not None \
             and capability_reuse["engineering_reuse_authorized"] is True:
         atomic_json(output / "control/capability_reuse.json", capability_reuse)
         telemetry(repo, env, status, "contract", "contract_exact_reuse", 1, 1)
@@ -1265,6 +1417,7 @@ def lifecycle() -> int:
         env=env, spec=spec, operation=operation, output=output,
         evidence_root=evidence_root, result=result, evidence_sha256=evidence,
         verified_assets=assets, capability_reuse=capability_reuse,
+        receipt_contract_reuse=RECEIPT_CONTRACT_REUSE,
         capability_qualification=capability_qualification,
     )
     return 0
@@ -1272,12 +1425,13 @@ def lifecycle() -> int:
 
 def finalize_existing(source_commit: str) -> int:
     """Publish a completed run without rerunning its scientific workload."""
-    global WORKLOAD_STARTED
+    global WORKLOAD_STARTED, RECEIPT_CONTRACT_REUSE
     WORKLOAD_STARTED = True
+    RECEIPT_CONTRACT_REUSE = None
     env = require_environment()
     if not capability_registry.SHA40.fullmatch(source_commit):
         raise LifecycleError("finalization source commit is invalid", phase="environment")
-    repo, _, output = validate_lifecycle_paths(env)
+    repo, run_root, output = validate_lifecycle_paths(env)
     manifest = load_json(repo / "experience_docx/route_operations.json")
     operation_id, operation = infer_operation(manifest, env)
     env["ROUTE_ID"] = manifest["route_id"]
@@ -1285,6 +1439,17 @@ def finalize_existing(source_commit: str) -> int:
         load_json(repo / RUNTIME_SPEC_DIRECTORY / f"{operation_id}.json"),
         manifest, operation_id,
     )
+    asset_manifest = None
+    if spec["asset_manifest_relpath"] is not None:
+        asset_manifest = validate_asset_manifest(
+            load_json(repo / spec["asset_manifest_relpath"]), spec,
+        )
+    capability = None
+    capability_path = spec["engineering_contract"]["capability_profile_relpath"]
+    if capability_path is not None:
+        capability = validate_model_capability(
+            load_json(repo / capability_path), spec, asset_manifest,
+        )
     scientific_path = manifest.get("scientific_contract_relpaths", {}).get(operation_id)
     scientific = None
     if scientific_path is not None:
@@ -1316,6 +1481,11 @@ def finalize_existing(source_commit: str) -> int:
             "completed output is not bound to the finalization source commit",
             phase="identity_preflight",
         )
+    RECEIPT_CONTRACT_REUSE = validate_receipt_contract_reuse(
+        env, spec, capability, run_root,
+        expected_candidate_commit=source_commit,
+        allow_adapter_code_path=env["EXPECTED_ROUTE_COMMIT"] != source_commit,
+    )
     run_context_path = output / "control/run_context.json"
     run_context = load_context(run_context_path, "run")
     if run_context.route_commit != source_commit \
@@ -1391,21 +1561,14 @@ def finalize_existing(source_commit: str) -> int:
         evidence[filename] = digest
     capability_reuse = None
     capability_qualification = None
-    capability_path = spec["engineering_contract"]["capability_profile_relpath"]
     if capability_path is not None and not adapter_used:
-        asset_manifest = None
-        if spec["asset_manifest_relpath"] is not None:
-            asset_manifest = validate_asset_manifest(
-                load_json(repo / spec["asset_manifest_relpath"]), spec,
-            )
-        capability = validate_model_capability(
-            load_json(repo / capability_path), spec, asset_manifest,
-        )
         if capability.get("schema_version") == 2:
-            capability_reuse = resolve_capability_reuse(
-                repo, capability, env["AUTHORITATIVE_MAIN_COMMIT"],
-            )
-            if capability_reuse["engineering_reuse_authorized"] is False:
+            if RECEIPT_CONTRACT_REUSE is None:
+                capability_reuse = resolve_capability_reuse(
+                    repo, capability, env["AUTHORITATIVE_MAIN_COMMIT"],
+                )
+            if RECEIPT_CONTRACT_REUSE is None \
+                    and capability_reuse["engineering_reuse_authorized"] is False:
                 contract_context_path = output / "control/contract_context.json"
                 contract_context = load_context(contract_context_path, "contract")
                 contract_result = validate_contract_result(
@@ -1428,7 +1591,9 @@ def finalize_existing(source_commit: str) -> int:
             "adapter_used": adapter_used,
             "workload_reexecuted": False,
             "stable_output_isolation_verified": True,
-            "new_capability_registration_authorized": not adapter_used,
+            "new_capability_registration_authorized": (
+                not adapter_used and RECEIPT_CONTRACT_REUSE is None
+            ),
         },
     }
     failed_closeout = output / "control/failed_engineering_closeout.json"
@@ -1441,6 +1606,7 @@ def finalize_existing(source_commit: str) -> int:
         env=env, spec=spec, operation=operation, output=output,
         evidence_root=evidence_root, result=result, evidence_sha256=evidence,
         verified_assets=verified_assets, capability_reuse=capability_reuse,
+        receipt_contract_reuse=RECEIPT_CONTRACT_REUSE,
         capability_qualification=capability_qualification,
     )
     print("GENERIC_ROUTE_FINALIZATION_REPAIR_OK", flush=True)
@@ -1562,6 +1728,7 @@ def finalize_operator_cancellation(exc: OperatorCancelled) -> None:
         evidence_root=evidence_root, result=result, evidence_sha256={},
         failure_phase="operator_cancel", returncode=130,
         verified_assets=VERIFIED_ASSETS,
+        receipt_contract_reuse=RECEIPT_CONTRACT_REUSE,
         write_local_copy=output_owned_by_run(output, env, spec),
     )
 
@@ -1660,6 +1827,7 @@ def main() -> None:
                 evidence_root=evidence_root, result=failure, evidence_sha256={},
                 failure_phase=getattr(exc, "phase", "lifecycle"), returncode=1,
                 verified_assets=VERIFIED_ASSETS,
+                receipt_contract_reuse=RECEIPT_CONTRACT_REUSE,
                 write_local_copy=owns_output,
             )
         except BaseException as closeout_exc:

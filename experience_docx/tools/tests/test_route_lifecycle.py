@@ -1,6 +1,9 @@
 """Focused tests for lifecycle result, asset, and evidence guards."""
 
+import base64
+import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -619,6 +622,167 @@ class LifecycleTests(unittest.TestCase):
             )
             self.assertTrue(result["engineering_reuse_authorized"])
             self.assertEqual("NONE", result["scientific_authorization"])
+
+    def test_receipt_contract_reuse_revalidates_source_evidence(self):
+        _, runtime = self.normalized()
+        source_commit = "a" * 40
+        candidate_commit = "b" * 40
+        runner_sha = "c" * 64
+        source_id = "source-r1"
+        candidate_id = "source-r2"
+        source_identity = {
+            "source_commit": "d" * 40,
+            "code_path_sha256": "1" * 64,
+            "checkpoint_sha256": "2" * 64,
+            "runtime_environment_sha256": "3" * 64,
+            "device_class": "cpu",
+            "input_contract_sha256": "4" * 64,
+        }
+        candidate_identity = {**source_identity, "code_path_sha256": "5" * 64}
+        capability = {
+            "schema_version": 2,
+            "reuse_identity": candidate_identity,
+        }
+        runtime["_validated_capability_profile"] = capability
+        with tempfile.TemporaryDirectory() as directory:
+            run_root = Path(directory) / "runs"
+            source_output = run_root / source_id
+            (source_output / "control").mkdir(parents=True)
+            (source_output / "contract").mkdir()
+            source_env = {
+                "RUN_ID": source_id,
+                "EXPECTED_ROUTE_COMMIT": source_commit,
+                "RUNNER_SHA256": runner_sha,
+                "REMOTE_REPO": str(Path(directory) / "repo"),
+                "RUN_ROOT": str(run_root),
+                "OUTPUT_PATH": str(source_output),
+                "GPU": "",
+            }
+            context = LIFE.context_value(
+                phase="contract", env=source_env, spec=runtime,
+                output=source_output, status=source_output / "status.txt",
+                heartbeat=source_output / "heartbeat.json", assets=[],
+            )
+            lifecycle_identity = {
+                "schema_version": 1,
+                "route_id": runtime["route_id"],
+                "operation_id": runtime["operation_id"],
+                "run_id": source_id,
+                "route_commit": source_commit,
+                "runner_sha256": runner_sha,
+            }
+            result = {
+                "schema_version": 1,
+                "route_id": runtime["route_id"],
+                "operation_id": runtime["operation_id"],
+                "phase": "contract", "ok": True,
+                "checks": {"fixture": True},
+                "output_contract_checked": True,
+                "finalizer_contract_checked": True,
+                "confirmation_images_targets_outcomes_touched": False,
+                "canary_touched": False,
+                "locked_test_touched": False,
+            }
+            identity_path = source_output / "control/lifecycle_identity.json"
+            context_path = source_output / "control/contract_context.json"
+            result_path = source_output / "contract/contract_result.json"
+            identity_path.write_text(json.dumps(lifecycle_identity))
+            context_path.write_text(json.dumps(context))
+            result_path.write_text(json.dumps(result))
+            remote_repos = Path(directory) / "repos"
+            source_seed = f"{runtime['route_id']}\0{source_id}".encode()
+            source_prefix = f"{runtime['route_id'][:32]}-{source_id[:24]}"[:56]
+            source_repo = remote_repos / (
+                f"{source_prefix}-{hashlib.sha256(source_seed).hexdigest()[:16]}"
+            )
+            closeout_filename = "source_closeout.json"
+            closeout_path = (
+                source_repo / "experience_docx/experiment_logs"
+                / runtime["route_id"] / closeout_filename
+            )
+            closeout_path.parent.mkdir(parents=True)
+            closeout_path.write_text(json.dumps({
+                "route_id": runtime["route_id"],
+                "operation_id": runtime["operation_id"],
+                "run_id": source_id,
+                "route_commit": source_commit,
+                "runner_sha256": runner_sha,
+                "state": "FAILED_ENGINEERING",
+                "failure_phase": "workload",
+                "details": {"workload_started": True},
+            }))
+            profile = CONTRACT.engineering_contract_result_profile(runtime, capability)
+            proof = {
+                "schema_version": 1,
+                "source_receipt_sha256": "6" * 64,
+                "repair_parent_receipt_sha256": "6" * 64,
+                "reuse_depth": 1,
+                "parent_reuse_proof_sha256": None,
+                "source_route_id": runtime["route_id"],
+                "source_operation_id": runtime["operation_id"],
+                "source_route_commit": source_commit,
+                "source_output_id": source_id,
+                "source_runner_sha256": runner_sha,
+                "source_remote_repo": str(source_repo),
+                "source_closeout_filename": closeout_filename,
+                "source_closeout_path": str(closeout_path),
+                "source_closeout_sha256": LIFE.sha256(closeout_path),
+                "source_lifecycle_identity_sha256": LIFE.sha256(identity_path),
+                "source_contract_context_sha256": LIFE.sha256(context_path),
+                "source_contract_result_sha256": LIFE.sha256(result_path),
+                "source_capability_identity": source_identity,
+                "candidate_capability_identity": candidate_identity,
+                "source_entrypoint_sha256": source_identity["code_path_sha256"],
+                "candidate_entrypoint_sha256": candidate_identity["code_path_sha256"],
+                "source_contract_slice_sha256": "7" * 64,
+                "candidate_contract_slice_sha256": "7" * 64,
+                "contract_result_profile_sha256": CONTRACT.canonical_digest(profile),
+                "classification_sha256": "8" * 64,
+                "candidate_route_commit": candidate_commit,
+                "candidate_output_id": candidate_id,
+                "source_device_class": "cpu",
+                "scientific_authorization": "NONE",
+            }
+            encoded = base64.b64encode(json.dumps(
+                proof, sort_keys=True, separators=(",", ":"),
+            ).encode()).decode()
+            candidate_env = {
+                "EXPECTED_ROUTE_COMMIT": candidate_commit,
+                "RUN_ID": candidate_id,
+                "REMOTE_REPO": str(remote_repos / "candidate"),
+            }
+            with patch.dict(
+                os.environ, {"CONVIR_RECEIPT_CONTRACT_REUSE_B64": encoded},
+            ):
+                observed = LIFE.validate_receipt_contract_reuse(
+                    candidate_env, runtime, capability, run_root,
+                )
+                self.assertEqual("NONE", observed["scientific_authorization"])
+                result_path.write_text(json.dumps({**result, "ok": False}))
+                with self.assertRaisesRegex(
+                    LIFE.LifecycleError, "source receipt contract evidence changed",
+                ):
+                    LIFE.validate_receipt_contract_reuse(
+                        candidate_env, runtime, capability, run_root,
+                    )
+                result_path.write_text(json.dumps(result))
+                adapter_capability = {
+                    **capability,
+                    "reuse_identity": {
+                        **candidate_identity,
+                        "code_path_sha256": "9" * 64,
+                    },
+                }
+                finalization_env = {
+                    **candidate_env,
+                    "EXPECTED_ROUTE_COMMIT": "f" * 40,
+                }
+                observed = LIFE.validate_receipt_contract_reuse(
+                    finalization_env, runtime, adapter_capability, run_root,
+                    expected_candidate_commit=candidate_commit,
+                    allow_adapter_code_path=True,
+                )
+                self.assertEqual(candidate_commit, observed["candidate_route_commit"])
 
 if __name__ == "__main__":
     unittest.main()

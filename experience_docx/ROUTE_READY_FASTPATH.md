@@ -294,6 +294,15 @@ control/candidate classification, requires the canonical next output id, seals
 one plan and invokes start. Pre-seal failures consume no transaction; an
 identical repeat reuses that plan, while a different commit cannot replace it.
 `SENSITIVE_REPAIR_REVIEW_REQUIRED` pauses before state-changing actions.
+When the user explicitly authorizes a workload-only reviewed repair, rerun the
+same isolated classifier with `--reviewed-workload --authoritative-main
+<EXACT_MAIN_REF>`. Only `REVIEWED_WORKLOAD_REPAIR_ELIGIBLE` permits staging. It
+requires a workload-only `run` slice change, an unchanged `contract` slice,
+stable capability identity except for code-path SHA, deterministic schema-6
+regeneration and an exact authoritative-main runtime bundle. After push, call
+finish with `engineering_failure_resolution=reviewed_repair` and the exact
+candidate commit. The resulting receipt proof skips only the already-PASSed
+engineering contract; it grants no scientific or registry authorization.
 `archive` permits compact failure evidence sync but no repair/relaunch. The
 explicit discard resolution is narrower: it requires a receipt-bound validated
 engineering terminal, verified no scientific/protected data touch, exact paths,

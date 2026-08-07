@@ -1,8 +1,8 @@
 # Convir Operations MCP
 
-Date: 2026-08-05
+Date: 2026-08-07
 
-Status: main-first snapshot server `5.12.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.13.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4/5 for status
 and evidence provenance, while plan accepts only compiled manifest schema 6 and
 runtime schema 2. New experiment specs and scientific contracts
@@ -13,6 +13,19 @@ Every ordinary structured response exposes the loaded server version, exact
 server source SHA-256, loaded control commit, complete validator-bundle SHA-256
 and module-origin-manifest SHA-256, so dependency or process drift is visible
 directly.
+
+Version 5.13.0 adds an explicit reviewed workload-only repair resolution without
+adding a tool or changing protocol schema 4. A source receipt is eligible only
+when its engineering contract PASS is still hash-verifiable and its terminal is
+a workload-phase engineering failure. The classifier permits only `run`-reachable,
+`contract`-unreachable symbol changes, proves the canonical contract AST slice
+unchanged, holds the capability identity stable except for code-path SHA and
+requires the candidate runtime bundle to equal live main. MCP reattests the
+source files and seals a lineage-bound proof; lifecycle independently revalidates
+them and emits `contract_receipt_reuse` instead of rerunning the contract. Later
+workload repairs may chain the original PASS by binding each parent receipt and
+proof digest within the three-generation limit. Reuse always carries
+`scientific_authorization=NONE` and never creates a capability qualification.
 
 Version 5.12.0 adds one receipt-bound same-contract repair transaction to the
 existing finish tool. Given an already-pushed candidate commit, it performs the
@@ -66,7 +79,7 @@ route validator or a route-specific shell surface.
 | --- | --- |
 | `convir_route_plan` | validate and seal one committed operation; no cloud call |
 | `convir_route_start` | run one sealed plan and return verified, pending, or early-failure state with a receipt |
-| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation, read-only engineering diagnosis and one same-contract repair transaction |
+| `convir_route_finish` | sealed finish, result-blind progress/terminal probe, receipt-bound cancellation, closeout validation, read-only engineering diagnosis, ordinary repair and explicit reviewed workload-only contract reuse |
 | `convir_evidence_list` | list eligible compact evidence for a receipt |
 | `convir_evidence_fetch` | fetch an explicit allowlist with SHA-256 checks |
 | `convir_git_status` | token-bounded GitHub-main project/route authority snapshot plus a separate local write binding; never a result reader |
@@ -287,6 +300,22 @@ request reuses the plan token; another candidate is rejected after sealing.
 Any exception or typed rejection before sealing reports
 `repair_transaction_consumed=false` and creates no plan.
 
+For an explicitly reviewed workload-only candidate, finish accepts
+`engineering_failure_resolution=reviewed_repair` with the exact pushed commit.
+The source must have a validated workload failure after its contract PASS. The
+reviewed classifier rejects changed imports/module control, changed function
+interfaces, dead-code changes, dynamic contract resolution, any changed
+contract-reachable symbol, any stable capability-identity change, and runtime
+bundle drift from authoritative main. MCP reads the original lifecycle identity,
+contract context/result and failure closeout through one bounded cloud
+attestation, validates their hashes and the frozen contract-result profile, and
+seals the original and immediate-parent receipt identities into the plan. The
+lifecycle repeats the file, hash, provenance, profile, device-class and
+capability checks before writing `contract_receipt_reuse`. It does not run
+`contract()` and cannot turn that engineering PASS into scientific authority.
+Every chained proof binds the prior proof digest; source evidence drift or a
+broken parent-to-candidate slice bridge fails closed.
+
 The engineering fingerprint binds failure phase, exception type, normalized
 stack fingerprint, safe failed-check tokens and return code. Its history is
 carried by the replacement receipt. Repetition returns
@@ -378,6 +407,9 @@ One unique exact match skips contract execution; any mismatch executes the froze
 actual CUDA compute-capability class before reuse. New qualification evidence is
 compact and registered only by terminal archive. Every reuse result carries
 `scientific_authorization: NONE`.
+Receipt-bound reviewed workload reuse is separate from this registry lookup. It
+reuses only the exact PASS evidence named by one failed receipt, does not add a
+registry record, and cannot be used by an unrelated route or capability identity.
 
 Every nonempty scientific schema-3 workload must finish with exact
 `total_units` coverage in the generic completion ledger. `complete_units`
@@ -399,10 +431,10 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.12.0`, source SHA-256, loaded control
+restart the host and verify version `5.13.0`, source SHA-256, loaded control
 commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
-startup/progress/cancel/diagnose/repair/discard states.
+startup/progress/cancel/diagnose/repair/reviewed-repair/discard states.
 The same version, source SHA-256, loaded commit, bundle SHA-256 and module-origin
 SHA-256 must appear in ordinary structured responses after restart, not only in
 MCP initialization metadata.

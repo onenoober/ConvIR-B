@@ -23,17 +23,21 @@ import capability_registry
 import scientific_contract as science_contract
 from route_runtime_contract import (
     ContractError as RuntimeContractError,
+    EngineeringContractResultError,
+    ReceiptContractReuseError,
     RUNTIME_BUNDLE_RELPATHS,
     runtime_spec_relpath,
     validate_asset_manifest,
+    validate_engineering_contract_result,
     validate_model_capability,
     validate_precision_certificate,
+    validate_receipt_contract_reuse_proof,
     validate_runtime_spec,
 )
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.12.0"
+SERVER_VERSION = "5.13.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}
@@ -1430,7 +1434,9 @@ def engineering_repair_history(context):
     return list(history)
 
 
-def classify_engineering_repair_candidate(source_context, candidate_context):
+def classify_engineering_repair_candidate(
+    source_context, candidate_context, *, reviewed_workload=False,
+):
     stable = ("branch", "route_id", "operation_id")
     if any(source_context.get(key) != candidate_context.get(key) for key in stable):
         raise ToolError(
@@ -1455,21 +1461,38 @@ def classify_engineering_repair_candidate(source_context, candidate_context):
         ensure_commit(bare_repo, source_commit)
         import validate_engineering_repair as repair_validator
         try:
-            report = repair_validator.validate(
+            validator = (
+                repair_validator.validate_reviewed_workload_repair
+                if reviewed_workload else repair_validator.validate
+            )
+            validator_kwargs = (
+                {"authoritative_commit": refs["refs/heads/main"]}
+                if reviewed_workload else {}
+            )
+            report = validator(
                 Path(bare_repo), source_commit, candidate_commit,
-                source_context["operation_id"],
+                source_context["operation_id"], **validator_kwargs,
             )
         except repair_validator.RepairError as exc:
             raise ToolError(
                 f"engineering repair classifier rejected the candidate: {exc}",
                 failure_phase="engineering_repair", failure_class="contract",
             ) from exc
-    if report.get("status") != "AUTO_REPAIR_ELIGIBLE" \
+    expected_status = (
+        "REVIEWED_WORKLOAD_REPAIR_ELIGIBLE"
+        if reviewed_workload else "AUTO_REPAIR_ELIGIBLE"
+    )
+    if report.get("status") != expected_status \
             or report.get("old_output_id") != source_context.get("output_id") \
             or report.get("new_output_id") != candidate_context.get("output_id") \
             or report.get("derived_output_id") != candidate_context.get("output_id") \
             or report.get("scientific_contract_unchanged") is not True \
-            or report.get("sensitive_review_required") is not False:
+            or report.get("sensitive_review_required") is not reviewed_workload \
+            or (reviewed_workload and (
+                report.get("contract_reachable_slice_unchanged") is not True
+                or report.get("workload_only_change") is not True
+                or report.get("runtime_bundle_synced_to_authoritative_main") is not True
+            )):
         raise ToolError(
             "engineering repair classifier returned an invalid authorization",
             failure_phase="engineering_repair", failure_class="contract",
@@ -1937,7 +1960,40 @@ def gpu_probe_failure(exc):
     )
 
 
+def context_receipt_contract_reuse(context):
+    receipt_reuse = context.get("receipt_contract_reuse")
+    if receipt_reuse is None:
+        return None
+    try:
+        receipt_reuse = validate_receipt_contract_reuse_proof(receipt_reuse)
+    except ReceiptContractReuseError as exc:
+        raise ToolError(
+            f"receipt contract reuse proof is invalid: {exc}",
+            failure_phase="contract_reuse", failure_class="contract",
+        ) from exc
+    bound_commit = context.get(
+        "receipt_contract_reuse_source_commit", context.get("route_branch_commit"),
+    )
+    if not isinstance(bound_commit, str) or not SHA40.fullmatch(bound_commit) \
+            or receipt_reuse["source_route_id"] != context.get("route_id") \
+            or receipt_reuse["source_operation_id"] != context.get("operation_id") \
+            or receipt_reuse["candidate_route_commit"] \
+            != bound_commit \
+            or receipt_reuse["candidate_output_id"] != context.get("output_id"):
+        raise ToolError(
+            "receipt contract reuse proof does not match the route context",
+            failure_phase="contract_reuse", failure_class="contract",
+        )
+    return receipt_reuse
+
+
 def atomic_start_body(context, gpu_index):
+    receipt_reuse = context_receipt_contract_reuse(context)
+    receipt_reuse_b64 = None
+    if receipt_reuse is not None:
+        receipt_reuse_b64 = base64.b64encode(json.dumps(
+            receipt_reuse, sort_keys=True, separators=(",", ":"),
+        ).encode()).decode()
     lines = []
     lines.extend([
         f"REMOTE_REPO={q(context['remote_repo'])}",
@@ -1996,6 +2052,8 @@ def atomic_start_body(context, gpu_index):
         '  test ! -e "$CLOSEOUT"',
         'fi',
     ])
+    if receipt_reuse_b64 is not None:
+        lines.append(f"RECEIPT_CONTRACT_REUSE_B64={q(receipt_reuse_b64)}")
     if gpu_index is not None:
         lines.extend([
             'GPU_RECHECK_RC=0',
@@ -2010,8 +2068,12 @@ def atomic_start_body(context, gpu_index):
             'trap cleanup_fresh ERR',
             'if test "$GPU_RECHECK_RC" -ne 0; then cleanup_fresh "$GPU_RECHECK_RC"; fi',
         ])
+    reuse_environment = (
+        ' CONVIR_RECEIPT_CONTRACT_REUSE_B64="$RECEIPT_CONTRACT_REUSE_B64"'
+        if receipt_reuse_b64 is not None else ""
+    )
     lines.extend([
-        f'"$TMUX" new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$EXPECTED_MAIN" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX" bash "$REMOTE_REPO/$RUNNER"',
+        f'"$TMUX" new-session -d -s "$SESSION" env EXPECTED_ROUTE_COMMIT="$EXPECTED_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$EXPECTED_MAIN" RUNNER_SHA256="$EXPECTED_RUNNER_SHA" MODE={q(context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(context["output_id"])} OUTPUT_ID={q(context["output_id"])} GPU="$GPU_INDEX"{reuse_environment} bash "$REMOTE_REPO/$RUNNER"',
         'trap - ERR',
         'echo "CONVIR_OPS_LAUNCH_OK session=$SESSION gpu=\${GPU_INDEX:-none}"',
     ])
@@ -2549,12 +2611,27 @@ def prepare_finalization_repair(context, repair_commit):
     # direct and preserves that runner identity in the recovered closeout.
     new_context["runner_sha256"] = context["runner_sha256"]
     new_context["session"] = context["session"]
+    receipt_reuse = context_receipt_contract_reuse(context)
+    if receipt_reuse is not None:
+        new_context["receipt_contract_reuse"] = receipt_reuse
+        new_context["receipt_contract_reuse_source_commit"] = context[
+            "route_branch_commit"
+        ]
     return new_context, spec, classification
 
 
 def finalization_repair_body(
     source_context, final_context, spec, closeout, classification,
 ):
+    receipt_reuse = context_receipt_contract_reuse(final_context)
+    receipt_reuse_environment = ""
+    if receipt_reuse is not None:
+        receipt_reuse_b64 = base64.b64encode(json.dumps(
+            receipt_reuse, sort_keys=True, separators=(",", ":"),
+        ).encode()).decode()
+        receipt_reuse_environment = (
+            f" CONVIR_RECEIPT_CONTRACT_REUSE_B64={q(receipt_reuse_b64)}"
+        )
     evidence_root = (
         f"{source_context['remote_repo']}/experience_docx/experiment_logs/"
         f"{source_context['route_id']}"
@@ -2631,7 +2708,7 @@ def finalization_repair_body(
         '  git -C "$REMOTE_REPO" checkout --quiet --detach "$FINAL_COMMIT"',
         'fi',
         'test -z "$(git -C "$REMOTE_REPO" status --porcelain)"',
-        f'RC=0; env PYTHONDONTWRITEBYTECODE=1 EXPECTED_ROUTE_COMMIT="$FINAL_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$MAIN_COMMIT" RUNNER_SHA256={q(source_context["runner_sha256"])} MODE={q(source_context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(source_context["output_id"])} OUTPUT_ID={q(source_context["output_id"])} GPU={q("")} "$PYTHON" "$LIFECYCLE" --finalize-existing "$SOURCE_COMMIT" || RC=$?',
+        f'RC=0; env PYTHONDONTWRITEBYTECODE=1 EXPECTED_ROUTE_COMMIT="$FINAL_COMMIT" AUTHORITATIVE_MAIN_COMMIT="$MAIN_COMMIT" RUNNER_SHA256={q(source_context["runner_sha256"])} MODE={q(source_context["mode"])} REMOTE_REPO="$REMOTE_REPO" RUN_ROOT="$RUN_ROOT" OUTPUT_PATH="$OUTPUT_PATH" RUN_ID={q(source_context["output_id"])} OUTPUT_ID={q(source_context["output_id"])} GPU={q("")}{receipt_reuse_environment} "$PYTHON" "$LIFECYCLE" --finalize-existing "$SOURCE_COMMIT" || RC=$?',
         'test -z "$(git -C "$CONTROL_REPO" status --porcelain)"',
         'git -C "$REMOTE_REPO" worktree remove "$CONTROL_REPO"',
         'test ! -e "$CONTROL_REPO"',
@@ -2870,6 +2947,499 @@ def engineering_repair_source(token):
             raise ToolError("receipt engineering repair history requires operator review")
         transaction = record.get("engineering_repair_transaction")
     return source_context, closeout, fingerprint, history, transaction
+
+
+def reviewed_engineering_repair_source(token):
+    with read_record("receipt", token) as record:
+        if not record.get("launched"):
+            raise ToolError("receipt has no successful launch")
+        source_state = record.get("finish_closed")
+        if source_state not in {
+            "ENGINEERING_REVIEW_REQUIRED", "ENGINEERING_AUTO_REPAIR_AUTHORIZED",
+            "ENGINEERING_REPAIR_AUTHORIZED",
+        }:
+            raise ToolError("receipt does not authorize an explicit reviewed repair")
+        closeout = record.get("terminal_closeout")
+        diagnostic = closeout.get("engineering_diagnostic") \
+            if isinstance(closeout, dict) else None
+        if not isinstance(closeout, dict) \
+                or closeout.get("terminal_tuple", {}).get("state") != "FAILED_ENGINEERING" \
+                or not isinstance(diagnostic, dict) \
+                or diagnostic.get("failure_phase") != "workload" \
+                or diagnostic.get("workload_started") is not True:
+            raise ToolError(
+                "reviewed receipt reuse requires a workload-only engineering terminal",
+                failure_phase="engineering_repair", failure_class="evidence",
+            )
+        source_context = dict(receipt_context(record))
+        fingerprint = record.get("engineering_failure_fingerprint_sha256")
+        if not isinstance(fingerprint, str) or not SHA256.fullmatch(fingerprint):
+            fingerprint = engineering_failure_fingerprint(closeout)
+        history = engineering_repair_history(source_context)
+        if fingerprint in history or len(history) >= MAX_ENGINEERING_REPAIR_GENERATIONS:
+            raise ToolError("receipt engineering repair history requires operator review")
+        transaction = record.get("reviewed_engineering_repair_transaction")
+        gpu_index = record.get("gpu_index")
+        if source_context.get("require_gpu"):
+            if not isinstance(gpu_index, int) or isinstance(gpu_index, bool) or gpu_index < 0:
+                raise ToolError(
+                    "source receipt lacks an exact GPU binding",
+                    failure_phase="contract_reuse", failure_class="evidence",
+                )
+        else:
+            gpu_index = None
+        inherited_reuse = source_context.get("receipt_contract_reuse")
+        if inherited_reuse is not None:
+            try:
+                inherited_reuse = validate_receipt_contract_reuse_proof(
+                    inherited_reuse
+                )
+            except ReceiptContractReuseError as exc:
+                raise ToolError(
+                    f"source receipt reuse proof is invalid: {exc}",
+                    failure_phase="contract_reuse", failure_class="evidence",
+                ) from exc
+            if inherited_reuse["candidate_route_commit"] \
+                    != source_context["route_branch_commit"] \
+                    or inherited_reuse["candidate_output_id"] \
+                    != source_context["output_id"] \
+                    or closeout.get("receipt_contract_reuse_sha256") \
+                    != canonical_digest(inherited_reuse):
+                raise ToolError(
+                    "source workload terminal is not bound to its inherited contract proof",
+                    failure_phase="contract_reuse", failure_class="evidence",
+                )
+        elif closeout.get("receipt_contract_reuse_sha256") is not None:
+            raise ToolError(
+                "source closeout has an unbound contract reuse digest",
+                failure_phase="contract_reuse", failure_class="evidence",
+            )
+    return (
+        source_context, closeout, fingerprint, history, transaction, gpu_index,
+        source_state, inherited_reuse,
+    )
+
+
+def receipt_contract_attestation_body(context, gpu_index):
+    program = r'''import base64,hashlib,json,stat,sys
+from pathlib import Path
+
+def require(condition, label):
+    if not condition:
+        raise RuntimeError(label)
+
+def read_regular(value, label):
+    path = Path(value)
+    observed = path.lstat()
+    require(stat.S_ISREG(observed.st_mode) and not path.is_symlink(), label)
+    require(observed.st_size <= 65536, label)
+    raw = path.read_bytes()
+    require(len(raw) == observed.st_size, label)
+    return raw
+
+output = Path(sys.argv[1]).resolve()
+closeout_path = Path(sys.argv[2])
+route_id, operation_id, run_id = sys.argv[3:6]
+route_commit, runner_sha, gpu = sys.argv[6:9]
+identity_raw = read_regular(output / "control/lifecycle_identity.json", "identity")
+context_raw = read_regular(output / "control/contract_context.json", "context")
+result_raw = read_regular(output / "contract/contract_result.json", "result")
+closeout_raw = read_regular(closeout_path, "closeout")
+identity = json.loads(identity_raw)
+context = json.loads(context_raw)
+result = json.loads(result_raw)
+closeout = json.loads(closeout_raw)
+expected_identity = {
+    "schema_version": 1, "route_id": route_id, "operation_id": operation_id,
+    "run_id": run_id, "route_commit": route_commit, "runner_sha256": runner_sha,
+}
+require(identity == expected_identity, "identity")
+require(context.get("schema_version") == 1 and context.get("phase") == "contract", "context")
+require(all(context.get(key) == value for key, value in {
+    "route_id": route_id, "operation_id": operation_id, "run_id": run_id,
+    "route_commit": route_commit, "runner_sha256": runner_sha,
+    "output_path": str(output), "phase_output_path": str(output / "contract"),
+    "result_path": str(output / "contract/contract_result.json"),
+}.items()), "context identity")
+details = closeout.get("details")
+require(isinstance(details, dict) and details.get("workload_started") is True, "closeout details")
+require(all(closeout.get(key) == value for key, value in {
+    "route_id": route_id, "operation_id": operation_id, "run_id": run_id,
+    "route_commit": route_commit, "runner_sha256": runner_sha,
+    "state": "FAILED_ENGINEERING", "failure_phase": "workload",
+}.items()), "closeout identity")
+if gpu:
+    import torch
+    require(torch.cuda.is_available(), "cuda")
+    major, minor = torch.cuda.get_device_capability(0)
+    device_class = f"cuda_sm{major}{minor}"
+else:
+    device_class = "cpu"
+payload = {
+    "schema_version": 1,
+    "identity_sha256": hashlib.sha256(identity_raw).hexdigest(),
+    "context_sha256": hashlib.sha256(context_raw).hexdigest(),
+    "result_sha256": hashlib.sha256(result_raw).hexdigest(),
+    "closeout_sha256": hashlib.sha256(closeout_raw).hexdigest(),
+    "contract_context": context,
+    "contract_result": result,
+    "device_class": device_class,
+}
+raw = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+print("CONVIR_OPS_RECEIPT_CONTRACT_ATTESTATION=" + base64.b64encode(raw).decode())
+'''
+    return "\n".join([
+        f"PYTHON={q(REMOTE_PYTHON)}",
+        f"OUTPUT={q(context['output_path'])}",
+        f"CLOSEOUT={q(context['closeout_path'])}",
+        f"GPU_INDEX={q(gpu_index if gpu_index is not None else '')}",
+        f"PROGRAM={q(program)}",
+        'CUDA_VISIBLE_DEVICES="$GPU_INDEX" "$PYTHON" -c "$PROGRAM" '
+        f'"$OUTPUT" "$CLOSEOUT" {q(context["route_id"])} '
+        f'{q(context["operation_id"])} {q(context["output_id"])} '
+        f'{q(context["route_branch_commit"])} {q(context["runner_sha256"])} '
+        '"$GPU_INDEX"',
+    ])
+
+
+def parse_receipt_contract_attestation(output):
+    matches = re.findall(
+        r"(?m)^CONVIR_OPS_RECEIPT_CONTRACT_ATTESTATION=([A-Za-z0-9+/=]+)$",
+        output,
+    )
+    if len(matches) != 1:
+        raise ToolError(
+            "receipt contract attestation marker is missing or duplicated",
+            failure_phase="contract_reuse", failure_class="command_infra",
+        )
+    try:
+        raw = base64.b64decode(matches[0], validate=True)
+        value = json.loads(raw)
+    except (ValueError, json.JSONDecodeError) as exc:
+        raise ToolError(
+            "receipt contract attestation is invalid",
+            failure_phase="contract_reuse", failure_class="evidence",
+        ) from exc
+    expected = {
+        "schema_version", "identity_sha256", "context_sha256", "result_sha256",
+        "closeout_sha256", "contract_context", "contract_result", "device_class",
+    }
+    if len(raw) > MAX_REMOTE_CAPTURE_BYTES or not isinstance(value, dict) \
+            or set(value) != expected or value.get("schema_version") != 1 \
+            or any(not isinstance(value.get(key), str) or not SHA256.fullmatch(value[key])
+                   for key in ("identity_sha256", "context_sha256", "result_sha256",
+                               "closeout_sha256")) \
+            or not isinstance(value.get("device_class"), str) \
+            or not SAFE_TOKEN.fullmatch(value["device_class"]):
+        raise ToolError(
+            "receipt contract attestation field contract is invalid",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    return value
+
+
+def build_receipt_contract_reuse_proof(
+    token, source_context, closeout, candidate_context, classification, gpu_index,
+    inherited_reuse=None,
+):
+    immediate_source_identity = capability_registry.validate_identity(
+        classification.get("source_capability_identity")
+    )
+    candidate_identity = capability_registry.validate_identity(
+        classification.get("candidate_capability_identity")
+    )
+    if inherited_reuse is None:
+        evidence_context = source_context
+        source_identity = immediate_source_identity
+        source_receipt = token
+        source_contract_slice = classification["source_contract_slice_sha256"]
+        reuse_depth = 1
+        parent_reuse_digest = None
+        expected_closeout_sha = closeout.get("closeout_sha256")
+    else:
+        try:
+            inherited_reuse = validate_receipt_contract_reuse_proof(inherited_reuse)
+        except ReceiptContractReuseError as exc:
+            raise ToolError(
+                f"inherited receipt contract reuse proof is invalid: {exc}",
+                failure_phase="contract_reuse", failure_class="evidence",
+            ) from exc
+        expected_source_repo = derive_remote_repo(
+            inherited_reuse["source_route_id"],
+            inherited_reuse["source_output_id"],
+        )
+        expected_closeout = (
+            f"{expected_source_repo}/experience_docx/experiment_logs/"
+            f"{inherited_reuse['source_route_id']}/"
+            f"{inherited_reuse['source_closeout_filename']}"
+        )
+        if inherited_reuse["source_remote_repo"] != expected_source_repo \
+                or inherited_reuse["source_closeout_path"] != expected_closeout \
+                or inherited_reuse["candidate_capability_identity"] \
+                != immediate_source_identity \
+                or inherited_reuse["candidate_contract_slice_sha256"] \
+                != classification["source_contract_slice_sha256"] \
+                or inherited_reuse["contract_result_profile_sha256"] \
+                != classification["contract_result_profile_sha256"]:
+            raise ToolError(
+                "inherited proof does not bridge the immediate workload repair",
+                failure_phase="contract_reuse", failure_class="contract",
+            )
+        evidence_context = {
+            **source_context,
+            "route_id": inherited_reuse["source_route_id"],
+            "operation_id": inherited_reuse["source_operation_id"],
+            "route_branch_commit": inherited_reuse["source_route_commit"],
+            "output_id": inherited_reuse["source_output_id"],
+            "output_path": (
+                f"{source_context['run_root']}/{inherited_reuse['source_output_id']}"
+            ),
+            "runner_sha256": inherited_reuse["source_runner_sha256"],
+            "remote_repo": inherited_reuse["source_remote_repo"],
+            "closeout_filename": inherited_reuse["source_closeout_filename"],
+            "closeout_path": inherited_reuse["source_closeout_path"],
+        }
+        source_identity = inherited_reuse["source_capability_identity"]
+        source_receipt = inherited_reuse["source_receipt_sha256"]
+        source_contract_slice = inherited_reuse["source_contract_slice_sha256"]
+        reuse_depth = inherited_reuse["reuse_depth"] + 1
+        parent_reuse_digest = canonical_digest(inherited_reuse)
+        expected_closeout_sha = inherited_reuse["source_closeout_sha256"]
+    attestation = parse_receipt_contract_attestation(run_remote(
+        receipt_contract_attestation_body(evidence_context, gpu_index),
+        timeout=90, phase="contract_reuse",
+    ))
+    expected_attestation_hashes = {
+        "closeout_sha256": expected_closeout_sha,
+    }
+    if inherited_reuse is not None:
+        expected_attestation_hashes.update({
+            "identity_sha256": inherited_reuse[
+                "source_lifecycle_identity_sha256"
+            ],
+            "context_sha256": inherited_reuse[
+                "source_contract_context_sha256"
+            ],
+            "result_sha256": inherited_reuse[
+                "source_contract_result_sha256"
+            ],
+        })
+    if any(
+            attestation[key] != expected
+            for key, expected in expected_attestation_hashes.items()):
+        raise ToolError(
+            "source contract evidence changed after receipt validation",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    stable_identity_fields = capability_registry.IDENTITY_FIELDS - {"code_path_sha256"}
+    if any(source_identity[key] != candidate_identity[key] for key in stable_identity_fields) \
+            or attestation["device_class"] != source_identity["device_class"]:
+        raise ToolError(
+            "source and candidate capability identities are not reuse-compatible",
+            failure_phase="contract_reuse", failure_class="contract",
+        )
+    profile = classification.get("contract_result_profile")
+    if canonical_digest(profile) != classification.get("contract_result_profile_sha256"):
+        raise ToolError(
+            "contract result profile digest mismatch",
+            failure_phase="contract_reuse", failure_class="contract",
+        )
+    try:
+        validate_engineering_contract_result(attestation["contract_result"], profile)
+    except EngineeringContractResultError as exc:
+        raise ToolError(
+            f"source receipt contract PASS cannot be revalidated: {exc}",
+            failure_phase="contract_reuse", failure_class="evidence",
+        ) from exc
+    expected_context = {
+        "route_id": evidence_context["route_id"],
+        "operation_id": evidence_context["operation_id"],
+        "run_id": evidence_context["output_id"],
+        "route_commit": evidence_context["route_branch_commit"],
+        "runner_sha256": evidence_context["runner_sha256"],
+    }
+    if any(attestation["contract_context"].get(key) != value
+           for key, value in expected_context.items()):
+        raise ToolError(
+            "source contract context identity mismatch",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    proof = {
+        "schema_version": 1,
+        "source_receipt_sha256": source_receipt,
+        "repair_parent_receipt_sha256": token,
+        "reuse_depth": reuse_depth,
+        "parent_reuse_proof_sha256": parent_reuse_digest,
+        "source_route_id": evidence_context["route_id"],
+        "source_operation_id": evidence_context["operation_id"],
+        "source_route_commit": evidence_context["route_branch_commit"],
+        "source_output_id": evidence_context["output_id"],
+        "source_runner_sha256": evidence_context["runner_sha256"],
+        "source_remote_repo": evidence_context["remote_repo"],
+        "source_closeout_filename": evidence_context["closeout_filename"],
+        "source_closeout_path": evidence_context["closeout_path"],
+        "source_closeout_sha256": attestation["closeout_sha256"],
+        "source_lifecycle_identity_sha256": attestation["identity_sha256"],
+        "source_contract_context_sha256": attestation["context_sha256"],
+        "source_contract_result_sha256": attestation["result_sha256"],
+        "source_capability_identity": source_identity,
+        "candidate_capability_identity": candidate_identity,
+        "source_entrypoint_sha256": source_identity["code_path_sha256"],
+        "candidate_entrypoint_sha256": candidate_identity["code_path_sha256"],
+        "source_contract_slice_sha256": source_contract_slice,
+        "candidate_contract_slice_sha256": classification[
+            "candidate_contract_slice_sha256"
+        ],
+        "contract_result_profile_sha256": classification[
+            "contract_result_profile_sha256"
+        ],
+        "classification_sha256": canonical_digest(classification),
+        "candidate_route_commit": candidate_context["route_branch_commit"],
+        "candidate_output_id": candidate_context["output_id"],
+        "source_device_class": attestation["device_class"],
+        "scientific_authorization": "NONE",
+    }
+    try:
+        return validate_receipt_contract_reuse_proof(proof)
+    except ReceiptContractReuseError as exc:
+        raise ToolError(
+            f"constructed receipt contract reuse proof is invalid: {exc}",
+            failure_phase="contract_reuse", failure_class="contract",
+        ) from exc
+
+
+def execute_reviewed_engineering_repair_transaction(token, repair_commit):
+    transaction_sealed = False
+    try:
+        repair_commit = require_sha(
+            repair_commit, "engineering_repair_commit", SHA40,
+        )
+        (
+            source_context, closeout, fingerprint, history, existing, gpu_index,
+            source_state, inherited_reuse,
+        ) = reviewed_engineering_repair_source(token)
+        if isinstance(existing, dict):
+            transaction_sealed = True
+            if existing.get("repair_commit") != repair_commit \
+                    or not isinstance(existing.get("plan_token"), str) \
+                    or not SHA256.fullmatch(existing["plan_token"]):
+                raise ToolError(
+                    "receipt is already bound to a different reviewed repair transaction"
+                )
+            launch = tool_start({"plan_token": existing["plan_token"]})
+            return extend_structured_result(
+                launch,
+                reviewed_repair_transaction={**existing, "idempotent_reuse": True},
+                repair_transaction_consumed=True,
+            )
+        control_identity = control_self_check()
+        _, operation_id, candidate_context = load_operation({
+            "schema_version": SCHEMA_VERSION,
+            "branch": source_context["branch"],
+            "route_branch_commit": repair_commit,
+            "operation_id": source_context["operation_id"],
+        })
+        if candidate_context.get("route_manifest_schema_version") != 6:
+            raise ToolError(
+                "historical manifest schema 4/5 is read-only and cannot be repaired"
+            )
+        classification = classify_engineering_repair_candidate(
+            source_context, candidate_context, reviewed_workload=True,
+        )
+        proof = build_receipt_contract_reuse_proof(
+            token, source_context, closeout, candidate_context, classification,
+            gpu_index, inherited_reuse,
+        )
+        candidate_context["control_plane_identity"] = control_identity
+        candidate_context["engineering_repair_history"] = history + [fingerprint]
+        candidate_context["engineering_repair_parent"] = {
+            "source_route_commit": source_context["route_branch_commit"],
+            "source_output_id": source_context["output_id"],
+            "failure_fingerprint_sha256": fingerprint,
+            "classification_sha256": canonical_digest(classification),
+            "reviewed_workload_only": True,
+        }
+        candidate_context["receipt_contract_reuse"] = proof
+        now = int(time.time())
+        payload = {
+            "context": candidate_context,
+            "issued_at": now,
+            "expires_at": now + PLAN_TTL_SECONDS,
+            "nonce": uuid.uuid4().hex,
+        }
+        with locked_record("receipt", token) as record:
+            if record.get("finish_closed") != source_state \
+                    or record.get("terminal_closeout") != closeout:
+                raise ToolError(
+                    "engineering failure state changed during reviewed repair classification"
+                )
+            current_fingerprint = record.get("engineering_failure_fingerprint_sha256")
+            if current_fingerprint is not None and current_fingerprint != fingerprint:
+                raise ToolError(
+                    "engineering failure fingerprint changed during repair classification"
+                )
+            existing = record.get("reviewed_engineering_repair_transaction")
+            if existing is not None:
+                if not isinstance(existing, dict) \
+                        or existing.get("repair_commit") != repair_commit \
+                        or not isinstance(existing.get("plan_token"), str) \
+                        or not SHA256.fullmatch(existing["plan_token"]):
+                    raise ToolError("a different reviewed repair transaction won the race")
+                plan_token = existing["plan_token"]
+                transaction = {**existing, "idempotent_reuse": True}
+            else:
+                plan_token = write_new_record("plan", payload, {"receipt": None})
+                transaction = {
+                    "repair_commit": repair_commit,
+                    "plan_token": plan_token,
+                    "source_failure_fingerprint_sha256": fingerprint,
+                    "old_output_id": classification["old_output_id"],
+                    "new_output_id": classification["new_output_id"],
+                    "classification_sha256": canonical_digest(classification),
+                    "receipt_contract_reuse_sha256": canonical_digest(proof),
+                    "sealed_at_unix": now,
+                    "operation_id": operation_id,
+                    "contract_reachable_slice_unchanged": True,
+                    "scientific_authorization": "NONE",
+                    "repair_history_depth": len(history) + 1,
+                    "idempotent_reuse": False,
+                }
+                record["reviewed_engineering_repair_transaction"] = dict(transaction)
+                record["engineering_failure_resolution"] = "reviewed_repair"
+            transaction_sealed = True
+        launch = tool_start({"plan_token": plan_token})
+        return extend_structured_result(
+            launch,
+            reviewed_repair_transaction=transaction,
+            repair_transaction_consumed=True,
+        )
+    except ControlPlaneError as exc:
+        return typed_failure(
+            exc.operation_state, exc.failure_class, str(exc),
+            observed=exc.observed, expected=exc.expected,
+            next_actions=["refresh_and_restart_control_plane"],
+            failure_phase=exc.failure_phase,
+            repair_transaction_consumed=transaction_sealed,
+        )
+    except (ToolError, capability_registry.CapabilityRegistryError) as exc:
+        return typed_failure(
+            "REVIEWED_REPAIR_TRANSACTION_REJECTED",
+            exc.failure_class if isinstance(exc, ToolError) else "contract",
+            str(exc), next_actions=["correct_candidate_once_or_request_review"],
+            failure_phase=(
+                exc.failure_phase if isinstance(exc, ToolError) else "contract_reuse"
+            ),
+            repair_transaction_consumed=transaction_sealed,
+        )
+    except Exception as exc:
+        return typed_failure(
+            "REVIEWED_REPAIR_TRANSACTION_FAILED", "command_infra",
+            type(exc).__name__,
+            next_actions=["retry_same_transaction_or_request_review"]
+            if transaction_sealed else ["correct_control_plane_once_or_request_review"],
+            failure_phase="contract_reuse",
+            repair_transaction_consumed=transaction_sealed,
+        )
 
 
 def execute_engineering_repair_transaction(token, repair_commit):
@@ -3602,6 +4172,27 @@ def parse_closeout(context, output):
         "identity": expected_identity, "terminal_tuple": terminal,
         "closeout_sha256": match.group(1), "closeout_filename": context["closeout_filename"],
     }
+    expected_reuse = context_receipt_contract_reuse(context)
+    observed_reuse = value.get("receipt_contract_reuse")
+    if expected_reuse is not None:
+        try:
+            observed_reuse = validate_receipt_contract_reuse_proof(observed_reuse)
+        except ReceiptContractReuseError as exc:
+            raise ToolError(
+                f"closeout receipt contract reuse proof is invalid: {exc}",
+                failure_phase="contract_reuse", failure_class="evidence",
+            ) from exc
+        if observed_reuse != expected_reuse:
+            raise ToolError(
+                "closeout receipt contract reuse proof does not match the launch receipt",
+                failure_phase="contract_reuse", failure_class="evidence",
+            )
+        result["receipt_contract_reuse_sha256"] = canonical_digest(observed_reuse)
+    elif observed_reuse is not None:
+        raise ToolError(
+            "closeout contains an unauthorized receipt contract reuse proof",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
     if terminal["state"] == "FAILED_ENGINEERING":
         details = value.get("details") if isinstance(value.get("details"), dict) else {}
         error_type = details.get("error_type")
@@ -3677,6 +4268,12 @@ def engineering_failure_class(phase):
 
 def operator_cancel_body(context, request_id):
     validate_operator_context(context)
+    receipt_reuse = context_receipt_contract_reuse(context)
+    receipt_reuse_b64 = ""
+    if receipt_reuse is not None:
+        receipt_reuse_b64 = base64.b64encode(json.dumps(
+            receipt_reuse, sort_keys=True, separators=(",", ":"),
+        ).encode()).decode()
     identity = f"{context['output_path']}/control/lifecycle_identity.json"
     request = f"{context['output_path']}/control/operator_cancel_request.json"
     targets = f"{context['output_path']}/control/operator_cancel_targets.json"
@@ -3703,6 +4300,7 @@ def operator_cancel_body(context, request_id):
         f"REQUEST_ID={q(request_id)}",
         f"GRACE={OPERATOR_CANCEL_GRACE_SECONDS}",
         f"FORCE_WAIT={OPERATOR_CANCEL_FORCE_SECONDS}",
+        f"RECEIPT_REUSE_B64={q(receipt_reuse_b64)}",
         'test -d "$REMOTE_REPO/.git"',
         'test "$(dirname "$REMOTE_REPO")" = ' + q(REMOTE_REPOS),
         'test "$(dirname "$RUN_ROOT")" = ' + q(REMOTE_RUNS),
@@ -3783,12 +4381,12 @@ def operator_cancel_body(context, request_id):
         '  if test -f "$CLOSEOUT"; then',
         '    terminal=true; active=false; termination_mode=graceful',
         '  else',
-        f'    {q(REMOTE_PYTHON)} - "$REMOTE_REPO" "$OUTPUT_PATH" "$CLOSEOUT" "$IDENTITY" "$REQUEST" "$TARGETS" "$STATUS" "$ROUTE_ID" "$RUN_ID" "$MODE" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" "$SESSION" "$REQUEST_ID" "$FORCE_WAIT" {q(REMOTE_PYTHON)} "$LIFECYCLE" <<\'PY\'',
-        'import hashlib, json, os, re, signal, subprocess, sys, time',
+        f'    {q(REMOTE_PYTHON)} - "$REMOTE_REPO" "$OUTPUT_PATH" "$CLOSEOUT" "$IDENTITY" "$REQUEST" "$TARGETS" "$STATUS" "$ROUTE_ID" "$RUN_ID" "$MODE" "$EXPECTED_COMMIT" "$EXPECTED_RUNNER_SHA" "$SESSION" "$REQUEST_ID" "$FORCE_WAIT" {q(REMOTE_PYTHON)} "$LIFECYCLE" "$RECEIPT_REUSE_B64" <<\'PY\'',
+        'import base64, hashlib, json, os, re, signal, subprocess, sys, time',
         'from pathlib import Path',
         'repo, output, closeout, identity_path, request_path, targets_path, status_path = map(Path, sys.argv[1:8])',
         'route_id, run_id, mode, commit, runner_sha, session, request_id = sys.argv[8:15]',
-        'force_wait, remote_python, lifecycle = int(sys.argv[15]), sys.argv[16], sys.argv[17]',
+        'force_wait, remote_python, lifecycle, receipt_reuse_b64 = int(sys.argv[15]), sys.argv[16], sys.argv[17], sys.argv[18]',
         'request = json.loads(request_path.read_text()); targets = json.loads(targets_path.read_text())',
         'assert request["request_id"] == request_id and targets["request_id"] == request_id',
         'identity = json.loads(identity_path.read_text())',
@@ -3836,6 +4434,7 @@ def operator_cancel_body(context, request_id):
         '        try: visit(json.loads(line))',
         '        except (json.JSONDecodeError, TypeError): pass',
         'closeout_value = {"schema_version": 1, "route_id": route_id, "operation_id": mode, "run_id": run_id, "route_commit": commit, "runner_sha256": runner_sha, "state": "CANCELLED_BY_OPERATOR", "decision": None, "authorizes": "NONE", "evidence_role": "operator_control", "confirmation_images_targets_outcomes_touched": None, "canary_touched": None, "locked_test_touched": None, "evidence_sha256": {}, "verified_assets": [], "details": {"request_id": request_id, "requested_at_unix": request["requested_at_unix"], "completed_units": completed, "total_units": total, "stage": stage, "termination_mode": "forced" if escalated else "control_finalize", "scientific_result_interpretable": False, "partial_scientific_evidence_reuse_authorized": False}, "failure_phase": "operator_cancel", "returncode": 130}',
+        'if receipt_reuse_b64: closeout_value["receipt_contract_reuse"] = json.loads(base64.b64decode(receipt_reuse_b64, validate=True))',
         'raw = (json.dumps(closeout_value, indent=2, sort_keys=True) + "\\n").encode()',
         'temp = closeout.with_name(closeout.name + ".tmp." + request_id)',
         'fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)',
@@ -4023,9 +4622,9 @@ def tool_finish(args):
                     and args.get("finalization_repair_commit") is not None:
                 raise ToolError("engineering and finalization repair commits are exclusive")
             if args.get("engineering_repair_commit") is not None \
-                    and resolution != "repair":
+                    and resolution not in {"repair", "reviewed_repair"}:
                 raise ToolError(
-                    "engineering_repair_commit requires resolution=repair"
+                    "engineering_repair_commit requires repair or reviewed_repair"
                 )
             if args.get("finalization_repair_commit") is not None \
                     and resolution != "finalize":
@@ -4034,6 +4633,14 @@ def tool_finish(args):
                 )
             if resolution == "diagnose":
                 return diagnose_engineering_failure(token)
+            if resolution == "reviewed_repair":
+                if args.get("engineering_repair_commit") is None:
+                    raise ToolError(
+                        "reviewed_repair requires engineering_repair_commit"
+                    )
+                return execute_reviewed_engineering_repair_transaction(
+                    token, args.get("engineering_repair_commit"),
+                )
             if resolution == "repair" \
                     and args.get("engineering_repair_commit") is not None:
                 return execute_engineering_repair_transaction(
@@ -5156,13 +5763,16 @@ TOOLS = {
         "handler": tool_start,
     },
     "convir_route_finish": {
-        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, perform receipt-bound operator cancellation, read a bounded engineering diagnosis, or execute one classified same-contract repair transaction; validate every closeout and keep scientific decisions explicit.",
+        "description": "Observe a sealed window, refresh result-blind progress, detect an early terminal, perform receipt-bound operator cancellation, read a bounded engineering diagnosis, or execute one classified same-contract repair transaction, including explicit reviewed workload-only contract reuse; validate every closeout and keep scientific decisions explicit.",
         "inputSchema": {
             "type": "object", "required": ["receipt"],
             "properties": {
                 "receipt": {"type": "string"},
                 "engineering_failure_resolution": {
-                    "enum": ["diagnose", "repair", "archive", "discard", "finalize"],
+                    "enum": [
+                        "diagnose", "repair", "reviewed_repair", "archive",
+                        "discard", "finalize",
+                    ],
                 },
                 "finalization_repair_commit": {
                     "type": "string", "pattern": "^[0-9a-f]{40}$",

@@ -71,6 +71,12 @@ contract failures, not failed launches. After sealing, repeating the same
 receipt/candidate calls the existing idempotent start path with the same plan
 token. A different candidate is rejected, and `START_STATE_UNKNOWN` retains its
 single metadata-inspection rule rather than creating another launch.
+The same atomic boundary applies to an explicit reviewed workload repair.
+Before sealing, the control plane attests the original receipt's contract files
+and closed failure state, validates the parent-to-candidate static slice and
+capability bridge, and freezes the canonical reuse proof. After sealing, that
+proof is immutable plan input; a timeout uses the existing start recovery and
+must never trigger a fallback contract launch.
 
 ## Finite Recovery
 

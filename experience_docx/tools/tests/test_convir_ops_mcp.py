@@ -1,5 +1,6 @@
 """Transport and lifecycle tests for the minimal convir-ops schema-v4 bridge."""
 
+import base64
 import copy
 import importlib.util
 import json
@@ -108,6 +109,57 @@ def context(require_gpu=False):
         "session": "convir-a1x-s0",
         "engineering_max_seconds": 120,
         "expected_wall_seconds": 60,
+    }
+
+
+def receipt_reuse_proof(*, depth=1):
+    source_identity = {
+        "source_commit": "1" * 40,
+        "code_path_sha256": "2" * 64,
+        "checkpoint_sha256": "3" * 64,
+        "runtime_environment_sha256": "4" * 64,
+        "device_class": "cpu",
+        "input_contract_sha256": "5" * 64,
+    }
+    candidate_identity = {**source_identity, "code_path_sha256": "6" * 64}
+    source_route = "a1x"
+    source_output = "a1x-s0-r1"
+    source_repo = OPS.derive_remote_repo(source_route, source_output)
+    source_closeout = "s0_closeout.json"
+    parent_receipt = "8" * 64 if depth > 1 else "7" * 64
+    return {
+        "schema_version": 1,
+        "source_receipt_sha256": "7" * 64,
+        "repair_parent_receipt_sha256": parent_receipt,
+        "reuse_depth": depth,
+        "parent_reuse_proof_sha256": "9" * 64 if depth > 1 else None,
+        "source_route_id": source_route,
+        "source_operation_id": "S0",
+        "source_route_commit": "a" * 40,
+        "source_output_id": source_output,
+        "source_runner_sha256": "b" * 64,
+        "source_remote_repo": source_repo,
+        "source_closeout_filename": source_closeout,
+        "source_closeout_path": (
+            f"{source_repo}/experience_docx/experiment_logs/"
+            f"{source_route}/{source_closeout}"
+        ),
+        "source_closeout_sha256": "c" * 64,
+        "source_lifecycle_identity_sha256": "d" * 64,
+        "source_contract_context_sha256": "e" * 64,
+        "source_contract_result_sha256": "f" * 64,
+        "source_capability_identity": source_identity,
+        "candidate_capability_identity": candidate_identity,
+        "source_entrypoint_sha256": source_identity["code_path_sha256"],
+        "candidate_entrypoint_sha256": candidate_identity["code_path_sha256"],
+        "source_contract_slice_sha256": "0" * 64,
+        "candidate_contract_slice_sha256": "0" * 64,
+        "contract_result_profile_sha256": "1" * 64,
+        "classification_sha256": "2" * 64,
+        "candidate_route_commit": "c" * 40,
+        "candidate_output_id": "a1x-s0-r2",
+        "source_device_class": "cpu",
+        "scientific_authorization": "NONE",
     }
 
 
@@ -363,7 +415,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def test_ordinary_results_expose_runtime_source_identity(self):
         value = payload(OPS.typed_result(True, "IDENTITY_TEST"))
-        self.assertEqual("5.12.0", value["runtime_identity"]["server_version"])
+        self.assertEqual("5.13.0", value["runtime_identity"]["server_version"])
         self.assertEqual(
             OPS.SERVER_SOURCE_SHA256,
             value["runtime_identity"]["server_source_sha256"],
@@ -396,6 +448,49 @@ class ConvirOpsV4Tests(unittest.TestCase):
             )
             self.assertEqual(0, completed.returncode, completed.stderr)
         self.assertIn("clone --quiet --shared --no-checkout", OPS.atomic_start_body(context(), None))
+
+    def test_atomic_start_passes_only_a_valid_receipt_reuse_proof(self):
+        candidate = self.repair_candidate()
+        candidate["receipt_contract_reuse"] = receipt_reuse_proof()
+        body = OPS.atomic_start_body(candidate, None)
+        self.assertIn("CONVIR_RECEIPT_CONTRACT_REUSE_B64=", body)
+        rejected = copy.deepcopy(candidate)
+        rejected["receipt_contract_reuse"]["scientific_authorization"] = "PASS"
+        with self.assertRaisesRegex(OPS.ToolError, "authorization boundary"):
+            OPS.atomic_start_body(rejected, None)
+
+    def test_parse_closeout_binds_receipt_reuse_to_the_launch_context(self):
+        candidate = self.repair_candidate()
+        proof = receipt_reuse_proof()
+        candidate["receipt_contract_reuse"] = proof
+        value = {
+            "route_id": candidate["route_id"],
+            "run_id": candidate["output_id"],
+            "route_commit": candidate["route_branch_commit"],
+            "runner_sha256": candidate["runner_sha256"],
+            **engineering_terminal(),
+            "failure_phase": "workload",
+            "details": {"workload_started": True},
+            "receipt_contract_reuse": proof,
+        }
+        raw = json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+        output = (
+            "CONVIR_OPS_CLOSEOUT_SHA256="
+            + OPS.hashlib.sha256(raw).hexdigest()
+            + "\nCONVIR_OPS_CLOSEOUT_BEGIN\n"
+            + raw.decode()
+            + "\nCONVIR_OPS_CLOSEOUT_END"
+        )
+        observed = OPS.parse_closeout(candidate, output)
+        self.assertEqual(
+            OPS.canonical_digest(proof),
+            observed["receipt_contract_reuse_sha256"],
+        )
+        tampered = copy.deepcopy(proof)
+        tampered["classification_sha256"] = "3" * 64
+        candidate["receipt_contract_reuse"] = tampered
+        with self.assertRaisesRegex(OPS.ToolError, "does not match"):
+            OPS.parse_closeout(candidate, output)
 
     def test_gpu_probe_selects_gpu_zero_and_preserves_summary(self):
         completed = self.run_fake_gpu_probe(
@@ -1305,6 +1400,30 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIn("MAIN_FETCH_ARGS+=(--unshallow)", body)
         self.assertIn('worktree remove "$CONTROL_REPO"', body)
 
+    def test_finalization_body_preserves_receipt_contract_reuse(self):
+        source = self.repair_candidate()
+        source["receipt_contract_reuse"] = receipt_reuse_proof()
+        final = {
+            **source,
+            "route_branch_commit": "f" * 40,
+            "receipt_contract_reuse_source_commit": source[
+                "route_branch_commit"
+            ],
+        }
+        spec = {
+            "evidence_files": [],
+            "engineering_contract": {"capability_profile_relpath": None},
+        }
+        body = OPS.finalization_repair_body(
+            source, final, spec,
+            {"closeout_sha256": "1" * 64},
+            {"status": "FINALIZATION_PUBLICATION_RETRY_ELIGIBLE"},
+        )
+        self.assertIn("CONVIR_RECEIPT_CONTRACT_REUSE_B64=", body)
+        self.assertEqual(
+            receipt_reuse_proof(), OPS.context_receipt_contract_reuse(final),
+        )
+
     def test_finalization_candidate_rejection_does_not_consume_execution_slot(self):
         receipt = self.discardable_receipt(
             failure_phase="finalize", workload_started=True,
@@ -1324,18 +1443,28 @@ class ConvirOpsV4Tests(unittest.TestCase):
             self.assertIsNone(record.get("engineering_failure_resolution"))
 
     def discardable_receipt(self, *, engineering_repair_history=None,
+                            receipt_contract_reuse=None,
                             **diagnostic_overrides):
         ctx = context()
+        if receipt_contract_reuse is not None:
+            ctx.update({
+                "route_branch_commit": receipt_contract_reuse[
+                    "candidate_route_commit"
+                ],
+                "output_id": receipt_contract_reuse["candidate_output_id"],
+            })
         ctx.update({
-            "remote_repo": OPS.derive_remote_repo("a1x", "a1x-s0-r1"),
+            "remote_repo": OPS.derive_remote_repo("a1x", ctx["output_id"]),
             "run_root": f"{OPS.REMOTE_RUNS}/a1x",
-            "output_path": f"{OPS.REMOTE_RUNS}/a1x/a1x-s0-r1",
+            "output_path": f"{OPS.REMOTE_RUNS}/a1x/{ctx['output_id']}",
         })
         ctx["closeout_path"] = (
             f"{ctx['remote_repo']}/experience_docx/experiment_logs/a1x/s0_closeout.json"
         )
         if engineering_repair_history is not None:
             ctx["engineering_repair_history"] = engineering_repair_history
+        if receipt_contract_reuse is not None:
+            ctx["receipt_contract_reuse"] = receipt_contract_reuse
         diagnostic = {
             "failure_phase": "asset_preflight",
             "workload_started": False,
@@ -1345,14 +1474,19 @@ class ConvirOpsV4Tests(unittest.TestCase):
         diagnostic.update(diagnostic_overrides)
         closeout = {
             "identity": {
-                "route_id": "a1x", "run_id": "a1x-s0-r1",
-                "route_commit": "a" * 40, "runner_sha256": "e" * 64,
+                "route_id": "a1x", "run_id": ctx["output_id"],
+                "route_commit": ctx["route_branch_commit"],
+                "runner_sha256": "e" * 64,
             },
             "terminal_tuple": engineering_terminal(),
             "closeout_sha256": "1" * 64,
             "closeout_filename": "s0_closeout.json",
             "engineering_diagnostic": diagnostic,
         }
+        if receipt_contract_reuse is not None:
+            closeout["receipt_contract_reuse_sha256"] = OPS.canonical_digest(
+                receipt_contract_reuse
+            )
         receipt = OPS.write_new_record(
             "receipt",
             {
@@ -1596,6 +1730,169 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
         schema = OPS.TOOLS["convir_route_finish"]["inputSchema"]
         self.assertIn("engineering_repair_commit", schema["properties"])
+
+    def test_reviewed_workload_repair_seals_receipt_contract_reuse(self):
+        receipt, _, fingerprint = self.repairable_receipt(
+            failure_phase="workload", workload_started=True,
+        )
+        classification = {
+            **self.repair_classification(),
+            "status": "REVIEWED_WORKLOAD_REPAIR_ELIGIBLE",
+            "sensitive_review_required": True,
+            "contract_reachable_slice_unchanged": True,
+        }
+        proof = {"schema_version": 1, "scientific_authorization": "NONE"}
+        launch = OPS.typed_result(
+            True, "LAUNCH_PENDING_VERIFICATION",
+            observed={"runner_started": True},
+            next_actions=["convir_route_finish"],
+        )
+        with (
+            patch.object(OPS, "control_self_check", return_value={"ok": True}),
+            patch.object(
+                OPS, "load_operation",
+                return_value=({}, "S0", self.repair_candidate()),
+            ),
+            patch.object(
+                OPS, "classify_engineering_repair_candidate",
+                return_value=classification,
+            ) as classifier,
+            patch.object(
+                OPS, "build_receipt_contract_reuse_proof", return_value=proof,
+            ) as attest,
+            patch.object(OPS, "tool_start", return_value=launch),
+        ):
+            result = payload(OPS.tool_finish({
+                "receipt": receipt,
+                "engineering_failure_resolution": "reviewed_repair",
+                "engineering_repair_commit": "c" * 40,
+            }))
+        transaction = result["reviewed_repair_transaction"]
+        self.assertTrue(result["repair_transaction_consumed"])
+        self.assertEqual("NONE", transaction["scientific_authorization"])
+        classifier.assert_called_once_with(
+            unittest.mock.ANY, unittest.mock.ANY, reviewed_workload=True,
+        )
+        attest.assert_called_once()
+        with OPS.read_record("plan", transaction["plan_token"]) as plan:
+            planned = plan["payload"]["context"]
+            self.assertEqual(proof, planned["receipt_contract_reuse"])
+            self.assertEqual([fingerprint], planned["engineering_repair_history"])
+            self.assertTrue(
+                planned["engineering_repair_parent"]["reviewed_workload_only"]
+            )
+        schema = OPS.TOOLS["convir_route_finish"]["inputSchema"]
+        self.assertIn(
+            "reviewed_repair",
+            schema["properties"]["engineering_failure_resolution"]["enum"],
+        )
+
+    def test_reviewed_workload_repair_chains_the_original_contract_receipt(self):
+        profile = {
+            "schema_version": 1,
+            "route_id": "a1x",
+            "operation_id": "S0",
+            "legacy_implicit_contract": True,
+            "mode": "metadata_only",
+            "cost_contract": None,
+            "minimum_fixture": None,
+        }
+        inherited = receipt_reuse_proof()
+        inherited["contract_result_profile_sha256"] = OPS.canonical_digest(profile)
+        receipt, closeout, _ = self.repairable_receipt(
+            failure_phase="workload", workload_started=True,
+            receipt_contract_reuse=inherited,
+        )
+        (
+            source_context, _, _, _, _, gpu_index, _, observed_inherited,
+        ) = OPS.reviewed_engineering_repair_source(receipt)
+        candidate_identity = {
+            **inherited["candidate_capability_identity"],
+            "code_path_sha256": "a" * 64,
+        }
+        classification = {
+            "source_capability_identity": inherited[
+                "candidate_capability_identity"
+            ],
+            "candidate_capability_identity": candidate_identity,
+            "source_contract_slice_sha256": inherited[
+                "candidate_contract_slice_sha256"
+            ],
+            "candidate_contract_slice_sha256": inherited[
+                "candidate_contract_slice_sha256"
+            ],
+            "contract_result_profile": profile,
+            "contract_result_profile_sha256": OPS.canonical_digest(profile),
+        }
+        contract_result = {
+            "schema_version": 1,
+            "route_id": "a1x",
+            "operation_id": "S0",
+            "phase": "contract",
+            "ok": True,
+            "checks": {"metadata": True},
+            "output_contract_checked": True,
+            "finalizer_contract_checked": True,
+            "confirmation_images_targets_outcomes_touched": False,
+            "canary_touched": False,
+            "locked_test_touched": False,
+        }
+        attestation = {
+            "schema_version": 1,
+            "identity_sha256": inherited[
+                "source_lifecycle_identity_sha256"
+            ],
+            "context_sha256": inherited["source_contract_context_sha256"],
+            "result_sha256": inherited["source_contract_result_sha256"],
+            "closeout_sha256": inherited["source_closeout_sha256"],
+            "contract_context": {
+                "route_id": inherited["source_route_id"],
+                "operation_id": inherited["source_operation_id"],
+                "run_id": inherited["source_output_id"],
+                "route_commit": inherited["source_route_commit"],
+                "runner_sha256": inherited["source_runner_sha256"],
+            },
+            "contract_result": contract_result,
+            "device_class": "cpu",
+        }
+        marker = base64.b64encode(json.dumps(
+            attestation, sort_keys=True, separators=(",", ":"),
+        ).encode()).decode()
+        candidate = self.repair_candidate(commit="d" * 40)
+        candidate.update({
+            "output_id": "a1x-s0-r3",
+            "output_path": f"{OPS.REMOTE_RUNS}/a1x/a1x-s0-r3",
+        })
+        with patch.object(
+            OPS, "run_remote",
+            return_value=f"CONVIR_OPS_RECEIPT_CONTRACT_ATTESTATION={marker}",
+        ):
+            chained = OPS.build_receipt_contract_reuse_proof(
+                receipt, source_context, closeout, candidate, classification,
+                gpu_index, observed_inherited,
+            )
+        self.assertEqual(2, chained["reuse_depth"])
+        self.assertEqual(receipt, chained["repair_parent_receipt_sha256"])
+        self.assertEqual(
+            inherited["source_receipt_sha256"],
+            chained["source_receipt_sha256"],
+        )
+        self.assertEqual(
+            OPS.canonical_digest(inherited),
+            chained["parent_reuse_proof_sha256"],
+        )
+        self.assertEqual(candidate_identity, chained["candidate_capability_identity"])
+
+    def test_reviewed_workload_repair_requires_candidate_commit(self):
+        receipt, _, _ = self.repairable_receipt(
+            failure_phase="workload", workload_started=True,
+        )
+        result = payload(OPS.tool_finish({
+            "receipt": receipt,
+            "engineering_failure_resolution": "reviewed_repair",
+        }))
+        self.assertEqual("FINISH_REJECTED", result["operation_state"])
+        self.assertEqual([], list(OPS.STATE_DIR.glob("plan-*.json")))
 
     def test_engineering_diagnosis_is_read_only_idempotent_and_keeps_evidence_locked(self):
         receipt = self.discardable_receipt(
@@ -1933,6 +2230,12 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertIn("operator_cancel_request.json", body)
         self.assertIn("SIGTERM", body)
         self.assertIn("SIGKILL", body)
+        reuse_context = self.repair_candidate()
+        reuse_context["receipt_contract_reuse"] = receipt_reuse_proof()
+        with patch.object(OPS, "validate_operator_context"):
+            reuse_body = OPS.operator_cancel_body(reuse_context, "2" * 32)
+        self.assertIn("RECEIPT_REUSE_B64=", reuse_body)
+        self.assertIn('closeout_value["receipt_contract_reuse"]', reuse_body)
 
         receipt = OPS.write_new_record(
             "receipt",
@@ -2250,7 +2553,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.12.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.13.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")

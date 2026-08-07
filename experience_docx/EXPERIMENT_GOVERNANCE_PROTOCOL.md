@@ -186,6 +186,17 @@ family. Cancellation has `CANCELLED_BY_OPERATOR / null / NONE`, cannot be
 interpreted scientifically and does not authorize reuse or relaunch.
 Engineering failure has `decision:null` and is not scientific evidence.
 
+An explicitly reviewed workload-only code repair may reuse an engineering
+contract PASS from its failed receipt rather than recompute it. This exception
+requires a workload-phase terminal after the PASS, exact hashes for the source
+lifecycle identity, contract context/result and closeout, equality of the
+contract-reachable program slice, and equality of source/candidate capability
+identity except for the code-path SHA. Each replacement binds its immediate
+parent receipt while retaining the original PASS receipt; chains remain bounded
+by the engineering repair-generation limit. The reuse is engineering control
+evidence only: it grants no scientific conclusion, data permission, promotion,
+deployment or capability-registry qualification.
+
 When all workload units and their exact outputs are complete, a failure limited
 to evidence serialization or closeout finalization is not evidence that the
 scientific hypothesis failed and does not justify recomputation. One bounded
