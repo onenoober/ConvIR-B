@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "324c75161d5290ae00d28cf5f722af3400308a9d53a1c331f54352e9e77ee22f",
-  "rules_commit": "dea4c31dbc14245ee15eb461d2a5b5088741399a",
+  "rules_bundle_sha256": "ce5d62b12bcb6f8a0f4195c607a0ccb3fd993a7e2f002de98e24d8097b2683aa",
+  "rules_commit": "b0be55f24ff29196a093691d2590b8f89bf687cc",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -128,44 +128,44 @@
   ],
   "sources": {
     "AGENTS.md": {
-      "bytes": 19290,
-      "sha256": "8b91624c317d960c5614f7bf99202236b622c5c85f7fe53bc659a30054f7cc07"
+      "bytes": 20240,
+      "sha256": "82de7fe02f3355d902c9610bcd6c9554667255067534e67aa3bd6ad2e43641c4"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
       "bytes": 7527,
       "sha256": "b445d1b8c6252eeef2aab99c7cf1231bc1ea2c4ecdf2e939bd3c175b89e87606"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
-      "bytes": 16329,
-      "sha256": "dd12f50b218b6c4b8ea769e722f08acd52ed77b1e420c1519951e4cc1104db90"
+      "bytes": 16763,
+      "sha256": "869feecc457418a4c3fad62b58107d1e48b7650f3c9bf818f01ccb7c0439c633"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
       "bytes": 17938,
       "sha256": "75996b06696e27534b5a54bb8c123e4ca2384026c970350aa53b268ff508906f"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 27302,
-      "sha256": "952a04c60365595219b41f60d69bbc5225438369629f6ab441bf4faf19d00204"
+      "bytes": 29652,
+      "sha256": "6144dfb1122f0951231fd9d2b7d59c419bb1f0ab1d35fb8bd130f19118acf5ed"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
-      "bytes": 12634,
-      "sha256": "9954bc137d718a552b35b0d25660c39632c3a594273eebecf9b2ca47b4ab45ad"
+      "bytes": 13380,
+      "sha256": "f1f0b68991f13f0f39eef477522c4372539a55e24e2fa9e6ed9528c925a99fdd"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
-      "bytes": 15308,
-      "sha256": "154f67a9a2a6c7f422aa5efdee44edcfd30bc0f97cf905302cf775e12ed10ade"
+      "bytes": 16422,
+      "sha256": "1972ee5b3047522b9eed6b217df7abb2d15513081b76b2747f1eeddd68d60d4d"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 18181,
-      "sha256": "9f9b79618be096b5d09fdea251b8feedfdc6ab7fcb716470d1cb52630d11f9bd"
+      "bytes": 18866,
+      "sha256": "fba5a8b41d738b24c93228222312fda0c986945607453c54c722e67c5680aa0f"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
-      "bytes": 554,
-      "sha256": "cc8f68e1b32e009842eef5614f4739512a892901a2bfb55e918415dbdfc122d8"
+      "bytes": 602,
+      "sha256": "9ed47015eab953ebf607f96ebecb9adda2234f522335a95f4ed4c6eeaa94eb4e"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 27819,
-      "sha256": "f7876d890c6c6f0460bf7cd5169591712358df8945c77db163c1933f6b406052"
+      "bytes": 28853,
+      "sha256": "a3aee6bc0440b229dbf9c5bf0e1b64ff2b5cc16c4787cb20a9c7bead9c71154d"
     }
   },
   "workflow": [
