@@ -143,7 +143,11 @@ def lol_pairs(root: Path, split: str) -> tuple[dict[str, Path], dict[str, Path]]
     inputs: dict[str, Path] = {}
     targets: dict[str, Path] = {}
     for low_dir in sorted(root.rglob("low")):
-        if not low_dir.is_dir() or low_dir.parent.name.lower() != expected_parent:
+        if (
+            not low_dir.is_dir()
+            or "__macosx" in {part.lower() for part in low_dir.parts}
+            or low_dir.parent.name.lower() != expected_parent
+        ):
             continue
         high_dir = low_dir.parent / "high"
         if not high_dir.is_dir():
