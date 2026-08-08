@@ -45,7 +45,11 @@ def fail(message: str) -> None:
 
 
 def is_image(path: Path) -> bool:
-    return path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    return (
+        path.is_file()
+        and not path.name.startswith("._")
+        and path.suffix.lower() in IMAGE_EXTENSIONS
+    )
 
 
 def ensure_empty_directory(path: Path) -> None:
