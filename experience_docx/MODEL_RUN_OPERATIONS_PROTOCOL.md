@@ -208,10 +208,14 @@ index and exact path allowlist; the real index must remain clean.
 
 After explicit user authorization, a workload-phase sensitive candidate may be
 classified with `--reviewed-workload` and an exact `--authoritative-main` ref.
-The classifier rejects contract-reachable or dead-code changes, dynamic contract
-name resolution, function-interface drift, capability changes outside the
+The classifier rejects contract-reachable or dead-code changes, executable
+dynamic contract name resolution, function-interface drift, capability changes outside the
 code-path SHA, and any runtime-bundle byte that differs from main. A pushed
 eligible commit is applied with `engineering_failure_resolution=reviewed_repair`.
+Historical provenance-only `sys.modules` inspection is accepted only when the
+module source is a direct import or constant dotted name and the resulting
+object is used solely for `__file__` identity checks or a None identity check;
+dynamic attributes, calls, computed names and object escape remain rejected.
 MCP reattests the original source files on the cloud, validates the original
 contract PASS under the unchanged frozen profile, and gives the lifecycle a
 closed receipt proof. The lifecycle redoes those evidence checks and emits

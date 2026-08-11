@@ -197,6 +197,12 @@ by the engineering repair-generation limit. The reuse is engineering control
 evidence only: it grants no scientific conclusion, data permission, promotion,
 deployment or capability-registry qualification.
 
+Static classification may recognize a historical provenance-only
+`sys.modules` lookup only when its module source is fixed and its object cannot
+escape or expose any attribute other than `__file__`. This exception validates
+source identity; it does not permit dynamic contract symbol resolution, and the
+entire contract-reachable slice must remain canonically identical.
+
 When all workload units and their exact outputs are complete, a failure limited
 to evidence serialization or closeout finalization is not evidence that the
 scientific hypothesis failed and does not justify recomputation. One bounded

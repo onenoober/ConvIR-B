@@ -378,6 +378,53 @@ def run(value):
         with self.assertRaisesRegex(REPAIR.RepairError, "dynamic name resolution"):
             REPAIR.classify_reviewed_workload_entrypoint_change(before, after)
 
+    def test_reviewed_workload_repair_allows_provenance_only_sys_modules(self):
+        before = (
+            b"import sys\n"
+            b"def load_model():\n"
+            b" from package.model import build\n"
+            b" module = sys.modules[build.__module__]\n"
+            b" layers = sys.modules.get('package.model.layers')\n"
+            b" if layers is None:\n  raise RuntimeError('missing layers')\n"
+            b" return module.__file__, layers.__file__\n"
+            b"def contract(path):\n return load_model()\n"
+            b"def helper(value):\n return value\n"
+            b"def run(path):\n return helper(path)\n"
+        )
+        after = before.replace(b"return value\n", b"return value + 1\n")
+        report = REPAIR.classify_reviewed_workload_entrypoint_change(before, after)
+        self.assertTrue(report["contract_reachable_slice_unchanged"])
+        self.assertEqual(["helper"], report["changed_run_symbols"])
+
+    def test_reviewed_workload_repair_rejects_sys_modules_symbol_access(self):
+        before = (
+            b"import sys\n"
+            b"def load_helper(value):\n"
+            b" module = sys.modules.get('package.entrypoint')\n"
+            b" return module.helper(value)\n"
+            b"def contract(path):\n return load_helper(path)\n"
+            b"def helper(value):\n return value\n"
+            b"def run(path):\n return helper(path)\n"
+        )
+        after = before.replace(b"return value\n", b"return value + 1\n")
+        with self.assertRaisesRegex(REPAIR.RepairError, "dynamic name resolution"):
+            REPAIR.classify_reviewed_workload_entrypoint_change(before, after)
+
+    def test_reviewed_workload_repair_rejects_sys_modules_object_escape(self):
+        before = (
+            b"import sys\n"
+            b"def load_module():\n"
+            b" from package.model import build\n"
+            b" module = sys.modules[build.__module__]\n"
+            b" return module\n"
+            b"def contract(path):\n return load_module()\n"
+            b"def helper(value):\n return value\n"
+            b"def run(path):\n return helper(path)\n"
+        )
+        after = before.replace(b"return value\n", b"return value + 1\n")
+        with self.assertRaisesRegex(REPAIR.RepairError, "dynamic name resolution"):
+            REPAIR.classify_reviewed_workload_entrypoint_change(before, after)
+
     def test_terminal_adapter_change_is_separate_from_scientific_kernel(self):
         before = (
             b"LIMIT=3\ndef run(x):\n return min(x, LIMIT)\n"

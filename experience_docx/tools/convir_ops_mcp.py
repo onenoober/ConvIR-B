@@ -37,7 +37,7 @@ from route_runtime_contract import (
 
 
 SERVER_NAME = "convir-ops"
-SERVER_VERSION = "5.13.0"
+SERVER_VERSION = "5.14.0"
 SERVER_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 SCHEMA_VERSION = 4
 SUPPORTED_MANIFEST_SCHEMA_VERSIONS = {4, 5, 6}

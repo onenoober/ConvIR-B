@@ -2,7 +2,7 @@
 
 Date: 2026-08-07
 
-Status: main-first snapshot server `5.13.0` retains exactly six tools and stable control
+Status: main-first snapshot server `5.14.0` retains exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4/5 for status
 and evidence provenance, while plan accepts only compiled manifest schema 6 and
 runtime schema 2. New experiment specs and scientific contracts
@@ -13,6 +13,15 @@ Every ordinary structured response exposes the loaded server version, exact
 server source SHA-256, loaded control commit, complete validator-bundle SHA-256
 and module-origin-manifest SHA-256, so dependency or process drift is visible
 directly.
+
+Version 5.14.0 keeps dynamic contract symbol resolution fail-closed while
+distinguishing one non-executable provenance pattern used by historical
+contracts. `sys.modules` is accepted only when a local variable receives either
+the module of a directly imported symbol or one constant dotted module name,
+and every subsequent use is limited to `__file__` identity inspection or a
+None identity check. Dynamic attributes/calls, current-module lookup, computed
+module names and module-object escape remain rejected. The contract slice must
+still be canonically identical across the receipt bridge.
 
 Version 5.13.0 adds an explicit reviewed workload-only repair resolution without
 adding a tool or changing protocol schema 4. A source receipt is eligible only
@@ -304,7 +313,7 @@ For an explicitly reviewed workload-only candidate, finish accepts
 `engineering_failure_resolution=reviewed_repair` with the exact pushed commit.
 The source must have a validated workload failure after its contract PASS. The
 reviewed classifier rejects changed imports/module control, changed function
-interfaces, dead-code changes, dynamic contract resolution, any changed
+interfaces, dead-code changes, executable dynamic contract resolution, any changed
 contract-reachable symbol, any stable capability-identity change, and runtime
 bundle drift from authoritative main. MCP reads the original lifecycle identity,
 contract context/result and failure closeout through one bounded cloud
@@ -431,7 +440,7 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.13.0`, source SHA-256, loaded control
+restart the host and verify version `5.14.0`, source SHA-256, loaded control
 commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/diagnose/repair/reviewed-repair/discard states.

@@ -312,6 +312,89 @@ DYNAMIC_CONTRACT_NAMES = {
 DYNAMIC_CONTRACT_ATTRIBUTES = {"import_module"}
 
 
+def _is_sys_modules(node: ast.AST) -> bool:
+    return isinstance(node, ast.Attribute) \
+        and node.attr == "modules" \
+        and isinstance(node.value, ast.Name) \
+        and node.value.id == "sys"
+
+
+def _is_none_identity_check(node: ast.AST | None, name: ast.Name) -> bool:
+    if not isinstance(node, ast.Compare) or not all(
+            isinstance(operator, (ast.Is, ast.IsNot)) for operator in node.ops):
+        return False
+    values = [node.left, *node.comparators]
+    return any(item is name for item in values) and any(
+        isinstance(item, ast.Constant) and item.value is None for item in values
+    )
+
+
+def _provenance_only_sys_modules(node: ast.AST) -> bool:
+    """Allow only module-file provenance checks with no dynamic symbol access."""
+    parents = {
+        id(child): parent
+        for parent in ast.walk(node)
+        for child in ast.iter_child_nodes(parent)
+    }
+    imported_names = {
+        alias.asname or alias.name
+        for item in ast.walk(node)
+        if isinstance(item, ast.ImportFrom)
+        for alias in item.names
+    }
+    sys_modules_nodes = [item for item in ast.walk(node) if _is_sys_modules(item)]
+    if not sys_modules_nodes:
+        return True
+
+    approved_sys_modules: set[int] = set()
+    module_names: set[str] = set()
+    dotted_module = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)+$")
+    for item in ast.walk(node):
+        if not isinstance(item, (ast.Assign, ast.AnnAssign)):
+            continue
+        targets = list(item.targets) if isinstance(item, ast.Assign) else [item.target]
+        if len(targets) != 1 or not isinstance(targets[0], ast.Name):
+            continue
+        value = item.value
+        sys_node: ast.AST | None = None
+        if isinstance(value, ast.Subscript) and _is_sys_modules(value.value):
+            key = value.slice
+            if isinstance(key, ast.Attribute) \
+                    and key.attr == "__module__" \
+                    and isinstance(key.value, ast.Name) \
+                    and key.value.id in imported_names:
+                sys_node = value.value
+        elif isinstance(value, ast.Call) \
+                and isinstance(value.func, ast.Attribute) \
+                and value.func.attr == "get" \
+                and _is_sys_modules(value.func.value) \
+                and len(value.args) == 1 \
+                and not value.keywords \
+                and isinstance(value.args[0], ast.Constant) \
+                and isinstance(value.args[0].value, str) \
+                and dotted_module.fullmatch(value.args[0].value):
+            sys_node = value.func.value
+        if sys_node is not None:
+            approved_sys_modules.add(id(sys_node))
+            module_names.add(targets[0].id)
+
+    if {id(item) for item in sys_modules_nodes} != approved_sys_modules:
+        return False
+    for item in ast.walk(node):
+        if not isinstance(item, ast.Name) or item.id not in module_names \
+                or not isinstance(item.ctx, ast.Load):
+            continue
+        parent = parents.get(id(item))
+        if isinstance(parent, ast.Attribute) \
+                and parent.value is item \
+                and parent.attr == "__file__":
+            continue
+        if _is_none_identity_check(parent, item):
+            continue
+        return False
+    return True
+
+
 def _assignment_names(node: ast.AST) -> set[str]:
     targets: list[ast.AST] = []
     if isinstance(node, ast.Assign):
@@ -390,10 +473,8 @@ def _reachable_definition_names(state: dict[str, Any], root: str) -> set[str]:
             elif isinstance(item, ast.Attribute) \
                     and item.attr in DYNAMIC_CONTRACT_ATTRIBUTES:
                 dynamic.add(item.attr)
-            elif isinstance(item, ast.Attribute) and item.attr == "modules" \
-                    and isinstance(item.value, ast.Name) \
-                    and item.value.id == "sys":
-                dynamic.add("sys.modules")
+        if root == "contract" and not _provenance_only_sys_modules(node):
+            dynamic.add("sys.modules")
     dynamic = sorted(dynamic)
     if root == "contract" and dynamic:
         raise RepairError(
