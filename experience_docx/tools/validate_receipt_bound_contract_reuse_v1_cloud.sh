@@ -117,12 +117,12 @@ expected = {
     "convir_route_plan", "convir_route_start", "convir_route_finish",
     "convir_evidence_list", "convir_evidence_fetch", "convir_git_status",
 }
-assert initialize["serverInfo"]["version"] == "5.14.0", initialize
+assert initialize["serverInfo"]["version"] == "5.13.0", initialize
 assert len(listed) == 6 and {item["name"] for item in listed} == expected, listed
 
 import convir_ops_mcp as ops
 assert ops.SCHEMA_VERSION == 4
-assert ops.SERVER_VERSION == "5.14.0"
+assert ops.SERVER_VERSION == "5.13.0"
 assert len(ops.TOOLS) == 6
 finish = ops.TOOLS["convir_route_finish"]["inputSchema"]
 assert "reviewed_repair" in finish["properties"]["engineering_failure_resolution"]["enum"]

@@ -415,7 +415,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def test_ordinary_results_expose_runtime_source_identity(self):
         value = payload(OPS.typed_result(True, "IDENTITY_TEST"))
-        self.assertEqual("5.14.0", value["runtime_identity"]["server_version"])
+        self.assertEqual("5.13.0", value["runtime_identity"]["server_version"])
         self.assertEqual(
             OPS.SERVER_SOURCE_SHA256,
             value["runtime_identity"]["server_source_sha256"],
@@ -2553,7 +2553,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
             text=True, capture_output=True, check=True, timeout=10,
         )
         responses = [json.loads(line) for line in completed.stdout.splitlines()]
-        self.assertEqual("5.14.0", responses[0]["result"]["serverInfo"]["version"])
+        self.assertEqual("5.13.0", responses[0]["result"]["serverInfo"]["version"])
         tools = responses[1]["result"]["tools"]
         self.assertEqual(6, len(tools))
         evidence = next(item for item in tools if item["name"] == "convir_evidence_list")
