@@ -197,7 +197,7 @@ def read_reside_claims(path: Path) -> dict[str, list[str]]:
                     and row.get("role") == "unassigned_known_overlap_quarantined" \
                     and isinstance(row.get("scene_id"), str) \
                     and isinstance(row.get("allocation_rank"), int) \
-                    and 0 <= row["allocation_rank"] < 150:
+                    and 0 <= row["allocation_rank"] < 55:
                 claims[dataset].append((row["allocation_rank"], row["scene_id"]))
     result = {}
     for dataset, values in claims.items():

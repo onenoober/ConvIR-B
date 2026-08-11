@@ -12,7 +12,7 @@
         "runner_relpath": "experience_docx/tools/run_route_operation.sh",
         "mode": "daytime_dehazing_observable_proxy_domain_actionability_factorial",
         "require_gpu": true,
-        "output_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1-r2",
+        "output_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1-r3",
         "closeout_filename": "daytime_dehazing_observable_proxy_domain_actionability_factorial_v1_closeout.json",
         "prior_closeout_relpath": null,
         "prior_terminal_tuple": null,
@@ -647,7 +647,7 @@
           "id": "observable_proxy_actionability_entrypoint",
           "kind": "file",
           "path": "{REMOTE_REPO}/experience_docx/tools/qualify_daytime_dehazing_observable_proxy_domain_actionability_factorial_v1.py",
-          "sha256": "7f88cd35d4de59395f4b5c60cdf6c26d0cafbadf38d24845828dcd9677874b82",
+          "sha256": "4411307979fdcc402eec4e2ce40281a3340478f4be4ed03a0967da6b80fc46c2",
           "access_role": "engineering_debug",
           "contract_access": true
         },
@@ -772,7 +772,7 @@
           },
           {
             "id": "observable_proxy_actionability_entrypoint",
-            "identity": "7f88cd35d4de59395f4b5c60cdf6c26d0cafbadf38d24845828dcd9677874b82"
+            "identity": "4411307979fdcc402eec4e2ce40281a3340478f4be4ed03a0967da6b80fc46c2"
           },
           {
             "id": "runtime_environment",
@@ -802,7 +802,7 @@
         "scientific_training_prohibited": true,
         "reuse_identity": {
           "source_commit": "3b4da35440c8c26a7d1bcaf1daf342e11d9a3898",
-          "code_path_sha256": "7f88cd35d4de59395f4b5c60cdf6c26d0cafbadf38d24845828dcd9677874b82",
+          "code_path_sha256": "4411307979fdcc402eec4e2ce40281a3340478f4be4ed03a0967da6b80fc46c2",
           "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
           "runtime_environment_sha256": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216",
           "device_class": "cuda_sm89"

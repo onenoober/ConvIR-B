@@ -6,7 +6,7 @@
     },
     {
       "id": "observable_proxy_actionability_entrypoint",
-      "identity": "7f88cd35d4de59395f4b5c60cdf6c26d0cafbadf38d24845828dcd9677874b82"
+      "identity": "4411307979fdcc402eec4e2ce40281a3340478f4be4ed03a0967da6b80fc46c2"
     },
     {
       "id": "runtime_environment",
@@ -42,7 +42,7 @@
   "protected_data_prohibited": true,
   "reuse_identity": {
     "checkpoint_sha256": "6f42037d57a4e3de3a10ac0ab909d66a3415864a19433c29204a975f4efa4088",
-    "code_path_sha256": "7f88cd35d4de59395f4b5c60cdf6c26d0cafbadf38d24845828dcd9677874b82",
+    "code_path_sha256": "4411307979fdcc402eec4e2ce40281a3340478f4be4ed03a0967da6b80fc46c2",
     "device_class": "cuda_sm89",
     "input_contract_sha256": "28d76bfa09c5ae5a34edabc8b559c4608bb73d079907406157ff08366756f6b5",
     "runtime_environment_sha256": "1586c6e32628b982ee3a7196bd3e29685c93039947be55344ba312ca6d36c216",

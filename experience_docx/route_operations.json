@@ -1,6 +1,6 @@
 {
   "experiment_spec_relpath": "experience_docx/experiment_specs/daytime-dehazing-observable-proxy-domain-actionability-factorial-v1.json",
-  "experiment_spec_sha256": "08006bf66a643608ba62c2cd199fa4841985fb4c7d8049851a99faa1d24e1e67",
+  "experiment_spec_sha256": "00faafdda62af1d839c47d91ee686fe8b1262b2f4dc23ff5f1a1651f88cdeb75",
   "operations": {
     "DAYTIME_DEHAZING_OBSERVABLE_PROXY_DOMAIN_ACTIONABILITY_FACTORIAL_QUALIFY": {
       "allowed_terminal_tuples": [
@@ -31,7 +31,7 @@
       "min_free_gpu_mib": 14000,
       "mode": "daytime_dehazing_observable_proxy_domain_actionability_factorial",
       "monitor_profile": "standard",
-      "output_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1-r2",
+      "output_id": "daytime-dehazing-observable-proxy-domain-actionability-factorial-v1-r3",
       "output_policy": "new",
       "prior_closeout_relpath": null,
       "prior_terminal_tuple": null,
