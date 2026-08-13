@@ -1684,6 +1684,37 @@ def receipt_context(record):
     return context
 
 
+def receipt_gpu_index(record):
+    """Read the launch GPU binding from the receipt's signed payload."""
+    payload = record.get("payload")
+    if not isinstance(payload, dict):
+        raise ToolError(
+            "source receipt payload is malformed",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    signed = payload.get("gpu_index")
+    legacy = record.get("gpu_index")
+    valid = lambda value: (
+        isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    )
+    if signed is not None and not valid(signed):
+        raise ToolError(
+            "source receipt GPU binding is malformed",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    if legacy is not None and not valid(legacy):
+        raise ToolError(
+            "source receipt legacy GPU binding is malformed",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    if legacy is not None and legacy != signed:
+        raise ToolError(
+            "source receipt GPU bindings conflict",
+            failure_phase="contract_reuse", failure_class="evidence",
+        )
+    return signed
+
+
 def tool_plan_manifest(args):
     try:
         control_identity = control_self_check()
@@ -2979,7 +3010,7 @@ def reviewed_engineering_repair_source(token):
         if fingerprint in history or len(history) >= MAX_ENGINEERING_REPAIR_GENERATIONS:
             raise ToolError("receipt engineering repair history requires operator review")
         transaction = record.get("reviewed_engineering_repair_transaction")
-        gpu_index = record.get("gpu_index")
+        gpu_index = receipt_gpu_index(record)
         if source_context.get("require_gpu"):
             if not isinstance(gpu_index, int) or isinstance(gpu_index, bool) or gpu_index < 0:
                 raise ToolError(

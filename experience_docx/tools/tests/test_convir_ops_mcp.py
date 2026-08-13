@@ -1444,8 +1444,9 @@ class ConvirOpsV4Tests(unittest.TestCase):
 
     def discardable_receipt(self, *, engineering_repair_history=None,
                             receipt_contract_reuse=None,
+                            require_gpu=False, gpu_index=None,
                             **diagnostic_overrides):
-        ctx = context()
+        ctx = context(require_gpu=require_gpu)
         if receipt_contract_reuse is not None:
             ctx.update({
                 "route_branch_commit": receipt_contract_reuse[
@@ -1490,7 +1491,7 @@ class ConvirOpsV4Tests(unittest.TestCase):
         receipt = OPS.write_new_record(
             "receipt",
             {
-                "context": ctx, "gpu_index": None,
+                "context": ctx, "gpu_index": gpu_index,
                 "launch_digest": "f" * 64, "issued_at": time.time_ns(),
             },
             {
@@ -1893,6 +1894,42 @@ class ConvirOpsV4Tests(unittest.TestCase):
         }))
         self.assertEqual("FINISH_REJECTED", result["operation_state"])
         self.assertEqual([], list(OPS.STATE_DIR.glob("plan-*.json")))
+
+    def test_receipt_gpu_index_reads_signed_launch_binding(self):
+        record = {
+            "payload": {"gpu_index": 3},
+        }
+        self.assertEqual(3, OPS.receipt_gpu_index(record))
+
+    def test_receipt_gpu_index_keeps_missing_binding_fail_closed(self):
+        self.assertIsNone(OPS.receipt_gpu_index({"payload": {}}))
+
+    def test_receipt_gpu_index_rejects_malformed_signed_binding(self):
+        with self.assertRaises(OPS.ToolError):
+            OPS.receipt_gpu_index({"payload": {"gpu_index": True}})
+
+    def test_receipt_gpu_index_rejects_conflicting_bindings(self):
+        with self.assertRaises(OPS.ToolError):
+            OPS.receipt_gpu_index({
+                "payload": {"gpu_index": 2},
+                "gpu_index": 3,
+            })
+
+    def test_reviewed_workload_repair_reads_gpu_from_receipt_payload(self):
+        receipt, _, _ = self.repairable_receipt(
+            failure_phase="workload", workload_started=True,
+            require_gpu=True, gpu_index=3,
+        )
+        *_, gpu_index, _, _ = OPS.reviewed_engineering_repair_source(receipt)
+        self.assertEqual(3, gpu_index)
+
+    def test_reviewed_workload_repair_rejects_missing_signed_gpu(self):
+        receipt, _, _ = self.repairable_receipt(
+            failure_phase="workload", workload_started=True,
+            require_gpu=True,
+        )
+        with self.assertRaisesRegex(OPS.ToolError, "lacks an exact GPU binding"):
+            OPS.reviewed_engineering_repair_source(receipt)
 
     def test_engineering_diagnosis_is_read_only_idempotent_and_keeps_evidence_locked(self):
         receipt = self.discardable_receipt(
