@@ -111,10 +111,11 @@ returns the original launch receipt, proves a clean unchanged retry, or stops
 as ambiguous.
 
 Before route-contract parsing, plan compares the loaded MCP/control bundle with
-the configured control worktree and live main. `CONTROL_PLANE_STALE`,
-`VALIDATOR_BUNDLE_MISMATCH`, or `CONTROL_SELF_CHECK_FAILED` is a pre-plan
-control result: it creates no token, does not consume the plan attempt and must
-not be repaired by changing the experiment contract.
+the configured control worktree and live main. A commit difference is reported
+as provenance and does not block identical content.
+`VALIDATOR_BUNDLE_MISMATCH` or `CONTROL_SELF_CHECK_FAILED` is a pre-plan control
+result: it creates no token, does not consume the plan attempt and must not be
+repaired by changing the experiment contract.
 
 Route-ready, plan and lifecycle query the capability registry at the exact
 authoritative-main commit and validate only the unique record matching the

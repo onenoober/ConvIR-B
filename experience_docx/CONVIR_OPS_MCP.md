@@ -202,7 +202,8 @@ valid.
 
 ## Finite State
 
-Plan begins in `CONTROL_SELF_CHECK`. `CONTROL_PLANE_STALE`,
+Plan begins in `CONTROL_SELF_CHECK`. Commit differences are provenance and do
+not block when the validator bundle contents match.
 `VALIDATOR_BUNDLE_MISMATCH` and `CONTROL_SELF_CHECK_FAILED` stop before manifest
 or scientific-contract parsing and cannot be represented as `PLAN_REJECTED`.
 They are retryable only as bounded control-plane correction and never consume a
