@@ -456,7 +456,8 @@ def research_snapshot_commit(source: Any) -> str | None:
                 if isinstance(population, dict) else None
             if role not in LIGHTWEIGHT_EVIDENCE_ROLES:
                 raise ExperimentSpecError(
-                    f"operations.{operation_id} requires a research snapshot binding"
+                    f"operations.{operation_id} confirmation and sealed_final authoring "
+                    "require research_update_binding"
                 )
             continue
         snapshot = binding.get("snapshot_commit") if isinstance(binding, dict) else None

@@ -334,10 +334,13 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
             bundle["experience_docx/scientific_contracts/final_slim__ACCEPT.json"]
         )
         manifest = json.loads(bundle[COMPILER.MANIFEST_RELPATH])
+        route_card = bundle[
+            "experience_docx/experiment_cards/final_slim.md"
+        ].decode("utf-8")
         self.assertEqual(2, scientific["schema_version"])
         self.assertEqual("typed_gate_precedence_v1", scientific["decision_table"]["policy"])
         self.assertEqual("a" * 40, manifest["rules_commit"])
-        self.assertEqual("ACCEPT", manifest["first_operation"])
+        self.assertIn("- First operation: ACCEPT", route_card)
 
     def test_schema3_protected_role_cannot_omit_research_update_binding(self):
         program, spec = sources_v3()
