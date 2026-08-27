@@ -2,20 +2,24 @@
 
 Date: 2026-08-07
 
-Status: main-first snapshot server `5.13.0` retains exactly six tools and stable control
+Status: main-first server with exactly six tools and stable control
 protocol schema 4. It reads immutable historical manifest schema 4/5 for status
 and evidence provenance, while plan accepts only compiled manifest schema 6 and
-runtime schema 2. New experiment specs and scientific contracts
-use schema 3; typed asset manifests and other supporting contracts remain schema
-2. Historical experiment/scientific schema 1/2 remains readable, is not
+runtime schema 2. New source specs use schema 3; lightweight early-tier
+scientific contracts may compile to schema 2, while confirmation/sealed-final
+contracts use schema 3. Typed asset manifests and other supporting contracts
+remain schema 2. Historical source spec schema 1/2 remains readable, is not
 migrated and cannot pass route-ready, plan or start.
 Every ordinary structured response exposes the loaded server version, exact
 server source SHA-256, loaded control commit, complete validator-bundle SHA-256
 and module-origin-manifest SHA-256, so dependency or process drift is visible
 directly.
 
-Version 5.13.0 adds an explicit reviewed workload-only repair resolution without
-adding a tool or changing protocol schema 4. A source receipt is eligible only
+Compatibility is gated by protocol schema, required tool/features, source SHA,
+loaded control commit, validator-bundle digest and module origins. Server semver
+is diagnostic and is never, by itself, a route authorization or rejection.
+Reviewed workload-only repair adds no tool and does not change protocol schema
+4. A source receipt is eligible only
 when its engineering contract PASS is still hash-verifiable and its terminal is
 a workload-phase engineering failure. The classifier permits only `run`-reachable,
 `contract`-unreachable symbol changes, proves the canonical contract AST slice
@@ -135,7 +139,7 @@ blob/SHA values and the canonical-rule bundle digest directly from Git; route
 authors do not copy these digests into the manifest. `rules_commit` records the
 GitHub-main rules used for design. An exact bundle match passes directly. A
 changed bundle passes only when current main's `RULE_COMPATIBILITY.json` keeps
-the same compatibility id and explicitly names the prior `rules_commit`.
+the same compatibility id or explicitly names the prior compatibility id.
 Incompatible scientific or authorization changes rotate that id and fail
 closed. The compatibility file records a reviewed decision; it is not policy
 authority and cannot silently relax a route contract.
@@ -439,8 +443,8 @@ multi-operation chains remain readable.
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
 After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify version `5.13.0`, source SHA-256, loaded control
-commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
+restart the host and verify protocol schema, required features, source SHA-256,
+loaded control commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/diagnose/repair/reviewed-repair/discard states.
 The same version, source SHA-256, loaded commit, bundle SHA-256 and module-origin

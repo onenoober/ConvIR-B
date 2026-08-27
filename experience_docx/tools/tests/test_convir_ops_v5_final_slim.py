@@ -499,9 +499,9 @@ class FinalSlimTests(unittest.TestCase):
             }))
             index.write_text(json.dumps({"route_id": "archived-route"}) + "\n")
             compatibility.write_text(json.dumps({
-                "schema_version": 1,
+                "schema_version": 2,
                 "compatibility_id": "contract-v2",
-                "compatible_prior_rules_commits": [],
+                "compatible_prior_ids": ["contract-v1"],
             }))
             self.git(repo, "add", ".")
             self.git(repo, "commit", "-qm", "project snapshot")

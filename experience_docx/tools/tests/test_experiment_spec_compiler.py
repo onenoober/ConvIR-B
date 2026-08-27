@@ -312,6 +312,50 @@ class ExperimentSpecCompilerTests(unittest.TestCase):
         self.assertEqual(2, precision["schema_version"])
         self.assertEqual(2, route_assets["schema_version"])
 
+    def test_schema3_lightweight_role_derives_repeated_fields_and_schema2_contract(self):
+        program, spec = sources_v3()
+        scientific = spec["operations"]["ACCEPT"]["scientific_contract"]
+        scientific.pop("research_update_binding")
+        scientific["decision_table"] = {
+            "terminal_actions": scientific["decision_table"]["terminal_actions"],
+            "policy": "typed_gate_precedence_v1",
+        }
+        spec.pop("rules_commit")
+        spec.pop("first_operation")
+        bundle = COMPILER.compile_bundle(
+            spec_relpath="experience_docx/experiment_specs/final_slim.json",
+            spec_raw=COMPILER.json_bytes(spec),
+            program_raw=COMPILER.json_bytes(program),
+            evidence_exists=lambda _: True,
+            authoritative_snapshot_commit="a" * 40,
+            read_authoritative_file=lambda _: b"",
+        )
+        scientific = json.loads(
+            bundle["experience_docx/scientific_contracts/final_slim__ACCEPT.json"]
+        )
+        manifest = json.loads(bundle[COMPILER.MANIFEST_RELPATH])
+        self.assertEqual(2, scientific["schema_version"])
+        self.assertEqual("typed_gate_precedence_v1", scientific["decision_table"]["policy"])
+        self.assertEqual("a" * 40, manifest["rules_commit"])
+        self.assertEqual("ACCEPT", manifest["first_operation"])
+
+    def test_schema3_protected_role_cannot_omit_research_update_binding(self):
+        program, spec = sources_v3()
+        scientific = spec["operations"]["ACCEPT"]["scientific_contract"]
+        scientific.pop("research_update_binding")
+        scientific["population"]["evidence_role"] = "confirmation"
+        with self.assertRaisesRegex(
+            COMPILER.ExperimentSpecError, "require research_update_binding",
+        ):
+            COMPILER.compile_bundle(
+                spec_relpath="experience_docx/experiment_specs/final_slim.json",
+                spec_raw=COMPILER.json_bytes(spec),
+                program_raw=COMPILER.json_bytes(program),
+                evidence_exists=lambda _: True,
+                authoritative_snapshot_commit="a" * 40,
+                read_authoritative_file=lambda _: b"",
+            )
+
     def test_main_dataset_registry_binds_verified_dataset_layouts(self):
         registry = COMPILER.validate_dataset_asset_registry(
             (SOURCE_REPO / COMPILER.DATASET_ASSET_REGISTRY_RELPATH).read_bytes()

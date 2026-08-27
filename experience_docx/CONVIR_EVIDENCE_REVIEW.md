@@ -133,10 +133,14 @@ eligibility and fail-closed limits are owned by `SCIENCE_FASTPATH.md`.
   manifest. Terminals without a receipt remain explicitly `legacy_unsealed`.
 - The server does not mutate Git or cloud state, start experiments, access
   datasets or protected roles, or issue scientific interpretations.
-- `convir-ops` remains a separate six-tool lifecycle server at version `5.12.0`
-  with protocol schema 4.
+- `convir-ops` remains a separate six-tool lifecycle server with protocol schema
+  4. Its semver is diagnostic; capability and identity bindings are authoritative.
 
 ## P0 Project Completeness Receipt
+
+This receipt is an explicit project-wide audit. Ordinary route snapshot,
+authoring, plan, start and terminal archive do not require it, so an unrelated
+unclassified loose evidence file cannot stop a scoped experiment.
 
 The adopted P0 layer historically added one compact fifth tool at server version `1.2.0`.
 It mechanically verifies that every catalog entry belongs to exactly one

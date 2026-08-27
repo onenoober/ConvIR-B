@@ -471,6 +471,38 @@ class ScientificContractTests(unittest.TestCase):
         self.assertEqual("COMPLETED_GATE_FAIL", result["state"])
         self.assertEqual("bad_side_fails", result["decision_rule_id"])
 
+    def test_typed_gate_precedence_replaces_authored_cartesian_rules(self):
+        value = contract()
+        value["decision_table"] = {
+            "terminal_actions": value["decision_table"]["terminal_actions"],
+            "policy": "typed_gate_precedence_v1",
+        }
+        validated = SCIENCE.validate_scientific_contract_v2(value, "route", "S0")
+        self.assertNotIn("rules", validated["decision_table"])
+        cases = (
+            ("unfavorable", "unmet", "fail", "policy_decisive_fail"),
+            ("favorable", "unmet", "inconclusive", "policy_precision_inconclusive"),
+            ("favorable", "met", "pass", "policy_decisive_pass"),
+        )
+        for materiality, precision, label, rule_id in cases:
+            with self.subTest(materiality=materiality, precision=precision):
+                result = SCIENCE.evaluate_gate_outcomes(validated, {
+                    "materiality": materiality, "precision": precision,
+                })
+                self.assertEqual(label, result["terminal_label"])
+                self.assertEqual(rule_id, result["decision_rule_id"])
+
+    def test_typed_gate_precedence_rejects_unknown_policy(self):
+        value = contract()
+        value["decision_table"] = {
+            "terminal_actions": value["decision_table"]["terminal_actions"],
+            "policy": "author_choice",
+        }
+        with self.assertRaisesRegex(
+            SCIENCE.ScientificContractError, "decision_table.policy",
+        ):
+            SCIENCE.validate_scientific_contract_v2(value, "route", "S0")
+
     def test_precision_first_table_is_rejected(self):
         value = contract()
         value["decision_table"]["rules"] = [

@@ -61,6 +61,16 @@ def typed_scientific_contract(value: Any) -> bool:
     return isinstance(value, dict) and value.get("schema_version") in {2, 3}
 
 
+def requires_completed_unit_ledger(
+    contract: dict[str, Any] | None, runtime_spec: dict[str, Any],
+) -> bool:
+    return (
+        typed_scientific_contract(contract)
+        and runtime_spec.get("resume_policy") == "complete_units"
+        and runtime_spec.get("total_units", 0) > 0
+    )
+
+
 def claim_published_name(owners: dict[str, str], name: str, owner: str) -> None:
     if name in owners:
         raise ReadyError(
@@ -875,10 +885,7 @@ def validate_all(repo: Path, snapshot: str, current_main: str,
                 scientific_schema=(
                     contract["schema_version"] if contract is not None else 1
                 ),
-                require_unit_ledger=(
-                    typed_scientific_contract(contract)
-                    and spec["total_units"] > 0
-                ),
+                require_unit_ledger=requires_completed_unit_ledger(contract, spec),
                 require_cost_evidence=(
                     spec["engineering_contract"].get("cost_contract") is not None
                 ),

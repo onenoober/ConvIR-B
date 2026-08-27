@@ -2,21 +2,16 @@
 
 Date: 2026-08-01
 
-Status: generic runtime adopted after the CPU-only r2 E2E closeout in
-`experiment_cards/2026-07-17-route-ready-fastpath-validation.md`. The
-schema-v4 v4.3 engineering-review gate is adopted after fresh-process
-acceptance; the six-tool surface and route schema are unchanged. Strict
-post-integration validation passed on main with no bootstrap runtime files.
-The route-authoring slimming update was adopted after 83/83 CPU-only cloud
-tests at `2980c7970604c22a85242ca3ec669b030b08690b`; MCP, schema, and the
-generic runtime bundle remain unchanged.
+Status: current authoring contract for source schema 3, manifest schema 6 and
+runtime schema 2. Historical adoption records remain in their archived
+experiment logs and are not active instructions.
 
 ## Default Bundle
 
 For a new route, author only:
 
 1. one research-program contract under research_programs/;
-2. one schema-v3 experiment spec under experiment_specs/; and
+2. one schema-v3 source spec under experiment_specs/; and
 3. one Python entrypoint implementing contract(context_path) and
    run(context_path).
 
@@ -31,8 +26,9 @@ SHA-256 is derived from the normalized runtime cost contract; an omitted value
 is filled and an explicitly wrong value is rejected.
 Archived amendment and reopen evidence is verified directly at the exact fresh
 current GitHub-main commit; it is not copied into the route worktree.
-`rules_commit` records the design source and is checked against current main's
-single `RULE_COMPATIBILITY.json` decision. Finalize also writes one
+The compiler derives an omitted `rules_commit` from fresh main and an omitted
+`first_operation` when only one operation exists. Compatibility is checked
+against current main's single `RULE_COMPATIBILITY.json` decision. Finalize also writes one
 non-committed Git-private authoring receipt
 that binds the two source files, every generated file and the bundle SHA-256.
 The compiler does not select any scientific field. Do not hand-edit generated
@@ -152,7 +148,7 @@ to match exactly. Ordinary scientific routes must never use it.
 The runtime spec is the only operation-to-lifecycle adapter. It freezes the
 entrypoint, timeout, expected wall time, evidence role, protected-data
 permissions, recovery policy, environment, assets, and compact evidence files.
-New schema-3 routes declare one required
+Full scientific schema-3 contracts declare one required
 closeout-derived `*_review_facts.json` evidence destination; route-ready rejects
 its absence or any published-name collision.
 The typed gate-fact writer keeps point, interval, confidence and threshold null
@@ -160,7 +156,7 @@ unless each value has a matching JSON Pointer; a gate outcome always carries its
 own source-bound pointer. A schema-3 conclusion must select at least one primary fact with a
 source-bound numeric point estimate; a pure gate fact cannot be the entire
 primary result.
-The schema-3 `run()` must call `write_scientific_review_facts`, which requires
+Their `run()` must call `write_scientific_review_facts`, which requires
 at least one finite numeric point fact before publication. Route-ready rejects
 the legacy `write_review_facts` writer for current scientific entrypoints, so a
 gate-only facts file cannot survive until ARCHIVE before failing.
@@ -179,13 +175,16 @@ unless the exact capability lookup above succeeds.
 It uses `metadata_only`, `cpu_exact`, `cpu_reference_equivalent`, or
 `gpu_synthetic_no_data` from an identity-bound capability profile, and must validate
 the entrypoint's synthetic output/finalizer contract, and cannot create
-`workload/` or touch confirmation, canary, or locked-test data. For scientific
-schema 3, `run(context_path)` calls `write_gate_result` with exact typed gate
-outcomes and cannot choose a state, decision or authorization; the generic
-lifecycle applies the complete frozen decision table. Historical scientific
-schema 1/2 remains readable provenance and is not runnable. A nonempty schema-3 workload must
-also load and record the generic completed-unit ledger; finalization requires
-exact `total_units` coverage. The generic lifecycle alone owns:
+`workload/` or touch confirmation, canary, or locked-test data. For typed
+scientific schema 2/3, `run(context_path)` calls `write_gate_result` with exact
+typed gate outcomes and cannot choose a state, decision or authorization; the
+generic lifecycle applies the complete frozen decision mapping. Historical
+source-spec schema 1/2 remains readable provenance and is not runnable. A
+current schema-3 source may compile `engineering_debug` or
+`development_screening` to a lightweight scientific schema-2 contract. Only
+`resume_policy=complete_units` requires the entrypoint to load and record the
+completed-unit ledger and exact `total_units` coverage. The generic lifecycle
+alone owns:
 
 For algorithms whose termination or cost depends on formal problem size, the
 runtime engineering contract freezes `cost_contract`. `same_scale_probe`

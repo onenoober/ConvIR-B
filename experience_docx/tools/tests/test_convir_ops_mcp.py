@@ -409,6 +409,28 @@ class ConvirOpsV4Tests(unittest.TestCase):
         )
         self.assertEqual("f" * 64, parsed["rules_bundle_digest"])
 
+    def test_compatibility_id_replaces_per_commit_allowlist_growth(self):
+        current = {
+            "schema_version": 2,
+            "compatibility_id": "science-fastpath-contract-v5",
+            "compatible_prior_ids": ["science-fastpath-contract-v4"],
+        }
+        recorded = {
+            "schema_version": 1,
+            "compatibility_id": "science-fastpath-contract-v4",
+            "compatible_prior_rules_commits": [],
+        }
+        with (
+            patch.object(OPS, "git_object_exists", return_value=True),
+            patch.object(
+                OPS, "rule_compatibility_profile", side_effect=[current, recorded],
+            ),
+        ):
+            compatibility_id = OPS.require_rule_compatibility(
+                "/tmp/repo", "b" * 40, "c" * 40, "d" * 64, "e" * 64,
+            )
+        self.assertEqual("science-fastpath-contract-v5", compatibility_id)
+
     def test_monitor_profiles_are_bounded_to_sixty_seconds(self):
         for profile in OPS.MONITOR_PROFILES.values():
             self.assertLessEqual(profile["max_polls"] * profile["interval_seconds"], 60)

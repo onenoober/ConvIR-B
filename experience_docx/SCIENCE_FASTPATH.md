@@ -72,20 +72,24 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
    full Markdown index/history by default. Decide whether the stage is
    authorized, answered or conflicting.
 2. CONTRACT: new routes author one research-program contract and one schema-3
-   experiment spec. The deterministic compiler emits manifest schema 6, canonical scientific
+   source spec. The deterministic compiler emits manifest schema 6, canonical scientific
    JSON, runtime/asset/capability/precision contracts and a <=8 KiB rationale
    note. New typed asset manifests use schema 2. Historical experiment-spec and
    scientific schema 1/2, asset schema 1 and manifest schema 4/5 remain
    immutable and readable through evidence review only; compiler writes,
-   route-ready, plan and start reject them. Schema 3 additionally binds the terminal-triggered
-   research update: exact trigger evidence, bottleneck, live competing
+   route-ready, plan and start reject them. Risk is determined by the existing
+   `evidence_role`: `engineering_debug` and `development_screening` may omit the
+   research-update object and compile to a lightweight scientific schema-2
+   contract; `confirmation` and `sealed_final` require full scientific schema 3.
+   Schema 3 binds the terminal-triggered research update: exact trigger evidence, bottleneck, live competing
    hypotheses, discriminating predictions, falsifiers and the basis for
    selecting the design. Its structured decision design freezes arms, factors,
    estimable terms, aliases, mechanism estimands, multiplicity and every
    sequential look/boundary. Freeze the question, population/grouping, evidence roles,
    permissions, intervention, controls, estimand, uncertainty, gates, competing
-   explanation, finite typed gate outcomes, a complete mutually exclusive
-   decision table and all terminal actions. Every PASS/FAIL/INCONCLUSIVE action
+   explanation, finite typed gate outcomes and all terminal actions. Use
+   `typed_gate_precedence_v1` to derive the complete mutually exclusive decision
+   mapping unless the experiment needs explicit custom rules. Every PASS/FAIL/INCONCLUSIVE action
    must differ in authorization, next action, or family effect. Formal precision
    requires a primary-estimand and stratum-bound pre-run feasibility certificate
    using a planning-SD upper bound and a critical value no smaller than the
@@ -94,7 +98,8 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
    device-aware synthetic contract. Use one atomic compiler `--finalize`; it
    returns independent schema, authorization, role, precision, engineering and
    source-text errors together, derives the capability input-contract identity
-   mechanically, resolves amendment/reopen evidence only from the exact fresh
+   mechanically, derives omitted `rules_commit` and single-operation
+   `first_operation`, resolves amendment/reopen evidence only from the exact fresh
    current GitHub-main commit, and writes the complete derived bundle plus the
    canonical nine-file runnable closure from that same commit
    only after a clean result. It emits one machine receipt into the Git-private
@@ -178,9 +183,10 @@ decisive FAIL; `descriptive` cannot affect the terminal.
    Require one positive workload-progress observation. ETA remains
    a frozen cost forecast, not a prohibition on human observation. A receipt
    holder may request a bounded result-blind progress snapshot, an early
-   terminal probe, or explicit cancellation at any time. Every new scientific schema-3 run records each completed
-   workload unit with input/output SHA-256 and must cover exact `total_units`
-   before scientific terminal derivation. Retry/not-before controls only full
+   terminal probe, or explicit cancellation at any time. Only a run declaring
+   `resume_policy=complete_units` records each completed workload unit with
+   input/output SHA-256 and must cover exact `total_units` before scientific
+   terminal derivation. A non-resumable run has no ledger contract. Retry/not-before controls only full
    sealed finish windows; progress-only refresh bypasses it, is rate-limited,
    and must expose only stage/count/activity/heartbeat age plus snapshot and
    cache identity. Cancellation must bind receipt, route, run, commit, runner,
@@ -237,7 +243,7 @@ tool derives that path from the validated `*_closeout.json` when `--conclusion`
 is omitted; it never writes or infers scientific content. Engineering archive
 contracts intentionally omit this scientific conclusion requirement.
 
-Current schema-3 entrypoints must call `write_scientific_review_facts`; that
+Full scientific schema-3 entrypoints must call `write_scientific_review_facts`; that
 writer rejects publication unless at least one fact has a finite numeric point
 and a matching source JSON Pointer. The historical `write_review_facts` API
 remains available only for legacy or non-scientific facts and cannot satisfy
@@ -412,8 +418,8 @@ mismatch executes the frozen contract once and publishes compact qualification
 evidence for registration during terminal archive. Device class is verified on
 the execution host; reuse never carries scientific authorization.
 
-Every new scientific schema-3 workload uses this completion ledger.
-`complete_units` always starts in a fresh output and additionally may import only a
+Only a workload with `resume_policy=complete_units` uses this completion ledger.
+It always starts in a fresh output and additionally may import only a
 hash-bound unrestricted run-only `completed_unit_ledger` asset whose unit,
 input, output-asset, output-path and output SHA-256 records are unique and whose
 referenced output files verify. Newly completed outputs are hashed by the

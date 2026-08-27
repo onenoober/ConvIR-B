@@ -1,18 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "compatibility_id": "science-fastpath-contract-v5",
-  "compatible_prior_rules_commits": [
-    "4cf78e400a5adfb839ff09dc7a8ac38cfd3a0b75",
-    "08aaf0396e2f782e5a290940da0919261daef57e",
-    "867a584792530ce68a55d78fda9c6facc9a77e86",
-    "b46a98d22915ed7e873ce48893cbd52027448e1c",
-    "aeb1945b9dd439e190532711057cf127f819cadb",
-    "c35c636a5616df27e4a53764aeada9094478cb11",
-    "2a23f3330c247a696d96343f61d6cafc900ec31b",
-    "1fdbc01352b987c5d21a39727a03dcd62a5d8cbb",
-    "5ea6f34a43bd4431c3fb383a523ab9643f9ec71b",
-    "5a687608a7c58c81c4d8ee329443c78b8a7e1a04",
-    "dea4c31dbc14245ee15eb461d2a5b5088741399a",
-    "8211b24ec53c60e20c1108b01c4045aff509de9a"
+  "compatible_prior_ids": [
+    "science-fastpath-contract-v4"
   ]
 }

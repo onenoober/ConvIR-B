@@ -35,27 +35,24 @@ the active change class, and read the full authoritative set for governance,
 protected-data, scientific-authorization, conflict, unknown-class, or snapshot-
 hash changes.
 
-1. SNAPSHOT has three ordered bindings. `SNAPSHOT-A AUTHORITY` calls compact
-   `convir_git_status scope=project` against the dedicated GitHub-main control
-   repository, proves live-main freshness and reads the exact project/rule and
-   terminal-catalog identities without a route worktree. `SNAPSHOT-B TARGET`
-   uses `scope=route`: an archived route is confirmed by its unique terminal
-   chain on that main commit; a new route id is confirmed by a GitHub route-
-   branch manifest, or by the local HEAD manifest during pre-push authoring,
-   while its scientific authorization is derived separately from main's typed
-   program/parent lineage. `SNAPSHOT-C WORKTREE_BIND` constrains edits, commit,
-   plan/start, repair and archive with branch, HEAD, route id, freshness and
-   worktree safety. A dirty or mismatched local worktree blocks that local
-   write binding but never hides an otherwise valid GitHub-main terminal.
+1. SNAPSHOT: an ordinary route task calls compact `convir_git_status scope=route`
+   once. That response binds fresh GitHub-main authority, the target route and
+   the local worktree separately. Use `scope=project` only for a cross-route
+   governance or evidence audit. Before the first write, also run the local
+   `task-context` boundary. A dirty or mismatched local worktree blocks local
+   writes but never hides an otherwise valid GitHub-main terminal.
    Local files/diffs are not scientific evidence and cannot establish a metric,
    verdict, terminal, completed workload or next-stage authorization. Never
    substitute a directory name for `route_id`; an unresolved route id is not
    `NO_TERMINAL_RECORD`. After authority and target binding, read the exact
    GitHub-main snapshot, direct parent closeout and only its referenced files.
    Do not read the full Markdown index or family history by default.
-2. CONTRACT: new routes use one schema-3 experiment spec compiled to manifest
-   schema 6, canonical scientific JSON, one <=8 KiB rationale note and runtime
-   schema 2. The schema-3 research-update binding declares `post_terminal` with
+2. CONTRACT: new routes use one schema-3 source spec compiled to manifest schema
+   6, canonical scientific JSON, one <=8 KiB rationale note and runtime schema
+   2. `engineering_debug` and `development_screening` may omit the research-
+   update binding and compile to a lightweight scientific schema-2 contract;
+   `confirmation` and `sealed_final` require the full schema-3 contract. The
+   research-update binding declares `post_terminal` with
    1-8 exact triggering terminals, or `program_foundation` with none for the
    first route of a genuinely new program. Both record stable authoritative-
    literature identifiers and transfer
@@ -63,8 +60,9 @@ hash changes.
    falsifiers and design-selection basis. Its structured decision design
    freezes arms, factors, estimable terms, aliases, mechanism estimands,
    multiplicity and every sequential look/boundary. Freeze every control,
-   typed gate outcome, complete mutually
-   exclusive decision table, uncertainty rule, data role and terminal action.
+   typed gate outcome, uncertainty rule, data role and terminal action. Prefer
+   `typed_gate_precedence_v1` to derive the mutually exclusive decision mapping;
+   hand-authored rules remain supported when the default policy is insufficient.
    Failed identity/integrity/coverage uses `validity_veto`; precision uses
    `inconclusive_only` and cannot hide a decisive scientific FAIL.
    Formal precision needs a primary-estimand and stratum-bound pre-run
@@ -89,9 +87,10 @@ hash changes.
    scientific schema 1/2, asset schema 1 and manifest schema 4/5 routes remain
    immutable and supported for read-only evidence review only. Compiler writes,
    route-ready, plan and start reject those historical schemas; they cannot be rerun.
-   Amendment and reopen evidence is resolved directly from the exact refreshed
-   current GitHub-main commit; `rules_commit` records design provenance and is
-   checked through `RULE_COMPATIBILITY.json`. Never materialize family history
+   The compiler derives omitted `rules_commit` from fresh authoritative main and
+   omitted `first_operation` for a single-operation route. Amendment and reopen
+   evidence is resolved directly from the exact refreshed current GitHub-main
+   commit and checked through `RULE_COMPATIBILITY.json`. Never materialize family history
    in the new route. Finalize writes one Git-private source/generated-bundle
    receipt. Route-ready verifies or deterministically reconstructs it, rejects
    source/generated-byte drift, and returns the cached report instead of
@@ -107,8 +106,9 @@ hash changes.
    receipt-bound result-blind progress refresh or terminal probe; each response
    must name its snapshot time and cached/current status. Explicit cancellation
    is allowed only through receipt-bound lifecycle control, never by PID.
-   Every new scientific schema-3 run records each completed workload unit in
-   the generic SHA-bound ledger; finalization requires exact `total_units` coverage.
+   A run uses the generic SHA-bound completed-unit ledger only when
+   `resume_policy=complete_units`; `resume_policy=none` does not author or check
+   that ledger. Resumable finalization requires exact `total_units` coverage.
    Retry/not-before timestamps govern full sealed finish windows only. They do
    not block the bounded result-blind refresh, early terminal detection, or
    operator cancellation. Do not turn refresh into a watcher.
@@ -127,7 +127,7 @@ hash changes.
    GitHub-main history, not from the route checkout. Unrelated later main
    archives do not invalidate the frozen research update. A rules-byte
    change is compatible only when current main explicitly retains the same
-   compatibility id and names the prior `rules_commit`; incompatible governance
+   compatibility id or names the prior compatibility id; incompatible governance
    changes rotate that id and fail closed.
 4. DECIDE: route code writes typed gate outcomes; the generic lifecycle derives
    the frozen terminal once. Interpret complete evidence once. The typed closeout alone
@@ -282,8 +282,10 @@ or project/family memory.
 - Windows calls WSL only as `wsl.exe -d Ubuntu-22.04 --exec` plus a fixed Linux
   program and literal argv. Never use Windows Git on the WSL UNC worktree and
   never place PowerShell, WSL, and SSH syntax in one command string.
-- Standard route lifecycle uses `convir-ops` v5.12.0 with stable six-tool protocol
-  schema 4 and canonical route-manifest schema 6. A non-experiment infrastructure
+- Standard route lifecycle requires the `convir-ops` six-tool protocol schema 4,
+  canonical route-manifest schema 6, required lifecycle features and matching
+  loaded-control/validator-bundle identities. The diagnostic server semver is
+  not a governance gate. A non-experiment infrastructure
   validation or diagnostic not covered by MCP may use one committed, unchanged,
   GitHub-bound Bash file through `experience_docx/tools/convirctl.py remote-script`.
   It cannot launch, stop, delete or fetch experiment state, or access scientific

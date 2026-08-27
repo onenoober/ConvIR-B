@@ -75,6 +75,7 @@ SCIENTIFIC_SOURCE_FIELDS_V2 = {
 SCIENTIFIC_SOURCE_FIELDS_V3 = {
     *SCIENTIFIC_SOURCE_FIELDS_V2, "research_update_binding",
 }
+LIGHTWEIGHT_EVIDENCE_ROLES = {"engineering_debug", "development_screening"}
 SOURCE_OPERATION_FIELDS_V2 = {
     "runner_relpath", "mode", "require_gpu", "output_id",
     "closeout_filename", "prior_closeout_relpath", "prior_terminal_tuple",
@@ -393,9 +394,11 @@ def _authoritative_evidence_resolver(
     repo: Path, rules_commit: Any, authoritative_main: str,
 ) -> tuple[str, Callable[[str], bool], Callable[[str], bytes]]:
     """Resolve archived authorization evidence from the current GitHub main."""
-    if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
-        raise ExperimentSpecError("rules_commit must be an exact 40-character commit")
     resolved = resolve_fresh_authoritative_main(repo, authoritative_main)
+    if rules_commit is None:
+        rules_commit = resolved
+    if not isinstance(rules_commit, str) or not SHA40.fullmatch(rules_commit):
+        raise ExperimentSpecError("rules_commit must be omitted or an exact 40-character commit")
     _git(repo, "cat-file", "-e", f"{rules_commit}^{{commit}}")
     cache: dict[str, bool] = {}
 
@@ -446,17 +449,27 @@ def research_snapshot_commit(source: Any) -> str | None:
         scientific = operation.get("scientific_contract")
         binding = scientific.get("research_update_binding") \
             if isinstance(scientific, dict) else None
+        if binding is None:
+            population = scientific.get("population") \
+                if isinstance(scientific, dict) else None
+            role = population.get("evidence_role") \
+                if isinstance(population, dict) else None
+            if role not in LIGHTWEIGHT_EVIDENCE_ROLES:
+                raise ExperimentSpecError(
+                    f"operations.{operation_id} requires a research snapshot binding"
+                )
+            continue
         snapshot = binding.get("snapshot_commit") if isinstance(binding, dict) else None
         if not isinstance(snapshot, str) or not SHA40.fullmatch(snapshot):
             raise ExperimentSpecError(
                 f"operations.{operation_id} has no valid research snapshot binding"
             )
         snapshots.add(snapshot)
-    if len(snapshots) != 1:
+    if len(snapshots) > 1:
         raise ExperimentSpecError(
             "all schema-3 operations must bind one research snapshot commit"
         )
-    return next(iter(snapshots))
+    return next(iter(snapshots)) if snapshots else None
 
 
 def canonical_runtime_bundle(repo: Path, authoritative_commit: str) -> dict[str, bytes]:
@@ -603,12 +616,43 @@ def _route_card(spec: dict[str, Any]) -> bytes:
     return raw
 
 
-def _scientific_source_fields(spec_schema: int) -> set[str]:
+def _scientific_source_fields(scientific_schema: int) -> set[str]:
     return {
         1: SCIENTIFIC_SOURCE_FIELDS_V1,
         2: SCIENTIFIC_SOURCE_FIELDS_V2,
         3: SCIENTIFIC_SOURCE_FIELDS_V3,
-    }[spec_schema]
+    }[scientific_schema]
+
+
+def _scientific_contract_schema(spec_schema: int, value: Any) -> int:
+    if spec_schema != 3 or not isinstance(value, dict) \
+            or "research_update_binding" in value:
+        return spec_schema
+    population = value.get("population")
+    role = population.get("evidence_role") if isinstance(population, dict) else None
+    if role not in LIGHTWEIGHT_EVIDENCE_ROLES:
+        raise ExperimentSpecError(
+            "confirmation and sealed_final authoring require research_update_binding"
+        )
+    return 2
+
+
+def _derive_source_fields(
+    source: dict[str, Any], authoritative_snapshot_commit: str | None,
+) -> dict[str, Any]:
+    """Fill schema-3 fields whose value is uniquely determined by context."""
+    if source.get("schema_version") != 3:
+        return source
+    result = dict(source)
+    if "rules_commit" not in result \
+            and isinstance(authoritative_snapshot_commit, str) \
+            and SHA40.fullmatch(authoritative_snapshot_commit):
+        result["rules_commit"] = authoritative_snapshot_commit
+    operations = result.get("operations")
+    if "first_operation" not in result \
+            and isinstance(operations, dict) and len(operations) == 1:
+        result["first_operation"] = next(iter(operations))
+    return result
 
 
 def _supporting_contract_schema(spec_schema: int) -> int:
@@ -735,16 +779,19 @@ def _lint_operation_components(
 
     scientific = None
     try:
+        scientific_schema = _scientific_contract_schema(
+            spec_schema, item["scientific_contract"],
+        )
         scientific_source = _object(
-            item["scientific_contract"], _scientific_source_fields(spec_schema),
+            item["scientific_contract"], _scientific_source_fields(scientific_schema),
             f"{prefix}.scientific_contract",
         )
         scientific_value = {
-            "schema_version": spec_schema, "route_id": route_id,
+            "schema_version": scientific_schema, "route_id": route_id,
             "operation_id": operation_id, **scientific_source,
         }
-        if spec_schema in {2, 3}:
-            if spec_schema == 2:
+        if scientific_schema in {2, 3}:
+            if scientific_schema == 2:
                 scientific = science_contract.validate_scientific_contract_v2(
                     scientific_value, route_id, operation_id,
                 )
@@ -943,6 +990,7 @@ def lint_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             "status": "EXPERIMENT_SPEC_INVALID",
             "errors": [_lint_error("experiment_spec", "INVALID_TYPE", "must be an object")],
         }
+    source = _derive_source_fields(source, authoritative_snapshot_commit)
     missing = sorted(SOURCE_FIELDS - set(source))
     unexpected = sorted(set(source) - SOURCE_FIELDS)
     if missing:
@@ -1066,14 +1114,22 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
         program_source = json.loads(program_raw)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ExperimentSpecError(f"source JSON is invalid: {exc}") from exc
-    spec = _object(source, SOURCE_FIELDS, "experiment spec")
+    if not isinstance(source, dict):
+        raise ExperimentSpecError("experiment spec must be an object")
+    spec = _object(
+        _derive_source_fields(source, authoritative_snapshot_commit),
+        SOURCE_FIELDS, "experiment spec",
+    )
     if spec["schema_version"] not in {1, 2, 3}:
         raise ExperimentSpecError("experiment spec schema_version must be 1, 2, or 3")
     spec_schema = spec["schema_version"]
     frozen_research_snapshot = research_snapshot_commit(spec)
     if spec_schema == 3 and (
-        authoritative_snapshot_commit != frozen_research_snapshot
-        or read_authoritative_file is None or evidence_exists is None
+        read_authoritative_file is None or evidence_exists is None
+        or (
+            frozen_research_snapshot is not None
+            and authoritative_snapshot_commit != frozen_research_snapshot
+        )
     ):
         raise ExperimentSpecError(
             "schema-3 compilation requires its exact authoritative research snapshot"
@@ -1127,18 +1183,21 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             route_invariant = invariant
         elif invariant != route_invariant:
             raise ExperimentSpecError("all operations must share one route-level mechanism claim")
+        scientific_schema = _scientific_contract_schema(
+            spec_schema, item["scientific_contract"],
+        )
         scientific_source = _object(
-            item["scientific_contract"], _scientific_source_fields(spec_schema),
+            item["scientific_contract"], _scientific_source_fields(scientific_schema),
             f"operations.{operation_id}.scientific_contract",
         )
         scientific = {
-            "schema_version": spec_schema, "route_id": route_id,
+            "schema_version": scientific_schema, "route_id": route_id,
             "operation_id": operation_id,
             **scientific_source,
         }
-        if spec_schema in {2, 3}:
+        if scientific_schema in {2, 3}:
             try:
-                if spec_schema == 2:
+                if scientific_schema == 2:
                     scientific = science_contract.validate_scientific_contract_v2(
                         scientific, route_id, operation_id,
                     )
@@ -1158,7 +1217,7 @@ def compile_bundle(*, spec_relpath: str, spec_raw: bytes, program_raw: bytes,
             )
         else:
             operation = operation_source
-        if spec_schema == 3:
+        if scientific_schema == 3:
             research_update = scientific["research_update_binding"]
             if route_research_update is None:
                 route_research_update = research_update

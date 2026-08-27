@@ -41,6 +41,17 @@ GATE_OUTCOMES = {
 DECISION_ROLES = {
     "decisive", "validity_veto", "inconclusive_only", "descriptive",
 }
+DECISION_POLICIES = {"typed_gate_precedence_v1"}
+DECISIVE_OUTCOME_LABELS = {
+    "materiality": {
+        "favorable": "pass", "unfavorable": "fail",
+        "indeterminate": "inconclusive", "invalid": "inconclusive",
+    },
+    "safety": {
+        "safe": "pass", "unsafe": "fail",
+        "indeterminate": "inconclusive", "invalid": "inconclusive",
+    },
+}
 BOTTLENECK_CLASSES = {
     "scientific_hypothesis", "measurement", "precision", "data_scope",
     "engineering_capability", "governance",
@@ -968,6 +979,57 @@ def _enumerated_decisions(gates: list[dict[str, Any]], rules: list[dict[str, Any
     return decisions
 
 
+def _typed_policy_decision(
+    gates: list[dict[str, Any]], outcomes: dict[str, str],
+) -> tuple[str, str]:
+    """Apply the fixed validity, decisive, then precision precedence contract."""
+    for gate in gates:
+        if gate["decision_role"] == "validity_veto" \
+                and outcomes[gate["id"]] != gate["neutral_outcome"]:
+            return "inconclusive", "policy_validity_veto"
+
+    decisive_labels = []
+    for gate in gates:
+        if gate["decision_role"] != "decisive":
+            continue
+        mapping = DECISIVE_OUTCOME_LABELS.get(gate["type"])
+        if mapping is None or set(mapping) != set(gate["outcomes"]):
+            raise ScientificContractError(
+                "typed gate precedence supports decisive materiality or safety gates only"
+            )
+        decisive_labels.append(mapping[outcomes[gate["id"]]])
+    if not decisive_labels:
+        raise ScientificContractError(
+            "typed gate precedence requires at least one decisive gate"
+        )
+    if "fail" in decisive_labels:
+        return "fail", "policy_decisive_fail"
+    if "inconclusive" in decisive_labels:
+        return "inconclusive", "policy_decisive_inconclusive"
+    if any(
+        gate["decision_role"] == "inconclusive_only"
+        and outcomes[gate["id"]] != gate["neutral_outcome"]
+        for gate in gates
+    ):
+        return "inconclusive", "policy_precision_inconclusive"
+    return "pass", "policy_decisive_pass"
+
+
+def _policy_decisions(
+    gates: list[dict[str, Any]], policy: Any,
+) -> dict[tuple[str, ...], str]:
+    if policy not in DECISION_POLICIES:
+        raise ScientificContractError(
+            f"decision_table.policy must be one of {sorted(DECISION_POLICIES)}"
+        )
+    gate_ids = [gate["id"] for gate in gates]
+    decisions = {}
+    for values in itertools.product(*(gate["outcomes"] for gate in gates)):
+        label, _ = _typed_policy_decision(gates, dict(zip(gate_ids, values)))
+        decisions[values] = label
+    return decisions
+
+
 def _validate_role_semantics(
     gates: list[dict[str, Any]], decisions: dict[tuple[str, ...], str],
 ) -> None:
@@ -1035,14 +1097,25 @@ def validate_scientific_contract_v2(
     allowed_estimands = {estimand["id"]}
     if any(gate["estimand_id"] not in allowed_estimands for gate in gates):
         raise ScientificContractError("every gate must bind the primary estimand id")
-    decision_table = _object(
-        item["decision_table"], {"terminal_actions", "rules"}, "decision_table",
-    )
+    decision_table = item["decision_table"]
+    if not isinstance(decision_table, dict) or frozenset(decision_table) not in {
+        frozenset({"terminal_actions", "rules"}),
+        frozenset({"terminal_actions", "policy"}),
+    }:
+        raise ScientificContractError(
+            "decision_table must contain terminal_actions and exactly one of rules or policy"
+        )
     actions = _validate_terminal_actions(
         decision_table["terminal_actions"], population["evidence_role"],
     )
-    rules = _normalize_rules(decision_table["rules"], gates)
-    decisions = _enumerated_decisions(gates, rules)
+    if "rules" in decision_table:
+        decision_encoding = {
+            "rules": _normalize_rules(decision_table["rules"], gates),
+        }
+        decisions = _enumerated_decisions(gates, decision_encoding["rules"])
+    else:
+        decision_encoding = {"policy": decision_table["policy"]}
+        decisions = _policy_decisions(gates, decision_encoding["policy"])
     if set(decisions.values()) != set(TERMINAL_LABELS):
         raise ScientificContractError(
             "decision table must make pass, fail, and inconclusive reachable"
@@ -1090,7 +1163,7 @@ def validate_scientific_contract_v2(
         ),
         "decision_table": {
             "terminal_actions": actions,
-            "rules": rules,
+            **decision_encoding,
         },
         "disabled_actions": [value.strip() for value in disabled],
     }
@@ -1159,15 +1232,20 @@ def evaluate_gate_outcomes(
                 f"gate outcome is invalid: {gate['id']}={outcome}"
             )
         normalized[gate["id"]] = outcome
-    matches = _matching_rules(contract["decision_table"]["rules"], normalized)
-    if len(matches) != 1:
-        raise ScientificContractError("validated decision table did not resolve uniquely")
-    label = matches[0]["terminal"]
+    decision_table = contract["decision_table"]
+    if "rules" in decision_table:
+        matches = _matching_rules(decision_table["rules"], normalized)
+        if len(matches) != 1:
+            raise ScientificContractError("validated decision table did not resolve uniquely")
+        label = matches[0]["terminal"]
+        decision_rule_id = matches[0]["id"]
+    else:
+        label, decision_rule_id = _typed_policy_decision(gates, normalized)
     action = contract["decision_table"]["terminal_actions"][label]
     return {
         **action["terminal"],
         "terminal_label": label,
-        "decision_rule_id": matches[0]["id"],
+        "decision_rule_id": decision_rule_id,
         "next_action_id": action["next_action_id"],
         "family_effect": action["family_effect"],
         "gate_outcomes": normalized,

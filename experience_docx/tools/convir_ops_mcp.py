@@ -1039,19 +1039,26 @@ def rule_compatibility_profile(repo, commit):
         value = json.loads(git_show_bytes(repo, commit, RULE_COMPATIBILITY_RELPATH))
     except (json.JSONDecodeError, UnicodeDecodeError) as exc:
         raise ToolError("rule compatibility profile is invalid JSON") from exc
-    required = {
-        "schema_version", "compatibility_id", "compatible_prior_rules_commits",
-    }
-    if not isinstance(value, dict) or set(value) != required \
-            or value.get("schema_version") != 1:
+    if not isinstance(value, dict) or value.get("schema_version") not in {1, 2}:
+        raise ToolError("rule compatibility profile has an invalid field contract")
+    schema = value["schema_version"]
+    history_field = (
+        "compatible_prior_rules_commits" if schema == 1 else "compatible_prior_ids"
+    )
+    required = {"schema_version", "compatibility_id", history_field}
+    if set(value) != required:
         raise ToolError("rule compatibility profile has an invalid field contract")
     compatibility_id = value.get("compatibility_id")
-    prior = value.get("compatible_prior_rules_commits")
+    prior = value.get(history_field)
     if not isinstance(compatibility_id, str) \
             or not SAFE_TOKEN.fullmatch(compatibility_id) \
             or not isinstance(prior, list) or len(prior) > 64 \
             or len(prior) != len(set(prior)) \
-            or any(not isinstance(item, str) or not SHA40.fullmatch(item) for item in prior):
+            or any(
+                not isinstance(item, str)
+                or not (SHA40 if schema == 1 else SAFE_TOKEN).fullmatch(item)
+                for item in prior
+            ):
         raise ToolError("rule compatibility profile identity is invalid")
     return value
 
@@ -1069,9 +1076,18 @@ def require_rule_compatibility(
         if expected_compatibility_id is not None \
                 and compatibility_id != expected_compatibility_id:
             raise ToolError("rule compatibility identity changed")
-        if recorded_digest == current_digest \
-                or recorded_commit in profile["compatible_prior_rules_commits"]:
+        if recorded_digest == current_digest:
             return compatibility_id
+        if profile["schema_version"] == 1 \
+                and recorded_commit in profile["compatible_prior_rules_commits"]:
+            return compatibility_id
+        if profile["schema_version"] == 2 \
+                and git_object_exists(repo, recorded_commit, RULE_COMPATIBILITY_RELPATH):
+            recorded_profile = rule_compatibility_profile(repo, recorded_commit)
+            recorded_id = recorded_profile["compatibility_id"]
+            if recorded_id == compatibility_id \
+                    or recorded_id in profile["compatible_prior_ids"]:
+                return compatibility_id
         raise ToolError(
             "canonical rule bundle changed without an explicit compatibility declaration"
         )
@@ -5188,19 +5204,27 @@ def project_authoritative_snapshot(repo, ref):
         and SHA40.fullmatch(policy["rules_commit"]) \
         and isinstance(policy.get("rules_bundle_sha256"), str) \
         and SHA256.fullmatch(policy["rules_bundle_sha256"])
+    compatibility_schema = compatibility.get("schema_version") \
+        if isinstance(compatibility, dict) else None
+    compatibility_history_field = (
+        "compatible_prior_rules_commits" if compatibility_schema == 1
+        else "compatible_prior_ids"
+    )
+    compatibility_history_pattern = SHA40 if compatibility_schema == 1 else SAFE_TOKEN
+    compatibility_history = compatibility.get(compatibility_history_field) \
+        if isinstance(compatibility, dict) else None
     compatibility_valid = isinstance(compatibility, dict) \
+        and compatibility_schema in {1, 2} \
         and set(compatibility) == {
-            "schema_version", "compatibility_id", "compatible_prior_rules_commits",
+            "schema_version", "compatibility_id", compatibility_history_field,
         } \
-        and compatibility.get("schema_version") == 1 \
         and isinstance(compatibility.get("compatibility_id"), str) \
         and SAFE_TOKEN.fullmatch(compatibility["compatibility_id"]) \
-        and isinstance(compatibility.get("compatible_prior_rules_commits"), list) \
-        and len(compatibility["compatible_prior_rules_commits"]) \
-        == len(set(compatibility["compatible_prior_rules_commits"])) \
+        and isinstance(compatibility_history, list) \
+        and len(compatibility_history) == len(set(compatibility_history)) \
         and all(
-            isinstance(item, str) and SHA40.fullmatch(item)
-            for item in compatibility["compatible_prior_rules_commits"]
+            isinstance(item, str) and compatibility_history_pattern.fullmatch(item)
+            for item in compatibility_history
         )
     records_valid = all(
         isinstance(item, dict)

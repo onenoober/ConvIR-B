@@ -78,6 +78,18 @@ SCIENTIFIC_SCHEMA3 = SCIENTIFIC_SCHEMA2.replace(
 
 
 class RouteReadyTests(unittest.TestCase):
+    def test_completed_unit_ledger_is_only_required_for_resumable_runs(self):
+        contract = {"schema_version": 2}
+        self.assertFalse(READY.requires_completed_unit_ledger(contract, {
+            "resume_policy": "none", "total_units": 10,
+        }))
+        self.assertTrue(READY.requires_completed_unit_ledger(contract, {
+            "resume_policy": "complete_units", "total_units": 10,
+        }))
+        self.assertFalse(READY.requires_completed_unit_ledger(contract, {
+            "resume_policy": "complete_units", "total_units": 0,
+        }))
+
     def test_standard_entrypoint_interface_passes(self):
         READY.check_entrypoint(GOOD, "experience_docx/tools/program.py")
 
