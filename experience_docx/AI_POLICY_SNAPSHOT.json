@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "a759aede20901b4c7000b42ae05475c49fa8498f59df2c626637596a34fa881f",
-  "rules_commit": "6abd24ab49edff186ab264cf08ef36f148c878e3",
+  "rules_bundle_sha256": "237e9d8462cb5f71fa5987090243766418782df61690a276518bfcdd93985c0d",
+  "rules_commit": "b08f564c1d97e2b297fe80bb63c039c6041831bc",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -128,8 +128,8 @@
   ],
   "sources": {
     "AGENTS.md": {
-      "bytes": 20240,
-      "sha256": "82de7fe02f3355d902c9610bcd6c9554667255067534e67aa3bd6ad2e43641c4"
+      "bytes": 20392,
+      "sha256": "8f7adb91ce73bf2ad4e43342710ab52e3b3bebf5143dad5bf5bcbab537ff2fb8"
     },
     "experience_docx/BRANCH_EXPERIMENT_SYNC_PROTOCOL.md": {
       "bytes": 7527,
@@ -140,12 +140,12 @@
       "sha256": "869feecc457418a4c3fad62b58107d1e48b7650f3c9bf818f01ccb7c0439c633"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
-      "bytes": 17938,
-      "sha256": "75996b06696e27534b5a54bb8c123e4ca2384026c970350aa53b268ff508906f"
+      "bytes": 18215,
+      "sha256": "2551f69ba3974f3b47dd1e26b896f5a75685ff8a212800afc83a2518b889821d"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 30263,
-      "sha256": "478dcd27e75a4c991a05033adc0e3a60df16511fce63129967fbb28d34b3a754"
+      "bytes": 30538,
+      "sha256": "12290adf19be99c15db70fe619ea40002340d3e392400c0182a3fa92a8da0d46"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 13752,
@@ -156,16 +156,16 @@
       "sha256": "cc065316b17dcb21d69691297b3a8588a7ffe62960befe7956a53d31adb4fd96"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 18866,
-      "sha256": "fba5a8b41d738b24c93228222312fda0c986945607453c54c722e67c5680aa0f"
+      "bytes": 18757,
+      "sha256": "bc08d9c7d9ca294ed3e21110b1ff04857546850e8549ba6d7232133e9b92608b"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
-      "bytes": 698,
-      "sha256": "5f9fbfeb872e16b2e4b2815f2fd5d597c95a2d4b02861e6633af1dfbef344822"
+      "bytes": 148,
+      "sha256": "a0842fdb332f8d6d4244985ec4929254de04501eb6ec1faeec141d886837a0cc"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 28853,
-      "sha256": "a3aee6bc0440b229dbf9c5bf0e1b64ff2b5cc16c4787cb20a9c7bead9c71154d"
+      "bytes": 29352,
+      "sha256": "cbf6b80c3425301925010c94b67cbb017d4e7ce2911675999132f4d64cb12998"
     }
   },
   "workflow": [
