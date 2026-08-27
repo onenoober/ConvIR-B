@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "237e9d8462cb5f71fa5987090243766418782df61690a276518bfcdd93985c0d",
-  "rules_commit": "b08f564c1d97e2b297fe80bb63c039c6041831bc",
+  "rules_bundle_sha256": "8ccf2457e969e0a0b9b240d0bcc4dc2dd7762ade11a1d992566b9cef0ac2b2c7",
+  "rules_commit": "8a94c98b1bc0df44c81385f67cd857de2418402a",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -136,36 +136,36 @@
       "sha256": "b445d1b8c6252eeef2aab99c7cf1231bc1ea2c4ecdf2e939bd3c175b89e87606"
     },
     "experience_docx/COMMAND_RELIABILITY_PROTOCOL.md": {
-      "bytes": 16763,
-      "sha256": "869feecc457418a4c3fad62b58107d1e48b7650f3c9bf818f01ccb7c0439c633"
+      "bytes": 16869,
+      "sha256": "5bbff368370dd0c59ead9eee51d45ee950cef4588e53f7c5813757164a503330"
     },
     "experience_docx/CONVIR_EVIDENCE_REVIEW.md": {
       "bytes": 18215,
       "sha256": "2551f69ba3974f3b47dd1e26b896f5a75685ff8a212800afc83a2518b889821d"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 30538,
-      "sha256": "12290adf19be99c15db70fe619ea40002340d3e392400c0182a3fa92a8da0d46"
+      "bytes": 30893,
+      "sha256": "eacbaf94a70da8a38811db2ea523250cdfbd4fbae02864366d32e5589ec1b287"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 13752,
       "sha256": "aae3e226e42080ddeda9e2f7d474ef51823fbf748d656400d16ebea459a8ee1a"
     },
     "experience_docx/MODEL_RUN_OPERATIONS_PROTOCOL.md": {
-      "bytes": 16742,
-      "sha256": "cc065316b17dcb21d69691297b3a8588a7ffe62960befe7956a53d31adb4fd96"
+      "bytes": 16960,
+      "sha256": "76c77e310458e912de1f91b086fbd8347091c9ecc53e281ce6daf0e8f5b29d4b"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 18757,
-      "sha256": "bc08d9c7d9ca294ed3e21110b1ff04857546850e8549ba6d7232133e9b92608b"
+      "bytes": 18868,
+      "sha256": "36eac71e1d05430e361ba4d1a5b0f603f1189f0f390c614a24d958541fb9263d"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
       "bytes": 148,
       "sha256": "a0842fdb332f8d6d4244985ec4929254de04501eb6ec1faeec141d886837a0cc"
     },
     "experience_docx/SCIENCE_FASTPATH.md": {
-      "bytes": 29352,
-      "sha256": "cbf6b80c3425301925010c94b67cbb017d4e7ce2911675999132f4d64cb12998"
+      "bytes": 29563,
+      "sha256": "e0ece3c20661effea37b3a3cdc6d82378dd74dc43cf62b4bf217e2211db5505b"
     }
   },
   "workflow": [
