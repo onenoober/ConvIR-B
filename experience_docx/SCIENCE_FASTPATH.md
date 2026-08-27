@@ -18,17 +18,18 @@ when that is faster and statistically valid.
 ## Source-of-Truth Order
 
 The local route worktree is an identity and authoring surface, not an
-experiment-results store. Begin with `convir_git_status scope=project` from the
-dedicated GitHub-main control repository. This `SNAPSHOT-A AUTHORITY` proves the
-live main identity and returns the exact project/rule and terminal-catalog
-bindings without reading any route worktree. `SNAPSHOT-B TARGET` then uses
-`scope=route`: the unique GitHub-main terminal chain confirms an archived route
-even when the local checkout is dirty, missing or wrong; a new route id requires
-a GitHub route-branch manifest, with the local HEAD manifest accepted only as
-the pre-push authoring identity, and its scientific authorization is read
-separately from main's typed program/parent lineage. `SNAPSHOT-C WORKTREE_BIND`
-checks branch, HEAD, worktree state and route id before any edit or lifecycle
-write. Its failure blocks local writes, never an already-bound main terminal.
+experiment-results store. An ordinary route task calls
+`convir_git_status scope=route` once. That response independently binds live
+GitHub-main authority, the target route and the local worktree. The unique
+GitHub-main terminal chain confirms an archived route even when the local
+checkout is dirty, missing or wrong; a new route id requires a GitHub
+route-branch manifest, with the local HEAD manifest accepted only as the
+pre-push authoring identity, and its scientific authorization is read
+separately from main's typed program/parent lineage. Use `scope=project` only
+for cross-route governance or evidence review. The route response's local write
+binding checks branch, HEAD, worktree state and route id before any edit or
+lifecycle write. Its failure blocks local writes, never an already-bound main
+terminal.
 Treat all local fields and diffs as safety and authoring metadata; never use
 them to infer a metric, verdict, terminal state, scientific authorization or
 completed workload. A directory name is not a route id, and
@@ -65,10 +66,11 @@ fail-closed stop. Those are blockers, not routine approval boundaries.
 
 ## Five State Transitions
 
-1. SNAPSHOT: complete AUTHORITY, TARGET and WORKTREE_BIND in that order. Use the
-   compact authoritative snapshot, direct parent closeout and only referenced
-   evidence. Read-only project/terminal discovery does not require a route
-   worktree; WORKTREE_BIND becomes mandatory before a write. Do not load the
+1. SNAPSHOT: for an ordinary route, make one route-scope call and use its
+   separate authority, target and local-write bindings. Use project scope only
+   for cross-route governance or evidence review. Read the compact
+   authoritative snapshot, direct parent closeout and only referenced evidence.
+   The local write binding becomes mandatory before a write. Do not load the
    full Markdown index/history by default. Decide whether the stage is
    authorized, answered or conflicting.
 2. CONTRACT: new routes author one research-program contract and one schema-3
@@ -127,7 +129,8 @@ must not inspect sealed data, relabel evidence or silently change the claim.
 `rules_commit` remains immutable design provenance. Current main owns live
 authorization evidence and one `RULE_COMPATIBILITY.json` machine decision. An
 exact rules bundle passes directly; a changed bundle passes only when current
-main retains the same compatibility id and explicitly names that prior commit.
+main retains the same compatibility id or explicitly names the prior
+compatibility id.
 An incompatible scientific/governance change rotates the id and blocks the old
 contract.
 
@@ -155,10 +158,12 @@ decisive FAIL; `descriptive` cannot affect the terminal.
 
 3. EXECUTE: run one staged route-ready gate, push one commit, seal one plan and
    start once. Plan first completes the built-in control self-check. It compares
-   the process-loaded control commit and validator bundle with the configured
-   control worktree and live main before reading a route contract. A stale
-   process, mismatched bundle/module origin, Git/path failure or main-read
-   failure returns a typed pre-plan state with no token and
+   the process-loaded, configured-worktree and live-main validator bundle
+   contents and module origins, and validates the live rule compatibility
+   profile before reading a route contract. Their commits remain reported as
+   provenance but may differ when main advanced without changing the control
+   bundle. A mismatched bundle/module origin, invalid compatibility profile,
+   Git/path failure or main-read failure returns a typed pre-plan state with no token and
    `plan_attempt_consumed=false`; only `PLAN_SEALED` is the single plan attempt.
    For an automatically authorized same-contract engineering repair, the
    already-classified and pushed candidate is supplied to the failed receipt in

@@ -11,7 +11,7 @@ shell recipes as operating instructions.
 | Need | Only default | Do not use |
 | --- | --- | --- |
 | Windows to WSL file, Git, or fixed program | wsl.exe -d Ubuntu-22.04 --exec followed by an absolute Linux program and literal argv | Windows Git on a WSL UNC path; bash -lc; nested quoting |
-| Project/route snapshot | convir_git_status scope=project, then scope=route when needed | making route-worktree cleanliness a prerequisite for reading GitHub-main progress |
+| Project/route snapshot | one convir_git_status scope=route for an ordinary route; scope=project only for cross-route governance/evidence review | a routine project-scope call before route scope; making route-worktree cleanliness a prerequisite for reading GitHub-main progress |
 | Task/worktree write binding | convirctl.py task-context --repo <repo> --cwd <cwd> plus the route-scope local_write_binding | relying on the PowerShell or editor cwd |
 | Repository read | convirctl.py repo-show, repo-list, or repo-search | cross-shell grep, sed, head, regex, or git-show pipelines |
 | Standard plan/start/finish/progress/cancel/evidence | the six bounded convir-ops tools under stable protocol schema 4 | generic SSH, manual PID signals, dispatcher, watcher, or per-poll task |

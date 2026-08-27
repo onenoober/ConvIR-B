@@ -960,12 +960,20 @@ def control_self_check():
         "main_validator_bundle_sha256": None,
         "engineering_timeout_policy": ENGINEERING_TIMEOUT_POLICY,
         "module_origin_manifest_sha256": MODULE_ORIGIN_MANIFEST_SHA256,
+        "main_rule_compatibility_id": None,
     }
     expected = {
-        "control_commits_equal": True,
         "validator_bundles_equal": True,
         "module_origins_match_configured_worktree": True,
+        "rule_compatibility_profile_valid": True,
     }
+    if not isinstance(LOADED_CONTROL_COMMIT, str) \
+            or not SHA40.fullmatch(LOADED_CONTROL_COMMIT):
+        raise ControlPlaneError(
+            "CONTROL_SELF_CHECK_FAILED",
+            "loaded control provenance is unavailable",
+            observed=observed, expected=expected,
+        )
     try:
         observed["live_main_commit"] = github_refs(["refs/heads/main"])[
             "refs/heads/main"
@@ -992,28 +1000,23 @@ def control_self_check():
             observed=observed, expected=expected, failure_class=failure_class,
         ) from exc
 
-    commits = {
-        observed["loaded_control_commit"],
-        observed["configured_worktree_head"],
-        observed["live_main_commit"],
-    }
-    if None in commits or len(commits) != 1:
-        raise ControlPlaneError(
-            "CONTROL_PLANE_STALE",
-            "loaded control commit, configured worktree HEAD, and live main differ",
-            observed=observed, expected=expected,
-        )
-
     try:
         observed["main_validator_bundle_sha256"] = control_validator_bundle_digest(
             str(CONTROL_SOURCE_ROOT), observed["live_main_commit"],
         )
+        observed["main_rule_compatibility_id"] = rule_compatibility_profile(
+            str(CONTROL_SOURCE_ROOT), observed["live_main_commit"],
+        )["compatibility_id"]
     except ToolError as exc:
+        failure_class = (
+            exc.failure_class
+            if exc.failure_class == "command_infra" else "control_plane"
+        )
         raise ControlPlaneError(
             "CONTROL_SELF_CHECK_FAILED",
-            f"live-main validator bundle could not be read: {exc}",
+            f"live-main control identity could not be read: {exc}",
             observed=observed, expected=expected,
-            failure_class=exc.failure_class,
+            failure_class=failure_class,
         ) from exc
 
     bundle_identities = {

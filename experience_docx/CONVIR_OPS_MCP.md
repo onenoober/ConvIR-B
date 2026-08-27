@@ -15,9 +15,11 @@ server source SHA-256, loaded control commit, complete validator-bundle SHA-256
 and module-origin-manifest SHA-256, so dependency or process drift is visible
 directly.
 
-Compatibility is gated by protocol schema, required tool/features, source SHA,
-loaded control commit, validator-bundle digest and module origins. Server semver
-is diagnostic and is never, by itself, a route authorization or rejection.
+Compatibility is gated by protocol schema, required tool/features,
+validator-bundle digest, module origins and a valid rule compatibility profile.
+Server semver, source SHA and loaded control commit remain diagnostic provenance;
+none is, by itself, a route authorization or rejection. An unrelated main
+commit does not require a restart when all gated content identities still match.
 Reviewed workload-only repair adds no tool and does not change protocol schema
 4. A source receipt is eligible only
 when its engineering contract PASS is still hash-verifiable and its terminal is
@@ -54,14 +56,14 @@ tool. It is an idempotent read of the validated control closeout, preserves
 repair authority, keeps evidence locked and adds no archive or caller workflow
 step.
 
-Version 5.10.0 adds an internal pre-plan control self-check without adding a
-tool or caller step. Before route-contract parsing it compares the loaded
-control commit, configured worktree HEAD and live main; the loaded, configured
-and live-main validator bundle; module origins; and the engineering timeout
-policy. The bundle is the canonical nine-file runtime closure plus
+Version 5.10.0 added an internal pre-plan control self-check without adding a
+tool or caller step. Current behavior reports the loaded control commit,
+configured worktree HEAD and live main as provenance, while gating on the
+loaded, configured and live-main validator bundle contents, module origins and
+the valid live-main rule compatibility profile. The bundle is the canonical nine-file runtime closure plus
 `convir_ops_mcp.py`, `validate_route_ready.py` and
-`validate_engineering_repair.py`. A stale commit, bundle
-mismatch or unavailable identity read returns a dedicated pre-plan state,
+`validate_engineering_repair.py`. A bundle mismatch or unavailable/invalid
+identity read returns a dedicated pre-plan state,
 creates no token and records `plan_attempt_consumed=false`. Only
 `PLAN_SEALED` consumes the route's single plan attempt.
 
@@ -423,13 +425,14 @@ Receipt-bound reviewed workload reuse is separate from this registry lookup. It
 reuses only the exact PASS evidence named by one failed receipt, does not add a
 registry record, and cannot be used by an unrelated route or capability identity.
 
-Every nonempty scientific schema-3 workload must finish with exact
-`total_units` coverage in the generic completion ledger. `complete_units`
-remains a fresh-output transition and additionally requires a hash-bound
+Only a workload declaring `resume_policy=complete_units` must finish with exact
+`total_units` coverage in the generic completion ledger. It remains a
+fresh-output transition and requires a hash-bound
 unrestricted run-only `completed_unit_ledger` file asset. The generic API and
 lifecycle verify unique unit/input/output bindings and each referenced output
 SHA-256, fsync newly completed rows and require exact `total_units` coverage.
-A count without that ledger and output evidence is not reusable.
+A count without that ledger and output evidence is not reusable. A
+non-resumable workload does not author or validate the ledger.
 
 The schema-2 terminal index stores SHA-256 bindings for the contract, closeout,
 conclusion, formal results and compact launch-contract bundle, plus the direct
@@ -442,8 +445,8 @@ multi-operation chains remain readable.
 
 Register one `convir_ops` server pointing at one clean dedicated worktree
 tracking GitHub main. Never register a historical route or feature worktree.
-After an update, fast-forward that dedicated worktree to verified GitHub main,
-restart the host and verify protocol schema, required features, source SHA-256,
+After a control-bundle update, fast-forward that dedicated worktree to verified
+GitHub main, restart the host and verify protocol schema, required features, source SHA-256,
 loaded control commit, validator-bundle SHA-256, module-origin-manifest SHA-256, exactly six tools,
 schema 4/5/6 parsing, and the
 startup/progress/cancel/diagnose/repair/reviewed-repair/discard states.
@@ -452,9 +455,11 @@ SHA-256 must appear in ordinary structured responses after restart, not only in
 MCP initialization metadata.
 
 The stdio server is a long-lived process and never hot-updates from Git. A
-running task may continue on its already loaded source. Normal host restart or a
-new task loads the updated main worktree; bounded acceptance uses a fresh
-process and must not terminate another active task merely to force activation.
+running task may continue on its already loaded source. An unrelated main commit
+may advance without a restart when the self-check proves identical gated
+contents. A control-bundle change requires a normal host restart or new task;
+bounded acceptance uses a fresh process and must not terminate another active
+task merely to force activation.
 
 Only an engineering receipt carrying `v43_migrated_at` may change its automatic
 legacy `archive` resolution to an explicit user-selected `repair`. A normal

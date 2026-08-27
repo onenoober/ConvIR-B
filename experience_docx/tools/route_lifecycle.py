@@ -680,6 +680,10 @@ def typed_scientific_contract(value: Any) -> bool:
     return isinstance(value, dict) and value.get("schema_version") in {2, 3}
 
 
+def requires_completed_unit_ledger(spec: dict[str, Any]) -> bool:
+    return spec["resume_policy"] == "complete_units" and spec["total_units"] > 0
+
+
 def validate_run_result(
     path: Path, spec: dict[str, Any], operation: dict[str, Any],
     scientific: dict[str, Any] | None = None,
@@ -1381,8 +1385,7 @@ def lifecycle() -> int:
     result = validate_run_result(
         Path(run_context["result_path"]), spec, operation, scientific,
     )
-    if typed_scientific_contract(scientific) \
-            and spec["total_units"] > 0:
+    if requires_completed_unit_ledger(spec):
         ledger = load_completed_unit_ledger(load_context(run_context_path, "run"))
         if len(ledger) != spec["total_units"]:
             raise LifecycleError(
@@ -1495,7 +1498,7 @@ def finalize_existing(source_commit: str) -> int:
         raise LifecycleError("run context source identity mismatch", phase="finalize")
     result_path = Path(run_context.result_path)
     result = validate_run_result(result_path, spec, operation, scientific)
-    if scientific is not None and spec["total_units"] > 0:
+    if requires_completed_unit_ledger(spec):
         ledger = load_completed_unit_ledger(run_context)
         if len(ledger) != spec["total_units"]:
             raise LifecycleError(
@@ -1539,7 +1542,7 @@ def finalize_existing(source_commit: str) -> int:
         raw_manifest.unlink()
     # Revalidate the frozen result and every ledger-bound output after the adapter.
     result = validate_run_result(result_path, spec, operation, scientific)
-    if scientific is not None and spec["total_units"] > 0:
+    if requires_completed_unit_ledger(spec):
         ledger = load_completed_unit_ledger(run_context)
         if len(ledger) != spec["total_units"]:
             raise LifecycleError(

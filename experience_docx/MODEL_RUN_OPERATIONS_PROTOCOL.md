@@ -42,11 +42,13 @@ dynamic checks once after push. Do not insert another route-specific checklist,
 shell preflight, validator, or path wrapper between them.
 
 Before plan reads the route manifest or any scientific contract, its built-in
-control self-check compares `loaded_control_commit`,
-`configured_worktree_head`, `live_main_commit`, the loaded/configured/main
-validator bundle SHA-256 values, the module-origin manifest and the engineering
-timeout policy. A mismatch is `CONTROL_PLANE_STALE` or
-`VALIDATOR_BUNDLE_MISMATCH`; an unavailable identity read is
+control self-check reports `loaded_control_commit`,
+`configured_worktree_head` and `live_main_commit`, compares the
+loaded/configured/main validator bundle SHA-256 values and module-origin
+manifest, and validates the live rule compatibility profile. Commit differences
+alone are provenance and do not block when the control contents are identical.
+A content or origin mismatch is `VALIDATOR_BUNDLE_MISMATCH`; an unavailable or
+invalid identity read is
 `CONTROL_SELF_CHECK_FAILED`. These states create no plan token and consume no
 plan attempt. Only `PLAN_SEALED` is counted. They are never evidence that the
 experiment contract is invalid.
@@ -68,9 +70,10 @@ New scientific schema-3 entrypoints publish typed gate outcomes only. The
 lifecycle loads the canonical contract, resolves its complete decision table,
 and alone chooses the state, decision, authorization, next action and family
 effect. Historical scientific schema-1 terminal writers remain supported.
-Every nonempty schema-3 workload records unique completed-unit input/output
-identities, and the lifecycle refuses terminal derivation until the ledger
-covers exactly `total_units`.
+Only a workload declaring `resume_policy=complete_units` records unique
+completed-unit input/output identities, and the lifecycle refuses terminal
+derivation until the ledger covers exactly `total_units`. A non-resumable
+workload does not author or validate that ledger.
 
 The contract phase validates route-specific input/no-op/shape/finite and
 output/finalizer behavior and cannot create `workload/`. Runtime schema 2

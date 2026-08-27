@@ -54,11 +54,13 @@ printf 'CONTROL_PLANE_SLIMMING_V1_STAGE=compile\n'
 "$python" -m py_compile \
   "$tools/convir_ops_mcp.py" \
   "$tools/experiment_spec_compiler.py" \
+  "$tools/route_lifecycle.py" \
   "$tools/scientific_contract.py" \
   "$tools/validate_route_ready.py" \
   "$tests/test_convir_ops_mcp.py" \
   "$tests/test_convir_ops_v5_final_slim.py" \
   "$tests/test_experiment_spec_compiler.py" \
+  "$tests/test_route_lifecycle.py" \
   "$tests/test_scientific_contract.py" \
   "$tests/test_validate_route_ready.py"
 
@@ -93,7 +95,7 @@ if [[ $rc -ne 0 ]]; then
 fi
 test_count=$(/usr/bin/sed -nE 's/^Ran ([0-9]+) tests?.*/\1/p' "$stderr" | /usr/bin/tail -n 1)
 [[ "$test_count" =~ ^[0-9]+$ ]]
-test "$test_count" -ge 400
+test "$test_count" -ge 455
 
 printf 'CONTROL_PLANE_SLIMMING_V1_STAGE=machine_contract\n'
 "$python" - "$work/repo" <<'PY'
@@ -102,9 +104,11 @@ import json
 import re
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import convir_ops_mcp as ops
 import experiment_spec_compiler as compiler
+import route_lifecycle as lifecycle
 import validate_route_ready as ready
 from test_experiment_spec_compiler import sources_v3
 
@@ -164,6 +168,58 @@ assert not ready.requires_completed_unit_ledger(
 assert ready.requires_completed_unit_ledger(
     contract, {"resume_policy": "complete_units", "total_units": 10},
 )
+assert not lifecycle.requires_completed_unit_ledger({
+    "resume_policy": "none", "total_units": 10,
+})
+assert lifecycle.requires_completed_unit_ledger({
+    "resume_policy": "complete_units", "total_units": 10,
+})
+
+loaded_commit = "a" * 40
+live_main_commit = "b" * 40
+bundle_sha256 = "c" * 64
+compatibility_profile = {
+    "schema_version": 2,
+    "compatibility_id": "science-fastpath-contract-v5",
+    "compatible_prior_ids": ["science-fastpath-contract-v4"],
+}
+
+
+def run_control_check(main_bundle_sha256):
+    with (
+        patch.object(ops, "LOADED_CONTROL_COMMIT", loaded_commit),
+        patch.object(ops, "LOADED_VALIDATOR_BUNDLE_SHA256", bundle_sha256),
+        patch.object(
+            ops, "github_refs", return_value={"refs/heads/main": live_main_commit},
+        ),
+        patch.object(ops, "run_local", return_value=loaded_commit),
+        patch.object(
+            ops, "_bundle_digest_from_files", return_value=bundle_sha256,
+        ),
+        patch.object(
+            ops, "control_validator_bundle_digest",
+            return_value=main_bundle_sha256,
+        ),
+        patch.object(
+            ops, "rule_compatibility_profile", return_value=compatibility_profile,
+        ),
+        patch.object(ops, "LOADED_MODULE_ORIGIN_MANIFEST", [
+            {"module": "convir_ops_mcp", "origin_matches": True},
+        ]),
+    ):
+        return ops.control_self_check()
+
+
+control_identity = run_control_check(bundle_sha256)
+assert control_identity["loaded_control_commit"] == loaded_commit
+assert control_identity["live_main_commit"] == live_main_commit
+
+try:
+    run_control_check("d" * 64)
+except ops.ControlPlaneError as exc:
+    assert exc.operation_state == "VALIDATOR_BUNDLE_MISMATCH"
+else:
+    raise AssertionError("changed validator bundle was accepted")
 
 governance_paths = [
     "AGENTS.md",
@@ -185,6 +241,9 @@ print(json.dumps({
     "compatibility_schema": compatibility["schema_version"],
     "semver_governance_gate": False,
     "project_completeness_route_prerequisite": False,
+    "non_resumable_ledger_required": False,
+    "unrelated_main_commit_blocks": False,
+    "changed_validator_bundle_blocks": True,
     "gpu_access": 0,
     "dataset_access": 0,
     "protected_data_access": 0,

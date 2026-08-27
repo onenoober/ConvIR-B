@@ -274,6 +274,11 @@ class ConvirOpsV4Tests(unittest.TestCase):
             patch.object(OPS, "run_local", return_value=commit),
             patch.object(OPS, "_bundle_digest_from_files", return_value=bundle),
             patch.object(OPS, "control_validator_bundle_digest", return_value=bundle),
+            patch.object(OPS, "rule_compatibility_profile", return_value={
+                "schema_version": 2,
+                "compatibility_id": "science-fastpath-contract-v5",
+                "compatible_prior_ids": [],
+            }),
             patch.object(OPS, "LOADED_MODULE_ORIGIN_MANIFEST", [
                 {"module": "convir_ops_mcp", "origin_matches": True},
             ]),
@@ -285,12 +290,77 @@ class ConvirOpsV4Tests(unittest.TestCase):
         self.assertEqual(bundle, result["loaded_validator_bundle_sha256"])
         self.assertEqual(bundle, result["configured_validator_bundle_sha256"])
         self.assertEqual(bundle, result["main_validator_bundle_sha256"])
+        self.assertEqual(
+            "science-fastpath-contract-v5",
+            result["main_rule_compatibility_id"],
+        )
         self.assertEqual(OPS.ENGINEERING_TIMEOUT_POLICY, result["engineering_timeout_policy"])
         self.assertEqual(
             OPS.MODULE_ORIGIN_MANIFEST_SHA256,
             result["module_origin_manifest_sha256"],
         )
         self.assertTrue(result["module_origins_match"])
+
+    def test_control_self_check_allows_unrelated_main_commit_advance(self):
+        loaded_commit = "a" * 40
+        live_main_commit = "b" * 40
+        bundle = "c" * 64
+        with (
+            patch.object(OPS, "LOADED_CONTROL_COMMIT", loaded_commit),
+            patch.object(OPS, "LOADED_VALIDATOR_BUNDLE_SHA256", bundle),
+            patch.object(
+                OPS, "github_refs",
+                return_value={"refs/heads/main": live_main_commit},
+            ),
+            patch.object(OPS, "run_local", return_value=loaded_commit),
+            patch.object(OPS, "_bundle_digest_from_files", return_value=bundle),
+            patch.object(OPS, "control_validator_bundle_digest", return_value=bundle),
+            patch.object(OPS, "rule_compatibility_profile", return_value={
+                "schema_version": 2,
+                "compatibility_id": "science-fastpath-contract-v5",
+                "compatible_prior_ids": [],
+            }),
+            patch.object(OPS, "LOADED_MODULE_ORIGIN_MANIFEST", [
+                {"module": "convir_ops_mcp", "origin_matches": True},
+            ]),
+        ):
+            result = OPS.control_self_check()
+        self.assertEqual(loaded_commit, result["loaded_control_commit"])
+        self.assertEqual(live_main_commit, result["live_main_commit"])
+        self.assertEqual(bundle, result["main_validator_bundle_sha256"])
+
+    def test_control_self_check_rejects_changed_live_main_bundle(self):
+        loaded_commit = "a" * 40
+        live_main_commit = "b" * 40
+        loaded_bundle = "c" * 64
+        with (
+            patch.object(OPS, "LOADED_CONTROL_COMMIT", loaded_commit),
+            patch.object(OPS, "LOADED_VALIDATOR_BUNDLE_SHA256", loaded_bundle),
+            patch.object(
+                OPS, "github_refs",
+                return_value={"refs/heads/main": live_main_commit},
+            ),
+            patch.object(OPS, "run_local", return_value=loaded_commit),
+            patch.object(
+                OPS, "_bundle_digest_from_files", return_value=loaded_bundle,
+            ),
+            patch.object(
+                OPS, "control_validator_bundle_digest", return_value="d" * 64,
+            ),
+            patch.object(OPS, "rule_compatibility_profile", return_value={
+                "schema_version": 2,
+                "compatibility_id": "science-fastpath-contract-v5",
+                "compatible_prior_ids": [],
+            }),
+            patch.object(OPS, "LOADED_MODULE_ORIGIN_MANIFEST", [
+                {"module": "convir_ops_mcp", "origin_matches": True},
+            ]),
+        ):
+            with self.assertRaises(OPS.ControlPlaneError) as raised:
+                OPS.control_self_check()
+        self.assertEqual(
+            "VALIDATOR_BUNDLE_MISMATCH", raised.exception.operation_state,
+        )
 
     def test_successful_plan_seal_is_the_only_consumed_plan_attempt(self):
         control_identity = {

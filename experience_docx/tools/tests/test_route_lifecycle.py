@@ -162,6 +162,102 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue(LIFE.typed_scientific_contract({"schema_version": 2}))
         self.assertFalse(LIFE.typed_scientific_contract({"schema_version": 1}))
 
+    def test_completed_unit_ledger_is_required_only_for_resumable_runs(self):
+        _, runtime = self.normalized()
+        runtime["total_units"] = 3
+        runtime["resume_policy"] = "none"
+        self.assertFalse(LIFE.requires_completed_unit_ledger(runtime))
+        runtime["resume_policy"] = "complete_units"
+        self.assertTrue(LIFE.requires_completed_unit_ledger(runtime))
+        runtime["total_units"] = 0
+        self.assertFalse(LIFE.requires_completed_unit_ledger(runtime))
+
+    def test_non_resumable_typed_lifecycle_does_not_read_ledger(self):
+        manifest_value, runtime = self.normalized()
+        operation = manifest_value["operations"]["S0"]
+        manifest_value["scientific_contract_relpaths"] = {"S0": "science.json"}
+        runtime["resume_policy"] = "none"
+        runtime["total_units"] = 3
+        route_commit = "a" * 40
+        main_commit = "b" * 40
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = root / "repo"
+            run_root = root / "runs/route"
+            output = run_root / "route-r1"
+            runner = repo / LIFE.GENERIC_RUNNER_RELPATH
+            entrypoint = repo / runtime["entrypoint_relpath"]
+            runner.parent.mkdir(parents=True)
+            runner.write_text("runner\n", encoding="utf-8")
+            entrypoint.parent.mkdir(parents=True, exist_ok=True)
+            entrypoint.write_text("entrypoint\n", encoding="utf-8")
+            env = {
+                "EXPECTED_ROUTE_COMMIT": route_commit,
+                "AUTHORITATIVE_MAIN_COMMIT": main_commit,
+                "RUN_ID": "route-r1",
+                "RUNNER_SHA256": LIFE.sha256(runner),
+                "REMOTE_REPO": str(repo),
+                "RUN_ROOT": str(run_root),
+                "GPU": "",
+            }
+
+            def fake_git(_repo, *args):
+                values = {
+                    ("rev-parse", "HEAD"): route_commit,
+                    ("rev-parse", "refs/convir-runtime/main"): main_commit,
+                    ("status", "--porcelain"): "",
+                }
+                return values[args]
+
+            with (
+                patch.object(LIFE, "require_environment", return_value=env),
+                patch.object(
+                    LIFE, "validate_lifecycle_paths",
+                    return_value=(repo, run_root, output),
+                ),
+                patch.object(LIFE, "load_json", side_effect=[
+                    manifest_value, {}, {},
+                ]),
+                patch.object(
+                    LIFE, "infer_operation", return_value=("S0", operation),
+                ),
+                patch.object(
+                    LIFE, "validate_runtime_spec", return_value=runtime,
+                ),
+                patch.object(
+                    LIFE, "validate_lifecycle_scientific_contract",
+                    return_value={"schema_version": 2},
+                ),
+                patch.object(LIFE, "git", side_effect=fake_git),
+                patch.object(LIFE, "verify_assets", return_value=[]),
+                patch.object(
+                    LIFE, "validate_receipt_contract_reuse", return_value=None,
+                ),
+                patch.object(LIFE, "start_sidecar"),
+                patch.object(LIFE, "telemetry"),
+                patch.object(LIFE, "run_program", return_value=0),
+                patch.object(
+                    LIFE, "validate_contract_result", return_value={"ok": True},
+                ),
+                patch.object(
+                    LIFE, "validate_run_result",
+                    return_value={
+                        "state": "COMPLETED_GATE_PASS",
+                        "decision": "PASS",
+                        "authorizes": "NEXT",
+                    },
+                ),
+                patch.object(LIFE, "load_completed_unit_ledger") as ledger,
+                patch.object(LIFE, "copy_evidence", return_value={}),
+                patch.object(
+                    LIFE, "publish_raw_artifact_receipt",
+                    return_value=("raw_artifact_receipt.json", "c" * 64),
+                ),
+                patch.object(LIFE, "write_closeout"),
+            ):
+                self.assertEqual(0, LIFE.lifecycle())
+            ledger.assert_not_called()
+
     def test_evidence_copy_rejects_existing_destination(self):
         _, runtime = self.normalized()
         with tempfile.TemporaryDirectory() as directory:

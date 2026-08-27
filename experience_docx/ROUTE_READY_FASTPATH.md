@@ -129,9 +129,11 @@ verified on cloud before reuse, and reuse always reports scientific
 authorization `NONE`.
 
 From Windows, use fixed WSL argv such as `wsl.exe --exec /usr/bin/git -C
-<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. First call
-`convir_git_status scope=project` to bind live GitHub main, then use route scope
-to select the authoritative terminal or new route target. The returned
+<absolute-wsl-path> ...`; do not use nested `bash -lc` quoting. An ordinary
+route task calls `convir_git_status scope=route` once to bind live GitHub main,
+select the authoritative terminal or new route target and report the separate
+local write binding. Use project scope only for cross-route governance or
+evidence review. The returned
 `authoritative_read_binding` is independent of `local_write_binding`: a dirty
 or mismatched checkout can block authoring but cannot hide a valid main
 terminal. Require the local write binding before editing or route-ready. Use
