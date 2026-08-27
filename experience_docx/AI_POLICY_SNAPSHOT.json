@@ -75,8 +75,8 @@
     "orthogonal",
     "reopen"
   ],
-  "rules_bundle_sha256": "8ccf2457e969e0a0b9b240d0bcc4dc2dd7762ade11a1d992566b9cef0ac2b2c7",
-  "rules_commit": "8a94c98b1bc0df44c81385f67cd857de2418402a",
+  "rules_bundle_sha256": "7625094ed656ed8e43158657c5488651e296d58c1641b41394a762ae97e726a6",
+  "rules_commit": "c43ab7414f398c522bb3c48191190f83a359fd60",
   "schema_version": 1,
   "snapshot_role": "deterministic_read_index_not_policy_authority",
   "source_of_truth_order": [
@@ -144,8 +144,8 @@
       "sha256": "2551f69ba3974f3b47dd1e26b896f5a75685ff8a212800afc83a2518b889821d"
     },
     "experience_docx/CONVIR_OPS_MCP.md": {
-      "bytes": 30893,
-      "sha256": "eacbaf94a70da8a38811db2ea523250cdfbd4fbae02864366d32e5589ec1b287"
+      "bytes": 30963,
+      "sha256": "d4b796e55abf89b7f879f45eef5ec7e4881693c858b281500dad01b34854df3e"
     },
     "experience_docx/EXPERIMENT_GOVERNANCE_PROTOCOL.md": {
       "bytes": 13752,
@@ -156,8 +156,8 @@
       "sha256": "76c77e310458e912de1f91b086fbd8347091c9ecc53e281ce6daf0e8f5b29d4b"
     },
     "experience_docx/ROUTE_READY_FASTPATH.md": {
-      "bytes": 18868,
-      "sha256": "36eac71e1d05430e361ba4d1a5b0f603f1189f0f390c614a24d958541fb9263d"
+      "bytes": 18928,
+      "sha256": "349cb5127edb7635abaebd53579ce70afb1ba1acfdd179a53623f356f8274f8f"
     },
     "experience_docx/RULE_COMPATIBILITY.json": {
       "bytes": 148,
