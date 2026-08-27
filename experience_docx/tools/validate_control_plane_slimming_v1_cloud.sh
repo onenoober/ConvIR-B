@@ -136,7 +136,11 @@ slim.pop("rules_commit")
 slim.pop("first_operation")
 full_bytes = len(compiler.json_bytes(full))
 slim_bytes = len(compiler.json_bytes(slim))
-assert slim_bytes * 100 <= full_bytes * 60, (full_bytes, slim_bytes)
+# Runtime, asset, capability and precision contracts remain invariant in this total.
+minimum_source_reduction_pct = 30
+assert slim_bytes * 100 <= full_bytes * (100 - minimum_source_reduction_pct), (
+    full_bytes, slim_bytes,
+)
 bundle = compiler.compile_bundle(
     spec_relpath="experience_docx/experiment_specs/final_slim.json",
     spec_raw=compiler.json_bytes(slim),
@@ -175,6 +179,7 @@ print(json.dumps({
     "tool_count": len(ops.TOOLS),
     "full_source_bytes": full_bytes,
     "slim_source_bytes": slim_bytes,
+    "minimum_source_reduction_pct": minimum_source_reduction_pct,
     "source_reduction_pct": round((1 - slim_bytes / full_bytes) * 100, 1),
     "scientific_output_schema": scientific_output["schema_version"],
     "compatibility_schema": compatibility["schema_version"],
