@@ -115,6 +115,12 @@ class ExperimentAssistantContractTests(unittest.TestCase):
         self.assertEqual(1, len(assessment["blockers"]))
         self.assertIn("declared_precision_gate", assessment["blockers"][0])
 
+    def test_lifecycle_owned_environment_cannot_override_snapshot_or_output_identity(self):
+        value = contract()
+        value["entrypoint"]["environment"] = {"PYTHONPATH": "/tmp/unbound-source"}
+        with self.assertRaisesRegex(ASSISTANT.ContractError, "lifecycle-owned"):
+            ASSISTANT.validate_contract(value)
+
     def test_protected_data_defaults_to_deny_and_explicit_contract_allows(self):
         value = contract()
         value["datasets"].append({"id": "sealed_test", "role": "locked_test"})

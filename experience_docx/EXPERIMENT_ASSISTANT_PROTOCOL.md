@@ -1,8 +1,9 @@
 # Experiment Assistant Protocol
 
-Status: phase-1 adoption candidate. It is not the active runtime protocol until
-the cloud backend, automatic archive and read migration pass their acceptance
-gates. Historical route protocols remain read-only during that migration.
+Status: phase-2 implementation candidate. It is not the active runtime protocol
+until cloud lifecycle acceptance, GitHub archive transport, protected-data
+acceptance and read migration pass their separate gates. Historical route
+protocols remain read-only during that migration.
 
 ## Purpose
 
@@ -104,9 +105,29 @@ The target public surface contains six intent-level tools:
 comparison. Receipts, plan tokens, catalog hashes, snapshot commits, terminal
 record hashes, inventory hashes and pagination identities remain internal.
 
+`experiment_repair` may accept a revised short contract for a code, dependency,
+path or training-budget correction. The backend compares its scientific kernel
+with the prior contract and refuses an in-place repair if objective, data
+identity/role, primary metric, threshold or declared precision changed.
+
 Plan sealing, process identity checks, cancellation safety, snapshot creation,
 archive conflict handling and cloud inventory validation remain implemented, but
 they are not separate operator workflow stages.
+
+## Phase-2 Boundary
+
+The phase-2 candidate implements deterministic source snapshots, persistent
+attempt state, exact-process cancellation, bounded repair history, automatic
+cloud canonical records and the six-tool stdio surface. Its runtime gate is
+disabled unless the cloud candidate environment explicitly enables it.
+
+This phase deliberately does not register or replace `convir-ops`, write GitHub
+archives, access datasets or GPUs, or enable protected-data delivery. A contract
+requesting protected data therefore remains blocked even when it contains an
+explicit permission, because this backend does not yet provide the required
+delivery capability. Complete result states are labeled
+`CLOUD_RECORDED_GITHUB_PENDING`; this is not a claim that GitHub archive has
+already occurred.
 
 ## Migration
 

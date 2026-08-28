@@ -19,6 +19,10 @@ SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 ENV_KEY = re.compile(r"^[A-Z_][A-Z0-9_]{0,95}$")
+RESERVED_ENV_KEYS = {
+    "CONVIR_EXPERIMENT_CONTRACT", "CONVIR_EXPERIMENT_OUTPUT", "LD_PRELOAD",
+    "PYTHONHOME", "PYTHONPATH",
+}
 
 DATA_ROLES = {
     "training", "validation", "test", "confirmation", "canary", "locked_test",
@@ -126,6 +130,8 @@ def _normalize_entrypoint(value: Any, warnings: list[str]) -> dict[str, Any]:
     for key, raw in sorted(environment.items()):
         if not isinstance(key, str) or not ENV_KEY.fullmatch(key):
             raise ContractError("entrypoint.environment contains an invalid key")
+        if key in RESERVED_ENV_KEYS or key.startswith("CONVIR_EXPERIMENT_ASSISTANT_"):
+            raise ContractError(f"entrypoint.environment.{key} is lifecycle-owned")
         if not isinstance(raw, str) or len(raw) > 4096:
             raise ContractError(f"entrypoint.environment.{key} must be bounded text")
         normalized_environment[key] = raw
@@ -528,7 +534,10 @@ PUBLIC_TOOL_SCHEMAS = {
     },
     "experiment_repair": {
         "required": ["experiment_id"],
-        "properties": {"experiment_id": "string", "operator_confirmed": "boolean"},
+        "properties": {
+            "experiment_id": "string", "contract": "object",
+            "operator_confirmed": "boolean",
+        },
     },
     "experiment_get": {
         "required": ["experiment_id"],
