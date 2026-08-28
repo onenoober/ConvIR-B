@@ -1,9 +1,9 @@
 # Experiment Assistant Protocol
 
-Status: phase-2 implementation candidate. It is not the active runtime protocol
-until cloud lifecycle acceptance, GitHub archive transport, protected-data
-acceptance and read migration pass their separate gates. Historical route
-protocols remain read-only during that migration.
+Status: phase-3 implementation candidate. It is not the active runtime protocol
+until GitHub archive/read and protected-data cloud acceptance pass, followed by
+a separate registration and default-workflow adoption decision. Historical
+route protocols remain read-only during that migration.
 
 ## Purpose
 
@@ -128,6 +128,29 @@ explicit permission, because this backend does not yet provide the required
 delivery capability. Complete result states are labeled
 `CLOUD_RECORDED_GITHUB_PENDING`; this is not a claim that GitHub archive has
 already occurred.
+
+## Phase-3 Boundary
+
+The phase-3 candidate adds one fixed environment-owned dataset registry and one
+fixed GitHub archive remote. Contracts still name dataset ids and roles only;
+the backend resolves paths and identity SHA-256 values, blocks missing or
+conflicting entries, and exposes a protected path only when the same contract
+explicitly names its protected role. A changed registry or dataset identity
+cannot be repaired in place.
+
+Each complete PASS, FAIL or INCONCLUSIVE result writes exactly one canonical
+JSON file below `experience_docx/experiment_records/` and deterministically
+rebuilds `experience_docx/EXPERIMENT_RECORD_INDEX.jsonl`. The archive uses a
+fresh main clone, refuses an existing different experiment id, retries one
+concurrent push from a new clone, and is idempotent for identical content.
+`experiment_get`, `experiment_search` and comparison read completed records from
+that GitHub index; cloud remains the source for active, cancelled, unknown and
+unarchived engineering attempts.
+
+Phase-3 acceptance uses only a temporary bare Git remote and synthetic dataset
+directories on `convir-4090`. It does not write the project GitHub main, access
+real datasets or protected data, register the candidate MCP, or replace the
+current workflow.
 
 ## Migration
 

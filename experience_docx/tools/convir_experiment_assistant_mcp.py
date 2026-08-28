@@ -5,16 +5,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
 
 from experiment_assistant_contract import PUBLIC_TOOL_NAMES
-from experiment_assistant_runner import AVAILABLE_CAPABILITIES, BackendError, ExperimentBackend
+from experiment_assistant_runner import BASE_CAPABILITIES, BackendError, ExperimentBackend
 
 
 SERVER_NAME = "convir-experiment-assistant"
-SERVER_VERSION = "0.2.0-candidate"
+SERVER_VERSION = "0.3.0-candidate"
 PROTOCOL_SCHEMA_VERSION = 1
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_RESPONSE_BYTES = 64 * 1024
@@ -110,18 +111,28 @@ def _source_sha256() -> str:
 
 
 def _diagnostics() -> dict[str, Any]:
+    capabilities = set(BASE_CAPABILITIES)
+    if os.environ.get("CONVIR_EXPERIMENT_DATASET_REGISTRY"):
+        capabilities.update({
+            "dataset_registry_resolution", "explicit_protected_data_access",
+        })
+    if os.environ.get("CONVIR_EXPERIMENT_ARCHIVE_ENABLED") == "1":
+        capabilities.add("automatic_result_archive")
     return {
         "server_name": SERVER_NAME,
         "server_version": SERVER_VERSION,
         "protocol_schema_version": PROTOCOL_SCHEMA_VERSION,
         "server_source_sha256": _source_sha256(),
-        "capabilities": sorted(AVAILABLE_CAPABILITIES),
-        "adoption_state": "PHASE_2_CANDIDATE_NOT_REGISTERED",
+        "capabilities": sorted(capabilities),
+        "adoption_state": "PHASE_3_CANDIDATE_NOT_REGISTERED",
     }
 
 
-def _backend() -> ExperimentBackend:
-    return ExperimentBackend.from_environment()
+def _backend(tool_name: str) -> ExperimentBackend:
+    return ExperimentBackend.from_environment(
+        load_dataset_registry=tool_name in {"experiment_start", "experiment_repair"},
+        load_archive_store=tool_name != "experiment_cancel",
+    )
 
 
 def _require_arguments(value: Any) -> dict[str, Any]:
@@ -134,7 +145,7 @@ def _require_arguments(value: Any) -> dict[str, Any]:
 
 def call_tool(name: str, arguments: Any) -> dict[str, Any]:
     args = _require_arguments(arguments)
-    backend = _backend()
+    backend = _backend(name)
     if name == "experiment_start":
         if set(args) != {"local_repo", "contract"}:
             raise BackendError("experiment_start requires only local_repo and contract")
@@ -201,8 +212,8 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
             "capabilities": {"tools": {}},
             "serverInfo": {"name": SERVER_NAME, "version": SERVER_VERSION},
             "instructions": (
-                "Phase-2 candidate: use six intent-level tools; runtime is cloud-only "
-                "and GitHub archive transport is not yet enabled."
+                "Phase-3 candidate: use six intent-level tools; runtime is cloud-only "
+                "and the candidate is not registered as the project default."
             ),
         }
         return {"jsonrpc": "2.0", "id": request_id, "result": result}

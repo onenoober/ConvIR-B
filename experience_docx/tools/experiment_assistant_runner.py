@@ -30,9 +30,12 @@ from experiment_assistant_contract import (
     authorize_attempt,
     build_archive_record,
     canonical_json_bytes,
+    canonical_sha256,
     classify_contract_revision,
     validate_contract,
 )
+from experiment_assistant_archive import ArchiveError, GitArchiveStore
+from experiment_assistant_datasets import DatasetRegistry, DatasetRegistryError
 from experiment_assistant_snapshot import (
     MANIFEST_NAME,
     MAX_FILE_BYTES,
@@ -50,12 +53,16 @@ MAX_EXPERIMENTS = 10_000
 MAX_SEARCH_LIMIT = 100
 RUNTIME_ENABLE_VALUE = "cloud-candidate"
 
-AVAILABLE_CAPABILITIES = {
-    "automatic_result_archive",
+BASE_CAPABILITIES = {
     "content_addressed_source_snapshot",
     "declared_precision_gate",
     "experiment_record_read",
     "lifecycle",
+}
+AVAILABLE_CAPABILITIES = BASE_CAPABILITIES | {
+    "automatic_result_archive",
+    "dataset_registry_resolution",
+    "explicit_protected_data_access",
 }
 
 
@@ -286,27 +293,68 @@ def _extract_snapshot(archive_path: Path, expected_sha256: str, destination: Pat
 
 
 class ExperimentBackend:
-    def __init__(self, root: Path, *, runtime_enabled: bool = False):
+    def __init__(
+        self,
+        root: Path,
+        *,
+        runtime_enabled: bool = False,
+        dataset_registry: DatasetRegistry | None = None,
+        archive_store: GitArchiveStore | None = None,
+    ):
         root = Path(root)
         if not root.is_absolute():
             raise BackendError("assistant state root must be absolute")
         self.root = root.resolve()
         self.runtime_enabled = runtime_enabled
+        self.dataset_registry = dataset_registry
+        self.archive_store = archive_store
+        self.available_capabilities = set(BASE_CAPABILITIES)
+        if dataset_registry is not None:
+            self.available_capabilities.update({
+                "dataset_registry_resolution", "explicit_protected_data_access",
+            })
+        if archive_store is not None:
+            self.available_capabilities.add("automatic_result_archive")
         _ensure_directory(self.root)
         for name in ("experiments", "records", "snapshots", "tmp"):
             _ensure_directory(self.root / name)
 
     @classmethod
-    def from_environment(cls) -> "ExperimentBackend":
+    def from_environment(
+        cls,
+        *,
+        load_dataset_registry: bool = True,
+        load_archive_store: bool = True,
+    ) -> "ExperimentBackend":
         raw = os.environ.get("CONVIR_EXPERIMENT_ASSISTANT_ROOT")
         if not raw:
             raise BackendError("CONVIR_EXPERIMENT_ASSISTANT_ROOT is required")
+        root = Path(raw)
+        registry_raw = os.environ.get("CONVIR_EXPERIMENT_DATASET_REGISTRY")
+        registry = None
+        if load_dataset_registry and registry_raw:
+            registry = DatasetRegistry(Path(registry_raw))
+        archive_store = None
+        if load_archive_store \
+                and os.environ.get("CONVIR_EXPERIMENT_ARCHIVE_ENABLED") == "1":
+            remote = os.environ.get("CONVIR_EXPERIMENT_ARCHIVE_REMOTE")
+            if not remote:
+                raise BackendError("CONVIR_EXPERIMENT_ARCHIVE_REMOTE is required")
+            archive_store = GitArchiveStore(
+                remote,
+                root / "archive-tmp",
+                allow_test_remote=(
+                    os.environ.get("CONVIR_EXPERIMENT_ASSISTANT_TEST_MODE") == "1"
+                ),
+            )
         return cls(
-            Path(raw),
+            root,
             runtime_enabled=(
                 os.environ.get("CONVIR_EXPERIMENT_ASSISTANT_RUNTIME")
                 == RUNTIME_ENABLE_VALUE
             ),
+            dataset_registry=registry,
+            archive_store=archive_store,
         )
 
     def _require_runtime(self) -> None:
@@ -434,6 +482,7 @@ class ExperimentBackend:
         latest = attempts[-1] if attempts else None
         response: dict[str, Any] = {
             "experiment_id": state["experiment_id"],
+            "record_source": "cloud",
             "state": None if latest is None else latest["state"],
             "attempt_count": len(attempts),
             "automatic_repairs_used": sum(
@@ -442,6 +491,9 @@ class ExperimentBackend:
             "archive": state.get("archive", {"state": "NONE"}),
             "warnings": state.get("warnings", []),
             "updated_at": state.get("updated_at"),
+            "datasets": (state.get("dataset_resolution") or {}).get(
+                "public_bindings", []
+            ),
         }
         if latest is not None:
             response["latest_attempt"] = {
@@ -456,6 +508,65 @@ class ExperimentBackend:
             response["contract_sha256"] = state["validated_contract"]["contract_sha256"]
             response["attempts"] = attempts
         return response
+
+    @staticmethod
+    def _public_archive_record(record: dict[str, Any], *, full: bool) -> dict[str, Any]:
+        attempts = record["attempts"]
+        latest = attempts[-1]
+        response: dict[str, Any] = {
+            "experiment_id": record["experiment_id"],
+            "record_source": "github",
+            "state": record["terminal"]["state"],
+            "attempt_count": len(attempts),
+            "automatic_repairs_used": sum(
+                bool(item.get("automatic_repair")) for item in attempts
+            ),
+            "archive": {
+                "state": "GITHUB_ARCHIVED",
+                "record_sha256": canonical_sha256(record),
+                "record_ref": (
+                    "experience_docx/experiment_records/"
+                    f"{record['experiment_id']}.json"
+                ),
+            },
+            "warnings": [],
+            "updated_at": record["recorded_at"],
+            "datasets": record["datasets"],
+            "latest_attempt": {
+                key: latest.get(key) for key in (
+                    "attempt_number", "state", "started_at", "ended_at",
+                    "error_summary", "result", "source_snapshot", "budget",
+                    "cloud_run_ref", "automatic_repair",
+                )
+            },
+        }
+        if full:
+            response["contract"] = record["contract"]
+            response["contract_sha256"] = record["contract_sha256"]
+            response["attempts"] = attempts
+        return response
+
+    def _completed_record_or_cloud(
+        self,
+        state: dict[str, Any],
+        *,
+        full: bool,
+    ) -> dict[str, Any]:
+        latest = state["attempts"][-1] if state["attempts"] else None
+        if latest and latest["state"] in RESULT_STATES and self.archive_store is not None:
+            try:
+                record = self.archive_store.get(state["experiment_id"])
+            except ArchiveError as exc:
+                response = self._public_state(state, full=full)
+                response["warnings"] = list(response["warnings"])
+                response["warnings"].append(
+                    "GitHub record is temporarily unavailable; showing the complete "
+                    f"cloud record: {str(exc)[:1024]}"
+                )
+                return response
+            if record is not None:
+                return self._public_archive_record(record, full=full)
+        return self._public_state(state, full=full)
 
     def _launch_locked(
         self,
@@ -479,11 +590,26 @@ class ExperimentBackend:
             validated["contract"],
             replace=False,
         )
+        resolution = state.get("dataset_resolution")
+        if not isinstance(resolution, dict):
+            raise BackendError("dataset binding is missing before attempt launch")
+        _atomic_write(
+            attempt_dir / "control" / "datasets.json",
+            {
+                "schema_version": 1,
+                "registry_sha256": resolution["registry_sha256"],
+                "bindings_sha256": resolution["bindings_sha256"],
+                "datasets": resolution["bindings"],
+            },
+            replace=False,
+        )
         attempt = {
-            "schema_version": 1,
+            "schema_version": 2,
             "experiment_id": state["experiment_id"],
             "attempt_number": number,
             "contract_sha256": validated["contract_sha256"],
+            "dataset_registry_sha256": resolution["registry_sha256"],
+            "dataset_binding_sha256": resolution["bindings_sha256"],
             "source_snapshot": snapshot,
             "budget": validated["contract"]["budget"],
             "state": "PREPARED",
@@ -507,6 +633,10 @@ class ExperimentBackend:
             "--root", str(self.root), "--experiment-id", state["experiment_id"],
             "--attempt-number", str(number), "--token", token,
         ]
+        if self.archive_store is not None:
+            command.extend(["--archive-remote", self.archive_store.remote_url])
+            if self.archive_store.allow_test_remote:
+                command.append("--archive-test-remote")
         process = subprocess.Popen(
             command,
             stdin=subprocess.DEVNULL,
@@ -557,9 +687,17 @@ class ExperimentBackend:
             validated = validate_contract(contract)
         except ContractError as exc:
             raise BackendError(str(exc)) from exc
-        assessment = assess_launch(validated, AVAILABLE_CAPABILITIES)
+        assessment = assess_launch(validated, self.available_capabilities)
         if not assessment["ok"]:
             raise BackendError("; ".join(assessment["blockers"]))
+        assert self.dataset_registry is not None
+        try:
+            dataset_resolution = self.dataset_registry.resolve(
+                validated["contract"]["datasets"],
+                validated["contract"]["protected_access"],
+            )
+        except DatasetRegistryError as exc:
+            raise BackendError(str(exc)) from exc
         experiment_id = validated["contract"]["experiment_id"]
         repo = Path(local_repo).resolve()
         with self._locked(experiment_id, create=True) as directory:
@@ -574,17 +712,28 @@ class ExperimentBackend:
                 if latest and latest["state"] == "FAILED_ENGINEERING":
                     raise BackendError("engineering failure must continue through experiment_repair")
                 raise BackendError("experiment_id already exists and cannot be overwritten")
+            assert self.archive_store is not None
+            try:
+                archived = self.archive_store.get(experiment_id)
+            except ArchiveError as exc:
+                raise BackendError(
+                    "cannot verify that experiment_id is unused in GitHub: " + str(exc)
+                ) from exc
+            if archived is not None:
+                raise BackendError(
+                    "GitHub already contains a completed record for this experiment_id; "
+                    "use a new experiment_id"
+                )
             state = {
                 "schema_version": STATE_SCHEMA_VERSION,
                 "experiment_id": experiment_id,
                 "validated_contract": validated,
+                "dataset_resolution": dataset_resolution,
                 "repo_path": str(repo),
                 "attempts": [],
                 "active": None,
                 "archive": {"state": "NONE"},
-                "warnings": assessment["warnings"] + [
-                    "phase-2 archive is a cloud canonical record; GitHub transport is not enabled"
-                ],
+                "warnings": assessment["warnings"],
                 "created_at": utc_now(),
                 "updated_at": utc_now(),
             }
@@ -593,11 +742,22 @@ class ExperimentBackend:
             )
 
     def status(self, experiment_id: str) -> dict[str, Any]:
-        with self._locked(experiment_id) as directory:
-            state = self._load_state(directory)
-            assert state is not None
-            state = self._reconcile_locked(directory, state)
-            return self._public_state(state)
+        try:
+            with self._locked(experiment_id) as directory:
+                state = self._load_state(directory)
+                assert state is not None
+                state = self._reconcile_locked(directory, state)
+                return self._completed_record_or_cloud(state, full=False)
+        except BackendError as exc:
+            if str(exc) != "experiment does not exist" or self.archive_store is None:
+                raise
+            try:
+                record = self.archive_store.get(experiment_id)
+            except ArchiveError as archive_exc:
+                raise BackendError(str(archive_exc)) from archive_exc
+            if record is None:
+                raise BackendError("experiment does not exist") from exc
+            return self._public_archive_record(record, full=False)
 
     def repair(
         self,
@@ -629,9 +789,27 @@ class ExperimentBackend:
                     "repair changes experiment meaning; use a new experiment_id: "
                     + ", ".join(classification["new_experiment_reasons"])
                 )
-            assessment = assess_launch(revised, AVAILABLE_CAPABILITIES)
+            assessment = assess_launch(revised, self.available_capabilities)
             if not assessment["ok"]:
                 raise BackendError("; ".join(assessment["blockers"]))
+            assert self.dataset_registry is not None
+            try:
+                dataset_resolution = self.dataset_registry.resolve(
+                    revised["contract"]["datasets"],
+                    revised["contract"]["protected_access"],
+                )
+            except DatasetRegistryError as exc:
+                raise BackendError(str(exc)) from exc
+            prior_resolution = state.get("dataset_resolution") or {}
+            if dataset_resolution["bindings_sha256"] \
+                    != prior_resolution.get("bindings_sha256"):
+                raise BackendError(
+                    "dataset identity or role changed; use a new experiment_id"
+                )
+            registry_changed = (
+                dataset_resolution["registry_sha256"]
+                != prior_resolution.get("registry_sha256")
+            )
             authorization = authorize_attempt(
                 state["attempts"], automatic_repair=True,
                 operator_confirmed=operator_confirmed,
@@ -642,6 +820,13 @@ class ExperimentBackend:
                 state.get("warnings", []) + assessment["warnings"]
                 + classification["warnings"]
             ))
+            if registry_changed:
+                warning = (
+                    "dataset registry source changed without changing bound dataset identities"
+                )
+                if warning not in state["warnings"]:
+                    state["warnings"].append(warning)
+            state["dataset_resolution"] = dataset_resolution
             return self._launch_locked(
                 directory,
                 state,
@@ -706,11 +891,24 @@ class ExperimentBackend:
     def get(self, experiment_id: str, *, view: str = "summary") -> dict[str, Any]:
         if view not in {"summary", "full"}:
             raise BackendError("view must be summary or full")
-        with self._locked(experiment_id) as directory:
-            state = self._load_state(directory)
-            assert state is not None
-            state = self._reconcile_locked(directory, state)
-            return self._public_state(state, full=view == "full")
+        try:
+            with self._locked(experiment_id) as directory:
+                state = self._load_state(directory)
+                assert state is not None
+                state = self._reconcile_locked(directory, state)
+                return self._completed_record_or_cloud(
+                    state, full=view == "full",
+                )
+        except BackendError as exc:
+            if str(exc) != "experiment does not exist" or self.archive_store is None:
+                raise
+            try:
+                record = self.archive_store.get(experiment_id)
+            except ArchiveError as archive_exc:
+                raise BackendError(str(archive_exc)) from archive_exc
+            if record is None:
+                raise BackendError("experiment does not exist") from exc
+            return self._public_archive_record(record, full=view == "full")
 
     def search(
         self,
@@ -731,13 +929,29 @@ class ExperimentBackend:
         compare = compare_experiment_ids or []
         if not isinstance(compare, list) or len(compare) > 16:
             raise BackendError("compare_experiment_ids may contain at most 16 ids")
+        catalog: dict[str, dict[str, Any]] = {}
+        if self.archive_store is not None:
+            try:
+                for record in self.archive_store.records():
+                    public = self._public_archive_record(record, full=False)
+                    latest = public["latest_attempt"]
+                    catalog[record["experiment_id"]] = {
+                        "experiment_id": record["experiment_id"],
+                        "objective": record["contract"]["objective"],
+                        "state": public["state"],
+                        "attempt_count": public["attempt_count"],
+                        "primary_metric": (latest.get("result") or {}).get(
+                            "primary_metric"
+                        ),
+                        "updated_at": public["updated_at"],
+                        "record_source": "github",
+                    }
+            except ArchiveError as exc:
+                raise BackendError(str(exc)) from exc
         experiments_root = self.root / "experiments"
         entries = sorted(experiments_root.iterdir(), key=lambda path: path.name)
         if len(entries) > MAX_EXPERIMENTS:
             raise BackendError("experiment catalog exceeds its bounded size")
-        normalized_query = "" if query is None else query.casefold().strip()
-        wanted_states = None if states is None else set(states)
-        summaries = []
         for path in entries:
             try:
                 path_stat = path.lstat()
@@ -751,13 +965,9 @@ class ExperimentBackend:
                 state = self._reconcile_locked(directory, state)
                 summary = self._public_state(state)
                 objective = state["validated_contract"]["contract"]["objective"]
-                if normalized_query and normalized_query not in (
-                    f"{path.name} {objective}".casefold()
-                ):
+                if path.name in catalog and summary["state"] in RESULT_STATES:
                     continue
-                if wanted_states is not None and summary["state"] not in wanted_states:
-                    continue
-                summaries.append({
+                catalog[path.name] = {
                     "experiment_id": path.name,
                     "objective": objective,
                     "state": summary["state"],
@@ -766,7 +976,20 @@ class ExperimentBackend:
                         (summary.get("latest_attempt") or {}).get("result") or {}
                     ).get("primary_metric"),
                     "updated_at": summary["updated_at"],
-                })
+                    "record_source": "cloud",
+                }
+        normalized_query = "" if query is None else query.casefold().strip()
+        wanted_states = None if states is None else set(states)
+        summaries = []
+        for experiment_id in sorted(catalog):
+            summary = catalog[experiment_id]
+            if normalized_query and normalized_query not in (
+                f"{experiment_id} {summary['objective']}".casefold()
+            ):
+                continue
+            if wanted_states is not None and summary["state"] not in wanted_states:
+                continue
+            summaries.append(summary)
             if len(summaries) > limit:
                 break
         truncated = len(summaries) > limit
@@ -862,8 +1085,24 @@ def _bounded_log_tail(path: Path) -> str:
     return text[-2048:] or "entrypoint failed without diagnostic output"
 
 
-def _worker_main(root: Path, experiment_id: str, attempt_number: int, token: str) -> int:
-    backend = ExperimentBackend(root, runtime_enabled=True)
+def _worker_main(
+    root: Path,
+    experiment_id: str,
+    attempt_number: int,
+    token: str,
+    archive_remote: str | None,
+    archive_test_remote: bool,
+) -> int:
+    archive_store = None if archive_remote is None else GitArchiveStore(
+        archive_remote,
+        root / "archive-tmp",
+        allow_test_remote=archive_test_remote,
+    )
+    backend = ExperimentBackend(
+        root,
+        runtime_enabled=True,
+        archive_store=archive_store,
+    )
     directory = backend._experiment_dir(experiment_id, create=False)
     attempt_dir = directory / "attempts" / str(attempt_number)
     launch_path = attempt_dir / "control" / "launch.json"
@@ -931,6 +1170,9 @@ def _worker_main(root: Path, experiment_id: str, attempt_number: int, token: str
         environment["CONVIR_EXPERIMENT_CONTRACT"] = str(
             attempt_dir / "control" / "contract.json"
         )
+        environment["CONVIR_EXPERIMENT_DATASETS"] = str(
+            attempt_dir / "control" / "datasets.json"
+        )
         with log_path.open("wb") as log:
             child = subprocess.Popen(
                 [sys.executable, str(entrypoint), *contract["entrypoint"]["argv"]],
@@ -990,15 +1232,43 @@ def _worker_main(root: Path, experiment_id: str, attempt_number: int, token: str
         if terminal_state in RESULT_STATES:
             try:
                 archive = build_archive_record(
-                    state["validated_contract"], state["attempts"], recorded_at=utc_now(),
+                    state["validated_contract"],
+                    state["attempts"],
+                    recorded_at=utc_now(),
+                    dataset_bindings=state["dataset_resolution"]["public_bindings"],
+                    dataset_registry_sha256=(
+                        state["dataset_resolution"]["registry_sha256"]
+                    ),
+                    dataset_binding_sha256=(
+                        state["dataset_resolution"]["bindings_sha256"]
+                    ),
                 )
                 record_path = backend.root / "records" / f"{experiment_id}.json"
                 _atomic_write(record_path, archive["record"], replace=False)
-                state["archive"] = {
-                    "state": "CLOUD_RECORDED_GITHUB_PENDING",
-                    "record_sha256": archive["record_sha256"],
-                    "record_ref": f"records/{experiment_id}.json",
-                }
+                if backend.archive_store is None:
+                    state["archive"] = {
+                        "state": "CLOUD_RECORDED_GITHUB_PENDING",
+                        "record_sha256": archive["record_sha256"],
+                        "record_ref": f"records/{experiment_id}.json",
+                    }
+                else:
+                    try:
+                        archived = backend.archive_store.archive(
+                            archive["record"], archive["record_sha256"],
+                        )
+                        state["archive"] = {
+                            "state": archived["state"],
+                            "record_sha256": archived["record_sha256"],
+                            "record_ref": archived["record_path"],
+                            "github_commit": archived["commit"],
+                        }
+                    except ArchiveError as exc:
+                        state["archive"] = {
+                            "state": "CLOUD_RECORDED_GITHUB_ARCHIVE_FAILED",
+                            "record_sha256": archive["record_sha256"],
+                            "record_ref": f"records/{experiment_id}.json",
+                            "error": str(exc)[:2048],
+                        }
             except Exception as exc:
                 current["state"] = "UNKNOWN"
                 current["result"] = None
@@ -1023,13 +1293,22 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     worker.add_argument("--experiment-id", required=True)
     worker.add_argument("--attempt-number", type=int, required=True)
     worker.add_argument("--token", required=True)
+    worker.add_argument("--archive-remote")
+    worker.add_argument("--archive-test-remote", action="store_true")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(sys.argv[1:] if argv is None else argv)
     if args.command == "_worker":
-        return _worker_main(args.root, args.experiment_id, args.attempt_number, args.token)
+        return _worker_main(
+            args.root,
+            args.experiment_id,
+            args.attempt_number,
+            args.token,
+            args.archive_remote,
+            args.archive_test_remote,
+        )
     return 2
 
 

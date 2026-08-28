@@ -15,6 +15,8 @@ TOOLS = Path(__file__).parents[1]
 sys.path.insert(0, str(TOOLS))
 import convir_experiment_assistant_mcp as MCP  # noqa: E402
 import experiment_assistant_contract as CONTRACT  # noqa: E402
+from experiment_assistant_archive import ArchiveError, GitArchiveStore  # noqa: E402
+from experiment_assistant_datasets import DatasetRegistry  # noqa: E402
 import experiment_assistant_runner as RUNNER  # noqa: E402
 
 
@@ -27,8 +29,15 @@ from pathlib import Path
 
 output = Path(os.environ["CONVIR_EXPERIMENT_OUTPUT"])
 output.mkdir(parents=True, exist_ok=True)
+if "--read-dataset" in sys.argv:
+    bindings = json.loads(Path(os.environ["CONVIR_EXPERIMENT_DATASETS"]).read_text())
+    protected = [item for item in bindings["datasets"] if item["protected"]]
+    assert len(protected) == 1
+    assert (Path(protected[0]["path"]) / "fixture.txt").read_text() == "sealed fixture\n"
 if "--sleep" in sys.argv:
     time.sleep(30)
+if "--brief-sleep" in sys.argv:
+    time.sleep(1)
 if "--fail" in sys.argv:
     raise RuntimeError("synthetic loader failure")
 metric_id = "wrong_metric" if "--bad-result" in sys.argv else "score"
@@ -37,6 +46,11 @@ metric_id = "wrong_metric" if "--bad-result" in sys.argv else "score"
     encoding="utf-8",
 )
 """
+
+
+class UnavailableArchiveStore:
+    def get(self, _experiment_id):
+        raise ArchiveError("synthetic GitHub outage")
 
 
 def git(repo, *args):
@@ -62,6 +76,53 @@ def make_repo(root):
     git(repo, "add", "experiment.py")
     git(repo, "commit", "-qm", "synthetic entrypoint")
     return repo
+
+
+def make_registry(root):
+    training = root / "synthetic-training"
+    sealed = root / "synthetic-sealed"
+    training.mkdir()
+    sealed.mkdir()
+    (training / "fixture.txt").write_text("training fixture\n", encoding="utf-8")
+    (sealed / "fixture.txt").write_text("sealed fixture\n", encoding="utf-8")
+    path = root / "dataset-registry.json"
+    path.write_text(json.dumps({
+        "schema_version": 1,
+        "datasets": [
+            {
+                "id": "synthetic_fixture", "role": "training",
+                "path": str(training), "identity_sha256": "1" * 64,
+                "protected": False,
+            },
+            {
+                "id": "sealed", "role": "locked_test",
+                "path": str(sealed), "identity_sha256": "2" * 64,
+                "protected": True,
+            },
+        ],
+    }) + "\n", encoding="utf-8")
+    return DatasetRegistry(path)
+
+
+def make_remote(root):
+    seed = root / "seed"
+    remote = root / "remote.git"
+    seed.mkdir()
+    git(seed, "init", "-q")
+    git(seed, "config", "user.name", "Archive Seed")
+    git(seed, "config", "user.email", "archive@example.invalid")
+    (seed / "README.md").write_text("# Synthetic archive\n", encoding="utf-8")
+    git(seed, "add", "README.md")
+    git(seed, "commit", "-qm", "seed")
+    git(seed, "branch", "-M", "main")
+    subprocess.run(["/usr/bin/git", "init", "--bare", "-q", str(remote)], check=True)
+    git(seed, "remote", "add", "origin", str(remote))
+    git(seed, "push", "-q", "origin", "main")
+    subprocess.run(
+        ["/usr/bin/git", "--git-dir", str(remote), "symbolic-ref", "HEAD", "refs/heads/main"],
+        check=True,
+    )
+    return remote
 
 
 def make_contract(experiment_id="synthetic-001", argv=None, threshold=3.0):
@@ -98,8 +159,16 @@ class ExperimentAssistantRunnerTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
         self.repo = make_repo(self.root)
+        self.registry = make_registry(self.root)
+        self.remote = make_remote(self.root)
+        self.archive_store = GitArchiveStore(
+            str(self.remote), self.root / "archive-tmp", allow_test_remote=True,
+        )
         self.backend = RUNNER.ExperimentBackend(
-            self.root / "assistant", runtime_enabled=True,
+            self.root / "assistant",
+            runtime_enabled=True,
+            dataset_registry=self.registry,
+            archive_store=self.archive_store,
         )
 
     def tearDown(self):
@@ -111,13 +180,16 @@ class ExperimentAssistantRunnerTests(unittest.TestCase):
         terminal = wait_terminal(self.backend, "synthetic-001")
         self.assertEqual("COMPLETED_PASS", terminal["state"])
         self.assertEqual(3.5, terminal["latest_attempt"]["result"]["primary_metric"]["value"])
-        self.assertEqual("CLOUD_RECORDED_GITHUB_PENDING", terminal["archive"]["state"])
+        self.assertEqual("GITHUB_ARCHIVED", terminal["archive"]["state"])
+        self.assertEqual("github", terminal["record_source"])
         snapshot_sha = terminal["latest_attempt"]["source_snapshot"]["sha256"]
         self.assertTrue((self.root / "assistant" / "snapshots" / f"{snapshot_sha}.tar").is_file())
         record = json.loads(
             (self.root / "assistant" / "records" / "synthetic-001.json").read_text()
         )
         self.assertEqual("COMPLETED_PASS", record["terminal"]["state"])
+        self.assertEqual("1" * 64, record["datasets"][0]["identity_sha256"])
+        self.assertNotIn("path", record["datasets"][0])
         with self.assertRaisesRegex(RUNNER.BackendError, "complete result"):
             self.backend.start(str(self.repo), make_contract())
 
@@ -139,6 +211,7 @@ class ExperimentAssistantRunnerTests(unittest.TestCase):
         self.assertEqual("FAILED_ENGINEERING", failed["state"])
         self.assertEqual("CLOUD_ONLY_ENGINEERING_FAILURE", failed["archive"]["state"])
         self.assertFalse((self.root / "assistant" / "records" / "synthetic-repair.json").exists())
+        self.assertEqual([], self.archive_store.records())
         repaired_contract = make_contract("synthetic-repair")
         self.backend.repair("synthetic-repair", contract=repaired_contract)
         terminal = wait_terminal(self.backend, "synthetic-repair")
@@ -191,13 +264,23 @@ class ExperimentAssistantRunnerTests(unittest.TestCase):
         self.assertEqual("CANCELLED", cancelled["state"])
         self.assertEqual("CLOUD_ONLY_CANCELLED", cancelled["archive"]["state"])
         self.assertFalse((self.root / "assistant" / "records" / "synthetic-cancel.json").exists())
+        self.assertEqual([], self.archive_store.records())
 
-    def test_protected_data_is_unavailable_until_backend_can_enforce_it(self):
+    def test_protected_data_defaults_to_deny_then_explicit_contract_is_delivered(self):
         value = make_contract("synthetic-protected")
         value["datasets"].append({"id": "sealed", "role": "locked_test"})
-        value["protected_access"] = ["locked_test"]
-        with self.assertRaisesRegex(RUNNER.BackendError, "explicit_protected_data_access"):
+        with self.assertRaisesRegex(RUNNER.BackendError, "explicit access"):
             self.backend.start(str(self.repo), value)
+        value["protected_access"] = ["locked_test"]
+        value["entrypoint"]["argv"] = ["--read-dataset"]
+        self.backend.start(str(self.repo), value)
+        terminal = wait_terminal(self.backend, "synthetic-protected")
+        self.assertEqual("COMPLETED_PASS", terminal["state"])
+        bindings = terminal["datasets"]
+        self.assertEqual(
+            {"sealed": True, "synthetic_fixture": False},
+            {item["id"]: item["protected"] for item in bindings},
+        )
 
     def test_search_and_compare_read_compact_records(self):
         for experiment_id, threshold in (("compare-pass", 3.0), ("compare-fail", 4.0)):
@@ -211,6 +294,78 @@ class ExperimentAssistantRunnerTests(unittest.TestCase):
             ["COMPLETED_PASS", "COMPLETED_FAIL"],
             [item["state"] for item in result["comparison"]],
         )
+        self.assertTrue(all(item["record_source"] == "github" for item in result["experiments"]))
+
+    def test_github_only_reader_needs_no_cloud_attempt_state(self):
+        self.backend.start(str(self.repo), make_contract("github-only"))
+        wait_terminal(self.backend, "github-only")
+        reader = RUNNER.ExperimentBackend(
+            self.root / "empty-reader",
+            archive_store=self.archive_store,
+        )
+        record = reader.get("github-only", view="full")
+        self.assertEqual("github", record["record_source"])
+        self.assertEqual("COMPLETED_PASS", record["state"])
+        self.assertEqual(1, reader.search(query="github-only")["count"])
+
+    def test_github_record_blocks_duplicate_id_from_a_fresh_cloud_state(self):
+        self.backend.start(str(self.repo), make_contract("github-duplicate"))
+        wait_terminal(self.backend, "github-duplicate")
+        fresh = RUNNER.ExperimentBackend(
+            self.root / "fresh-assistant",
+            runtime_enabled=True,
+            dataset_registry=self.registry,
+            archive_store=self.archive_store,
+        )
+        with self.assertRaisesRegex(RUNNER.BackendError, "GitHub already contains"):
+            fresh.start(str(self.repo), make_contract("github-duplicate"))
+
+    def test_completed_cloud_result_remains_readable_during_github_outage(self):
+        self.backend.start(str(self.repo), make_contract("github-outage"))
+        wait_terminal(self.backend, "github-outage")
+        self.backend.archive_store = UnavailableArchiveStore()
+        status = self.backend.status("github-outage")
+        full = self.backend.get("github-outage", view="full")
+        self.assertEqual("cloud", status["record_source"])
+        self.assertEqual("COMPLETED_PASS", status["state"])
+        self.assertIn("temporarily unavailable", " ".join(status["warnings"]))
+        self.assertEqual("COMPLETED_PASS", full["attempts"][-1]["state"])
+
+    def test_archive_push_failure_keeps_complete_cloud_result(self):
+        self.backend.start(
+            str(self.repo),
+            make_contract("archive-push-failure", argv=["--brief-sleep"]),
+        )
+        hook = self.remote / "hooks" / "pre-receive"
+        hook.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
+        hook.chmod(0o700)
+        terminal = wait_terminal(self.backend, "archive-push-failure")
+        self.assertEqual("COMPLETED_PASS", terminal["state"])
+        self.assertEqual("cloud", terminal["record_source"])
+        self.assertEqual(
+            "CLOUD_RECORDED_GITHUB_ARCHIVE_FAILED",
+            terminal["archive"]["state"],
+        )
+        self.assertTrue(
+            (
+                self.root / "assistant" / "records" / "archive-push-failure.json"
+            ).is_file()
+        )
+        self.assertEqual([], self.archive_store.records())
+
+    def test_archive_is_idempotent_and_never_overwrites_same_experiment_id(self):
+        self.backend.start(str(self.repo), make_contract("immutable-record"))
+        wait_terminal(self.backend, "immutable-record")
+        record = json.loads(
+            (self.root / "assistant" / "records" / "immutable-record.json").read_text()
+        )
+        repeated = self.archive_store.archive(record, CONTRACT.canonical_sha256(record))
+        self.assertTrue(repeated["idempotent"])
+        changed = copy.deepcopy(record)
+        changed["result"]["primary_metric"]["value"] = 3.6
+        changed["attempts"][-1]["result"]["primary_metric"]["value"] = 3.6
+        with self.assertRaisesRegex(ArchiveError, "different record"):
+            self.archive_store.archive(changed, CONTRACT.canonical_sha256(changed))
 
     def test_runtime_mutations_are_disabled_without_explicit_cloud_candidate_gate(self):
         disabled = RUNNER.ExperimentBackend(self.root / "disabled")
@@ -235,8 +390,8 @@ class ExperimentAssistantMcpTests(unittest.TestCase):
             "jsonrpc": "2.0", "id": 1, "method": "initialize",
             "params": {"protocolVersion": "2024-11-05"},
         })
-        self.assertEqual("0.2.0-candidate", response["result"]["serverInfo"]["version"])
-        self.assertIn("not yet enabled", response["result"]["instructions"])
+        self.assertEqual("0.3.0-candidate", response["result"]["serverInfo"]["version"])
+        self.assertIn("not registered", response["result"]["instructions"])
 
 
 if __name__ == "__main__":

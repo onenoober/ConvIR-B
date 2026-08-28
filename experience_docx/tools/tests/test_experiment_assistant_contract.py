@@ -13,7 +13,8 @@ import experiment_assistant_contract as ASSISTANT  # noqa: E402
 
 ALL_CAPABILITIES = {
     "content_addressed_source_snapshot", "lifecycle", "automatic_result_archive",
-    "experiment_record_read", "explicit_protected_data_access",
+    "dataset_registry_resolution", "experiment_record_read",
+    "explicit_protected_data_access",
     "declared_precision_gate",
 }
 
@@ -66,10 +67,12 @@ def attempt(validated, number, state, *, automatic=False, storage="cloud_full"):
     if state == "FAILED_ENGINEERING":
         error = "Dataset loader could not resolve the configured path."
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "experiment_id": validated["contract"]["experiment_id"],
         "attempt_number": number,
         "contract_sha256": validated["contract_sha256"],
+        "dataset_registry_sha256": "d" * 64,
+        "dataset_binding_sha256": dataset_binding_sha256(validated),
         "source_snapshot": snapshot(storage),
         "budget": validated["contract"]["budget"],
         "state": state,
@@ -80,6 +83,35 @@ def attempt(validated, number, state, *, automatic=False, storage="cloud_full"):
         "result": result,
         "cloud_run_ref": f"runs/dehaze-ablation-001/attempt-{number}",
     }
+
+
+def dataset_bindings(validated):
+    return [
+        {
+            "id": item["id"],
+            "role": item["role"],
+            "identity_sha256": "f" * 64,
+            "protected": item["role"] in ASSISTANT.PROTECTED_DATA_ROLES,
+        }
+        for item in validated["contract"]["datasets"]
+    ]
+
+
+def dataset_binding_sha256(validated):
+    return ASSISTANT.canonical_sha256({
+        "datasets": dataset_bindings(validated),
+    })
+
+
+def archive_record(validated, attempts):
+    return ASSISTANT.build_archive_record(
+        validated,
+        attempts,
+        recorded_at="2026-08-28T10:00:00Z",
+        dataset_bindings=dataset_bindings(validated),
+        dataset_registry_sha256="d" * 64,
+        dataset_binding_sha256=dataset_binding_sha256(validated),
+    )
 
 
 class ExperimentAssistantContractTests(unittest.TestCase):
@@ -116,10 +148,16 @@ class ExperimentAssistantContractTests(unittest.TestCase):
         self.assertIn("declared_precision_gate", assessment["blockers"][0])
 
     def test_lifecycle_owned_environment_cannot_override_snapshot_or_output_identity(self):
-        value = contract()
-        value["entrypoint"]["environment"] = {"PYTHONPATH": "/tmp/unbound-source"}
-        with self.assertRaisesRegex(ASSISTANT.ContractError, "lifecycle-owned"):
-            ASSISTANT.validate_contract(value)
+        for key in (
+            "PYTHONPATH", "CONVIR_EXPERIMENT_OUTPUT", "CONVIR_EXPERIMENT_CONTRACT",
+            "CONVIR_EXPERIMENT_DATASETS",
+        ):
+            value = contract()
+            value["entrypoint"]["environment"] = {key: "/tmp/unbound-source"}
+            with self.subTest(key=key), self.assertRaisesRegex(
+                ASSISTANT.ContractError, "lifecycle-owned",
+            ):
+                ASSISTANT.validate_contract(value)
 
     def test_protected_data_defaults_to_deny_and_explicit_contract_allows(self):
         value = contract()
@@ -196,17 +234,13 @@ class ExperimentAssistantContractTests(unittest.TestCase):
         for state in ("COMPLETED_PASS", "COMPLETED_FAIL", "COMPLETED_INCONCLUSIVE"):
             current = attempt(validated, 1, state)
             self.assertTrue(ASSISTANT.should_archive_attempt(current))
-            archive = ASSISTANT.build_archive_record(
-                validated, [current], recorded_at="2026-08-28T10:00:00Z",
-            )
+            archive = archive_record(validated, [current])
             self.assertEqual(state, archive["record"]["terminal"]["state"])
             self.assertEqual(64, len(archive["record_sha256"]))
         failed = attempt(validated, 1, "FAILED_ENGINEERING", storage="hash_only")
         self.assertFalse(ASSISTANT.should_archive_attempt(failed))
         with self.assertRaisesRegex(ASSISTANT.ContractError, "result-bearing"):
-            ASSISTANT.build_archive_record(
-                validated, [failed], recorded_at="2026-08-28T10:00:00Z",
-            )
+            archive_record(validated, [failed])
 
     def test_result_bearing_attempt_requires_complete_cloud_source_snapshot(self):
         validated = ASSISTANT.validate_contract(contract())
@@ -222,6 +256,17 @@ class ExperimentAssistantContractTests(unittest.TestCase):
             "snapshot_commit", "route_branch_commit", "schema_version",
         ):
             self.assertNotIn(forbidden, serialized)
+
+    def test_archive_record_revalidation_rejects_data_identity_tampering(self):
+        validated = ASSISTANT.validate_contract(contract())
+        archive = archive_record(
+            validated, [attempt(validated, 1, "COMPLETED_PASS")],
+        )["record"]
+        self.assertEqual(archive, ASSISTANT.validate_archive_record(archive))
+        tampered = copy.deepcopy(archive)
+        tampered["datasets"][0]["identity_sha256"] = "0" * 64
+        with self.assertRaises(ASSISTANT.ContractError):
+            ASSISTANT.validate_archive_record(tampered)
 
 
 if __name__ == "__main__":

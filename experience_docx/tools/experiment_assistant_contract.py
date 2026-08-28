@@ -11,8 +11,8 @@ from typing import Any
 
 
 CONTRACT_SCHEMA_VERSION = 1
-ATTEMPT_SCHEMA_VERSION = 1
-ARCHIVE_SCHEMA_VERSION = 1
+ATTEMPT_SCHEMA_VERSION = 2
+ARCHIVE_SCHEMA_VERSION = 2
 MAX_AUTOMATIC_REPAIRS = 2
 
 SAFE_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
@@ -20,8 +20,8 @@ SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 ENV_KEY = re.compile(r"^[A-Z_][A-Z0-9_]{0,95}$")
 RESERVED_ENV_KEYS = {
-    "CONVIR_EXPERIMENT_CONTRACT", "CONVIR_EXPERIMENT_OUTPUT", "LD_PRELOAD",
-    "PYTHONHOME", "PYTHONPATH",
+    "CONVIR_EXPERIMENT_CONTRACT", "CONVIR_EXPERIMENT_DATASETS",
+    "CONVIR_EXPERIMENT_OUTPUT", "LD_PRELOAD", "PYTHONHOME", "PYTHONPATH",
 }
 
 DATA_ROLES = {
@@ -300,7 +300,7 @@ def validate_contract(value: Any) -> dict[str, Any]:
 def required_capabilities(contract: dict[str, Any]) -> list[str]:
     capabilities = {
         "content_addressed_source_snapshot", "lifecycle", "automatic_result_archive",
-        "experiment_record_read",
+        "dataset_registry_resolution", "experiment_record_read",
     }
     if contract["protected_access"]:
         capabilities.add("explicit_protected_data_access")
@@ -434,6 +434,7 @@ def validate_attempt(value: Any) -> dict[str, Any]:
         "schema_version", "experiment_id", "attempt_number", "contract_sha256",
         "source_snapshot", "budget", "state", "automatic_repair", "started_at",
         "ended_at", "error_summary", "result", "cloud_run_ref",
+        "dataset_registry_sha256", "dataset_binding_sha256",
     }
     if set(item) != required or item.get("schema_version") != ATTEMPT_SCHEMA_VERSION:
         raise ContractError("attempt has an invalid field contract")
@@ -443,6 +444,12 @@ def validate_attempt(value: Any) -> dict[str, Any]:
     digest = item.get("contract_sha256")
     if not isinstance(digest, str) or not SHA256.fullmatch(digest):
         raise ContractError("attempt.contract_sha256 must be a SHA-256 digest")
+    registry_digest = item.get("dataset_registry_sha256")
+    binding_digest = item.get("dataset_binding_sha256")
+    if not isinstance(registry_digest, str) or not SHA256.fullmatch(registry_digest):
+        raise ContractError("attempt.dataset_registry_sha256 must be a SHA-256 digest")
+    if not isinstance(binding_digest, str) or not SHA256.fullmatch(binding_digest):
+        raise ContractError("attempt.dataset_binding_sha256 must be a SHA-256 digest")
     automatic = item.get("automatic_repair")
     if not isinstance(automatic, bool):
         raise ContractError("attempt.automatic_repair must be boolean")
@@ -466,6 +473,8 @@ def validate_attempt(value: Any) -> dict[str, Any]:
             item.get("attempt_number"), "attempt.attempt_number", 1, 10_000,
         ),
         "contract_sha256": digest,
+        "dataset_registry_sha256": registry_digest,
+        "dataset_binding_sha256": binding_digest,
         "source_snapshot": snapshot,
         "budget": _normalize_budget(item.get("budget"), []),
         "state": state,
@@ -486,8 +495,49 @@ def should_archive_attempt(attempt: dict[str, Any]) -> bool:
     return attempt.get("state") in RESULT_STATES and isinstance(attempt.get("result"), dict)
 
 
-def build_archive_record(validated_contract: dict[str, Any], attempts: list[dict[str, Any]],
-                         *, recorded_at: str) -> dict[str, Any]:
+def _normalize_dataset_bindings(
+    value: Any,
+    contract: dict[str, Any],
+) -> list[dict[str, Any]]:
+    items = _require_list(value, "dataset_bindings", minimum=1)
+    if len(items) > 64:
+        raise ContractError("dataset_bindings may contain at most 64 entries")
+    normalized = []
+    for index, raw in enumerate(items):
+        item = _require_dict(raw, f"dataset_bindings[{index}]")
+        if set(item) != {"id", "role", "identity_sha256", "protected"}:
+            raise ContractError(f"dataset_bindings[{index}] has invalid fields")
+        identity = item.get("identity_sha256")
+        if not isinstance(identity, str) or not SHA256.fullmatch(identity):
+            raise ContractError(f"dataset_bindings[{index}].identity_sha256 is invalid")
+        role = item.get("role")
+        if role not in DATA_ROLES:
+            raise ContractError(f"dataset_bindings[{index}].role is invalid")
+        protected = item.get("protected")
+        if not isinstance(protected, bool) or protected != (role in PROTECTED_DATA_ROLES):
+            raise ContractError(f"dataset_bindings[{index}].protected conflicts with role")
+        normalized.append({
+            "id": _require_token(item.get("id"), f"dataset_bindings[{index}].id"),
+            "role": role,
+            "identity_sha256": identity,
+            "protected": protected,
+        })
+    normalized.sort(key=lambda item: (item["role"], item["id"]))
+    if [{"id": item["id"], "role": item["role"]} for item in normalized] \
+            != contract["datasets"]:
+        raise ContractError("dataset_bindings do not match the contract dataset ids and roles")
+    return normalized
+
+
+def build_archive_record(
+    validated_contract: dict[str, Any],
+    attempts: list[dict[str, Any]],
+    *,
+    recorded_at: str,
+    dataset_bindings: list[dict[str, Any]],
+    dataset_registry_sha256: str,
+    dataset_binding_sha256: str,
+) -> dict[str, Any]:
     if not attempts:
         raise ContractError("archive requires at least one attempt")
     normalized_attempts = [validate_attempt(item) for item in attempts]
@@ -501,12 +551,41 @@ def build_archive_record(validated_contract: dict[str, Any], attempts: list[dict
         raise ContractError("only a completed result-bearing attempt is automatically archived")
     if final["contract_sha256"] != validated_contract["contract_sha256"]:
         raise ContractError("final attempt contract identity mismatch")
+    for name, digest in (
+        ("dataset_registry_sha256", dataset_registry_sha256),
+        ("dataset_binding_sha256", dataset_binding_sha256),
+    ):
+        if not isinstance(digest, str) or not SHA256.fullmatch(digest):
+            raise ContractError(f"archive {name} must be a SHA-256 digest")
+    if any(
+        item["dataset_binding_sha256"] != dataset_binding_sha256
+        for item in normalized_attempts
+    ):
+        raise ContractError("archive attempts do not share one dataset binding identity")
+    normalized_bindings = _normalize_dataset_bindings(
+        dataset_bindings, validated_contract["contract"],
+    )
+    expected_binding_sha256 = canonical_sha256({"datasets": normalized_bindings})
+    if expected_binding_sha256 != dataset_binding_sha256:
+        raise ContractError("archive dataset binding SHA-256 is inconsistent")
+    primary = final["result"].get("primary_metric")
+    expected_metric = validated_contract["contract"]["evaluation"]["primary_metric"]
+    if not isinstance(primary, dict) or primary.get("id") != expected_metric["id"]:
+        raise ContractError("archive result primary metric identity mismatch")
+    point = primary.get("value")
+    if isinstance(point, bool) or not isinstance(point, (int, float)) \
+            or not float(point) == float(point) \
+            or float(point) in {float("inf"), float("-inf")}:
+        raise ContractError("archive result primary metric must be finite")
     record = {
         "schema_version": ARCHIVE_SCHEMA_VERSION,
         "experiment_id": experiment_id,
         "recorded_at": _require_text(recorded_at, "recorded_at", maximum=64),
         "contract": validated_contract["contract"],
         "contract_sha256": validated_contract["contract_sha256"],
+        "dataset_registry_sha256": dataset_registry_sha256,
+        "dataset_binding_sha256": dataset_binding_sha256,
+        "datasets": normalized_bindings,
         "attempts": normalized_attempts,
         "terminal": {
             "state": final["state"],
@@ -517,6 +596,32 @@ def build_archive_record(validated_contract: dict[str, Any], attempts: list[dict
         "cloud_run_ref": final["cloud_run_ref"],
     }
     return {"record": record, "record_sha256": canonical_sha256(record)}
+
+
+def validate_archive_record(value: Any) -> dict[str, Any]:
+    item = _require_dict(value, "archive_record")
+    required = {
+        "schema_version", "experiment_id", "recorded_at", "contract",
+        "contract_sha256", "dataset_registry_sha256", "dataset_binding_sha256",
+        "datasets", "attempts", "terminal", "result", "source_snapshot",
+        "cloud_run_ref",
+    }
+    if set(item) != required or item.get("schema_version") != ARCHIVE_SCHEMA_VERSION:
+        raise ContractError("archive_record has an invalid field contract")
+    validated = validate_contract(item.get("contract"))
+    if validated["contract_sha256"] != item.get("contract_sha256"):
+        raise ContractError("archive_record contract identity mismatch")
+    rebuilt = build_archive_record(
+        validated,
+        item.get("attempts"),
+        recorded_at=item.get("recorded_at"),
+        dataset_bindings=item.get("datasets"),
+        dataset_registry_sha256=item.get("dataset_registry_sha256"),
+        dataset_binding_sha256=item.get("dataset_binding_sha256"),
+    )["record"]
+    if rebuilt != item:
+        raise ContractError("archive_record is not canonical or has conflicting identities")
+    return rebuilt
 
 
 PUBLIC_TOOL_SCHEMAS = {
