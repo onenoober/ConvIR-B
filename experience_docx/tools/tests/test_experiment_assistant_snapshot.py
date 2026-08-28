@@ -25,7 +25,7 @@ def git(repo, *args):
     )
     if result.returncode:
         raise AssertionError(result.stderr)
-    return result.stdout.strip()
+    return result.stdout.rstrip()
 
 
 def initialize_repo(root):

@@ -17,6 +17,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import threading
 import time
 import uuid
 from pathlib import Path, PurePosixPath
@@ -198,6 +199,10 @@ def _process_matches(pid: int, start_ticks: int, token: str) -> bool:
         return False
     decoded = [item.decode("utf-8", errors="replace") for item in argv if item]
     return token in decoded and "_worker" in decoded
+
+
+def _reap_process(process: subprocess.Popen[bytes]) -> None:
+    process.wait()
 
 
 def _safe_result_relpath(raw: str) -> str:
@@ -513,11 +518,18 @@ class ExperimentBackend:
         start_ticks = _process_start_ticks(process.pid)
         if start_ticks is None:
             process.terminate()
+            process.wait(timeout=5)
             attempt["state"] = "UNKNOWN"
             attempt["ended_at"] = utc_now()
             attempt["error_summary"] = "worker process identity could not be established"
             self._save_state(directory, state)
             raise BackendError("worker launch state is unknown; do not start another attempt")
+        threading.Thread(
+            target=_reap_process,
+            args=(process,),
+            name=f"experiment-worker-reaper-{process.pid}",
+            daemon=True,
+        ).start()
         state["active"] = {
             "pid": process.pid,
             "start_ticks": start_ticks,
