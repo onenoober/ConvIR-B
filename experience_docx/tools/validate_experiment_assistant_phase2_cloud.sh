@@ -3,6 +3,9 @@ set -euo pipefail
 
 on_error() {
   rc=$?
+  if [[ -n ${output:-} && -f $output ]]; then
+    /bin/cat "$output" >&2
+  fi
   printf 'EXPERIMENT_ASSISTANT_PHASE2_CLOUD_FAILED line=%s command=%q rc=%s\n' \
     "$1" "$2" "$rc" >&2
   exit "$rc"
