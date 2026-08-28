@@ -33,7 +33,7 @@ if "--read-dataset" in sys.argv:
     bindings = json.loads(Path(os.environ["CONVIR_EXPERIMENT_DATASETS"]).read_text())
     protected = [item for item in bindings["datasets"] if item["protected"]]
     assert len(protected) == 1
-    assert (Path(protected[0]["path"]) / "fixture.txt").read_text() == "sealed fixture\n"
+    assert (Path(protected[0]["path"]) / "fixture.txt").read_text() == "sealed fixture\\n"
 if "--sleep" in sys.argv:
     time.sleep(30)
 if "--brief-sleep" in sys.argv:
