@@ -60,6 +60,7 @@ printf 'EXPERIMENT_ASSISTANT_PHASE3_STAGE=compile\n'
   "$tools/experiment_assistant_archive.py" \
   "$tools/experiment_assistant_snapshot.py" \
   "$tools/experiment_assistant_runner.py" \
+  "$tools/experiment_assistant_transport.py" \
   "$tools/convir_experiment_assistant_mcp.py" \
   "$tests/test_experiment_assistant_contract.py" \
   "$tests/test_experiment_assistant_datasets.py" \
@@ -131,6 +132,7 @@ environment.update({
     "CONVIR_EXPERIMENT_ASSISTANT_ROOT": str(root / "activation-state"),
     "CONVIR_EXPERIMENT_ASSISTANT_RUNTIME": "cloud-candidate",
     "CONVIR_EXPERIMENT_ASSISTANT_TEST_MODE": "1",
+    "CONVIR_EXPERIMENT_ASSISTANT_LOCAL_TEST_MODE": "1",
     "CONVIR_EXPERIMENT_DATASET_REGISTRY": str(registry),
     "CONVIR_EXPERIMENT_ARCHIVE_ENABLED": "1",
     "CONVIR_EXPERIMENT_ARCHIVE_REMOTE": str(remote),
@@ -166,7 +168,7 @@ missing = request({
     },
 })
 
-assert initialized["result"]["serverInfo"]["version"] == "0.3.0-candidate"
+assert initialized["result"]["serverInfo"]["version"] == "0.4.0-candidate"
 names = tuple(item["name"] for item in listed["result"]["tools"])
 assert names == (
     "experiment_start", "experiment_status", "experiment_cancel",

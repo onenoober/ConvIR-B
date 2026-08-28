@@ -11,14 +11,21 @@ from pathlib import Path
 from typing import Any
 
 from experiment_assistant_contract import PUBLIC_TOOL_NAMES
-from experiment_assistant_runner import BASE_CAPABILITIES, BackendError, ExperimentBackend
+from experiment_assistant_runner import (
+    AVAILABLE_CAPABILITIES,
+    BASE_CAPABILITIES,
+    BackendError,
+    ExperimentBackend,
+)
+from experiment_assistant_transport import CloudExperimentClient, TransportError
 
 
 SERVER_NAME = "convir-experiment-assistant"
-SERVER_VERSION = "0.3.0-candidate"
+SERVER_VERSION = "0.4.0-candidate"
 PROTOCOL_SCHEMA_VERSION = 1
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_RESPONSE_BYTES = 64 * 1024
+LOCAL_TEST_MODE_ENV = "CONVIR_EXPERIMENT_ASSISTANT_LOCAL_TEST_MODE"
 
 
 def _object_schema(
@@ -111,28 +118,33 @@ def _source_sha256() -> str:
 
 
 def _diagnostics() -> dict[str, Any]:
-    capabilities = set(BASE_CAPABILITIES)
-    if os.environ.get("CONVIR_EXPERIMENT_DATASET_REGISTRY"):
-        capabilities.update({
-            "dataset_registry_resolution", "explicit_protected_data_access",
-        })
-    if os.environ.get("CONVIR_EXPERIMENT_ARCHIVE_ENABLED") == "1":
-        capabilities.add("automatic_result_archive")
+    if os.environ.get(LOCAL_TEST_MODE_ENV) == "1":
+        capabilities = set(BASE_CAPABILITIES)
+        if os.environ.get("CONVIR_EXPERIMENT_DATASET_REGISTRY"):
+            capabilities.update({
+                "dataset_registry_resolution", "explicit_protected_data_access",
+            })
+        if os.environ.get("CONVIR_EXPERIMENT_ARCHIVE_ENABLED") == "1":
+            capabilities.add("automatic_result_archive")
+    else:
+        capabilities = set(AVAILABLE_CAPABILITIES)
     return {
         "server_name": SERVER_NAME,
         "server_version": SERVER_VERSION,
         "protocol_schema_version": PROTOCOL_SCHEMA_VERSION,
         "server_source_sha256": _source_sha256(),
         "capabilities": sorted(capabilities),
-        "adoption_state": "PHASE_3_CANDIDATE_NOT_REGISTERED",
+        "adoption_state": "PHASE_4_CANDIDATE_PARALLEL",
     }
 
 
-def _backend(tool_name: str) -> ExperimentBackend:
-    return ExperimentBackend.from_environment(
-        load_dataset_registry=tool_name in {"experiment_start", "experiment_repair"},
-        load_archive_store=tool_name != "experiment_cancel",
-    )
+def _backend(tool_name: str) -> Any:
+    if os.environ.get(LOCAL_TEST_MODE_ENV) == "1":
+        return ExperimentBackend.from_environment(
+            load_dataset_registry=tool_name in {"experiment_start", "experiment_repair"},
+            load_archive_store=tool_name != "experiment_cancel",
+        )
+    return CloudExperimentClient()
 
 
 def _require_arguments(value: Any) -> dict[str, Any]:
@@ -212,8 +224,8 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
             "capabilities": {"tools": {}},
             "serverInfo": {"name": SERVER_NAME, "version": SERVER_VERSION},
             "instructions": (
-                "Phase-3 candidate: use six intent-level tools; runtime is cloud-only "
-                "and the candidate is not registered as the project default."
+                "Phase-4 parallel candidate: use six intent-level tools; source is "
+                "snapshotted locally and runtime remains cloud-only."
             ),
         }
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
@@ -230,7 +242,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
         try:
             value = call_tool(params.get("name"), params.get("arguments", {}))
             result = _tool_result(value)
-        except (BackendError, OSError, TypeError, ValueError) as exc:
+        except (BackendError, TransportError, OSError, TypeError, ValueError) as exc:
             result = _tool_result(
                 {**_diagnostics(), "ok": False, "error": str(exc)[:4096]},
                 is_error=True,

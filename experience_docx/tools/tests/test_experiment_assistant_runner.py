@@ -18,6 +18,7 @@ import experiment_assistant_contract as CONTRACT  # noqa: E402
 from experiment_assistant_archive import ArchiveError, GitArchiveStore  # noqa: E402
 from experiment_assistant_datasets import DatasetRegistry  # noqa: E402
 import experiment_assistant_runner as RUNNER  # noqa: E402
+import experiment_assistant_transport as TRANSPORT  # noqa: E402
 
 
 ENTRYPOINT = """\
@@ -373,7 +374,89 @@ class ExperimentAssistantRunnerTests(unittest.TestCase):
             disabled.start(str(self.repo), make_contract("disabled-runtime"))
 
 
+class ExperimentAssistantTransportTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        self.repo = make_repo(self.root)
+        self.registry = make_registry(self.root)
+        self.remote = make_remote(self.root)
+        self.state = self.root / "remote-state"
+        self.client = TRANSPORT.CloudExperimentClient(
+            remote_argv=[
+                sys.executable,
+                str(TOOLS / "experiment_assistant_runner.py"),
+                "_remote",
+                "--root",
+                str(self.state),
+                "--dataset-registry",
+                str(self.root / "dataset-registry.json"),
+                "--archive-remote",
+                str(self.remote),
+                "--archive-test-remote",
+            ],
+            timeout=30,
+        )
+
+    def tearDown(self):
+        self.temporary.cleanup()
+
+    def wait_terminal(self, experiment_id, timeout=10):
+        deadline = time.monotonic() + timeout
+        latest = None
+        while time.monotonic() < deadline:
+            latest = self.client.status(experiment_id)
+            if latest["state"] not in {"PREPARED", "RUNNING"}:
+                return latest
+            time.sleep(0.05)
+        raise AssertionError(f"transport attempt did not terminate: {latest}")
+
+    def test_dirty_local_source_is_uploaded_and_archived_by_cloud_backend(self):
+        changed = ENTRYPOINT.replace('"value": 3.5', '"value": 4.5')
+        (self.repo / "experiment.py").write_text(changed, encoding="utf-8")
+        value = make_contract("transport-dirty", threshold=4.0)
+        started = self.client.start(str(self.repo), value)
+        self.assertEqual("RUNNING", started["state"])
+        terminal = self.wait_terminal("transport-dirty")
+        self.assertEqual("COMPLETED_PASS", terminal["state"])
+        self.assertEqual(
+            4.5, terminal["latest_attempt"]["result"]["primary_metric"]["value"],
+        )
+        self.assertEqual("GITHUB_ARCHIVED", terminal["archive"]["state"])
+        snapshot = terminal["latest_attempt"]["source_snapshot"]
+        self.assertTrue((self.state / "snapshots" / f"{snapshot['sha256']}.tar").is_file())
+        (self.root / "dataset-registry.json").unlink()
+        self.assertEqual("COMPLETED_PASS", self.client.status("transport-dirty")["state"])
+
+    def test_repair_fetches_context_and_uploads_a_new_snapshot(self):
+        value = make_contract("transport-repair", argv=["--fail"])
+        self.client.start(str(self.repo), value)
+        failed = self.wait_terminal("transport-repair")
+        self.assertEqual("FAILED_ENGINEERING", failed["state"])
+        repaired = make_contract("transport-repair")
+        changed = ENTRYPOINT.replace('"value": 3.5', '"value": 3.75')
+        (self.repo / "experiment.py").write_text(changed, encoding="utf-8")
+        self.client.repair("transport-repair", contract=repaired)
+        terminal = self.wait_terminal("transport-repair")
+        self.assertEqual("COMPLETED_PASS", terminal["state"])
+        full = self.client.get("transport-repair", view="full")
+        self.assertEqual(2, len(full["attempts"]))
+        self.assertNotEqual(
+            full["attempts"][0]["source_snapshot"]["sha256"],
+            full["attempts"][1]["source_snapshot"]["sha256"],
+        )
+        self.assertEqual(1, full["automatic_repairs_used"])
+
+
 class ExperimentAssistantMcpTests(unittest.TestCase):
+    def test_production_transport_is_one_fixed_cloud_argv(self):
+        client = TRANSPORT.CloudExperimentClient()
+        self.assertEqual("/usr/bin/ssh", client.remote_argv[0])
+        self.assertIn("convir-4090", client.remote_argv)
+        self.assertIn(TRANSPORT.REMOTE_PYTHON, client.remote_argv)
+        self.assertIn(TRANSPORT.REMOTE_RUNNER, client.remote_argv)
+        self.assertNotIn("-c", client.remote_argv)
+
     def test_exact_six_tool_surface_has_no_control_plane_fields(self):
         response = MCP.handle_request({"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
         tools = response["result"]["tools"]
@@ -390,8 +473,8 @@ class ExperimentAssistantMcpTests(unittest.TestCase):
             "jsonrpc": "2.0", "id": 1, "method": "initialize",
             "params": {"protocolVersion": "2024-11-05"},
         })
-        self.assertEqual("0.3.0-candidate", response["result"]["serverInfo"]["version"])
-        self.assertIn("not registered", response["result"]["instructions"])
+        self.assertEqual("0.4.0-candidate", response["result"]["serverInfo"]["version"])
+        self.assertIn("cloud-only", response["result"]["instructions"])
 
 
 if __name__ == "__main__":

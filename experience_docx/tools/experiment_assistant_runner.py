@@ -33,6 +33,7 @@ from experiment_assistant_contract import (
     canonical_sha256,
     classify_contract_revision,
     validate_contract,
+    validate_source_snapshot,
 )
 from experiment_assistant_archive import ArchiveError, GitArchiveStore
 from experiment_assistant_datasets import DatasetRegistry, DatasetRegistryError
@@ -52,6 +53,10 @@ MAX_RESULT_TOTAL_BYTES = 8 * 1024 * 1024
 MAX_EXPERIMENTS = 10_000
 MAX_SEARCH_LIMIT = 100
 RUNTIME_ENABLE_VALUE = "cloud-candidate"
+REMOTE_PROTOCOL_SCHEMA_VERSION = 1
+MAX_REMOTE_HEADER_BYTES = 256 * 1024
+MAX_REMOTE_RESPONSE_BYTES = 64 * 1024
+MAX_REMOTE_UPLOAD_BYTES = MAX_TOTAL_BYTES + 32 * 1024 * 1024
 
 BASE_CAPABILITIES = {
     "content_addressed_source_snapshot",
@@ -433,27 +438,50 @@ class ExperimentBackend:
         except SnapshotError as exc:
             raise BackendError(str(exc)) from exc
         try:
-            manifest = _load_snapshot_manifest(temporary)
-            if entrypoint not in {item.get("path") for item in manifest["files"]}:
-                raise BackendError(
-                    "entrypoint is ignored, excluded, or absent from the source snapshot"
-                )
-            final = self.root / "snapshots" / f"{built['sha256']}.tar"
-            try:
-                os.link(temporary, final)
-                os.chmod(final, 0o400)
-                _fsync_directory(final.parent)
-            except FileExistsError:
-                if _sha256_file(final) != built["sha256"]:
-                    raise BackendError("existing content-addressed snapshot is corrupted")
+            return self._adopt_snapshot(temporary, built, entrypoint)
         finally:
             temporary.unlink(missing_ok=True)
-        return {
-            "sha256": built["sha256"],
-            "storage": "cloud_full",
-            "base_commit": built["base_commit"],
-            "diff_sha256": built["diff_sha256"],
-        }
+
+    def _adopt_snapshot(
+        self,
+        archive_path: Path,
+        metadata: dict[str, Any],
+        entrypoint: str,
+    ) -> dict[str, Any]:
+        try:
+            snapshot = validate_source_snapshot(
+                {
+                    "sha256": metadata.get("sha256"),
+                    "storage": metadata.get("storage"),
+                    "base_commit": metadata.get("base_commit"),
+                    "diff_sha256": metadata.get("diff_sha256"),
+                },
+                require_recoverable=True,
+            )
+        except ContractError as exc:
+            raise BackendError(str(exc)) from exc
+        archive_path = Path(archive_path)
+        if _sha256_file(
+            archive_path, maximum=MAX_TOTAL_BYTES + 32 * 1024 * 1024,
+        ) != snapshot["sha256"]:
+            raise BackendError("uploaded source snapshot identity mismatch")
+        manifest = _load_snapshot_manifest(archive_path)
+        if entrypoint not in {item.get("path") for item in manifest["files"]}:
+            raise BackendError(
+                "entrypoint is ignored, excluded, or absent from the source snapshot"
+            )
+        if manifest.get("base_commit") != snapshot["base_commit"] \
+                or canonical_sha256(manifest) != snapshot["diff_sha256"]:
+            raise BackendError("uploaded source snapshot manifest identity mismatch")
+        final = self.root / "snapshots" / f"{snapshot['sha256']}.tar"
+        try:
+            os.link(archive_path, final)
+            os.chmod(final, 0o400)
+            _fsync_directory(final.parent)
+        except FileExistsError:
+            if _sha256_file(final) != snapshot["sha256"]:
+                raise BackendError("existing content-addressed snapshot is corrupted")
+        return snapshot
 
     def _reconcile_locked(self, directory: Path, state: dict[str, Any]) -> dict[str, Any]:
         if not state["attempts"]:
@@ -573,11 +601,11 @@ class ExperimentBackend:
         directory: Path,
         state: dict[str, Any],
         validated: dict[str, Any],
-        repo: Path,
+        snapshot: dict[str, Any],
+        client_repo: Path,
         *,
         automatic_repair: bool,
     ) -> dict[str, Any]:
-        snapshot = self._snapshot(repo, validated["contract"]["entrypoint"]["relpath"])
         number = len(state["attempts"]) + 1
         attempt_dir = directory / "attempts" / str(number)
         if attempt_dir.exists():
@@ -621,7 +649,7 @@ class ExperimentBackend:
             "cloud_run_ref": f"experiments/{state['experiment_id']}/attempts/{number}",
         }
         state["validated_contract"] = validated
-        state["repo_path"] = str(repo)
+        state["repo_path"] = str(client_repo)
         state["attempts"].append(attempt)
         state["archive"] = {"state": "NONE"}
         state["active"] = None
@@ -681,7 +709,13 @@ class ExperimentBackend:
         )
         return self._public_state(state)
 
-    def start(self, local_repo: str, contract: Any) -> dict[str, Any]:
+    def start(
+        self,
+        local_repo: str,
+        contract: Any,
+        *,
+        source_snapshot: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         self._require_runtime()
         try:
             validated = validate_contract(contract)
@@ -700,6 +734,11 @@ class ExperimentBackend:
             raise BackendError(str(exc)) from exc
         experiment_id = validated["contract"]["experiment_id"]
         repo = Path(local_repo).resolve()
+        snapshot = source_snapshot
+        if snapshot is None:
+            snapshot = self._snapshot(
+                repo, validated["contract"]["entrypoint"]["relpath"],
+            )
         with self._locked(experiment_id, create=True) as directory:
             existing = self._load_state(directory, required=False)
             if existing is not None:
@@ -738,8 +777,28 @@ class ExperimentBackend:
                 "updated_at": utc_now(),
             }
             return self._launch_locked(
-                directory, state, validated, repo, automatic_repair=False,
+                directory, state, validated, snapshot, repo,
+                automatic_repair=False,
             )
+
+    def start_uploaded(
+        self,
+        local_repo: str,
+        contract: Any,
+        archive_path: Path,
+        snapshot_metadata: dict[str, Any],
+    ) -> dict[str, Any]:
+        self._require_runtime()
+        try:
+            validated = validate_contract(contract)
+        except ContractError as exc:
+            raise BackendError(str(exc)) from exc
+        snapshot = self._adopt_snapshot(
+            archive_path,
+            snapshot_metadata,
+            validated["contract"]["entrypoint"]["relpath"],
+        )
+        return self.start(local_repo, contract, source_snapshot=snapshot)
 
     def status(self, experiment_id: str) -> dict[str, Any]:
         try:
@@ -765,6 +824,8 @@ class ExperimentBackend:
         *,
         contract: Any | None = None,
         operator_confirmed: bool = False,
+        source_snapshot: dict[str, Any] | None = None,
+        local_repo: str | None = None,
     ) -> dict[str, Any]:
         self._require_runtime()
         with self._locked(experiment_id) as directory:
@@ -827,13 +888,65 @@ class ExperimentBackend:
                 if warning not in state["warnings"]:
                     state["warnings"].append(warning)
             state["dataset_resolution"] = dataset_resolution
+            repo = Path(
+                state["repo_path"] if local_repo is None else local_repo
+            ).resolve()
+            snapshot = source_snapshot
+            if snapshot is None:
+                snapshot = self._snapshot(
+                    repo, revised["contract"]["entrypoint"]["relpath"],
+                )
             return self._launch_locked(
                 directory,
                 state,
                 revised,
-                Path(state["repo_path"]),
+                snapshot,
+                repo,
                 automatic_repair=not operator_confirmed,
             )
+
+    def repair_context(self, experiment_id: str) -> dict[str, Any]:
+        self._require_runtime()
+        with self._locked(experiment_id) as directory:
+            state = self._load_state(directory)
+            assert state is not None
+            state = self._reconcile_locked(directory, state)
+            latest = state["attempts"][-1] if state["attempts"] else None
+            if latest is None or latest["state"] != "FAILED_ENGINEERING":
+                raise BackendError("only a FAILED_ENGINEERING attempt can be repaired")
+            return {
+                "local_repo": state["repo_path"],
+                "entrypoint": (
+                    state["validated_contract"]["contract"]["entrypoint"]["relpath"]
+                ),
+            }
+
+    def repair_uploaded(
+        self,
+        experiment_id: str,
+        archive_path: Path,
+        snapshot_metadata: dict[str, Any],
+        *,
+        local_repo: str,
+        contract: Any | None = None,
+        operator_confirmed: bool = False,
+    ) -> dict[str, Any]:
+        self._require_runtime()
+        if contract is None:
+            entrypoint = self.repair_context(experiment_id)["entrypoint"]
+        else:
+            try:
+                entrypoint = validate_contract(contract)["contract"]["entrypoint"]["relpath"]
+            except ContractError as exc:
+                raise BackendError(str(exc)) from exc
+        snapshot = self._adopt_snapshot(archive_path, snapshot_metadata, entrypoint)
+        return self.repair(
+            experiment_id,
+            contract=contract,
+            operator_confirmed=operator_confirmed,
+            source_snapshot=snapshot,
+            local_repo=local_repo,
+        )
 
     def cancel(self, experiment_id: str) -> dict[str, Any]:
         self._require_runtime()
@@ -1285,6 +1398,207 @@ def _worker_main(
     return 0
 
 
+def _read_remote_request(
+    stream: Any,
+    upload_path: Path,
+) -> tuple[str, dict[str, Any], dict[str, Any] | None, Path | None]:
+    raw_header = stream.readline(MAX_REMOTE_HEADER_BYTES + 1)
+    if not raw_header or len(raw_header) > MAX_REMOTE_HEADER_BYTES \
+            or not raw_header.endswith(b"\n"):
+        raise BackendError("remote request header is missing or exceeds its size limit")
+    try:
+        header = json.loads(raw_header)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BackendError("remote request header is not valid JSON") from exc
+    required = {
+        "schema_version", "operation", "arguments", "payload_bytes",
+        "source_snapshot",
+    }
+    if not isinstance(header, dict) or set(header) != required \
+            or header.get("schema_version") != REMOTE_PROTOCOL_SCHEMA_VERSION:
+        raise BackendError("remote request header has an invalid field contract")
+    operation = header.get("operation")
+    arguments = header.get("arguments")
+    payload_bytes = header.get("payload_bytes")
+    snapshot = header.get("source_snapshot")
+    if operation not in {
+        "start", "status", "cancel", "repair_context", "repair", "get", "search",
+    }:
+        raise BackendError("remote request operation is unsupported")
+    if not isinstance(arguments, dict):
+        raise BackendError("remote request arguments must be an object")
+    if isinstance(payload_bytes, bool) or not isinstance(payload_bytes, int) \
+            or not 0 <= payload_bytes <= MAX_REMOTE_UPLOAD_BYTES:
+        raise BackendError("remote request payload_bytes is invalid")
+    if payload_bytes == 0:
+        if snapshot is not None:
+            raise BackendError("remote request without a payload cannot name a snapshot")
+        if stream.read(1):
+            raise BackendError("remote request contains undeclared trailing bytes")
+        return operation, arguments, None, None
+    if operation not in {"start", "repair"} or not isinstance(snapshot, dict):
+        raise BackendError("remote snapshot payload is not valid for this operation")
+
+    _ensure_directory(upload_path.parent)
+    descriptor = os.open(
+        upload_path,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
+        0o600,
+    )
+    remaining = payload_bytes
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            while remaining:
+                chunk = stream.read(min(1024 * 1024, remaining))
+                if not chunk:
+                    raise BackendError("remote snapshot payload ended before its declared size")
+                handle.write(chunk)
+                remaining -= len(chunk)
+            handle.flush()
+            os.fsync(handle.fileno())
+    except BaseException:
+        upload_path.unlink(missing_ok=True)
+        raise
+    if stream.read(1):
+        upload_path.unlink(missing_ok=True)
+        raise BackendError("remote request contains undeclared trailing bytes")
+    return operation, arguments, snapshot, upload_path
+
+
+def _require_remote_arguments(
+    arguments: dict[str, Any],
+    *,
+    required: set[str],
+    optional: set[str] | None = None,
+) -> None:
+    allowed = required | (optional or set())
+    if set(arguments) - allowed or not required <= set(arguments):
+        raise BackendError("remote operation arguments are invalid")
+
+
+def _dispatch_remote(
+    backend: ExperimentBackend,
+    operation: str,
+    arguments: dict[str, Any],
+    snapshot: dict[str, Any] | None,
+    upload_path: Path | None,
+) -> dict[str, Any]:
+    if operation == "start":
+        _require_remote_arguments(arguments, required={"local_repo", "contract"})
+        if not isinstance(arguments["local_repo"], str) or upload_path is None \
+                or snapshot is None:
+            raise BackendError("remote start requires a local repository and source snapshot")
+        return backend.start_uploaded(
+            arguments["local_repo"], arguments["contract"], upload_path, snapshot,
+        )
+    if operation == "status":
+        _require_remote_arguments(arguments, required={"experiment_id"})
+        return backend.status(arguments["experiment_id"])
+    if operation == "cancel":
+        _require_remote_arguments(arguments, required={"experiment_id"})
+        return backend.cancel(arguments["experiment_id"])
+    if operation == "repair_context":
+        _require_remote_arguments(arguments, required={"experiment_id"})
+        return backend.repair_context(arguments["experiment_id"])
+    if operation == "repair":
+        _require_remote_arguments(
+            arguments,
+            required={"experiment_id", "local_repo"},
+            optional={"contract", "operator_confirmed"},
+        )
+        operator_confirmed = arguments.get("operator_confirmed", False)
+        if not isinstance(arguments["local_repo"], str) \
+                or not isinstance(operator_confirmed, bool) \
+                or upload_path is None or snapshot is None:
+            raise BackendError("remote repair arguments or source snapshot are invalid")
+        return backend.repair_uploaded(
+            arguments["experiment_id"],
+            upload_path,
+            snapshot,
+            local_repo=arguments["local_repo"],
+            contract=arguments.get("contract"),
+            operator_confirmed=operator_confirmed,
+        )
+    if operation == "get":
+        _require_remote_arguments(
+            arguments, required={"experiment_id"}, optional={"view"},
+        )
+        return backend.get(
+            arguments["experiment_id"], view=arguments.get("view", "summary"),
+        )
+    if operation == "search":
+        _require_remote_arguments(
+            arguments,
+            required=set(),
+            optional={"query", "states", "limit", "compare_experiment_ids"},
+        )
+        return backend.search(
+            query=arguments.get("query"),
+            states=arguments.get("states"),
+            limit=arguments.get("limit", 20),
+            compare_experiment_ids=arguments.get("compare_experiment_ids"),
+        )
+    raise BackendError("remote request operation is unsupported")
+
+
+def _emit_remote_response(value: dict[str, Any]) -> None:
+    raw = canonical_json_bytes(value)
+    if len(raw) > MAX_REMOTE_RESPONSE_BYTES:
+        raw = canonical_json_bytes({
+            "schema_version": REMOTE_PROTOCOL_SCHEMA_VERSION,
+            "ok": False,
+            "error": "remote response exceeded its fixed size limit",
+        })
+    sys.stdout.buffer.write(raw)
+    sys.stdout.buffer.flush()
+
+
+def _remote_main(args: argparse.Namespace) -> int:
+    upload_path = args.root / "tmp" / f"upload-{uuid.uuid4().hex}.tar"
+    operation = "unknown"
+    try:
+        operation, arguments, snapshot, received = _read_remote_request(
+            sys.stdin.buffer, upload_path,
+        )
+        registry = None
+        if operation in {"start", "repair"} and args.dataset_registry is not None:
+            registry = DatasetRegistry(args.dataset_registry)
+        archive_store = None
+        if operation != "cancel" and args.archive_remote is not None:
+            archive_store = GitArchiveStore(
+                args.archive_remote,
+                args.root / "archive-tmp",
+                allow_test_remote=args.archive_test_remote,
+            )
+        backend = ExperimentBackend(
+            args.root,
+            runtime_enabled=True,
+            dataset_registry=registry,
+            archive_store=archive_store,
+        )
+        result = _dispatch_remote(
+            backend, operation, arguments, snapshot, received,
+        )
+        response = {
+            "schema_version": REMOTE_PROTOCOL_SCHEMA_VERSION,
+            "ok": True,
+            "operation": operation,
+            "result": result,
+        }
+    except (BackendError, DatasetRegistryError, ArchiveError, OSError,
+            TypeError, ValueError) as exc:
+        response = {
+            "schema_version": REMOTE_PROTOCOL_SCHEMA_VERSION,
+            "ok": False,
+            "operation": operation,
+            "error": str(exc)[:4096],
+        }
+    finally:
+        upload_path.unlink(missing_ok=True)
+    _emit_remote_response(response)
+    return 0
+
+
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -1295,6 +1609,11 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     worker.add_argument("--token", required=True)
     worker.add_argument("--archive-remote")
     worker.add_argument("--archive-test-remote", action="store_true")
+    remote = subparsers.add_parser("_remote")
+    remote.add_argument("--root", type=Path, required=True)
+    remote.add_argument("--dataset-registry", type=Path)
+    remote.add_argument("--archive-remote")
+    remote.add_argument("--archive-test-remote", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -1309,6 +1628,8 @@ def main(argv: list[str] | None = None) -> int:
             args.archive_remote,
             args.archive_test_remote,
         )
+    if args.command == "_remote":
+        return _remote_main(args)
     return 2
 
 
