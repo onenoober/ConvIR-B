@@ -1,0 +1,17 @@
+/sda/home/wangyuxin/ConvIR-B/repos/dgfdnet-repro-20260913/Dehazing/ITS/eval.py:16: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(args.test_model)
+/sda/home/wangyuxin/ConvIR-B/repos/dgfdnet-repro-20260913/Dehazing/ITS/eval.py:55: UserWarning: Using a target size (torch.Size([1, 3, 480, 640])) that is different to the input size (torch.Size([1, 3, 460, 620])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  psnr_val = 10 * torch.log10(1 / f.mse_loss(pred_clip, label_img))
+Namespace(model_name='dgfdnet_its_test_20260913', mode='test', data_dir='/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/', batch_size=8, learning_rate=0.0003, weight_decay=0, num_epoch=1000, print_freq=100, num_worker=8, save_freq=10, valid_freq=5, resume='', test_model='/sda/home/wangyuxin/ConvIR-B/checkpoints/DGFDNet/its_best.pth', save_image=False, model_save_dir='results/dgfdnet_its_test_20260913/ITS/20260913_214609', result_dir='results/dgfdnet_its_test_20260913/test/20260913_214609')
+Traceback (most recent call last):
+  File "/sda/home/wangyuxin/ConvIR-B/repos/dgfdnet-repro-20260913/Dehazing/ITS/main.py", line 73, in <module>
+    main(args)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/dgfdnet-repro-20260913/Dehazing/ITS/main.py", line 36, in main
+    _eval(model, args, device)
+  File "/sda/home/wangyuxin/ConvIR-B/repos/dgfdnet-repro-20260913/Dehazing/ITS/eval.py", line 55, in _eval
+    psnr_val = 10 * torch.log10(1 / f.mse_loss(pred_clip, label_img))
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/nn/functional.py", line 3791, in mse_loss
+    expanded_input, expanded_target = torch.broadcast_tensors(input, target)
+  File "/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/functional.py", line 76, in broadcast_tensors
+    return _VF.broadcast_tensors(tensors)  # type: ignore[attr-defined]
+RuntimeError: The size of tensor a (620) must match the size of tensor b (640) at non-singleton dimension 3
