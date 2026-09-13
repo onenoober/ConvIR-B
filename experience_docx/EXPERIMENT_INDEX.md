@@ -4,6 +4,15 @@ Date: 2026-07-19
 
 Status: evidence index plus official architecture anchor registry.
 
+## External Reproduction Routes
+
+The DGFDNet first-test route is an external baseline reproduction and does not
+modify or replace the official ConvIR-B architecture anchor. Cloud preflight
+passed on `convir-4090`; the official pretrained checkpoint is still pending
+user upload before the ITS/SOTS indoor test can run. See the [route card](experiment_cards/2026-09-13-dgfdnet-repro-first-test.md),
+[family summary](family_summaries/dgfdnet_reproduction_summary.md), and
+[evidence directory](experiment_logs/dgfdnet_repro_20260913/).
+
 ## Operations Infrastructure Validation
 
 The generic P0/P1 research-governance fast path is adopted after a

@@ -1,0 +1,13 @@
+REMOTE_ROOT=/sda/home/wangyuxin/ConvIR-B/repos/dgfdnet-repro-20260913
+SOURCE_COMMIT=5b389b83a7e82d6f596ddf52e713f55340720ae9
+PY=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+Python 3.10.20
+IMPORT_OK
+TORCH 2.5.1+cu121 CUDA 12.1 AVAILABLE True
+PARAMS 2083311
+FORWARD_SHAPE (1, 3, 64, 64)
+FORWARD_FINITE True
+DATA_DIR=/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/official/ITS/
+HAZY_COUNT=500
+GT_COUNT=50
+DGFD_PREFLIGHT_OK
