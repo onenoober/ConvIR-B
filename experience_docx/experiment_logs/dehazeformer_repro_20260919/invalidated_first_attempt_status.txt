@@ -1,0 +1,5 @@
+setup_start 2026-09-15T17:00:37+08:00
+setup_done repo=/sda/home/wangyuxin/ConvIR-B/repos/dehazeformer-repro-20260915 evidence=/sda/home/wangyuxin/ConvIR-B/experience_docx/experiment_logs/dehazeformer_repro_20260915 2026-09-15T17:00:37+08:00
+PREFLIGHT_RUNNING run=dehazeformer_smoke_20260915 time=2026-09-19T17:22:43+08:00
+COMPLETED_GATE_PASS run=dehazeformer_smoke_20260915 rc=0 time=2026-09-19T17:23:04+08:00
+INVALIDATED run=dehazeformer_smoke_20260915 reason=fixture path and errexit propagation bugs; see smoke_test.log

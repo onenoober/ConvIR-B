@@ -1,0 +1,2 @@
+PREFLIGHT_RUNNING run=dehazeformer_smoke_20260919 time=2026-09-19T17:26:39+08:00
+COMPLETED_GATE_PASS run=dehazeformer_smoke_20260919 rc=0 time=2026-09-19T17:26:50+08:00

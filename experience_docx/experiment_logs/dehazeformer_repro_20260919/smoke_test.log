@@ -1,0 +1,56 @@
+run_id=dehazeformer_smoke_20260919
+route_class=new_external_reproduction_smoke
+source_commit=5af7c34d6f8e0784a88a2132a7add296bf99ca9c
+repo=/sda/home/wangyuxin/ConvIR-B/repos/dehazeformer-repro-20260915
+python=/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/bin/python
+data=/sda/home/wangyuxin/ConvIR-B/datasets/RESIDE/derived/dehazeformer_smoke_20260919
+checkpoint_root=/sda/home/wangyuxin/ConvIR-B/checkpoints/engineering-only/dehazeformer_smoke_20260919
+result_root=/sda/home/wangyuxin/ConvIR-B/outputs/dehazeformer_smoke_20260919
+locked_test_policy=engineering-only single public SOTS fixture; no benchmark claim
+checkpoint_policy=random initialization for pipeline validation only
+selected_physical_gpu=2
+0, NVIDIA GeForce RTX 4090, 24564 MiB, 19211 MiB, 5005 MiB, 0 %
+1, NVIDIA GeForce RTX 4090, 24564 MiB, 23215 MiB, 1001 MiB, 100 %
+2, NVIDIA GeForce RTX 4090, 24564 MiB, 16 MiB, 24200 MiB, 0 %
+3, NVIDIA GeForce RTX 4090, 24564 MiB, 23673 MiB, 543 MiB, 0 %
+4, NVIDIA GeForce RTX 4090, 24564 MiB, 1112 MiB, 23105 MiB, 0 %
+5, NVIDIA GeForce RTX 4090, 24564 MiB, 16 MiB, 24200 MiB, 0 %
+6, NVIDIA GeForce RTX 4090, 24564 MiB, 22152 MiB, 2065 MiB, 0 %
+7, NVIDIA GeForce RTX 4090, 24564 MiB, 18876 MiB, 5341 MiB, 0 %
+python_torch=2.5.1+cu121
+torchvision=0.20.1+cu121
+cuda_runtime=12.1
+cuda_available=True
+visible_device_count=1
+visible_gpu=NVIDIA GeForce RTX 4090
+numpy=2.2.6
+pillow=12.2.0
+opencv=4.13.0
+skimage=0.25.2
+DEHAZEFORMER_IMPORT_PREFLIGHT_OK
+fixture_hazy_size=(620, 460)
+fixture_gt_size=(620, 460)
+gt_crop_box=(10, 10, 630, 470)
+DEHAZEFORMER_FIXTURE_OK
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/functional.py:534: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3595.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+parameter_count=1284884
+trainable_parameter_count=1284884
+forward_input_shape=(1, 3, 64, 64)
+forward_output_shape=(1, 3, 64, 64)
+DEHAZEFORMER_MODEL_FORWARD_OK
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/sda/home/wangyuxin/ConvIR-B/envs/convir-cu121/lib/python3.10/site-packages/torch/functional.py:534: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3595.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/sda/home/wangyuxin/ConvIR-B/repos/dehazeformer-repro-20260915/test.py:27: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(save_dir)['state_dict']
+==> Start testing, current model name: dehazeformer-s
+Test: [0]	PSNR: 13.72 (13.72)	SSIM: 0.712 (0.712)
+result_image=/sda/home/wangyuxin/ConvIR-B/outputs/dehazeformer_smoke_20260919/RESIDE-IN/dehazeformer-s/imgs/1400_1.png
+result_csv=/sda/home/wangyuxin/ConvIR-B/outputs/dehazeformer_smoke_20260919/RESIDE-IN/dehazeformer-s/13.72 | 0.7124.csv
+result_csv_row=1400_1.png,13.72,0.712
+metrics_warning=random-weight engineering values are scientifically meaningless
+DEHAZEFORMER_SMOKE_TEST_OK
