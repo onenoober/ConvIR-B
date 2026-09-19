@@ -2,7 +2,7 @@
 
 Date: 2026-09-19
 
-Status: COMPLETED_GATE_PASS (engineering smoke only; official checkpoint not yet supplied)
+Status: SYNCED_TO_GITHUB (engineering smoke only; official checkpoint not yet supplied)
 
 - Route card: `experience_docx/experiment_cards/2026-09-19-dehazeformer-repro-smoke.md`
 - Central index: `experience_docx/EXPERIMENT_INDEX.md`

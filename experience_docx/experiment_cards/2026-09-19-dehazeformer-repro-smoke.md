@@ -2,7 +2,7 @@
 
 Date: 2026-09-19
 
-Status: COMPLETED_GATE_PASS (engineering smoke only)
+Status: SYNCED_TO_GITHUB (engineering smoke only)
 
 - Route id: `dehazeformer_repro_20260919`
 - Runtime: `convir-4090`
