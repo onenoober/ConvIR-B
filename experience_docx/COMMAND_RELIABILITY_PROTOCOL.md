@@ -36,6 +36,19 @@ boundary, quoting, CRLF, PATH, stdin, or silent-output lesson.
 
 ## Invalid Command Patterns To Avoid
 
+### Single-branch Git bundle clone without explicit checkout
+
+On 2026-09-21, `git bundle create <file> codex/<route>` followed by
+`git clone <file> <workspace>` created the remote repository but left `HEAD`
+unborn: the bundle had no default `HEAD` ref. The subsequent `git rev-parse
+HEAD` failed, so this was `FAILED_COMMAND`, not a model preflight result.
+
+After verifying `git branch -a` and `git show-ref`, finish the existing clone
+with `git switch -c codex/<route> --track
+origin/codex/<route>`, then compare the full commit hash with the local source.
+For new bundle clones, pass `--branch codex/<route>` to `git clone` and verify
+the full hash before any runtime command.
+
 ### PowerShell to WSL inline regex pipes
 
 Avoid inline commands where PowerShell, WSL Bash, and regex pipes all appear in

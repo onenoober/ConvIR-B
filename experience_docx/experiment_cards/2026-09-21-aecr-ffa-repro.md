@@ -2,7 +2,7 @@
 
 Date: 2026-09-21
 
-Status: `PLANNED` (engineering smoke only; no quality reproduction claim).
+Status: `COMPLETED_GATE_PASS` (engineering smoke only; no quality reproduction claim).
 
 ## Scope and source
 
@@ -56,3 +56,22 @@ loss that returns one scalar. This smoke uses the returned tensors directly.
 - Full training requires a separately fixed split, schedule, and validation
   contract. Published/pretrained checkpoint evaluation requires the user-supplied
   model weights and a separate provenance audit.
+
+## Result and decision
+
+Cloud run: 2026-09-21 19:57-19:58 CST, route code commit
+`5b0ae179bbc9aa46ec8928c8e59a12548c54fe8e`, PyTorch `2.5.1+cu121`,
+RTX 4090. The first Git-bundle clone command left `HEAD` unborn; the named
+branch was explicitly checked out and the full commit verified before launch.
+The invalid/corrected transport form is in `COMMAND_RELIABILITY_PROTOCOL.md`.
+
+| Model | Train pairs | Output | One-step loss | Nonzero finite gradient tensors | Strict checkpoint reload |
+| --- | ---: | --- | ---: | ---: | --- |
+| FFA-Net | 3000/3000 | `1x3x64x64` | `0.655811` L1 | 704 | pass |
+| AECR-Net | 3000/3000 | `1x3x64x64` | `0.625435` total (contrast `1.406844`) | 32 | pass |
+
+Both reports mark `locked_test_touched=false`. The checkpoint files are
+engineering artifacts after one random-initialized update, not model weights
+suitable for image-quality evaluation. Decision: implementation smoke passed;
+no training convergence, published checkpoint, PSNR/SSIM, or numerical DCNv2
+parity claim is authorized by this evidence.
