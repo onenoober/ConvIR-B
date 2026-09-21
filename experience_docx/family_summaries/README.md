@@ -29,6 +29,7 @@ standalone CHD-RM route chain is indexed in `../CHD_RM_EXPERIMENT_INDEX.md`.
 | Full-model line candidates | [summary](full_model_line_family_summary.md) | Opened by v3.1; WDMamba/ConvIR-L standalone show full-model headroom, but not strict A0 dominance. |
 | NoPost feature lowband routes | [summary](nopost_lowband_family_summary.md) | WLDB-A through v2.26 are not training-authorized; v2.27 ILFRB-ACS confirms strong internal capacity; v2.28 OOF prototypes create no-op/useful/unsafe strata; v2.29 bucket-aware calibration preserves selected signal but fails safety/table gates; v2.30 compatibility-gated LCB table improves accepted cross-bucket safety but still fails deployable GT-free table-policy utility before selector work. |
 | CHD-RM v5 route chain | [summary](chd_rm_family_summary.md), [index](../CHD_RM_EXPERIMENT_INDEX.md) | R5 confirms candidate-relative spatial utility/risk signal but fails tail and protected-cell safety; the family is closed and authorizes no next stage. |
+| External dehazing reproductions | [summary](external_dehazing_reproduction_summary.md) | DehazeFormer, AECR-Net, and FFA-Net engineering smokes passed; author weights and quality validation remain pending. |
 
 ## Evidence Strength Reminder
 

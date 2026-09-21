@@ -1,0 +1,6 @@
+PREFLIGHT_RUNNING date=2026-09-21T19:57:47+08:00 branch=codex/dehaze-aecr-ffa-repro-20260921 commit=5b0ae179bbc9aa46ec8928c8e59a12548c54fe8e data=/sda/home/wangyuxin/ConvIR-B/datasets/Haze4K/Haze4K output=/sda/home/wangyuxin/ConvIR-B/runs/aecr_ffa_repro_20260921_smoke locked_test=false
+smoke_start model=ffa date=2026-09-21T19:57:47+08:00
+FFA_SMOKE_OK date=2026-09-21T19:57:58+08:00 report=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-aecr-ffa-repro-20260921/experience_docx/experiment_logs/aecr_ffa_repro_20260921/smoke_ffa.json
+smoke_start model=aecr date=2026-09-21T19:57:58+08:00
+AECR_SMOKE_OK date=2026-09-21T19:58:04+08:00 report=/sda/home/wangyuxin/ConvIR-B/repos/ConvIR-B-aecr-ffa-repro-20260921/experience_docx/experiment_logs/aecr_ffa_repro_20260921/smoke_aecr.json
+COMPLETED_GATE_PASS AECR_FFA_SMOKE_OK date=2026-09-21T19:58:04+08:00 locked_test=false
